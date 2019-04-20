@@ -1,0 +1,32 @@
+{
+    "variants": {
+		"normal": { "model": "rs_ctr:rs_port" },
+		"base": { "model": "rs_ctr:_rs_port.core" },
+		"cn0": { "model": "rs_ctr:_rs_port.con(0)" },
+		"ce0": { "model": "rs_ctr:_rs_port.con(0)#e" },
+		"cs0": { "model": "rs_ctr:_rs_port.con(0)#s" },
+		"cw0": { "model": "rs_ctr:_rs_port.con(0)#w" },
+		"cb0": { "model": "rs_ctr:_rs_port.con(0)#bn" },
+		"ct0": { "model": "rs_ctr:_rs_port.con(0)#tn" },
+		"cn1": { "model": "rs_ctr:_rs_port.con(1)" },
+		"ce1": { "model": "rs_ctr:_rs_port.con(1)#e" },
+		"cs1": { "model": "rs_ctr:_rs_port.con(1)#s" },
+		"cw1": { "model": "rs_ctr:_rs_port.con(1)#w" },
+		"cb1": { "model": "rs_ctr:_rs_port.con(1)#bn" },
+		"ct1": { "model": "rs_ctr:_rs_port.con(1)#tn" },
+		"cn2": { "model": "rs_ctr:_rs_port.con(2)" },
+		"ce2": { "model": "rs_ctr:_rs_port.con(2)#e" },
+		"cs2": { "model": "rs_ctr:_rs_port.con(2)#s" },
+		"cw2": { "model": "rs_ctr:_rs_port.con(2)#w" },
+		"cb2": { "model": "rs_ctr:_rs_port.con(2)#bn" },
+		"ct2": { "model": "rs_ctr:_rs_port.con(2)#tn" },
+		"cn3": { "model": "rs_ctr:_rs_port.con(3)" },
+		"ce3": { "model": "rs_ctr:_rs_port.con(3)#e" },
+		"cs3": { "model": "rs_ctr:_rs_port.con(3)#s" },
+		"cw3": { "model": "rs_ctr:_rs_port.con(3)#w" },
+		"cb3": { "model": "rs_ctr:_rs_port.con(3)#bn" },
+		"ct3": { "model": "rs_ctr:_rs_port.con(3)#tn" },
+		"inventory": { "model": "rs_ctr:_rs_port.con(0)#s"},
+		"inventory1": { "model": "rs_ctr:_rs_port.con(1)#s"}
+    }
+}

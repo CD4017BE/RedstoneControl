@@ -1,0 +1,12 @@
+{
+	textures = ["rs_ctr:blocks/rs_port0"];
+}
+
+main(t) {
+	offsetUV(-2 * t, 0);
+	Loc Q = [7,7,5, 9,9,8]#, T = [14,0, 16,3]#;
+	for(F:["u-V","u+V","-uV","+uV"]) {
+		add(rect(Q, T, F, 0));
+	}
+	add(rect(Q, [14,3, 16,5]#, "uv-", 0));
+}
