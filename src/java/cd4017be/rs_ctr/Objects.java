@@ -1,15 +1,23 @@
 package cd4017be.rs_ctr;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.lib.block.OrientedBlock;
+import cd4017be.lib.item.BaseItemBlock;
 import cd4017be.lib.templates.TabMaterials;
+import cd4017be.rs_ctr.block.*;
+import cd4017be.rs_ctr.item.*;
+import cd4017be.rs_ctr.tileentity.*;
 
 /**
  * 
@@ -19,16 +27,22 @@ import cd4017be.lib.templates.TabMaterials;
 @ObjectHolder(value = Main.ID)
 public class Objects {
 
-	//Capabilities
-
 	//Creative Tabs
 	public static TabMaterials tabCircuits = new TabMaterials(Main.ID);
 
 	//Blocks
+	public static final BlockRedstonePort RS_PORT = null;
+	public static final OrientedBlock SPLITTER = null;
+	public static final OrientedBlock ANALOG_COMB = null;
 
 	//ItemBlocks
+	public static final ItemRedstonePort rs_port = null;
+	public static final BaseItemBlock splitter = null;
+	public static final BaseItemBlock analog_comb = null;
 
 	//Items
+	public static final ItemSignalWire wire = null;
+	public static final ItemConstantPlug constant = null;
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(Blocks.REDSTONE_TORCH);
@@ -41,14 +55,20 @@ public class Objects {
 	@SubscribeEvent
 	public static void registerBlocks(RegistryEvent.Register<Block> ev) {
 		ev.getRegistry().registerAll(
-			
+				new BlockRedstonePort("rs_port", Material.ROCK, SoundType.STONE, RedstonePort.class).setCreativeTab(tabCircuits).setLightOpacity(0),
+				OrientedBlock.create("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				OrientedBlock.create("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
 	@SubscribeEvent
 	public static void registerItems(RegistryEvent.Register<Item> ev) {
 		ev.getRegistry().registerAll(
-			
+				new ItemRedstonePort(RS_PORT),
+				new BaseItemBlock(SPLITTER),
+				new BaseItemBlock(ANALOG_COMB),
+				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
+				new ItemConstantPlug("constant").setCreativeTab(tabCircuits)
 		);
 	}
 

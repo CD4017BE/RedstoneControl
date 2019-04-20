@@ -52,7 +52,6 @@ public class Main {
 		Objects.init();
 		Objects.initConstants(new ConfigConstants(RecipeScriptContext.instance.modules.get("redstoneControl")));
 		proxy.init();
-		proxy.registerRenderers();
 	}
 
 	@Mod.EventHandler
