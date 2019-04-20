@@ -48,14 +48,13 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public IntConsumer getPortCallback(int pin) {
-		return (strong >> (pin - 6) & 1) != 0 ? new StrongRSOut(pin) : new RSOut(pin);
+		return new RSOut(pin);
 	}
 
 	@Override
 	public void setPortCallback(int pin, IntConsumer callback) {
 		callbacks[pin] = callback;
-		if (dirty == 0) TickRegistry.instance.updates.add(this);
-		dirty |= 1 << pin;
+		if (callback != null) callback.accept(states[pin]);
 	}
 
 	@Override
@@ -94,18 +93,17 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public void process() {
-		for (int j = dirty, i = 0; j != 0; j >>>= 1, i++)
-			if ((j & 1) != 0) {
-				IntConsumer c = callbacks[i];
-				if (c != null) c.accept(states[i]);
-			}
+		for (int j = dirty, i = 0; j != 0; j >>>= 1, i++) {
+			if ((j & 1) == 0) continue;
+			IntConsumer c = callbacks[i];
+			if (c != null) c.accept(states[i]);
+		}
 		dirty = 0;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		dirty = 0;
 		int[] arr = nbt.getIntArray("states");
 		System.arraycopy(arr, 0, states, 0, Math.min(arr.length, 12));
 		if (arr.length < 12) Arrays.fill(states, arr.length, 12, 0);
@@ -245,33 +243,30 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		return list;
 	}
 
-	class RSOut implements IntConsumer {
-
-		final BlockPos target;
-		final int id;
-
-		RSOut(int id) {
-			this.id = id;
-			this.target = pos.offset(EnumFacing.VALUES[id - 6]);
-		}
-
-		@Override
-		public void accept(int value) {
-			if (value != states[id]) {
-				states[id] = value;
-				world.neighborChanged(target, blockType, pos);
-			}
-		}
-
+	@Override
+	protected void setupData() {
+		if (world.isRemote) return;
+		//delay port registration until we have save block access
+		TickRegistry.instance.updates.add(()-> {
+			if (unloaded) return;
+			for (MountedSignalPort port : ports)
+				port.onLoad();
+		});
 	}
 
-	class StrongRSOut implements IntConsumer {
+	@Override
+	protected void clearData() {
+		super.clearData();
+		dirty = 0; //cancel scheduled updates
+	}
+
+	class RSOut implements IntConsumer {
 
 		final BlockPos target;
 		final EnumFacing side;
 		final int id;
 
-		StrongRSOut(int id) {
+		RSOut(int id) {
 			this.id = id;
 			this.side = EnumFacing.VALUES[(id - 6)^1];
 			this.target = pos.offset(side, -1);
@@ -282,7 +277,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			if (value != states[id]) {
 				states[id] = value;
 				world.neighborChanged(target, blockType, pos);
-				world.notifyNeighborsOfStateExcept(target, blockType, side);
+				if ((strong >> (id - 6) & 1) != 0) world.notifyNeighborsOfStateExcept(target, blockType, side);
 			}
 		}
 

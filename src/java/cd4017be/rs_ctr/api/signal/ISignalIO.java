@@ -34,7 +34,9 @@ public interface ISignalIO {
 	}
 
 	/**
-	 * get the callback of the given sink/receiving port
+	 * get the callback of the given sink/receiving port<dl>
+	 * Warning: this method and the returned function may get called from within {@link SignalPort#onLoad()}
+	 * so be careful when initializing Ports during {@link TileEntity#onLoad()} because blocks can't be accessed at that point.
 	 * @param pin the SignalPort's pin id
 	 * @return a function to call whenever the state of the transmitted signal changes
 	 */
