@@ -47,7 +47,7 @@ public class WireRenderer implements IModeledTESR {
 			b = b.scale(WIDTH / b.lengthVector());
 			a = a.scale(WIDTH / a.lengthVector());
 		}
-		TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("circuits:blocks/rs_port0");
+		TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("rs_ctr:blocks/rs_port0");
 		Vec2f t0 = Util.getUV(tex, 0, 14), t1 = Util.getUV(tex, 16, 16);
 		Vec3d p = l.scale(L_PLUG).add(port.pos);
 		l = line.add(p);

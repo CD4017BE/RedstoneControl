@@ -2,6 +2,7 @@ package cd4017be.rs_ctr;
 
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.api.interact.InteractiveDeviceRenderer;
+import cd4017be.rs_ctr.render.WireRenderer;
 import cd4017be.rs_ctr.tileentity.Gate;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import static net.minecraftforge.fml.client.registry.ClientRegistry.*;
@@ -26,6 +27,8 @@ public class ClientProxy extends CommonProxy {
 	public void registerModels(ModelRegistryEvent ev) {
 		setMod(Main.ID);
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4));
+		
+		WireRenderer.register();
 		
 		registerRenderBS(RS_PORT, 0, 1);
 		registerRender(SPLITTER);
