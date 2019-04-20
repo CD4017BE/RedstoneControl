@@ -1,8 +1,6 @@
 package cd4017be.rs_ctr.item;
 
 import java.io.IOException;
-import java.util.List;
-
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.BlockGuiHandler.ClientItemPacketReceiver;
 import cd4017be.lib.Gui.DataContainer;
@@ -18,7 +16,6 @@ import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.signal.Constant;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -64,16 +61,18 @@ public class ItemConstantPlug extends BaseItem implements IConnectorItem, IGuiIt
 	}
 
 	@Override
-	public void addInformation(ItemStack item, World player, List<String> list, ITooltipFlag b) {
-		NBTTagCompound nbt = item.getTagCompound();
-		if (nbt != null) list.add(Integer.toString(nbt.getInteger("val")));
-		super.addInformation(item, player, list, b);
+	public String getItemStackDisplayName(ItemStack item) {
+		String s = super.getItemStackDisplayName(item);
+		if (item.hasTagCompound()) s += " \u00a79" + item.getTagCompound().getInteger("val");
+		return s;
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand) {
-		BlockGuiHandler.openItemGui(player, hand);
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+		ItemStack stack = player.getHeldItem(hand);
+		if (player.isSneaking()) stack.setTagCompound(null);
+		else BlockGuiHandler.openItemGui(player, hand);
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 	}
 
 	@Override
