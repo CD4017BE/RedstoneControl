@@ -1,0 +1,6 @@
+#Minecraft run directories
+/run/
+#Build directories
+/build
+/bin
+/.gradle
