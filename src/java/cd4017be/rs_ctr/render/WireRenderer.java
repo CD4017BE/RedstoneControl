@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3d;
  */
 public class WireRenderer implements IModeledTESR {
 
-	static final int TYPES = 2;
+	static final int TYPES = 5;
 	public static WireRenderer instance;
 	static final float WIDTH = 0.03125F, L_PLUG = 0.125F;
 

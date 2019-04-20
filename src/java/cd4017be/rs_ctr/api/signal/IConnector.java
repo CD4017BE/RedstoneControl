@@ -40,6 +40,10 @@ public interface IConnector extends INBTSerializable<NBTTagCompound> {
 	 */
 	void onRemoved(MountedSignalPort port, @Nullable EntityPlayer player);
 
+	default void onLoad(MountedSignalPort port) {}
+
+	default void onUnload() {}
+
 	public static IConnector load(NBTTagCompound nbt) {
 		Class<?extends IConnector> c = REGISTRY.get(nbt.getString("id"));
 		if (c == null) return null;

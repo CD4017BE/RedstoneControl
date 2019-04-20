@@ -43,7 +43,9 @@ public class Objects {
 
 	//Items
 	public static final ItemSignalWire wire = null;
+	public static final ItemWirelessCon wireless = null;
 	public static final ItemConstantPlug constant = null;
+	public static final ItemStatusLamp lamp = null;
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(Blocks.REDSTONE_TORCH);
@@ -71,7 +73,9 @@ public class Objects {
 				new BaseItemBlock(SPLITTER),
 				new BaseItemBlock(ANALOG_COMB),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
-				new ItemConstantPlug("constant").setCreativeTab(tabCircuits)
+				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
+				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
+				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits)
 		);
 	}
 

@@ -59,9 +59,11 @@ public interface ISignalIO {
 	/**port was functionally disconnected from another port */
 	public static final int E_DISCONNECT = 2;
 	/**the port's connection object was set */
-	public static final int E_CON_ADD = 4;
+	public static final int E_CON_ADD = 20;
 	/**the port's connection object was removed */
-	public static final int E_CON_REM = 8;
+	public static final int E_CON_REM = 24;
+	/**the port's connection state needs client sync */
+	public static final int E_CON_UPDATE = 16;
 
 	/**
 	 * @param world
@@ -70,6 +72,7 @@ public interface ISignalIO {
 	 * @return
 	 */
 	public static SignalPort getPort(World world, BlockPos pos, int pin) {
+		if (world == null) return null;
 		if (pin >= 0) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof ISignalIO)

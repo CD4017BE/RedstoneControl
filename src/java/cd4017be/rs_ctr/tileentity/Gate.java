@@ -75,7 +75,6 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readPorts(pkt.getNbtCompound());
 		renderBox = null;
-		markUpdate();
 	}
 
 	@Override

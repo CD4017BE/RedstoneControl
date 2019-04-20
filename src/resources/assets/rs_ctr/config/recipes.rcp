@@ -1,4 +1,4 @@
-VERSION = 1;
+VERSION = 2;
 
 INIT() {
 	Loc slab = it("minecraft:stone_slab");
@@ -6,5 +6,8 @@ INIT() {
 	add("shaped", 2 * it("tile.rs_port"):1, "0/1", it("minecraft:redstone_torch"), slab);
 	add("shaped", it("tile.splitter"), " 0 /010/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	add("shaped", it("tile.analog_comb"), " 0 /010/ 0 ", it("tile.rs_port"):1, it("tile.rs_port"):0);
-	add("shaped", it("item.wire", 8), "010", "dustRedstone", it("minecraft:string"));
+	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
+	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
+	add("shaped", it("item.constant"), "0/1", it("item.wire"), "gemLapis");
+	add("shaped", it("item.lamp"), "0/1", it("item.wire"), "dustGlowstone");
 }

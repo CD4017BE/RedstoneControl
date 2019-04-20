@@ -126,10 +126,15 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	public void setConnector(@Nullable IConnector c, @Nullable EntityPlayer by) {
 		if (connector == c) return;
 		IConnector old = connector; connector = c;
-		int ev = c != null ? ISignalIO.E_CON_ADD : 0;
+		int ev = 0;
 		if (old != null) {
+			old.onUnload();
 			old.onRemoved(this, by);
 			ev |= ISignalIO.E_CON_REM;
+		}
+		if (c != null) {
+			c.onLoad(this);
+			ev |= ISignalIO.E_CON_ADD;
 		}
 		owner.onPortModified(this, ev);
 	}
@@ -154,6 +159,18 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	public void deserializeNBT(NBTTagCompound nbt) {
 		super.deserializeNBT(nbt);
 		connector = IConnector.load(nbt.getCompoundTag("con"));
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		if (connector != null) connector.onLoad(this);
+	}
+
+	@Override
+	public void onUnload() {
+		super.onUnload();
+		if (connector != null) connector.onUnload();
 	}
 
 }

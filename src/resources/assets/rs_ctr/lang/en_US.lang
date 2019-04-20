@@ -12,18 +12,23 @@ tile.rs_ctr.analog_comb.name=Analog Signal Combiner
 tile.rs_ctr.analog_comb.tip=Combines the 4 incoming signals by outputing the one with highest value.
 
 # chat messages
-msg.rs_ctr.wire0=§4Inputs can only connect to outputs and vice versa!
-msg.rs_ctr.wire1=§4Too far away, not enough wire!
-msg.rs_ctr.wire2=§4Too far away, max length is %d blocks!
-msg.rs_ctr.wire3=§4First port doesn't exist anymore!
+msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
+msg.rs_ctr.wire1=§cToo far away, not enough wire!
+msg.rs_ctr.wire2=§cToo far away, max length is %d blocks!
+msg.rs_ctr.wire3=§cFirst port doesn't exist anymore!
 msg.rs_ctr.const=§cConstants can only connect to inputs!
+msg.rs_ctr.lamp=§cLamps can only connect to outputs!
 
 # Items
 # names & tooltips
 item.rs_ctr.wire.name=Signal Wire
 item.rs_ctr.wire.tip=§ainteract§7 on signal port to attach, then §ainteract§7 on another signal port of opposite polarity to connect both together.\n§oRequires 1 item per block of straight distance between ports.
+item.rs_ctr.wireless.name=Wireless Signal Connector
+item.rs_ctr.wireless.tip=Like a §6Signal Wire§7 but can connect two signal ports over any distance, even across dimensions.
 item.rs_ctr.constant.tip=Can be attached to an input port to supply it with a constant signal value.\n§aInteract§7 in air to configure value.
 item.rs_ctr.constant.name=Constant Plug
+item.rs_ctr.lamp.name=Signal Status Lamp
+item.rs_ctr.lamp.tip=Attach on output port to see its signal state.
 
 #Signal port names
 port.rs_ctr.rsR=Read
