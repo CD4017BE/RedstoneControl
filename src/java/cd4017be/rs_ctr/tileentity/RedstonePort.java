@@ -146,7 +146,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		Orientation o = Orientation.fromFacing(side);
 		Vec3d p = o.rotate(new Vec3d(in ? -SIZE : SIZE, in ? -SIZE : SIZE, -0.375));
 		port.setLocation((float)p.x + 0.5F, (float)p.y + 0.5F, (float)p.z + 0.5F, o.back);
-		port.setName(port.isSource ? "port.circuits.rsR" : "port.circuits.rsW");
+		port.setName(port.isSource ? "port.rs_ctr.rsR" : "port.rs_ctr.rsW");
 		return port;
 	}
 

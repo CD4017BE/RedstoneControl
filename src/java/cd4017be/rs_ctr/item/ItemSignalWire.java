@@ -49,7 +49,7 @@ public class ItemSignalWire extends BaseItem implements IConnectorItem {
 			return;
 		}
 		if (!nbt.getBoolean("d") ^ port.isSource) {
-			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.circuits.wire0")));
+			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire0")));
 			stack.setTagCompound(null);
 			return;
 		}
@@ -57,8 +57,8 @@ public class ItemSignalWire extends BaseItem implements IConnectorItem {
 		int d = (int)Math.ceil(pos.getDistance(lx, ly, lz));
 		if (d > MAX_LENGTH || d > stack.getCount()) {
 			player.sendMessage(new TextComponentString(d > MAX_LENGTH ?
-					TooltipUtil.format("msg.circuits.wire2", MAX_LENGTH) :
-						TooltipUtil.translate("msg.circuits.wire1")));
+					TooltipUtil.format("msg.rs_ctr.wire2", MAX_LENGTH) :
+						TooltipUtil.translate("msg.rs_ctr.wire1")));
 			stack.setTagCompound(null);
 			return;
 		}
@@ -66,7 +66,7 @@ public class ItemSignalWire extends BaseItem implements IConnectorItem {
 		int lp = nbt.getInteger("lp");
 		SignalPort p = ISignalIO.getPort(player.world, lpos, lp);
 		if (!(p instanceof MountedSignalPort)) {
-			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.circuits.wire3")));
+			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire3")));
 			stack.setTagCompound(null);
 			return;
 		}

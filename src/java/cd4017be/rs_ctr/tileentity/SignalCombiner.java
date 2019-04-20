@@ -24,11 +24,11 @@ public abstract class SignalCombiner extends Gate implements IUpdatable {
 
 	{
 		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, false).setName("port.circuits.i"),
-			new MountedSignalPort(this, 1, false).setName("port.circuits.i"),
-			new MountedSignalPort(this, 2, false).setName("port.circuits.i"),
-			new MountedSignalPort(this, 3, false).setName("port.circuits.i"),
-			new MountedSignalPort(this, 4, true).setName("port.circuits.o")
+			new MountedSignalPort(this, 0, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 1, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 2, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 3, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 4, true).setName("port.rs_ctr.o")
 		};
 	}
 

@@ -1,0 +1,35 @@
+#PARSE_ESCAPES
+itemGroup.circuits=Redstone Steuerung
+# Block Namen & Beschreibungen
+tile.rs_ctr.rs_port\:0.name=Redstone-Einlesebuchse
+tile.rs_ctr.rs_port\:0.tip=Liest das Redstone-Signal aus der Blockfläche auf der sie montiert ist.\nIst mit einer §6Ausgabebuchse§7 auf der selben Fläche kombinierbar.
+tile.rs_ctr.rs_port\:1.name=Redstone-Ausgabebuchse
+tile.rs_ctr.rs_port\:1.tip=Sendet ein Redstone-Signal in die Blockfläche auf der sie montiert ist.\nIst mit einer §6Einlesebuchse§7 oder einer weiteren §6Ausgabebuchse§7 auf der selben Fläche kombinierbar (2 Ausgabebuchsen kombiniert senden ein starkes Signal das solide Blöcke durchdringt).
+tile.rs_ctr.splitter.name=4-fach Signalverteiler
+tile.rs_ctr.splitter.tip=Kopiert das eingehende Signal auf vier Ausgänge (ohne Laufzeitverzögerung).
+tile.rs_ctr.analog_comb.name=analoger Signalkombinator
+tile.rs_ctr.analog_comb.tip=Kombiniert die 4 eingehenden Signale, indem es das mit dem größten Wert ausgibt.
+
+# Chat Hinweise
+msg.rs_ctr.wire0=§cAusgänge können nur mit Eingängen verbunden werden und umgekehrt!
+msg.rs_ctr.wire1=§cZu weit weg, nicht genug Kabel!
+msg.rs_ctr.wire2=§cZu weit weg, maximale Distanz ist %dm!
+msg.rs_ctr.wire3=§cDer erste Anschluss existiert nicht mehr!
+msg.rs_ctr.const=§cKonstanten können nur an Eingänge angeschlossen werden!
+
+# Item Namen & Beschreibungen
+item.rs_ctr.wire.name=Signalkabel
+item.rs_ctr.wire.tip=Interagiere nacheinander mit zwei Signalanschlüssen unterschiedlicher Polarität um sie miteinander zu verbinden.\n§oBenötigt 1 Kabel pro Block geradliniger Distanz.
+item.rs_ctr.constant.name=Konstantenstecker
+item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\nInteragiere in die Luft um den Signalwert einzustellen.
+
+#Signalanschluss namen
+port.rs_ctr.rsR=Lesen
+port.rs_ctr.rsW=Schreiben
+port.rs_ctr.i=EIN
+port.rs_ctr.o=AUS
+
+# GUI
+# Inventory names
+gui.circuits.constant.name=Signalwert:
+# Gui tooltips

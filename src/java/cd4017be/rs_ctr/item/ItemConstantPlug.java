@@ -51,7 +51,7 @@ public class ItemConstantPlug extends BaseItem implements IConnectorItem, IGuiIt
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
 		if (port.isSource) {
-			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.circuits.const")));
+			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.const")));
 			return;
 		}
 		NBTTagCompound nbt = stack.getTagCompound();
@@ -87,7 +87,7 @@ public class ItemConstantPlug extends BaseItem implements IConnectorItem, IGuiIt
 	public GuiContainer getGui(ItemStack item, EntityPlayer player, World world, BlockPos pos, int slot) {
 		ModularGui gui = new ModularGui(new DataContainer(new ItemGuiData(this), player));
 		GuiFrame frame = new GuiFrame(gui, 80, 31, 1)
-				.title("gui.circuits.constant.name", 0.5F)
+				.title("gui.rs_ctr.constant.name", 0.5F)
 				.background(new ResourceLocation(Main.ID, "textures/gui/small.png"), 0, 0);
 		frame.add(new TextField(frame, 64, 7, 8, 16, 12, ()-> {
 			NBTTagCompound nbt = player.inventory.getStackInSlot(slot).getTagCompound();

@@ -20,11 +20,11 @@ public class SignalSplitter extends Gate {
 
 	{
 		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, true).setName("port.circuits.o"),
-			new MountedSignalPort(this, 1, true).setName("port.circuits.o"),
-			new MountedSignalPort(this, 2, true).setName("port.circuits.o"),
-			new MountedSignalPort(this, 3, true).setName("port.circuits.o"),
-			new MountedSignalPort(this, 4, false).setName("port.circuits.i")
+			new MountedSignalPort(this, 0, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 1, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 2, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 3, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 4, false).setName("port.rs_ctr.i")
 		};
 	}
 
