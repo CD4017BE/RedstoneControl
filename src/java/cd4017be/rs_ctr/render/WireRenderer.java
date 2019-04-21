@@ -2,6 +2,8 @@ package cd4017be.rs_ctr.render;
 
 import static java.lang.Float.floatToIntBits;
 
+import java.util.HashMap;
+
 import cd4017be.lib.render.IModeledTESR;
 import cd4017be.lib.render.SpecialModelLoader;
 import cd4017be.lib.render.Util;
@@ -27,7 +29,7 @@ public class WireRenderer implements IModeledTESR {
 	public static WireRenderer instance;
 	static final float WIDTH = 0.03125F, L_PLUG = 0.125F;
 
-	private final IntArrayModel[] plugs = new IntArrayModel[6 * TYPES];
+	private final HashMap<String, IntArrayModel> cache = new HashMap<>();
 
 	public static void register() {
 		if (instance == null)
@@ -49,7 +51,7 @@ public class WireRenderer implements IModeledTESR {
 		}
 		TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("rs_ctr:blocks/rs_port0");
 		Vec2f t0 = Util.getUV(tex, 0, 14), t1 = Util.getUV(tex, 16, 16);
-		Vec3d p = l.scale(L_PLUG).add(port.pos);
+		Vec3d p = l.scale(L_PLUG);
 		l = line.add(p);
 		return new float[] {
 			(float)(p.x - a.x), (float)(p.y - a.y), (float)(p.z - a.z), t0.x, t0.y,
@@ -71,25 +73,23 @@ public class WireRenderer implements IModeledTESR {
 			});
 	}
 
-	public void drawPlug(BufferBuilder b, MountedSignalPort p, float x, float y, float z, int l0, int type) {
-		IntArrayModel m = plugs[p.face.ordinal() + type * 6];
-		m.setBrightness(l0);
-		b.addVertexData(m.translated(x + (float)p.pos.x - 0.5F, y + (float)p.pos.y - 0.5F, z + (float)p.pos.z - 0.5F).vertexData);
+	public void drawModel(BufferBuilder b, float x, float y, float z, Orientation o, int l, String model) {
+		IntArrayModel m = cache.get(model);
+		if (m == null)
+			try {
+				cache.put(model, m = SpecialModelLoader.loadTESRModel(Main.ID, model));
+			} catch (Exception e) {
+				Main.LOG.error("failed to load TESR model", e);
+				cache.put(model, m = new IntArrayModel(0));
+			}
+		m.setBrightness(l);
+		if (o != Orientation.N) m = m.rotated(o);
+		b.addVertexData(m.translated(x - 0.5F, y - 0.5F, z - 0.5F).vertexData);
 	}
 
 	@Override
 	public void bakeModels(IResourceManager manager) {
-		IntArrayModel main;
-		for (int i = 0; i < TYPES; i++) {
-			try {
-				main = SpecialModelLoader.loadTESRModel(Main.ID, "plug.main(" + i + ")");
-			} catch (Exception e) {
-				Main.LOG.error("failed to load wire plug model", e);
-				main = new IntArrayModel(0);
-			}
-			for (EnumFacing s : EnumFacing.VALUES) 
-				plugs[s.ordinal() + i * 6] = main.rotated(Orientation.fromFacing(s));
-		}
+		cache.clear();
 	}
 
 }

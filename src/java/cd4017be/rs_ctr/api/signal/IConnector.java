@@ -29,7 +29,7 @@ public interface IConnector extends INBTSerializable<NBTTagCompound> {
 	}
 
 	@SideOnly(Side.CLIENT)
-	void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, BufferBuilder buffer);
+	void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer);
 
 	AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port);
 

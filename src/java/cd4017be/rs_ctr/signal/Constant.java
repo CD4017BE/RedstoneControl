@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.signal;
 
 import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
@@ -12,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
@@ -37,8 +40,9 @@ public class Constant implements IConnector {
 	}
 
 	@Override
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, BufferBuilder buffer) {
-		WireRenderer.instance.drawPlug(buffer, port, (float)x, (float)y, (float)z, world.getCombinedLight(pos, 0), 1);
+	@SideOnly(Side.CLIENT)
+	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer) {
+		WireRenderer.instance.drawModel(buffer, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(1)");
 	}
 
 	@Override

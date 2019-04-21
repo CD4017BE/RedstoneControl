@@ -2,6 +2,7 @@ package cd4017be.rs_ctr.signal;
 
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
@@ -66,8 +67,8 @@ public class WirelessConnection implements IConnector {
 	}
 
 	@Override
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, BufferBuilder buffer) {
-		WireRenderer.instance.drawPlug(buffer, port, (float)x, (float)y, (float)z, world.getCombinedLight(pos, 0), 2);
+	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer) {
+		WireRenderer.instance.drawModel(buffer, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(2)");
 	}
 
 	@Override

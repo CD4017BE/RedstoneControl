@@ -3,6 +3,7 @@ package cd4017be.rs_ctr.signal;
 import java.util.function.IntConsumer;
 
 import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
@@ -42,8 +43,9 @@ public class StatusLamp implements IConnector, IntConsumer {
 	}
 
 	@Override
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, BufferBuilder buffer) {
-		WireRenderer.instance.drawPlug(buffer, port, (float)x, (float)y, (float)z, world.getCombinedLight(pos, state > 0 ? 15 : 0), state > 0 ? 4 : 3);
+	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer) {
+		if (state > 0) light |= 0xf0;
+		WireRenderer.instance.drawModel(buffer, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, state > 0 ? "plug.main(4)" : "plug.main(3)");
 	}
 
 	@Override

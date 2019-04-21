@@ -34,7 +34,7 @@ public interface IInteractiveComponent {
 	boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim);
 
 	@SideOnly(Side.CLIENT)
-	void draw(World world, BlockPos pos, double x, double y, double z, BufferBuilder buffer);
+	void draw(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer);
 
 	/**
 	 * @param aim aimed point

@@ -11,7 +11,9 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,8 +26,11 @@ public class InteractiveDeviceRenderer extends HybridFastTESR<TileEntity> {
 
 	@Override
 	public void renderTileEntityFast(TileEntity te, double x, double y, double z, float t, int destroy, float alpha, BufferBuilder buffer) {
+		World world = te.getWorld();
+		BlockPos pos = te.getPos();
+		int l = world.getCombinedLight(pos, 0);
 		for (IInteractiveComponent c : ((IInteractiveDevice)te).getComponents())
-			c.draw(te.getWorld(), te.getPos(), x, y, z, buffer);
+			c.draw(world, pos, x, y, z, l, buffer);
 	}
 
 	@Override

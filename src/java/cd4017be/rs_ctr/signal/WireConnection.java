@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.signal;
 
 import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
@@ -84,11 +85,11 @@ public class WireConnection implements IConnector {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, BufferBuilder b) {
+	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder b) {
 		if (vertices == null) vertices = WireRenderer.instance.createLine(port, line);
-		int l0 = world.getCombinedLight(pos, 0), l1 = world.getCombinedLight(pos.add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
-		WireRenderer.instance.drawPlug(b, port, (float)x, (float)y, (float)z, l0, 0);
-		WireRenderer.instance.drawLine(b, vertices, (float)x, (float)y, (float)z, l0, l1, 0xffffffff);
+		WireRenderer.instance.drawModel(b, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(0)");
+		int l1 = world.getCombinedLight(pos.add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
+		WireRenderer.instance.drawLine(b, vertices, (float)x, (float)y, (float)z, light, l1, 0xffffffff);
 	}
 
 	@Override

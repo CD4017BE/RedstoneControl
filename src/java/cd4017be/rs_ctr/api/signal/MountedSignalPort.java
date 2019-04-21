@@ -92,8 +92,8 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw(World world, BlockPos pos, double x, double y, double z, BufferBuilder buffer) {
-		if (connector != null) connector.renderConnection(world, pos, this, x, y, z, buffer);
+	public void draw(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
+		if (connector != null) connector.renderConnection(world, pos, this, x + this.pos.x, y + this.pos.y, z + this.pos.z, light, buffer);
 	}
 
 	@Override
