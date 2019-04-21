@@ -10,6 +10,10 @@ tile.rs_ctr.splitter.name=Signal 4x Splitter
 tile.rs_ctr.splitter.tip=Repeats the incoming signal to four different destinations (no delay).
 tile.rs_ctr.analog_comb.name=Analog Signal Combiner
 tile.rs_ctr.analog_comb.tip=Combines the 4 incoming signals by outputing the one with highest value.
+tile.rs_ctr.logic_comb.name=Logic Signal Combiner
+tile.rs_ctr.logic_comb.tip=Combines the for incomming signals by logical §eOR§7, where the outputs will emit §e65536§7 for §etrue§7 and §e0§7 for §efalse§7.\nThe output as well as each individual input can be set to inverted which also gives you the other logic-gate types §eAND§7, §eNAND§7 and §eNOR§7. 
+tile.rs_ctr.num_comb.name=Arithmetic Signal Combiner
+tile.rs_ctr.num_comb.tip=Combines the 4 incomming signals by adding their values together.\nInputs can be negated which allows computing subtractions too.
 
 # chat messages
 msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
@@ -35,8 +39,17 @@ port.rs_ctr.rsR=Read
 port.rs_ctr.rsW=Write
 port.rs_ctr.i=IN
 port.rs_ctr.o=OUT
+port.rs_ctr.num0=positive
+port.rs_ctr.num1=negative
+port.rs_ctr.logic0=x > 0
+port.rs_ctr.logic1=x <\= 0
+port.rs_ctr.logic2=bit-wise
+port.rs_ctr.logic3=bit-wise\ninverted
+port.rs_ctr.logic4=OR
+port.rs_ctr.logic5=NOR
 
 # GUI
 # Inventory names
 gui.rs_ctr.constant.name=Set Value
 # Gui tooltips
+

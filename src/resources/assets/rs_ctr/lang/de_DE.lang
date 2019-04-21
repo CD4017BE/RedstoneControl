@@ -1,5 +1,5 @@
 #PARSE_ESCAPES
-itemGroup.circuits=Redstone Steuerung
+itemGroup.rs_ctr=Redstone Steuerung
 # Block Namen & Beschreibungen
 tile.rs_ctr.rs_port\:0.name=Redstone-Einlesebuchse
 tile.rs_ctr.rs_port\:0.tip=Liest das Redstone-Signal aus der Blockfläche auf der sie montiert ist.\nIst mit einer §6Ausgabebuchse§7 auf der selben Fläche kombinierbar.
@@ -9,6 +9,10 @@ tile.rs_ctr.splitter.name=4-fach Signalverteiler
 tile.rs_ctr.splitter.tip=Kopiert das eingehende Signal auf vier Ausgänge (ohne Laufzeitverzögerung).
 tile.rs_ctr.analog_comb.name=analoger Signalkombinator
 tile.rs_ctr.analog_comb.tip=Kombiniert die 4 eingehenden Signale, indem es das mit dem größten Wert ausgibt.
+tile.rs_ctr.logic_comb.name=logischer Signalkombinator
+tile.rs_ctr.logic_comb.tip=Kombiniert die 4 eingehenden Signale durch logische §eODER§7-Verknüpfung, wobei die Werte §e65536§7 für §eWahr§7 und §e0§7 für §eFalsch§7 ausgegeben werden.\nDer Ausgang, sowie jeder Eingang können individuell invertiert werden, was auch die anderen Logikgattertypen §eUND§7, §enicht-UND§7 und §enicht-ODER§7 liefert.
+tile.rs_ctr.num_comb.name=arithmetischer Signalkombinator
+tile.rs_ctr.num_comb.tip=Kombiniert die 4 eingehenden Signale durch Addition.\nEingänge können negiert werden, was auch subtraktion ermöglicht.
 
 # Chat Hinweise
 msg.rs_ctr.wire0=§cAusgänge können nur mit Eingängen verbunden werden und umgekehrt!
@@ -19,17 +23,29 @@ msg.rs_ctr.const=§cKonstanten können nur an Eingänge angeschlossen werden!
 
 # Item Namen & Beschreibungen
 item.rs_ctr.wire.name=Signalkabel
-item.rs_ctr.wire.tip=Interagiere nacheinander mit zwei Signalanschlüssen unterschiedlicher Polarität um sie miteinander zu verbinden.\n§oBenötigt 1 Kabel pro Block geradliniger Distanz.
+item.rs_ctr.wire.tip=§aInteragiere§7 nacheinander mit zwei Signalanschlüssen unterschiedlicher Polarität um sie miteinander zu verbinden.\n§oBenötigt 1 Kabel pro Block geradliniger Distanz.
+item.rs_ctr.wireless.name=kabelloser Signalverbinder
+item.rs_ctr.wireless.tip=Ein §6Signal"kabel"§7 welches zwei Anschlüsse über unbegrenzte Distanz verbinden kann.\nFunktioniert auch dimensionsübergreifend.
 item.rs_ctr.constant.name=Konstantenstecker
-item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\nInteragiere in die Luft um den Signalwert einzustellen.
+item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\n§aInteragiere§7 in die Luft um den Signalwert einzustellen.
+item.rs_ctr.lamp.name=Signalstatuslampe
+item.rs_ctr.lamp.tip=Zeigt den Signalwert des Signalausgangs an, an den sie ansgeschlossen ist.
 
 #Signalanschluss namen
 port.rs_ctr.rsR=Lesen
 port.rs_ctr.rsW=Schreiben
 port.rs_ctr.i=EIN
 port.rs_ctr.o=AUS
+port.rs_ctr.num0=positiv
+port.rs_ctr.num1=negiert
+port.rs_ctr.logic0=x > 0
+port.rs_ctr.logic1=x <\= 0
+port.rs_ctr.logic2=bit-weise
+port.rs_ctr.logic3=bit-weise\ninvertiert
+port.rs_ctr.logic4=ODER
+port.rs_ctr.logic5=nicht-ODER
 
 # GUI
 # Inventory names
-gui.circuits.constant.name=Signalwert:
+gui.rs_ctr.constant.name=Signalwert:
 # Gui tooltips

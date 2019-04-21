@@ -3,7 +3,6 @@ package cd4017be.rs_ctr;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,11 +34,15 @@ public class Objects {
 	public static final BlockRedstonePort RS_PORT = null;
 	public static final OrientedBlock SPLITTER = null;
 	public static final OrientedBlock ANALOG_COMB = null;
-
+	public static final OrientedBlock LOGIC_COMB = null;
+	public static final OrientedBlock NUM_COMB = null;
+	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
 	public static final BaseItemBlock splitter = null;
 	public static final BaseItemBlock analog_comb = null;
+	public static final BaseItemBlock logic_comb = null;
+	public static final BaseItemBlock num_comb = null;
 
 	//Items
 	public static final ItemSignalWire wire = null;
@@ -48,7 +51,7 @@ public class Objects {
 	public static final ItemStatusLamp lamp = null;
 
 	public static void init() {
-		tabCircuits.item = new ItemStack(Blocks.REDSTONE_TORCH);
+		tabCircuits.item = new ItemStack(wire);
 	}
 
 	public static void initConstants(ConfigConstants c) {
@@ -61,7 +64,9 @@ public class Objects {
 		ev.getRegistry().registerAll(
 				new BlockRedstonePort("rs_port", Material.ROCK, SoundType.STONE, RedstonePort.class).setCreativeTab(tabCircuits).setLightOpacity(0),
 				OrientedBlock.create("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				OrientedBlock.create("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				OrientedBlock.create("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				OrientedBlock.create("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				OrientedBlock.create("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -72,6 +77,8 @@ public class Objects {
 				new ItemRedstonePort(RS_PORT),
 				new BaseItemBlock(SPLITTER),
 				new BaseItemBlock(ANALOG_COMB),
+				new BaseItemBlock(LOGIC_COMB),
+				new BaseItemBlock(NUM_COMB),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),

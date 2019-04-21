@@ -135,6 +135,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			int pin = tag.getByte("pin");
 			(ports[i] = createPort(pin)).deserializeNBT(tag);
 		}
+		markUpdate();
 	}
 
 	private MountedSignalPort createPort(int pin) {
