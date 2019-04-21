@@ -1,0 +1,23 @@
+v0.0.1
+Changes:
+Initial Release
+- added new Redstone signal communication system (API)
+- added signal devices (blocks):
+    - Redstone Ports
+    - Signal Splitter
+    - Analog Combiner
+    - Logic Combiner
+    - Arithmetic Combiner
+-  added singal connectors (items):
+    - Signal Wire
+    - Wireless Connector
+    - Constant Plug
+    - Status Lamp
+- added crafting recipes (for above features)
+- added creative tab
+- added localizations: English, German
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.3.6
