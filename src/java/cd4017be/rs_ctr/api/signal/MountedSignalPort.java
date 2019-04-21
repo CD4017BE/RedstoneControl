@@ -31,9 +31,9 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	/**port name */
 	public String name = "";
 	/**port location relative to the owner */
-	public Vec3d pos;
+	public Vec3d pos = Vec3d.ZERO;
 	/**the side from which wires are connected */
-	public EnumFacing face;
+	public EnumFacing face = EnumFacing.NORTH;
 	/**the connection attached to this port */
 	protected IConnector connector;
 

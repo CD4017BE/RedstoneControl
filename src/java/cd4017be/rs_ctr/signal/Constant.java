@@ -64,4 +64,9 @@ public class Constant implements IConnector {
 		return "\n" + value;
 	}
 
+	@Override
+	public void onLoad(MountedSignalPort port) {
+		port.owner.getPortCallback(port.pin).accept(value);
+	}
+
 }
