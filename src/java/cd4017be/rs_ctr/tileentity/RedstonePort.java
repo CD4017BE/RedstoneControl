@@ -45,7 +45,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	/**0-5: input, 6-11: output */
 	final int[] states = new int[12];
 	byte strong, dirty;
-	Cover cover = new Cover();
+	public Cover cover = new Cover();
 
 	{ports = new MountedSignalPort[0];}
 
