@@ -5,7 +5,6 @@ import java.util.function.IntConsumer;
 
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.gui.BlockButton;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -96,11 +95,7 @@ public class LogicCombiner extends SignalCombiner {
 			gui[i + 5] = new BlockButton(
 				(a)-> {
 					inModes[pin] = (byte)((inModes[pin] + ((a & BlockButton.A_SNEAKING) != 0 ? -1 : 1)) & 3);
-					MountedSignalPort port = ports[pin];
-					if (port.getConnector() != null) {
-						port.onUnload();
-						port.onLoad();
-					} else getPortCallback(pin).accept(0);
+					refreshInput(pin);
 					markUpdate();
 				},
 				()-> "plug.logic(" + inModes[pin] + ")",

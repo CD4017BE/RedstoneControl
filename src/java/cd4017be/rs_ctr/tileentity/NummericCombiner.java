@@ -66,9 +66,7 @@ public class NummericCombiner extends SignalCombiner {
 			gui[i + 5] = new BlockButton(
 				(a)-> {
 					inModes ^= 1 << pin;
-					inputs[pin] *= -1;
-					markDirty();
-					scheduleUpdate();
+					refreshInput(pin);
 					markUpdate();
 				},
 				()-> "plug.num(" + (inModes >> pin & 1) + ")",

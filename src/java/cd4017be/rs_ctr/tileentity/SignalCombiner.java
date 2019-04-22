@@ -60,6 +60,14 @@ public abstract class SignalCombiner extends Gate implements IUpdatable {
 		TickRegistry.instance.updates.add(this);
 	}
 
+	protected void refreshInput(int pin) {
+		MountedSignalPort port = ports[pin];
+		if (port.getConnector() != null) {
+			port.onUnload();
+			port.onLoad();
+		} else getPortCallback(pin).accept(0);
+	}
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
