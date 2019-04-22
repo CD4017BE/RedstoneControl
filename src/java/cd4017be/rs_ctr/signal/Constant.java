@@ -60,7 +60,7 @@ public class Constant implements IConnector {
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port) {
+	public String displayInfo(MountedSignalPort port, int linkID) {
 		return "\n" + value;
 	}
 

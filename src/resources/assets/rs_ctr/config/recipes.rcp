@@ -1,4 +1,4 @@
-VERSION = 3;
+VERSION = 5;
 
 INIT() {
 	Loc slab = it("minecraft:stone_slab");
@@ -12,4 +12,5 @@ INIT() {
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
 	add("shaped", it("item.constant"), "0/1", it("item.wire"), "gemLapis");
 	add("shaped", it("item.lamp"), "0/1", it("item.wire"), "dustGlowstone");
+	add("shaped", it("item.tag"), "0/1", it("item.wire"), it("minecraft:name_tag"));
 }

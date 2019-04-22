@@ -85,8 +85,8 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	@Override
 	public Pair<Vec3d, String> getDisplayText(Vec3d aim) {
 		String s = TooltipUtil.translate(name);
-		if (linkID != 0) s += "\nID " + linkID;
-		if (connector != null) s += connector.displayInfo(this);
+		if (connector != null) s += connector.displayInfo(this, linkID);
+		else if (linkID != 0) s += "\nID " + linkID;
 		return Pair.of(pos, s);
 	}
 

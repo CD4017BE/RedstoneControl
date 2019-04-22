@@ -39,6 +39,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(wireless);
 		registerRender(constant);
 		registerRender(lamp);
+		registerRender(tag);
 	}
 
 }

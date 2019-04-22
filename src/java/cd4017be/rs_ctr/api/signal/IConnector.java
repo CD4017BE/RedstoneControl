@@ -24,8 +24,8 @@ public interface IConnector extends INBTSerializable<NBTTagCompound> {
 
 	public static final HashMap<String, Class<?extends IConnector>> REGISTRY = new HashMap<>();
 
-	default String displayInfo(MountedSignalPort port) {
-		return "";
+	default String displayInfo(MountedSignalPort port, int linkID) {
+		return linkID != 0 ? "\nID " + linkID : "";
 	}
 
 	@SideOnly(Side.CLIENT)

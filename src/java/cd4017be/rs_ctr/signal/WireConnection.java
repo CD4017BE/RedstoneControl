@@ -5,6 +5,7 @@ import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
+import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.render.WireRenderer;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author CD4017BE
  */
-public class WireConnection implements IConnector {
+public class WireConnection implements ITagableConnector {
 
 	public static final String ID = "wire";
 
@@ -31,6 +33,7 @@ public class WireConnection implements IConnector {
 	private int linkPin;
 	private Vec3d line;
 	private int count;
+	private String tag;
 
 	public WireConnection() {}
 
@@ -51,6 +54,7 @@ public class WireConnection implements IConnector {
 		nbt.setFloat("dy", (float)line.y);
 		nbt.setFloat("dz", (float)line.z);
 		nbt.setByte("count", (byte)count);
+		if (tag != null) nbt.setString("tag", tag);
 		return nbt;
 	}
 
@@ -60,6 +64,7 @@ public class WireConnection implements IConnector {
 		line = new Vec3d(nbt.getFloat("dx"), nbt.getFloat("dy"), nbt.getFloat("dz"));
 		linkPos = BlockPos.fromLong(nbt.getLong("pos"));
 		linkPin = nbt.getInteger("pin");
+		tag = nbt.hasKey("tag", NBT.TAG_STRING) ? nbt.getString("tag") : null;
 	}
 
 	@Override
@@ -96,6 +101,26 @@ public class WireConnection implements IConnector {
 	public AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port) {
 		Vec3d p = new Vec3d(pos).add(port.pos);
 		return new AxisAlignedBB(p, p.add(line));
+	}
+
+	@Override
+	public void setTag(MountedSignalPort port, String tag) {
+		if (this.tag != null ? this.tag.equals(tag) : tag == null) return;
+		this.tag = tag;
+		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
+		SignalPort p = ISignalIO.getPort(port.getWorld(), linkPos, linkPin);
+		if (p instanceof MountedSignalPort) {
+			IConnector c = ((MountedSignalPort)p).getConnector();
+			if (c instanceof WireConnection) {
+				((WireConnection)c).tag = tag;
+				p.owner.onPortModified(p, ISignalIO.E_CON_UPDATE);
+			}
+		}
+	}
+
+	@Override
+	public String getTag() {
+		return tag;
 	}
 
 }

@@ -49,6 +49,7 @@ public class Objects {
 	public static final ItemWirelessCon wireless = null;
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
+	public static final ItemWireTag tag = null;
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(wire);
@@ -82,7 +83,8 @@ public class Objects {
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
-				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits)
+				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
+				new ItemWireTag("tag").setCreativeTab(tabCircuits)
 		);
 	}
 

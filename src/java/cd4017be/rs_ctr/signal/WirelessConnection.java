@@ -6,6 +6,7 @@ import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
+import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.render.WireRenderer;
@@ -17,19 +18,21 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.Constants.NBT;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class WirelessConnection implements IConnector {
+public class WirelessConnection implements ITagableConnector {
 
 	public static final String ID = "wireless";
 
 	private DimPos linkPos;
 	private int linkPin;
 	private boolean dropsItem;
+	private String tag;
 
 	public WirelessConnection() {}
 
@@ -47,6 +50,7 @@ public class WirelessConnection implements IConnector {
 		nbt.setInteger("dim", linkPos.dimId);
 		nbt.setInteger("pin", linkPin);
 		nbt.setBoolean("drop", dropsItem);
+		if (tag != null) nbt.setString("tag", tag);
 		return nbt;
 	}
 
@@ -55,12 +59,15 @@ public class WirelessConnection implements IConnector {
 		linkPos = new DimPos(BlockPos.fromLong(nbt.getLong("pos")), nbt.getInteger("dim"));
 		linkPin = nbt.getInteger("pin");
 		dropsItem = nbt.getBoolean("drop");
+		tag = nbt.hasKey("tag", NBT.TAG_STRING) ? nbt.getString("tag") : null;
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port) {
+	public String displayInfo(MountedSignalPort port, int linkID) {
 		try {
-			return "\n[" + linkPos.getX() + ", " + linkPos.getY() + ", " + linkPos.getZ() + "]\n" + DimensionManager.getProviderType(linkPos.dimId).getName();
+			return ITagableConnector.super.displayInfo(port, linkID)
+				+ "\n[" + linkPos.getX() + ", " + linkPos.getY() + ", " + linkPos.getZ() + "]\n"
+				+ DimensionManager.getProviderType(linkPos.dimId).getName();
 		} catch (IllegalArgumentException e) {
 			return "\n" + e.getMessage();
 		}
@@ -99,6 +106,26 @@ public class WirelessConnection implements IConnector {
 			else ItemFluidUtil.dropStack(stack, world, pos);
 		}
 		port.disconnect();
+	}
+
+	@Override
+	public void setTag(MountedSignalPort port, String tag) {
+		if (this.tag != null ? this.tag.equals(tag) : tag == null) return;
+		this.tag = tag;
+		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
+		SignalPort p = ISignalIO.getPort(linkPos.getWorldServer(), linkPos, linkPin);
+		if (p instanceof MountedSignalPort) {
+			IConnector c = ((MountedSignalPort)p).getConnector();
+			if (c instanceof WirelessConnection) {
+				((WirelessConnection)c).tag = tag;
+				p.owner.onPortModified(p, ISignalIO.E_CON_UPDATE);
+			}
+		}
+	}
+
+	@Override
+	public String getTag() {
+		return tag;
 	}
 
 }

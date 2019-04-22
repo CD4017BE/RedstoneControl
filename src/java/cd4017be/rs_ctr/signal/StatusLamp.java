@@ -54,7 +54,7 @@ public class StatusLamp implements IConnector, IntConsumer {
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port) {
+	public String displayInfo(MountedSignalPort port, int linkID) {
 		return "\n" + state;
 	}
 

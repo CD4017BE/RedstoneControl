@@ -30,6 +30,8 @@ item.rs_ctr.constant.name=Konstantenstecker
 item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\n§aInteragiere§7 in die Luft um den Signalwert einzustellen.
 item.rs_ctr.lamp.name=Signalstatuslampe
 item.rs_ctr.lamp.tip=Zeigt den Signalwert des Signalausgangs an, an den sie ansgeschlossen ist.
+item.rs_ctr.tag.name=Kabelbeschrifter
+item.rs_ctr.tag.tip=§aBenutze§7 in die Luft um den Namen einzustellen.\n§aBenutze§7 auf eine angeschlossenen Buchse um die Signalverbindung umzubenennen. Diese zeigt dann den Namen anstatt einer ID an.
 
 #Signalanschluss namen
 port.rs_ctr.rsR=Lesen
@@ -48,4 +50,5 @@ port.rs_ctr.logic5=nicht-ODER
 # GUI
 # Inventory names
 gui.rs_ctr.constant.name=Signalwert:
+gui.rs_ctr.tag.name=Beschriftung:
 # Gui tooltips

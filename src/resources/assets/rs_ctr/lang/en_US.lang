@@ -51,5 +51,9 @@ port.rs_ctr.logic5=NOR
 # GUI
 # Inventory names
 gui.rs_ctr.constant.name=Set Value
+gui.rs_ctr.tag.name=Label:
 # Gui tooltips
 
+#added by ingame editor:
+item.rs_ctr.tag.name=Wire Tag
+item.rs_ctr.tag.tip=§aUse§7 in air to set name.\n§aUse§7 on connected port to rename its signal connection. It will then show the name instead of an ID.
