@@ -1,7 +1,7 @@
 package cd4017be.rs_ctr.block;
 
+import cd4017be.lib.block.BlockCoveredPipe;
 import cd4017be.lib.block.BlockPipe;
-import cd4017be.lib.block.MultipartBlock;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.tileentity.RedstonePort;
 import net.minecraft.block.SoundType;
@@ -23,7 +23,7 @@ import net.minecraft.world.World;
  * @author CD4017BE
  *
  */
-public class BlockRedstonePort extends MultipartBlock {
+public class BlockRedstonePort extends BlockCoveredPipe {
 
 	/**
 	 * @param id
@@ -32,7 +32,7 @@ public class BlockRedstonePort extends MultipartBlock {
 	 * @param tile
 	 */
 	public BlockRedstonePort(String id, Material m, SoundType sound, Class<? extends TileEntity> tile) {
-		super(id, m, sound, 3, BlockPipe.CON_PROPS.length, tile);
+		super(id, m, sound, BlockPipe.CON_PROPS.length + 1, tile);
 		boundingBox = new AxisAlignedBB[] {
 			NULL_AABB,
 			new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75),
@@ -41,22 +41,14 @@ public class BlockRedstonePort extends MultipartBlock {
 			new AxisAlignedBB(0.25, 0.25, 0.875, 0.75, 0.75, 1),
 			new AxisAlignedBB(0, 0.25, 0.25, 0.125, 0.75, 0.75),
 			new AxisAlignedBB(0.875, 0.25, 0.25, 1, 0.75, 0.75),
+			FULL_BLOCK_AABB
 		};
+		setSolid(BY_CONNECTION);
 	}
 
 	@Override
 	protected PropertyInteger createBaseState() {
 		return null;
-	}
-
-	@Override
-	public String moduleVariant(int i) {
-		return BlockPipe.CON_PROPS[i];
-	}
-
-	@Override
-	public Class<?> moduleType(int i) {
-		return Byte.class;
 	}
 
 	@Override
@@ -68,13 +60,6 @@ public class BlockRedstonePort extends MultipartBlock {
 				return false;
 		}
 		return super.removedByPlayer(state, world, pos, player, willHarvest);
-	}
-
-	@Override
-	public boolean isSideSolid(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof IModularTile)) return false;
-		return ((IModularTile)te).isModulePresent(side.ordinal());
 	}
 
 	@Override

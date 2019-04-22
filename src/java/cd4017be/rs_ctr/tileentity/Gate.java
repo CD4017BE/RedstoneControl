@@ -67,36 +67,36 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
-		writePorts(nbt);
+		writePorts(nbt, true);
 		return new SPacketUpdateTileEntity(pos, -1, nbt);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readPorts(pkt.getNbtCompound());
+		readPorts(pkt.getNbtCompound(), true);
 		renderBox = null;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		readPorts(nbt);
+		readPorts(nbt, false);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		writePorts(nbt);
+		writePorts(nbt, false);
 		return super.writeToNBT(nbt);
 	}
 
-	protected void writePorts(NBTTagCompound nbt) {
+	protected void writePorts(NBTTagCompound nbt, boolean syncPkt) {
 		NBTTagList list = new NBTTagList();
 		for (MountedSignalPort port : ports)
 			list.appendTag(port.serializeNBT());
 		nbt.setTag("ports", list);
 	}
 
-	protected void readPorts(NBTTagCompound nbt) {
+	protected void readPorts(NBTTagCompound nbt, boolean syncPkt) {
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
 		for (int i = 0; i < ports.length; i++)
 			ports[i].deserializeNBT(list.getCompoundTagAt(i));

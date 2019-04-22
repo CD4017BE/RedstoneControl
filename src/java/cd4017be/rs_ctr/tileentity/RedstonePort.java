@@ -13,6 +13,7 @@ import cd4017be.lib.block.AdvancedBlock.INeighborAwareTile;
 import cd4017be.lib.block.AdvancedBlock.IRedstoneTile;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
+import cd4017be.lib.templates.Cover;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
@@ -28,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -43,6 +45,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	/**0-5: input, 6-11: output */
 	final int[] states = new int[12];
 	byte strong, dirty;
+	Cover cover = new Cover();
 
 	{ports = new MountedSignalPort[0];}
 
@@ -102,20 +105,19 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		int[] arr = nbt.getIntArray("states");
-		System.arraycopy(arr, 0, states, 0, Math.min(arr.length, 12));
-		if (arr.length < 12) Arrays.fill(states, arr.length, 12, 0);
+	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) {
+		if (super.onActivated(player, hand, item, s, X, Y, Z)) return true;
+		return cover.interact(this, player, hand, item, s, X, Y, Z);
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setIntArray("states", states);
-		return super.writeToNBT(nbt);
+	public void onClicked(EntityPlayer player) {
+		if (cover.hit(this, player)) return;
+		super.onClicked(player);
 	}
 
-	protected void writePorts(NBTTagCompound nbt) {
+	@Override
+	protected void writePorts(NBTTagCompound nbt, boolean syncPkt) {
 		NBTTagList list = new NBTTagList();
 		for (MountedSignalPort port : ports) {
 			NBTTagCompound tag = port.serializeNBT();
@@ -124,9 +126,13 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		}
 		nbt.setTag("ports", list);
 		nbt.setByte("strong", strong);
+		cover.writeNBT(nbt, "cover", syncPkt);
+		if (!syncPkt)
+			nbt.setIntArray("states", states);
 	}
 
-	protected void readPorts(NBTTagCompound nbt) {
+	@Override
+	protected void readPorts(NBTTagCompound nbt, boolean syncPkt) {
 		strong = nbt.getByte("strong");
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
 		ports = new MountedSignalPort[list.tagCount()];
@@ -134,6 +140,12 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			NBTTagCompound tag = list.getCompoundTagAt(i);
 			int pin = tag.getByte("pin");
 			(ports[i] = createPort(pin)).deserializeNBT(tag);
+		}
+		cover.readNBT(nbt, "cover", syncPkt ? this : null);
+		if (!syncPkt) {
+			int[] arr = nbt.getIntArray("states");
+			System.arraycopy(arr, 0, states, 0, Math.min(arr.length, 12));
+			if (arr.length < 12) Arrays.fill(states, arr.length, 12, 0);
 		}
 		markUpdate();
 	}
@@ -152,6 +164,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getModuleState(int m) {
+		if (m == 6) return cover.module();
 		int i;
 		if ((strong >> m & 1) != 0) i = 3;
 		else {
@@ -164,6 +177,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public boolean isModulePresent(int m) {
+		if (m == 6) return cover.state != null;
 		return getSignalPort(m) != null || getSignalPort(m + 6) != null;
 	}
 
@@ -198,6 +212,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	public boolean breakPort(int side, EntityPlayer player) {
+		if (side == 6) return cover.hit(this, player);
 		boolean hasRem = false;
 		int in = -1, out = -1;
 		for (int i = 0; i < ports.length; i++)
@@ -241,6 +256,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		ArrayList<ItemStack> list = new ArrayList<>();
 		if (in > 0) list.add(new ItemStack(Objects.rs_port, in, 0));
 		if (out > 0) list.add(new ItemStack(Objects.rs_port, out, 1));
+		if (cover.stack != null) list.add(cover.stack);
 		return list;
 	}
 
