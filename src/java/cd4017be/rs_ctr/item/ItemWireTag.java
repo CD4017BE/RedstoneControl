@@ -43,6 +43,7 @@ public class ItemWireTag extends BaseItem implements IConnectorItem, IGuiItem, C
 	 */
 	public ItemWireTag(String id) {
 		super(id);
+		setMaxStackSize(1);
 	}
 
 	@Override
