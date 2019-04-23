@@ -2,9 +2,9 @@
 itemGroup.rs_ctr=Redstone Steuerung
 # Block Namen & Beschreibungen
 tile.rs_ctr.rs_port\:0.name=Redstone-Einlesebuchse
-tile.rs_ctr.rs_port\:0.tip=Liest das Redstone-Signal aus der Blockfläche auf der sie montiert ist.\nIst mit einer §6Ausgabebuchse§7 auf der selben Fläche kombinierbar.
+tile.rs_ctr.rs_port\:0.tip=Liest das Redstone-Signal aus der Blockfläche auf der sie montiert ist.\nIst mit einer §6Ausgabebuchse§7 auf der selben Fläche kombinierbar.\n\nKann mit einem §asoliden Block§7 in der §alinken Hand§7 verdeckt werden.\nOder platziere sie mit der §alinken Hand§7 gegen einen §asoliden Block§7 um diesen durch eine abgedeckte §6Buchse§7 zu ersetzen. §oIm Überlebensmodus ist ein geeignetes Werkzeug in der rechten Hand erforderlich um den Block abzubauen.
 tile.rs_ctr.rs_port\:1.name=Redstone-Ausgabebuchse
-tile.rs_ctr.rs_port\:1.tip=Sendet ein Redstone-Signal in die Blockfläche auf der sie montiert ist.\nIst mit einer §6Einlesebuchse§7 oder einer weiteren §6Ausgabebuchse§7 auf der selben Fläche kombinierbar (2 Ausgabebuchsen kombiniert senden ein starkes Signal das solide Blöcke durchdringt).
+tile.rs_ctr.rs_port\:1.tip=Sendet ein Redstone-Signal in die Blockfläche auf der sie montiert ist.\nIst mit einer §6Einlesebuchse§7 oder einer weiteren §6Ausgabebuchse§7 auf der selben Fläche kombinierbar (2 Ausgabebuchsen kombiniert senden ein starkes Signal das solide Blöcke durchdringt).\n\nKann mit einem §asoliden Block§7 in der §alinken Hand§7 verdeckt werden.\nOder platziere sie mit der §alinken Hand§7 gegen einen §asoliden Block§7 um diesen durch eine abgedeckte §6Buchse§7 zu ersetzen. §oIm Überlebensmodus ist ein geeignetes Werkzeug in der rechten Hand erforderlich um den Block abzubauen.
 tile.rs_ctr.splitter.name=4-fach Signalverteiler
 tile.rs_ctr.splitter.tip=Kopiert das eingehende Signal auf vier Ausgänge (ohne Laufzeitverzögerung).
 tile.rs_ctr.analog_comb.name=analoger Signalkombinator
@@ -23,11 +23,11 @@ msg.rs_ctr.const=§cKonstanten können nur an Eingänge angeschlossen werden!
 
 # Item Namen & Beschreibungen
 item.rs_ctr.wire.name=Signalkabel
-item.rs_ctr.wire.tip=§aInteragiere§7 nacheinander mit zwei Signalanschlüssen unterschiedlicher Polarität um sie miteinander zu verbinden.\n§oBenötigt 1 Kabel pro Block geradliniger Distanz.
+item.rs_ctr.wire.tip=§aBenutze§7 nacheinander auf zwei Signalanschlüssen unterschiedlicher Polarität um sie miteinander zu verbinden.\n§oBenötigt 1 Kabel pro Block geradliniger Distanz.\n\nVerbindungen können durch §aschlagen§7 oder §ageducktes benutzen§7 mit §aleerer Hand§7 wieder entfernt werden.
 item.rs_ctr.wireless.name=kabelloser Signalverbinder
 item.rs_ctr.wireless.tip=Ein §6Signal"kabel"§7 welches zwei Anschlüsse über unbegrenzte Distanz verbinden kann.\nFunktioniert auch dimensionsübergreifend.
 item.rs_ctr.constant.name=Konstantenstecker
-item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\n§aInteragiere§7 in die Luft um den Signalwert einzustellen.
+item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\n§aBenutze§7 in die Luft um den Signalwert einzustellen.
 item.rs_ctr.lamp.name=Signalstatuslampe
 item.rs_ctr.lamp.tip=Zeigt den Signalwert des Signalausgangs an, an den sie ansgeschlossen ist.
 item.rs_ctr.tag.name=Kabelbeschrifter

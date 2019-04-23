@@ -3,9 +3,9 @@ itemGroup.rs_ctr=Redstone Control
 # Blocks
 # names & tooltips
 tile.rs_ctr.rs_port\:0.name=Redstone Read Socket
-tile.rs_ctr.rs_port\:0.tip=Attach on block surface to read its emitted Redstone signal.\nCan be combined with a §6Write Socket§7 on the same surface.
+tile.rs_ctr.rs_port\:0.tip=Attach on block surface to read its emitted Redstone signal.\nCan be combined with a §6Write Socket§7 on the same surface.\n\nCan be covered with a §asolid block§7 in §aoff-hand§7.\nOr place in §aoff-hand§7 against a §asolid block§7 to replace the block with a covered §6Socket§7. §oIn survival you need a sufficient tool in main hand to break the block.
 tile.rs_ctr.rs_port\:1.name=Redstone Write Socket
-tile.rs_ctr.rs_port\:1.tip=Attach on block surface to control the Redstone signal it receives.\nCan be combined with either a §6Read Socket§7 or another §6Write Socket§7 on the same surface (two Write Sockets combined will emit a strong signal that penetrates solid blocks).
+tile.rs_ctr.rs_port\:1.tip=Attach on block surface to control the Redstone signal it receives.\nCan be combined with either a §6Read Socket§7 or another §6Write Socket§7 on the same surface (two Write Sockets combined will emit a strong signal that penetrates solid blocks).\n\nCan be covered with a §asolid block§7 in §aoff-hand§7.\nOr place in §aoff-hand§7 against a §asolid block§7 to replace the block with a covered §6Socket§7. §oIn survival you need a sufficient tool in main hand to break the block.
 tile.rs_ctr.splitter.name=Signal 4x Splitter
 tile.rs_ctr.splitter.tip=Repeats the incoming signal to four different destinations (no delay).
 tile.rs_ctr.analog_comb.name=Analog Signal Combiner
@@ -26,10 +26,10 @@ msg.rs_ctr.lamp=§cLamps can only connect to outputs!
 # Items
 # names & tooltips
 item.rs_ctr.wire.name=Signal Wire
-item.rs_ctr.wire.tip=§ainteract§7 on signal port to attach, then §ainteract§7 on another signal port of opposite polarity to connect both together.\n§oRequires 1 item per block of straight distance between ports.
+item.rs_ctr.wire.tip=§aUse§7 on signal port to attach, then §ause§7 on another signal port of opposite polarity to connect both together.\n§oRequires 1 item per block of straight distance between ports.\n\nConnections are removed by either §ahitting§7 the port or §asneak using§7 it with an §aempty hand§7.
 item.rs_ctr.wireless.name=Wireless Signal Connector
 item.rs_ctr.wireless.tip=Like a §6Signal Wire§7 but can connect two signal ports over any distance, even across dimensions.
-item.rs_ctr.constant.tip=Can be attached to an input port to supply it with a constant signal value.\n§aInteract§7 in air to configure value.
+item.rs_ctr.constant.tip=Can be attached to an input port to supply it with a constant signal value.\n§aUse§7 in air to configure value.
 item.rs_ctr.constant.name=Constant Plug
 item.rs_ctr.lamp.name=Signal Status Lamp
 item.rs_ctr.lamp.tip=Attach on output port to see its signal state.
