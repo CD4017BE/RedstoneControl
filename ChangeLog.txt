@@ -1,3 +1,18 @@
+v0.0.2
+Changes:
+- tweaked some tool-tips
+- made Redstone Ports coverable
+- fixed and improved placement of Redstone Ports
+- fixed pick block on Redstone Ports now gives the correct items
+- fixed item consumption & drops in creative mode
+- fixed Analog Combiner not updating inputs properly on mode change
+- added a tool to name-tag signal connections
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.3.7
+
 v0.0.1
 Changes:
 Initial Release
