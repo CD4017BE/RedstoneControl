@@ -3,6 +3,8 @@ package cd4017be.rs_ctr.block;
 import cd4017be.lib.block.BlockCoveredPipe;
 import cd4017be.lib.block.BlockPipe;
 import cd4017be.lib.util.Utils;
+import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.tileentity.RedstonePort;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -10,6 +12,7 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -56,10 +59,30 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof RedstonePort && !world.isRemote) {
 			RayTraceResult res = Utils.getHit(player, state, pos);
-			if (res != null && ((RedstonePort)te).breakPort(res.subHit - 1, player))
+			if (res != null && ((RedstonePort)te).breakPort(res.subHit - 1, player, willHarvest))
 				return false;
 		}
-		return super.removedByPlayer(state, world, pos, player, willHarvest);
+		if (willHarvest) return true;
+		return world.setBlockState(pos, net.minecraft.init.Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
+	}
+
+	@Override
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof RedstonePort)) return ItemStack.EMPTY;
+		RedstonePort port = (RedstonePort)te;
+		int i = target.subHit - 1;
+		//if (i == 6 && target.hitVec.squareDistanceTo(0.5, 0.5, 0.5) < 0.7) i = target.sideHit.ordinal();
+		if (i < 6) {
+			MountedSignalPort p = (MountedSignalPort)port.getSignalPort(i);
+			if (p == null) p = (MountedSignalPort)port.getSignalPort(i + 6);
+			if (p != null) return new ItemStack(Objects.rs_port, 1, p.isSource ? 0 : 1);
+		}
+		state = port.cover.state;
+		if (state == null) return ItemStack.EMPTY;
+		ItemStack stack = port.cover.stack;
+		if (stack != null && !stack.isEmpty()) return stack;
+		return state.getBlock().getPickBlock(state, target, world, pos, player);
 	}
 
 	@Override

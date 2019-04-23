@@ -211,7 +211,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		return true;
 	}
 
-	public boolean breakPort(int side, EntityPlayer player) {
+	public boolean breakPort(int side, EntityPlayer player, boolean harvest) {
 		if (side == 6) return cover.hit(this, player);
 		boolean hasRem = false;
 		int in = -1, out = -1;
@@ -222,7 +222,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		if (!hasRem) return false;
 		if (out >= 0) {
 			MountedSignalPort port = ports[out];
-			ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1 + (strong >> side & 1), 1), world, pos);
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1 + (strong >> side & 1), 1), world, pos);
 			port.setConnector(null, player);
 			port.onUnload();
 			strong &= ~(1 << side);
@@ -230,7 +230,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		}
 		if (in >= 0) {
 			MountedSignalPort port = ports[in];
-			ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 0), world, pos);
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 0), world, pos);
 			port.setConnector(null, player);
 			port.onUnload();
 			ports = ArrayUtils.remove(ports, in);
