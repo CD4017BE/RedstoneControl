@@ -56,7 +56,7 @@ public class ItemConstantPlug extends BaseItem implements IConnectorItem, IGuiIt
 		Constant c = new Constant();
 		c.deserializeNBT(nbt);
 		port.setConnector(c, player);
-		stack.shrink(1);
+		if (!player.isCreative()) stack.shrink(1);
 	}
 
 	@Override

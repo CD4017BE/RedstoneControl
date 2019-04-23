@@ -59,11 +59,11 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 		}
 		MountedSignalPort lport = (MountedSignalPort)p;
 		
-		port.setConnector(new WirelessConnection(lpos, lp, true), player);
+		port.setConnector(new WirelessConnection(lpos, lp, !player.isCreative()), player);
 		lport.setConnector(new WirelessConnection(pos, port.pin, false), player);
 		port.connect(lport);
 		stack.setTagCompound(null);
-		stack.shrink(1);
+		if (!player.isCreative()) stack.shrink(1);
 	}
 
 	@Override

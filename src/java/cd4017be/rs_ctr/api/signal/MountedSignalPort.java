@@ -104,7 +104,7 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	@Override
 	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
 		ItemStack stack = player.getHeldItemMainhand();
-		if (hit || player.isCreative() && player.isSneaking() && stack.isEmpty()) {
+		if (hit || player.isSneaking() && stack.isEmpty()) {
 			setConnector(null, player);
 			return true;
 		}

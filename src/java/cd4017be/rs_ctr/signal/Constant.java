@@ -54,8 +54,8 @@ public class Constant implements IConnector {
 	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
 		ItemStack stack = new ItemStack(Objects.constant);
 		stack.setTagCompound(serializeNBT());
-		if (player != null) ItemFluidUtil.dropStack(stack, player);
-		else ItemFluidUtil.dropStack(stack, port.getWorld(), port.getPos());
+		if (player == null) ItemFluidUtil.dropStack(stack, port.getWorld(), port.getPos());
+		else if (!player.isCreative()) ItemFluidUtil.dropStack(stack, player);
 		port.owner.getPortCallback(port.pin).accept(0);
 	}
 

@@ -37,6 +37,7 @@ public class ItemSignalWire extends BaseItem implements IConnectorItem {
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+		boolean creative = player.isCreative();
 		NBTTagCompound nbt = stack.getTagCompound();
 		BlockPos pos = port.getPos();
 		if (nbt == null) {
@@ -55,13 +56,14 @@ public class ItemSignalWire extends BaseItem implements IConnectorItem {
 		}
 		int lx = nbt.getInteger("lx"), ly = nbt.getInteger("ly"), lz = nbt.getInteger("lz");
 		int d = (int)Math.ceil(pos.getDistance(lx, ly, lz));
-		if (d > MAX_LENGTH || d > stack.getCount()) {
+		if (d > MAX_LENGTH || (!creative && d > stack.getCount())) {
 			player.sendMessage(new TextComponentString(d > MAX_LENGTH ?
 					TooltipUtil.format("msg.rs_ctr.wire2", MAX_LENGTH) :
 						TooltipUtil.translate("msg.rs_ctr.wire1")));
 			stack.setTagCompound(null);
 			return;
 		}
+		if (creative) d = 0;
 		BlockPos lpos = new BlockPos(lx, ly, lz);
 		int lp = nbt.getInteger("lp");
 		SignalPort p = ISignalIO.getPort(player.world, lpos, lp);

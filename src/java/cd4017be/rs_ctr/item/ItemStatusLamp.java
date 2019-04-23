@@ -30,7 +30,7 @@ public class ItemStatusLamp extends BaseItem implements IConnectorItem {
 			return;
 		}
 		port.setConnector(new StatusLamp(), player);
-		stack.shrink(1);
+		if (!player.isCreative()) stack.shrink(1);
 	}
 
 }
