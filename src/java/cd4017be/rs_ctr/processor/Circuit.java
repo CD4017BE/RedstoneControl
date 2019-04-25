@@ -14,15 +14,36 @@ import net.minecraftforge.common.util.INBTSerializable;
  */
 public abstract class Circuit implements INBTSerializable<NBTTagCompound> {
 
+	/**the circuit "serial number" */
 	protected UUID ID;
+	/**bitmap of which input pins trigger interrupt */
 	protected int interruptPins;
+	/**IO buffers */
 	public int[] inputs, outputs;
+	/**callbacks to notify changed output signals */
 	public IntConsumer[] callbacks;
 
+	/**
+	 * The main update routine
+	 * @return whether the circuit state changed
+	 */
 	public abstract boolean tick();
+
+	/**
+	 * overrides the circuit's internal state with the given one
+	 * @param state new state
+	 */
 	public abstract void setState(StateBuffer state);
+
+	/**
+	 * @return the circuit's current internal state
+	 */
 	public abstract StateBuffer getState();
 
+	/**
+	 * @param pin input pin index
+	 * @return whether the given input should trigger an interrupt
+	 */
 	public boolean isInterrupt(int pin) {
 		return (interruptPins >> pin & 1) != 0;
 	}
@@ -62,7 +83,11 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound> {
 		return sb.toString();
 	}
 
-	public Circuit loadCode() {
+	/**
+	 * @return the actual implemented instance of this circuit (if it isn't already)
+	 * @see UnloadedCircuit
+	 */
+	public Circuit load() {
 		return this;
 	}
 
