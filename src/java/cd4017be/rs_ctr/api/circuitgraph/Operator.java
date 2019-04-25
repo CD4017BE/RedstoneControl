@@ -74,4 +74,16 @@ public interface Operator {
 	 * @return whether this operator will access {@link Circuit#inputs}
 	 */
 	default boolean isInPin() { return false; }
+
+	/**
+	 * @return whether this operator effects the circuit state
+	 */
+	default boolean hasSideEffects() { return false; }
+
+	/**
+	 * @param pin
+	 * @return whether the given input is not always evaluated
+	 */
+	default boolean isConditional(int pin) { return false; }
+
 }

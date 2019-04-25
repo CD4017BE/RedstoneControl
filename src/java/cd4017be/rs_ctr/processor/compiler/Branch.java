@@ -33,27 +33,28 @@ public class Branch implements Operator, Comparable<Branch> {
 	public static Branch from(Operator result) {
 		ArrayList<LoadOp> list = new ArrayList<>();
 		byte io = 0;
-		if (addRecursive(list, result)) io = IS_IN;
+		if (addRecursive(list, result, false)) io = IS_IN;
 		else if (result.isOutPin()) io = IS_OUT;
 		return new Branch(result, list.toArray(new LoadOp[list.size()]), io);
 	}
 
-	private static boolean addRecursive(ArrayList<LoadOp> list, Operator op) {
+	private static boolean addRecursive(ArrayList<LoadOp> list, Operator op, boolean cond) {
 		boolean isOut = op.isOutPin();
 		boolean hasIn = op.isInPin();
 		for (int i = 0, n = op.inputCount(); i < n; i++) {
 			Operator o = op.getInput(i);
 			if (o == null) continue;
-			if (o.multiUse()) list.add(new LoadOp(op, i, o));
+			if (o.multiUse() || cond && o.hasSideEffects())
+				list.add(new LoadOp(op, i, o));
 			else if (isOut) {
 				int size = list.size();
-				if (addRecursive(list, o)) {
+				if (addRecursive(list, o, cond | op.isConditional(i))) {
 					List<LoadOp> sl = list.subList(size, list.size());
 					o = new Branch(o, sl.toArray(new LoadOp[sl.size()]), IS_IN);
 					sl.clear();
 					list.add(new LoadOp(op, i, o));
 				}
-			} else if (addRecursive(list, o)) hasIn = true;
+			} else if (addRecursive(list, o, cond | op.isConditional(i))) hasIn = true;
 		}
 		return hasIn;
 	}
