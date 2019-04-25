@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import cd4017be.rs_ctr.api.circuitgraph.Array;
 import cd4017be.rs_ctr.api.circuitgraph.Context;
@@ -18,6 +19,7 @@ import cd4017be.rs_ctr.api.circuitgraph.Operator;
 import cd4017be.rs_ctr.api.circuitgraph.Output;
 import cd4017be.rs_ctr.api.circuitgraph.Variable;
 import cd4017be.rs_ctr.processor.Circuit;
+import cd4017be.rs_ctr.processor.UnloadedCircuit;
 import cd4017be.rs_ctr.processor.StateBuffer;
 
 /**
@@ -26,8 +28,8 @@ import cd4017be.rs_ctr.processor.StateBuffer;
  */
 public class Compiler {
 
-	private static final String
-			THIS = "__",
+	public static final String
+			THIS = UnloadedCircuit.name(new UUID(0, 0)),
 			C_CIRCUIT = Type.getInternalName(Circuit.class),
 			D_STATE_BUFFER = Type.getDescriptor(StateBuffer.class),
 			C_STATE_BUFFER = Type.getInternalName(StateBuffer.class),

@@ -3,14 +3,20 @@ package cd4017be.rs_ctr.processor.compiler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.api.circuitgraph.Input;
 import cd4017be.rs_ctr.api.circuitgraph.Output;
 import cd4017be.rs_ctr.processor.Circuit;
 import cd4017be.rs_ctr.processor.CircuitLoader;
+import cd4017be.rs_ctr.processor.UnloadedCircuit;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,12 +27,12 @@ import net.minecraftforge.common.util.Constants.NBT;
  * @author CD4017BE
  *
  */
-public class CompiledCircuit extends CircuitLoader {
+public class CompiledCircuit extends UnloadedCircuit {
 
 	String[] ioLabels;
 	byte[] classCode;
 
-	void addIOPins(Input[] inputs, Output[] outputs) {
+	public void setIOPins(Input[] inputs, Output[] outputs) {
 		this.inputs = new int[inputs.length];
 		this.outputs = new int[outputs.length];
 		this.ioLabels = new String[inputs.length + outputs.length];
@@ -40,10 +46,25 @@ public class CompiledCircuit extends CircuitLoader {
 			ioLabels[n++] = o.name();
 	}
 
+	public void setClassData(byte[] bytecode) {
+		//now override the temporary class name with the actual hash name.
+		//This is quite simple since we know it's stored in constant pool index 1,
+		//also all names have the same length and only contain single byte UTF8 chars.
+		this.ID = hash(bytecode);
+		int i = 12; //4 magic + 4 version + 2 pool size + 2 string length
+		for (char c : name(ID).toCharArray())
+			bytecode[i++] = (byte)c;
+		this.classCode = bytecode;
+	}
+
 	@Override
-	public Circuit loadCode() {
-		// TODO Auto-generated method stub
-		return super.loadCode();
+	public Circuit load() {
+		String name = name(ID);
+		CircuitLoader.INSTANCE.register(name, classCode);
+		Circuit c = CircuitLoader.INSTANCE.newCircuit(name);
+		if (c == null) return this;
+		c.deserializeNBT(serializeNBT());
+		return c;
 	}
 
 	@Override
@@ -74,6 +95,13 @@ public class CompiledCircuit extends CircuitLoader {
 				e.printStackTrace();
 				classCode = null;
 			}
+	}
+
+	private static final HashFunction hashfunc = Hashing.murmur3_128();
+
+	public static UUID hash(byte[] data) {
+		ByteBuffer buf = ByteBuffer.wrap(hashfunc.hashBytes(data).asBytes());
+		return new UUID(buf.getLong(), buf.getLong());
 	}
 
 }
