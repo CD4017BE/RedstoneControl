@@ -24,7 +24,11 @@ public class SignalPort implements INBTSerializable<NBTTagCompound> {
 	/**true if this is a source port, false if it is a sink port */
 	public final boolean isSource;
 	/**identifies the connection of this port in that two connected ports have the same linkID (all unconnected ports have linkID 0). */
-	int linkID = 0;
+	protected int linkID = 0;
+
+	public int getLink() {
+		return linkID;
+	}
 
 	/**
 	 * @param owner the block, entity or whatever that is providing the port

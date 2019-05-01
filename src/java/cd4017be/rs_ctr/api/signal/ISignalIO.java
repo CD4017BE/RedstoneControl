@@ -68,10 +68,11 @@ public interface ISignalIO {
 	public static final int E_CON_UPDATE = 16;
 
 	/**
-	 * @param world
-	 * @param pos
-	 * @param pin
-	 * @return
+	 * @param world the world
+	 * @param pos block position in the world
+	 * @param pin the pin id, by convention:<br>
+	 * pin < 0 for Entities, 0 <= pin < 0x8000 for TileEntities, 0xe8000 <= pin < 0xa000 for RelayPorts
+	 * @return the signal port hosted at given location
 	 */
 	public static SignalPort getPort(World world, BlockPos pos, int pin) {
 		if (world == null) return null;
