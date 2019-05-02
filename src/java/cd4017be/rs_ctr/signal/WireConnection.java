@@ -8,6 +8,8 @@ import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
+import cd4017be.rs_ctr.api.wire.IWiredConnector;
+import cd4017be.rs_ctr.api.wire.SignalLine;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author CD4017BE
  */
-public class WireConnection implements ITagableConnector {
+public class WireConnection implements ITagableConnector, IWiredConnector {
 
 	public static final String ID = "wire";
 
@@ -91,6 +93,7 @@ public class WireConnection implements ITagableConnector {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder b) {
+		//TODO no plug for anchor
 		if (vertices == null) vertices = WireRenderer.instance.createLine(port, line);
 		WireRenderer.instance.drawModel(b, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(0)");
 		int l1 = world.getCombinedLight(pos.add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
@@ -105,22 +108,23 @@ public class WireConnection implements ITagableConnector {
 
 	@Override
 	public void setTag(MountedSignalPort port, String tag) {
-		if (this.tag != null ? this.tag.equals(tag) : tag == null) return;
 		this.tag = tag;
 		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
-		SignalPort p = ISignalIO.getPort(port.getWorld(), linkPos, linkPin);
-		if (p instanceof MountedSignalPort) {
-			IConnector c = ((MountedSignalPort)p).getConnector();
-			if (c instanceof WireConnection) {
-				((WireConnection)c).tag = tag;
-				p.owner.onPortModified(p, ISignalIO.E_CON_UPDATE);
-			}
-		}
 	}
 
 	@Override
 	public String getTag() {
 		return tag;
+	}
+
+	@Override
+	public BlockPos getLinkPos() {
+		return linkPos;
+	}
+
+	@Override
+	public int getLinkPin() {
+		return linkPin;
 	}
 
 }

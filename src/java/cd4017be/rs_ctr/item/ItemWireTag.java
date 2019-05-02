@@ -16,6 +16,8 @@ import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.api.wire.IWiredConnector;
+import cd4017be.rs_ctr.api.wire.SignalLine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -59,7 +61,15 @@ public class ItemWireTag extends BaseItem implements IConnectorItem, IGuiItem, C
 		if (!(c instanceof ITagableConnector)) return;
 		ITagableConnector tc = (ITagableConnector)c;
 		if (stack.hasTagCompound()) {
-			tc.setTag(port, stack.getTagCompound().getString("name"));
+			String tag = stack.getTagCompound().getString("name");
+			if (!tag.equals(tc.getTag()))
+				if (tc instanceof IWiredConnector)
+					new SignalLine(port).forEach(p -> {
+						IConnector con = p.getConnector();
+						if (con instanceof ITagableConnector)
+							((ITagableConnector)c).setTag(p, tag);
+					});
+				else tc.setTag(port, tag);
 			stack.setTagCompound(null);
 		} else if (tc.getTag() != null) {
 			NBTTagCompound nbt = new NBTTagCompound();
