@@ -2,10 +2,10 @@ package cd4017be.rs_ctr.item;
 
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
-import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
+import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
 import cd4017be.rs_ctr.signal.WireConnection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +24,7 @@ import net.minecraft.world.World;
  * @author CD4017BE
  *
  */
-public class ItemSignalWire extends BaseItem implements IConnectorItem {
+public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 
 	public static int MAX_LENGTH = 16;
 
@@ -73,7 +73,7 @@ public class ItemSignalWire extends BaseItem implements IConnectorItem {
 			return;
 		}
 		MountedSignalPort lport = (MountedSignalPort)p;
-		
+		//TODO no plugs on anchors
 		Vec3d path = new Vec3d(lpos.subtract(pos))
 				.add(lport.pos.subtract(port.pos))
 				.add(new Vec3d(lport.face.getDirectionVec()).subtract(new Vec3d(port.face.getDirectionVec())).scale(0.125));
