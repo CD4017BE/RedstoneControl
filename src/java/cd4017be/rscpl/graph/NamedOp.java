@@ -1,10 +1,11 @@
-package cd4017be.rs_ctr.api.circuitgraph;
+package cd4017be.rscpl.graph;
+
 
 /**
- * General signal graph entry or exit point.
  * @author CD4017BE
+ *
  */
-public interface Endpoint {
+public interface NamedOp extends Operator {
 	/**
 	 * @return name of this end point (variable name or pin label)
 	 */

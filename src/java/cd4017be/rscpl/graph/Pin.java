@@ -1,4 +1,4 @@
-package cd4017be.rs_ctr.api.circuitgraph;
+package cd4017be.rscpl.graph;
 
 /**
  * 

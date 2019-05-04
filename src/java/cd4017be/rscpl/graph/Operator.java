@@ -1,4 +1,4 @@
-package cd4017be.rs_ctr.api.circuitgraph;
+package cd4017be.rscpl.graph;
 
 import java.util.Set;
 
@@ -7,7 +7,8 @@ import javax.annotation.Nullable;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.InsnList;
 
-import cd4017be.rs_ctr.processor.Circuit;
+import cd4017be.rscpl.compile.Context;
+import cd4017be.rscpl.editor.Gate;
 
 /**
  * Represents the operation performed by a gate to compute the result of an individual output pin.<br>
@@ -66,12 +67,12 @@ public interface Operator {
 	Type outType();	
 
 	/**
-	 * @return whether this operator will access {@link Circuit#outputs}
+	 * @return whether this operator may generate output events that could affect input values before they are processed
 	 */
 	default boolean isOutPin() { return false; }
 
 	/**
-	 * @return whether this operator will access {@link Circuit#inputs}
+	 * @return whether this operator will access external input values
 	 */
 	default boolean isInPin() { return false; }
 
@@ -85,5 +86,15 @@ public interface Operator {
 	 * @return whether the given input is not always evaluated
 	 */
 	default boolean isConditional(int pin) { return false; }
+
+	/**
+	 * @return the gate this is assigned with
+	 */
+	Gate<?> getGate();
+
+	/**
+	 * @return the gate's output pin this is assigned with
+	 */
+	int getPin();
 
 }

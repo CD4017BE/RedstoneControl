@@ -5,6 +5,8 @@ import java.util.UUID;
 import java.util.function.IntConsumer;
 
 import cd4017be.rs_ctr.api.signal.SignalReceiver;
+import cd4017be.rscpl.util.IStateSerializable;
+import cd4017be.rscpl.util.StateBuffer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -12,7 +14,7 @@ import net.minecraftforge.common.util.INBTSerializable;
  * parent template class for all ASM compiled circuit implementations.
  * @author CD4017BE
  */
-public abstract class Circuit implements INBTSerializable<NBTTagCompound> {
+public abstract class Circuit implements INBTSerializable<NBTTagCompound>, IStateSerializable {
 
 	/**the circuit "serial number" */
 	protected UUID ID;
@@ -28,17 +30,6 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound> {
 	 * @return whether the circuit state changed
 	 */
 	public abstract boolean tick();
-
-	/**
-	 * overrides the circuit's internal state with the given one
-	 * @param state new state
-	 */
-	public abstract void setState(StateBuffer state);
-
-	/**
-	 * @return the circuit's current internal state
-	 */
-	public abstract StateBuffer getState();
 
 	/**
 	 * @param pin input pin index

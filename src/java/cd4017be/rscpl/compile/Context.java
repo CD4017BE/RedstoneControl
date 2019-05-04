@@ -1,4 +1,4 @@
-package cd4017be.rs_ctr.api.circuitgraph;
+package cd4017be.rscpl.compile;
 
 import java.util.BitSet;
 
@@ -12,12 +12,13 @@ public class Context {
 
 	public static final int THIS_IDX = 0, DIRTY_IDX = 1, IO_IDX = 2;
 	private final BitSet usedLocals;
+	public final Compiler<?> compiler;
+	public int fixed;
 
-	public Context() {
+	public Context(Compiler<?> compiler, int fixed) {
+		this.compiler = compiler;
 		usedLocals = new BitSet();
-		usedLocals.set(THIS_IDX);
-		usedLocals.set(DIRTY_IDX);
-		usedLocals.set(IO_IDX);
+		usedLocals.set(0, fixed);
 	}
 
 	/**
@@ -51,6 +52,7 @@ public class Context {
 	 * @param t the type that was stored
 	 */
 	public void releaseLocal(int idx, Type t) {
+		if (idx < fixed) return;
 		usedLocals.clear(idx);
 		if (t.getSize() > 1)
 			usedLocals.clear(idx + 1);

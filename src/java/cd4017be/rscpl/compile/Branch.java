@@ -1,11 +1,11 @@
-package cd4017be.rs_ctr.processor.compiler;
+package cd4017be.rscpl.compile;
 
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import cd4017be.rs_ctr.api.circuitgraph.Context;
-import cd4017be.rs_ctr.api.circuitgraph.Operator;
-import cd4017be.rs_ctr.api.circuitgraph.Pin;
+import cd4017be.rscpl.editor.Gate;
+import cd4017be.rscpl.graph.Operator;
+import cd4017be.rscpl.graph.Pin;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -113,5 +113,11 @@ public class Branch implements Operator, Comparable<Branch> {
 	public int compareTo(Branch o) {
 		return this.ordinal() - o.ordinal();
 	}
+
+	@Override
+	public Gate<?> getGate() { return null; }
+
+	@Override
+	public int getPin() { return 0; }
 
 }
