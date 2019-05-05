@@ -12,6 +12,7 @@ import java.util.UUID;
 import cd4017be.rscpl.compile.Compiler;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.circuit.gates.Input;
+import cd4017be.rs_ctr.circuit.gates.Output;
 import cd4017be.rscpl.compile.Branch;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
@@ -33,6 +34,14 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 	@Override
 	protected CompiledCircuit newProgram(Collection<Gate<?>> gatesIn) throws InvalidSchematicException {
 		CompiledCircuit cc = new CompiledCircuit();
+		List<Input> inputs = new ArrayList<>();
+		List<Output> outputs = new ArrayList<>();
+		for (Gate<?> g : gatesIn)
+			if (g.type == CircuitInstructionSet.in)
+				inputs.add((Input)g);
+			else if (g.type == CircuitInstructionSet.out)
+				outputs.add((Output)g);
+		cc.setIOPins(inputs, outputs);
 		return cc;
 	}
 

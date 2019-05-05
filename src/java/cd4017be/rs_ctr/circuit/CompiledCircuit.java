@@ -14,8 +14,8 @@ import com.google.common.hash.Hashing;
 
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.circuit.gates.Input;
+import cd4017be.rs_ctr.circuit.gates.Output;
 import cd4017be.rscpl.compile.CompiledProgram;
-import cd4017be.rscpl.editor.Gate;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,6 +41,20 @@ public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram 
 		for (char c : name(ID).toCharArray())
 			code[i++] = (byte)c;
 		this.classCode = code;
+	}
+
+	public void setIOPins(List<Input> inputs, List<Output> outputs) {
+		this.inputs = new int[inputs.size()];
+		this.outputs = new int[outputs.size()];
+		this.ioLabels = new String[this.inputs.length + this.outputs.length];
+		int n = 0;
+		for (Input i : inputs) {
+			if (i.interrupt)
+				interruptPins |= 1 << n;
+			ioLabels[n++] = i.label;
+		}
+		for (Output o : outputs)
+			ioLabels[n++] = o.label;
 	}
 
 	@Override
