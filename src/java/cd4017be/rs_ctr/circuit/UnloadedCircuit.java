@@ -1,9 +1,7 @@
-package cd4017be.rs_ctr.processor;
+package cd4017be.rs_ctr.circuit;
 
-import java.nio.ByteBuffer;
 import java.util.UUID;
-import com.google.common.hash.HashFunction;
-import com.google.common.hash.Hashing;
+import cd4017be.rscpl.util.StateBuffer;
 
 /**
  * Holds the internal state and other property data for a circuit whose implementation class hasn't been loaded yet.

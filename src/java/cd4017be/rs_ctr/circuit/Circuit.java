@@ -1,4 +1,4 @@
-package cd4017be.rs_ctr.processor;
+package cd4017be.rs_ctr.circuit;
 
 import java.util.Arrays;
 import java.util.UUID;

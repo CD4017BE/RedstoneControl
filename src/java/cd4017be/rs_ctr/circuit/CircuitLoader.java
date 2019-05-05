@@ -1,4 +1,4 @@
-package cd4017be.rs_ctr.processor;
+package cd4017be.rs_ctr.circuit;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,7 @@ import java.util.function.IntConsumer;
 
 import cd4017be.lib.jvm_utils.SecurityChecker;
 import cd4017be.rs_ctr.Main;
+import cd4017be.rscpl.util.StateBuffer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.server.MinecraftServer;
