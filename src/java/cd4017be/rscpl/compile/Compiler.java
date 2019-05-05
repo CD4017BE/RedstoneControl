@@ -192,13 +192,12 @@ public abstract class Compiler<P extends CompiledProgram> {
 		}
 		for (Operator op : endsOut) op.getGate().checkValid();
 		Collections.sort(endsOut, (a, b)-> {
-			int i = a.getGate().type.id() - b.getGate().type.id();
+			Gate<?> ga = a.getGate(), gb = b.getGate();
+			int i = ga.type.name.compareTo(gb.type.name);
 			if (i != 0) return i;
 			i = a.getPin() - b.getPin();
 			if (i != 0) return i;
-			if (a instanceof NamedOp)
-				return b instanceof NamedOp ? ((NamedOp)a).name().compareTo(((NamedOp)b).name()) : 1;
-			return b instanceof NamedOp ? -1 : 0;
+			return ga.label.compareTo(gb.label);
 		});
 	}
 

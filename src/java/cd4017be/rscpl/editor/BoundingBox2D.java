@@ -64,10 +64,27 @@ public class BoundingBox2D<T> {
 	/**
 	 * @param dx delta X
 	 * @param dy delta Y
+	 */
+	public void move(int dx, int dy) {
+		x0 += dx; x1 += dx;
+		y0 += dy; y1 += dy;
+	}
+
+	/**
+	 * @param dx delta X
+	 * @param dy delta Y
 	 * @return a shifted version of this
 	 */
 	public BoundingBox2D<T> offset(int dx, int dy) {
 		return new BoundingBox2D<T>(owner, x0 + dx, y0 + dy, x1 - x0, y1 - y0);
+	}
+
+	public int width() {
+		return x1 - x0;
+	}
+
+	public int height() {
+		return y1 - y0;
 	}
 
 }

@@ -75,7 +75,7 @@ public class Schematic {
 		data.writeByte(0);
 		for (Gate<?> g : operators)
 			if (g != null) {
-				data.writeByte(g.type.id());
+				data.writeByte(INS_SET.id(g.type));
 				int j = data.writerIndex();
 				data.writeShort(0);
 				g.write(data);
@@ -98,7 +98,7 @@ public class Schematic {
 			tag.setByte("i", (byte)i);
 			Gate<?> op = get(i);
 			if (op != null) {
-				tag.setByte("t", (byte)op.type.id());
+				tag.setByte("t", (byte)INS_SET.id(op.type));
 				if ((j & 1) == 0) {
 					op.write(buf);
 					byte[] arr = new byte[buf.writerIndex()];

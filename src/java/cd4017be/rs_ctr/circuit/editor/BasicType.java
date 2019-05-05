@@ -1,5 +1,6 @@
 package cd4017be.rs_ctr.circuit.editor;
 
+import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.GateType;
 
@@ -20,8 +21,8 @@ public class BasicType extends GateType<BasicType> {
 	 * @param inputs
 	 * @param output
 	 */
-	public BasicType(GateConstructor<BasicType> constr, int width, int height, int inputs, Code... outputs) {
-		super(width, height, inputs);
+	public BasicType(GateConstructor<BasicType> constr, String name, int width, int height, int inputs, Code... outputs) {
+		super(Main.ID + ":" + name, width, height, inputs);
 		this.outputs = outputs;
 		this.constr = constr;
 	}

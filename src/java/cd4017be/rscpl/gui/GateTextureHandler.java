@@ -1,0 +1,42 @@
+package cd4017be.rscpl.gui;
+
+import java.util.ArrayList;
+
+import cd4017be.rs_ctr.Main;
+import cd4017be.rscpl.editor.BoundingBox2D;
+import cd4017be.rscpl.editor.GateType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.ITextureMapPopulator;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+/**
+ * @author CD4017BE
+ *
+ */
+@SideOnly(Side.CLIENT)
+public class GateTextureHandler implements ITextureMapPopulator {
+
+	public static final ResourceLocation GATE_ICONS_LOC = new ResourceLocation(Main.ID, "textures/gates");
+	public static final TextureMap GATE_ICONS_TEX = new TextureMap(GATE_ICONS_LOC.getResourcePath(), new GateTextureHandler());
+	public static final ArrayList<Category> ins_sets = new ArrayList<>();
+	private static boolean registered;
+
+	public static void register() {
+		if (registered) return;
+		registered = true;
+		Minecraft.getMinecraft().renderEngine.loadTickableTexture(GATE_ICONS_LOC, GATE_ICONS_TEX);
+	}
+
+	@Override
+	public void registerSprites(TextureMap textureMap) {
+		for (Category ins : ins_sets) {
+			textureMap.registerSprite(new ResourceLocation(ins.getIcon()));
+			for (BoundingBox2D<GateType<?>> t : ins.instructions)
+				textureMap.registerSprite(new ResourceLocation(t.owner.getIcon()));
+		}
+	}
+
+}

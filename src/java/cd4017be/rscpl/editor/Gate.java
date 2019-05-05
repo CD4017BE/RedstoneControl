@@ -8,9 +8,6 @@ import cd4017be.rscpl.editor.InvalidSchematicException.ErrorType;
 import cd4017be.rscpl.graph.Operator;
 import cd4017be.rscpl.graph.Pin;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author CD4017BE
@@ -139,8 +136,5 @@ public abstract class Gate<T extends GateType<T>> {
 	public abstract int getInputHeight(int pin);
 
 	public abstract int getOutputHeight(int pin);
-
-	@SideOnly(Side.CLIENT)
-	public abstract TextureAtlasSprite getIcon();
 
 }

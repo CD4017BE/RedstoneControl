@@ -12,7 +12,6 @@ import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.graph.Operator;
 import cd4017be.rscpl.graph.Pin;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 /**
  * A gate with a single output.
@@ -81,12 +80,6 @@ public class Combinator extends Gate<BasicType> implements Operator {
 	public int getOutputHeight(int pin) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	@Override
-	public TextureAtlasSprite getIcon() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
