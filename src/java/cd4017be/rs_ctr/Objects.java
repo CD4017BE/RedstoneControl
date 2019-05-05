@@ -11,7 +11,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.lib.block.AdvancedBlock;
 import cd4017be.lib.block.OrientedBlock;
+import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.item.BaseItemBlock;
 import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
@@ -36,6 +38,7 @@ public class Objects {
 	public static final OrientedBlock ANALOG_COMB = null;
 	public static final OrientedBlock LOGIC_COMB = null;
 	public static final OrientedBlock NUM_COMB = null;
+	public static final AdvancedBlock EDITOR = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -43,6 +46,7 @@ public class Objects {
 	public static final BaseItemBlock analog_comb = null;
 	public static final BaseItemBlock logic_comb = null;
 	public static final BaseItemBlock num_comb = null;
+	public static final BaseItemBlock editor = null;
 
 	//Items
 	public static final ItemSignalWire wire = null;
@@ -50,6 +54,7 @@ public class Objects {
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
 	public static final ItemWireTag tag = null;
+	public static final BaseItem circuitboard = null;
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(wire);
@@ -67,7 +72,8 @@ public class Objects {
 				OrientedBlock.create("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				OrientedBlock.create("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				OrientedBlock.create("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				OrientedBlock.create("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				OrientedBlock.create("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new AdvancedBlock("editor", Material.IRON, SoundType.METAL, 0, Editor.class).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -80,6 +86,7 @@ public class Objects {
 				new BaseItemBlock(ANALOG_COMB),
 				new BaseItemBlock(LOGIC_COMB),
 				new BaseItemBlock(NUM_COMB),
+				new BaseItemBlock(EDITOR),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),

@@ -3,8 +3,6 @@ package cd4017be.rs_ctr.tileentity;
 import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.INS_SET;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 
 import cd4017be.lib.BlockGuiHandler.ClientPacketReceiver;
@@ -18,23 +16,17 @@ import cd4017be.lib.util.ItemKey;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
-import cd4017be.rs_ctr.circuit.editor.PrimitiveType;
-import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.editor.Schematic;
-import cd4017be.rscpl.editor.TraceNode;
 import cd4017be.rscpl.editor.InvalidSchematicException.ErrorType;
-import cd4017be.rscpl.graph.Operator;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -147,7 +139,7 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 
 	void compile() throws InvalidSchematicException {
 		ItemStack stack = inventory;
-		if (stack.getItem() != Objects.processor)
+		if (stack.getItem() != Objects.circuitboard)
 			throw new InvalidSchematicException(ErrorType.noCircuitBoard, null, 0);
 		computeCost();
 		int[] cost = ingreds.clone(), ingr;
@@ -220,7 +212,7 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		if (world.isRemote || n <= 0) return;
 		ingreds[6] = InvalidSchematicException.NO_ERROR;
 		markDirty();
-		if (stack.getItem() == Objects.processor && stack.hasTagCompound()) {
+		if (stack.getItem() == Objects.circuitboard && stack.hasTagCompound()) {
 			NBTTagCompound nbt = stack.getTagCompound();
 			int[] ig = nbt.getIntArray("ingr");
 			boolean empty = false;
