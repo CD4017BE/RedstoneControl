@@ -80,8 +80,8 @@ public class Objects {
 				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("bin_comb", Material.ROCK, SoundType.STONE, 3, BinaryCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("bin_split", Material.ROCK, SoundType.STONE, 3, BinarySplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new AdvancedBlock("editor", Material.IRON, SoundType.METAL, 0, Editor.class).setCreativeTab(tabCircuits),
-				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new AdvancedBlock("editor", Material.IRON, SoundType.METAL, 0, Editor.class).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -96,8 +96,8 @@ public class Objects {
 				new BaseItemBlock(NUM_COMB),
 				new BaseItemBlock(BIN_COMB),
 				new BaseItemBlock(BIN_SPLIT),
-				new BaseItemBlock(EDITOR),
 				new ItemWireAnchor(WIRE_ANCHOR),
+				new BaseItemBlock(EDITOR),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
