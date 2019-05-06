@@ -19,7 +19,7 @@ import static org.objectweb.asm.Opcodes.*;
 public class CircuitInstructionSet extends InstructionSet {
 
 	public static final CircuitInstructionSet INS_SET = new CircuitInstructionSet();
-	public static Category[] TABS = new Category[1];
+	public static Category[] TABS;
 
 	public static final BasicType
 		in = new BasicType(Input::new, "in", 1, 3, 0, new Code(INT_TYPE, "%p$", ALOAD, IALOAD)),
@@ -58,6 +58,7 @@ public class CircuitInstructionSet extends InstructionSet {
 		swt = n("swt", 3, new Code(INT_TYPE, "0>!A1>!X|A2>|X", IFNE, GOTO));
 
 	static {
+		TABS = new Category[4];
 		Category c;
 		TABS[0] = c = new Category("rs_ctr:io");
 		INS_SET.add(0, c.add(in, out, i_cst));

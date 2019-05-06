@@ -8,7 +8,6 @@ import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.GateType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 
@@ -31,14 +30,15 @@ public class GatePalette extends GuiFrame {
 		this.titleY = -11;
 		for (int i = 0; i < tabs.length; i++) {
 			final int j = i;
-			add(new Button(this, 16, 18, 1 + 16 * i, 57, 0, ()-> openTab == j ? 1 : 0, (b)-> openTab = j).texture(162, 0).tooltip("gategroup." + tabs[i].name.replace(':', '.')));
+			add(new Button(this, 16, 18, 1 + 16 * i, 57, 0, ()-> openTab == j ? 0 : 1, (b)-> openTab = j).texture(162, 0).tooltip("gategroup." + tabs[i].name.replace(':', '.')));
 			tabs[i].arrange((w - 2) / 4, (h - 20) / 4);
 		}
+		position(x, y);
 	}
 
 	@Override
 	public void drawOverlay(int mx, int my) {
-		if (my >= 58) super.drawOverlay(mx, my);
+		if (my >= y + 58) super.drawOverlay(mx, my);
 		else {
 			GateType<?> t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
 			if (t != null)
@@ -48,19 +48,15 @@ public class GatePalette extends GuiFrame {
 
 	@Override
 	public void drawBackground(int mx, int my, float t) {
+		bound = false;
 		super.drawBackground(mx, my, t);
 		bindTexture(GateTextureHandler.GATE_ICONS_LOC);
-		for (int i = 0, x = this.x + 1, y = this.y + 59; i < tabs.length; i++, x += 16) {
-			TextureAtlasSprite tex = GateTextureHandler.GATE_ICONS_TEX.getAtlasSprite(tabs[i].getIcon());
-			int w = tex.getIconWidth(), h = tex.getIconHeight();
-			drawRect(x + (16 - w)/2, y + (16 - h)/2, tex.getOriginX(), tex.getOriginY(), w, h);
-		}
+		bound = true;
+		for (int i = 0, x = this.x + 1, y = this.y + 59; i < tabs.length; i++, x += 16)
+			GateTextureHandler.drawIcon(getDraw(), x, y, 16, 16, tabs[i].getIcon(), zLevel);
 		int x = this.x + 2, y = this.y + 2;
-		for (BoundingBox2D<GateType<?>> bb : tabs[openTab].instructions) {
-			TextureAtlasSprite tex = GateTextureHandler.GATE_ICONS_TEX.getAtlasSprite(bb.owner.getIcon());
-			int w = tex.getIconWidth(), h = tex.getIconHeight();
-			drawRect(x + (bb.x0 + bb.x1)*2 - w/2, y + (bb.y0 + bb.y1)*2 - h/2, tex.getOriginX(), tex.getOriginY(), w, h);
-		}
+		for (BoundingBox2D<GateType<?>> bb : tabs[openTab].instructions)
+			GateTextureHandler.drawIcon(getDraw(), x + bb.x0*4, y + bb.y0*4, bb.width()*4, bb.height()*4, bb.owner.getIcon(), zLevel);
 		drawNow();
 	}
 

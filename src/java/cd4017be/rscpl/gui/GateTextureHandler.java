@@ -6,7 +6,9 @@ import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.GateType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.ITextureMapPopulator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,6 +39,20 @@ public class GateTextureHandler implements ITextureMapPopulator {
 			for (BoundingBox2D<GateType<?>> t : ins.instructions)
 				textureMap.registerSprite(new ResourceLocation(t.owner.getIcon()));
 		}
+	}
+
+	public static void drawIcon(BufferBuilder b, int x, int y, int w, int h, String icon, double z) {
+		TextureAtlasSprite tex = GATE_ICONS_TEX.getAtlasSprite(icon);
+		x += (w - tex.getIconWidth()) / 2;
+		y += (h - tex.getIconHeight()) / 2;
+		int X = x + tex.getIconWidth(),
+			Y = y + tex.getIconHeight();
+		double u = tex.getMinU(), U = tex.getMaxU(),
+				v = tex.getMinV(), V = tex.getMaxV();
+		b.pos(x, Y, z).tex(u, V).endVertex();
+		b.pos(X, Y, z).tex(U, V).endVertex();
+		b.pos(X, y, z).tex(U, v).endVertex();
+		b.pos(x, y, z).tex(u, v).endVertex();
 	}
 
 }

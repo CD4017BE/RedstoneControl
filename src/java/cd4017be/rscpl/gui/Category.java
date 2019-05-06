@@ -34,10 +34,10 @@ public class Category {
 		int x = 0, y = 0, my = Integer.MAX_VALUE;
 		for (int l = instructions.size(), i = 0; i < l; i++) {
 			BoundingBox2D<?> bb = instructions.get(i);
-			bb.offset(x - bb.x0, y - bb.y0);
+			bb.move(x - bb.x0, y - bb.y0);
 			for(BoundingBox2D<?> b = collision(bb, i); b != null; b = collision(bb, i)) {
 				if (b.y1 < my) my = b.y1;
-				bb.offset(b.x1 - bb.x0, 0);
+				bb.move(b.x1 - bb.x0, 0);
 			}
 			if ((x = bb.x1) > width) {
 				//start new line
