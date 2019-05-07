@@ -25,7 +25,7 @@ public class CircuitInstructionSet extends InstructionSet {
 		in = new BasicType(Input::new, "in", 1, 3, 0, new Code(INT_TYPE, "%p$", ALOAD, IALOAD)),
 		out = new BasicType(Output::new, "out", 1, 3, 1, new Code(INT_TYPE, "%p$>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E",
 			ALOAD, IALOAD, DUP_X1, IF_ICMPEQ	, DUP, ALOAD, SWAP, IASTORE 	, ALOAD, GETFIELD, AALOAD, SWAP, INVOKEINTERFACE	, ICONST_1, ISTORE, ICONST_0	, POP)),
-		i_cst = new BasicType(ConstNum::new, "i_cst", 5, 2, 0, new Code(INT_TYPE, null)),
+		i_cst = new BasicType(ConstNum::new, "i_cst", 6, 2, 0, new Code(INT_TYPE, null)),
 		not = n("not", 1, new Code(INT_TYPE, ">**", ICONST_M1, IXOR)),
 		or = n("or", 2, new Code(INT_TYPE, "0>1>*", IOR)),
 		nor = n("nor", 2, new Code(INT_TYPE, "0>1>3*", IOR, ICONST_M1, IXOR)),
@@ -71,7 +71,7 @@ public class CircuitInstructionSet extends InstructionSet {
 	}
 
 	private static BasicType n(String name, int in, Code out) {
-		return new BasicType(Combinator::new, name, 3, in, in, out);
+		return new BasicType(Combinator::new, name, 3, in < 3 ? in + 1 : in, in, out);
 	}
 
 	public final int[] OP_COSTS = new int[256];

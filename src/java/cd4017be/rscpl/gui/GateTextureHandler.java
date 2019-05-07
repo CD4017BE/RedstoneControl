@@ -2,6 +2,7 @@ package cd4017be.rscpl.gui;
 
 import java.util.ArrayList;
 
+import cd4017be.lib.render.RectangularSprite;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.GateType;
@@ -37,7 +38,7 @@ public class GateTextureHandler implements ITextureMapPopulator {
 		for (Category ins : ins_sets) {
 			textureMap.registerSprite(new ResourceLocation(ins.getIcon()));
 			for (BoundingBox2D<GateType<?>> t : ins.instructions)
-				textureMap.registerSprite(new ResourceLocation(t.owner.getIcon()));
+				textureMap.setTextureEntry(new RectangularSprite(t.owner.getIcon()));
 		}
 	}
 
@@ -49,9 +50,10 @@ public class GateTextureHandler implements ITextureMapPopulator {
 			Y = y + tex.getIconHeight();
 		double u = tex.getMinU(), U = tex.getMaxU(),
 				v = tex.getMinV(), V = tex.getMaxV();
-		b.pos(x, Y, z).tex(u, V).endVertex();
+		boolean t = tex instanceof RectangularSprite && ((RectangularSprite)tex).uvTransposed();
+		b.pos(x, Y, z).tex(t ? U:u, t ? v:V).endVertex();
 		b.pos(X, Y, z).tex(U, V).endVertex();
-		b.pos(X, y, z).tex(U, v).endVertex();
+		b.pos(X, y, z).tex(t ? u:U, t ? V:v).endVertex();
 		b.pos(x, y, z).tex(u, v).endVertex();
 	}
 

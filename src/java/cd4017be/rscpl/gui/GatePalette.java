@@ -54,18 +54,17 @@ public class GatePalette extends GuiFrame {
 		bound = true;
 		for (int i = 0, x = this.x + 1, y = this.y + 59; i < tabs.length; i++, x += 16)
 			GateTextureHandler.drawIcon(getDraw(), x, y, 16, 16, tabs[i].getIcon(), zLevel);
-		int x = this.x + 2, y = this.y + 2;
+		int x = this.x + 3, y = this.y + 1;
 		for (BoundingBox2D<GateType<?>> bb : tabs[openTab].instructions)
-			GateTextureHandler.drawIcon(getDraw(), x + bb.x0*4, y + bb.y0*4, bb.width()*4, bb.height()*4, bb.owner.getIcon(), zLevel);
+			GateTextureHandler.drawIcon(getDraw(), x + bb.x0*4, y + bb.y0*4, bb.width()*4 - 4, bb.height()*4, bb.owner.getIcon(), zLevel);
 		drawNow();
 	}
 
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
-		if (super.mouseIn(mx, my, b, d)) return true;
+		if (my >= y + 56) return super.mouseIn(mx, my, b, d);
 		GateType<?> t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
-		if (t == null) return false;
-		pick.accept(t);
+		if (t != null) pick.accept(t);
 		return true;
 	}
 

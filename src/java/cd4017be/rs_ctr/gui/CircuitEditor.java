@@ -128,4 +128,13 @@ public class CircuitEditor extends ModularGui {
 		sendCommand(A_COMPILE);
 	}
 
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		board.update();
+		error.update(tile.ingreds[6]);
+		//if (debug != null)
+		//	debug.update();
+	}
+
 }

@@ -29,9 +29,9 @@ public class ClientProxy extends CommonProxy {
 		
 		bindTileEntitySpecialRenderer(Gate.class, new InteractiveDeviceRenderer());
 		
-		GateTextureHandler.register();
 		for (Category c : CircuitInstructionSet.TABS)
 			GateTextureHandler.ins_sets.add(c);
+		GateTextureHandler.register();
 	}
 
 	@SubscribeEvent

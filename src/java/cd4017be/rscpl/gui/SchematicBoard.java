@@ -15,7 +15,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 /**
@@ -64,7 +63,8 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	@Override
 	public void drawBackground(int mx, int my, float t) {
-		parent.bindTexture(GateTextureHandler.GATE_ICONS_LOC);
+		parent.bindTexture(parent.mainTex);
+		parent.gui.mc.renderEngine.bindTexture(GateTextureHandler.GATE_ICONS_LOC);
 		for (BoundingBox2D<Gate<?>> part : parts)
 			drawPart(part);
 		if (placing != null) {
@@ -74,23 +74,24 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			drawPart(part);
 		}
 		drawWires(mx, my);
+		parent.drawNow();
+		parent.bindTexture(null);
 		if (placing != null) {
-			parent.drawNow();
 			BoundingBox2D<Gate<?>> part = placing.getBounds();
 			for (BoundingBox2D<Gate<?>> p : parts)
 				if (part.overlapsWith(p))
 					drawSelection(p, 0x80ff0000);
 		} else if (selPart != null) {
-			parent.drawNow();
 			BoundingBox2D<Gate<?>> part = selPart;
 			if (moveX != 0 || moveY != 0) {
-				part = part.offset(moveX*2, moveY*2);
+				part = part.offset(moveX, moveY);
 				for (BoundingBox2D<Gate<?>> p : parts)
 					if (part.overlapsWith(p))
 						drawSelection(p, 0x80ff0000);
 			}
 			drawSelection(part, part.enclosedBy(schematic.BOARD_AREA) ? 0x80c08000 : 0xffff0000);
 		}
+		GlStateManager.color(1, 1, 1, 1);
 	}
 
 	private void drawWires(int mx, int my) {
@@ -113,14 +114,9 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	private void drawPart(BoundingBox2D<Gate<?>> part) {
 		Gate<?> node = part.owner;
+		GateTextureHandler.drawIcon(parent.getDraw(), x + 2 + part.x0*4, y + part.y0*4, part.width()*4, part.height()*4, part.owner.type.getIcon(), parent.zLevel);
 		if (node instanceof ISpecialRender)
 			((ISpecialRender)node).draw(this);
-		else {
-			TextureAtlasSprite tex = GateTextureHandler.GATE_ICONS_TEX.getAtlasSprite(node.type.getIcon());
-			int w = tex.getIconWidth(), h = tex.getIconHeight();
-			int px = x + 2 + part.x0 + part.x1 - w/2, py = y + 2 + part.y0 + part.y1 - h/2;
-			parent.drawRect(px, py, tex.getOriginX(), tex.getOriginY(), w, h);
-		}
 	}
 
 	public void drawTinyText(String s, int x, int y, int w) {
@@ -142,10 +138,10 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	}
 
 	private void drawSelection(BoundingBox2D<Gate<?>> part, int c) {
-		int x0 = x + 2 + part.x0 * 2,
-			x1 = x + 2 + part.x1 * 2,
-			y0 = y + 2 + part.y0 * 2,
-			y1 = y + 2 + part.y1 * 2;
+		int x0 = x + 2 + part.x0 * 4,
+			x1 = x + 2 + part.x1 * 4,
+			y0 = y + part.y0 * 4,
+			y1 = y + part.y1 * 4;
 		Gui.drawRect(x0, y0, x1, y0 + 1, c);
 		Gui.drawRect(x0 + 1, y1, x1 + 1, y1 + 1, c);
 		Gui.drawRect(x0, y0 + 1, x0 + 1, y1 + 1, c);
@@ -154,24 +150,24 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
-		mx = (mx - x) / 2;
-		my = (my - y) / 2;
+		mx = (mx - x) / 4;
+		my = (my - y) / 4;
 		if (b == 0) {
 			if (placing != null && d != 1) {
-				parent.gui.sendPkt(ADD_GATE, (byte)schematic.INS_SET.id(placing.type), (byte)(mx/2), (byte)(my/2));
+				parent.gui.sendPkt(ADD_GATE, (byte)schematic.INS_SET.id(placing.type), (byte)mx, (byte)my);
 				placing = null;
 				return true;
 			}
 			if (d == 0) {
-				selPart = findPart(mx-1, my-1);
+				selPart = findPart(mx, my);
 				update.run();
-				originX = mx/2;
-				originY = my/2;
+				originX = mx;
+				originY = my;
 			} else if (d == 2 && selPart != null) unfocus();
-			moveX = mx/2 - originX;
-			moveY = my/2 - originY;
+			moveX = mx - originX;
+			moveY = my - originY;
 		} else if (b == 1 && d == 0) {
-			PinRef pin = pins.get((mx/2) & 0xffff | (my/2) << 16);
+			PinRef pin = pins.get(mx & 0xffff | my << 16);
 			if (pin != null && pin.trace >= 0) selPin = pin;
 			else if (selPin != null) {
 				parent.gui.sendPkt(CONNECT, (byte)selPin.gate,
@@ -181,7 +177,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			}
 			return true;
 		} else if (b == 2 && d != 0) {
-			BoundingBox2D<Gate<?>> part = findPart(mx-1, my-1);
+			BoundingBox2D<Gate<?>> part = findPart(mx, my);
 			if (part != null) placing = part.owner.type.newGate(0);
 			selPart = null;
 			update.run();
@@ -192,7 +188,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	@Override
 	public void unfocus() {
 		if (selPart != null && (moveX != 0 || moveY != 0)) {
-			if (selPart.offset(moveX*2, moveY*2).enclosedBy(schematic.BOARD_AREA))
+			if (selPart.offset(moveX, moveY).enclosedBy(schematic.BOARD_AREA))
 				parent.gui.sendPkt(MOVE_GATE, (byte)selPart.owner.index,
 					(byte)(selPart.owner.rasterX + moveX),
 					(byte)(selPart.owner.rasterY + moveY));

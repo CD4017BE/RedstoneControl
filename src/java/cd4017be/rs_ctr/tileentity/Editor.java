@@ -51,7 +51,7 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		RECIPES.put(new ItemKey(new ItemStack(Blocks.QUARTZ_BLOCK)), new int[] {0, 16, 0});
 	}
 
-	public final Schematic schematic = new Schematic(INS_SET, 120, 60);
+	public final Schematic schematic = new Schematic(INS_SET, 60, 35);
 	public String name = "";
 	/** 0:av A, 1:av B, 2:av C, 3:req A, 4:req B, 5:req C, 6:last Error */
 	public int[] ingreds = {0,0,0, 0,0,0, InvalidSchematicException.NO_ERROR};
