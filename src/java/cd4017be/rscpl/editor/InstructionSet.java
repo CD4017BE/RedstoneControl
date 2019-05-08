@@ -15,7 +15,7 @@ public class InstructionSet {
 	public void add(int id0, GateType<?>... types) {
 		for (GateType<?> t : types) {
 			REGISTRY[id0] = t;
-			IDS.put(t.name, id0);
+			IDS.put(t.name, id0++);
 		}
 	}
 

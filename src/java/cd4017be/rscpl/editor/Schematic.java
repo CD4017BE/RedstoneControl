@@ -26,7 +26,7 @@ public class Schematic {
 
 	public Schematic(InstructionSet insSet, int width, int height) {
 		this.INS_SET = insSet;
-		this.BOARD_AREA = new BoundingBox2D<>(null, 0, 0, width, height);
+		this.BOARD_AREA = new BoundingBox2D<>(null, 0, 0, width - 1, height);
 	}
 
 	public void resetSync() {

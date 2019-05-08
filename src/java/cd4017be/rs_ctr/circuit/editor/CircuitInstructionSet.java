@@ -22,8 +22,8 @@ public class CircuitInstructionSet extends InstructionSet {
 	public static Category[] TABS;
 
 	public static final BasicType
-		in = new BasicType(Input::new, "in", 1, 3, 0, new Code(INT_TYPE, "%p$", ALOAD, IALOAD)),
-		out = new BasicType(Output::new, "out", 1, 3, 1, new Code(INT_TYPE, "%p$>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E",
+		in = new BasicType(Input::new, "in", 1, 2, 0, new Code(INT_TYPE, "%p$", ALOAD, IALOAD)),
+		out = new BasicType(Output::new, "out", 1, 2, 1, new Code(INT_TYPE, "%p$>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E",
 			ALOAD, IALOAD, DUP_X1, IF_ICMPEQ	, DUP, ALOAD, SWAP, IASTORE 	, ALOAD, GETFIELD, AALOAD, SWAP, INVOKEINTERFACE	, ICONST_1, ISTORE, ICONST_0	, POP)),
 		i_cst = new BasicType(ConstNum::new, "i_cst", 6, 2, 0, new Code(INT_TYPE, null)),
 		not = n("not", 1, new Code(INT_TYPE, ">**", ICONST_M1, IXOR)),
@@ -63,11 +63,11 @@ public class CircuitInstructionSet extends InstructionSet {
 		TABS[0] = c = new Category("rs_ctr:io");
 		INS_SET.add(0, c.add(in, out, i_cst));
 		TABS[1] = c = new Category("rs_ctr:logic");
-		INS_SET.add(5, c.add(not, or, nor, and, nand, xor, xnor));
+		INS_SET.add(16, c.add(not, or, nor, and, nand, xor, xnor));
 		TABS[2] = c = new Category("rs_ctr:comp");
-		INS_SET.add(5, c.add(not0, is0, nsgn, psgn, eq, neq, ls, geq));
+		INS_SET.add(32, c.add(not0, is0, nsgn, psgn, eq, neq, ls, geq));
 		TABS[3] = c = new Category("rs_ctr:num");
-		INS_SET.add(20, c.add(inc, dec, neg, abs, add, sub, mul, div, mod, max, min));
+		INS_SET.add(48, c.add(inc, dec, neg, abs, add, sub, mul, div, mod, max, min));
 	}
 
 	private static BasicType n(String name, int in, Code out) {

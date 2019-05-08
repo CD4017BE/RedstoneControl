@@ -1,6 +1,8 @@
 package cd4017be.rs_ctr.gui;
 
 import cd4017be.lib.Gui.DataContainer.IGuiData;
+import cd4017be.lib.BlockGuiHandler;
+import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.HidableSlot;
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
@@ -8,6 +10,7 @@ import cd4017be.lib.Gui.comp.InfoTab;
 import cd4017be.lib.Gui.comp.Progressbar;
 import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.Gui.comp.Tooltip;
+import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.tileentity.Editor;
@@ -23,6 +26,7 @@ import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.TileContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 
@@ -87,8 +91,10 @@ public class CircuitEditor extends ModularGui {
 
 	private void send(byte tag, String s) {
 		BoundingBox2D<Gate<?>> part = board.selPart;
-		if (part != null)
-			sendPkt(tag, (byte)part.owner.index, s);
+		if (part == null) return;
+		PacketBuffer pkt = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+		pkt.writeByte(tag).writeByte(part.owner.index).writeCharSequence(s, Utils.UTF8);
+		BlockGuiHandler.sendPacketToServer(pkt);
 	}
 
 	void changeSelPart() {

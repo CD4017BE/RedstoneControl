@@ -111,7 +111,7 @@ public abstract class Gate<T extends GateType<T>> {
 			if (tn != null && tn.owner == null) {
 				Gate<?> g = indexTable.apply(tn.rasterX);
 				setInput(i, g == null ? null : g.getOutput(tn.rasterY));
-				g.traces[i] = tn.next;
+				traces[i] = tn.next;
 			}
 		}
 	}
