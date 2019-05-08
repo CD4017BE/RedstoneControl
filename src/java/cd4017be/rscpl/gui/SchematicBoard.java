@@ -33,7 +33,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	private Gate<?> placing;
 
 	public SchematicBoard(GuiFrame parent, int x, int y, Schematic schematic, Runnable update) {
-		super(parent, schematic.BOARD_AREA.width() << 1, schematic.BOARD_AREA.height() << 1, x, y);
+		super(parent, (schematic.BOARD_AREA.width() + 1) << 2, schematic.BOARD_AREA.height() << 2, x, y);
 		this.schematic = schematic;
 		this.update = update;
 	}
@@ -73,9 +73,9 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			BoundingBox2D<Gate<?>> part = placing.getBounds();
 			drawPart(part);
 		}
-		drawWires(mx, my);
 		parent.drawNow();
 		parent.bindTexture(null);
+		drawWires(mx, my);
 		if (placing != null) {
 			BoundingBox2D<Gate<?>> part = placing.getBounds();
 			for (BoundingBox2D<Gate<?>> p : parts)
@@ -99,7 +99,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 		BufferBuilder vb = Tessellator.getInstance().getBuffer();
 		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 		int r = 0x7f, g = 0, b = 0, a = 0xff;
-		float z = parent.zLevel;
+		float z = parent.zLevel + 0.5F;
 		for (PinRef pin : pins.values())
 			if (pin.equals(selPin)) {
 				vb.pos(x + pin.x * 4 + 2.5, y + pin.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
@@ -108,33 +108,17 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 				vb.pos(x + pin.x * 4 + 2.5, y + pin.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
 				vb.pos(x + pin.link.x * 4 + 2.5, y + pin.link.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
 			}
+		GlStateManager.glLineWidth((float)parent.gui.mc.displayHeight / (float)parent.gui.height);
 		Tessellator.getInstance().draw();
 		GlStateManager.enableTexture2D();
 	}
 
 	private void drawPart(BoundingBox2D<Gate<?>> part) {
 		Gate<?> node = part.owner;
-		GateTextureHandler.drawIcon(parent.getDraw(), x + 2 + part.x0*4, y + part.y0*4, part.width()*4, part.height()*4, part.owner.type.getIcon(), parent.zLevel);
+		int x = this.x + 2 + part.x0*4, y = this.y + part.y0*4;
+		GateTextureHandler.drawIcon(parent.getDraw(), x, y, part.width()*4, part.height()*4, part.owner.type.getIcon(), parent.zLevel + 1);
 		if (node instanceof ISpecialRender)
-			((ISpecialRender)node).draw(this);
-	}
-
-	public void drawTinyText(String s, int x, int y, int w) {
-		char[] cs = s.toCharArray();
-		boolean scaled = cs.length > w;
-		if (scaled) {
-			int scale = (cs.length + w - 1) / w;
-			GlStateManager.pushMatrix();
-			GlStateManager.scale(1F/(float)scale, 1F/(float)scale, 1);
-			x *= scale; y *= scale; y += (scale - 1) * 5 / 2;
-			w *= scale;
-		}
-		x += (w - cs.length) * 2;
-		for (char c : cs) {
-			parent.gui.drawTexturedModalRect(x, y, c << 2 & 0xfc, 244 + (c >> 6) * 6, 4, 6);
-			x += 4;
-		}
-		if (scaled) GlStateManager.popMatrix();
+			((ISpecialRender)node).draw(this, x, y);
 	}
 
 	private void drawSelection(BoundingBox2D<Gate<?>> part, int c) {
@@ -150,7 +134,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
-		mx = (mx - x) / 4;
+		mx = (mx - x - 2) / 4;
 		my = (my - y) / 4;
 		if (b == 0) {
 			if (placing != null && d != 1) {

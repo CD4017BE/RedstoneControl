@@ -13,6 +13,9 @@ import org.objectweb.asm.tree.LdcInsnNode;
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.ConfigurableGate;
+import cd4017be.rscpl.gui.GateTextureHandler;
+import cd4017be.rscpl.gui.ISpecialRender;
+import cd4017be.rscpl.gui.SchematicBoard;
 import io.netty.buffer.ByteBuf;
 
 
@@ -20,7 +23,7 @@ import io.netty.buffer.ByteBuf;
  * @author CD4017BE
  *
  */
-public class ConstNum extends Combinator implements ConfigurableGate {
+public class ConstNum extends Combinator implements ConfigurableGate, ISpecialRender {
 
 	public Number value;
 
@@ -69,6 +72,11 @@ public class ConstNum extends Combinator implements ConfigurableGate {
 		case Type.FLOAT: value = data.readFloat(); break;
 		case Type.DOUBLE: value = data.readDouble(); break;
 		}
+	}
+
+	@Override
+	public void draw(SchematicBoard board, int x, int y) {
+		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x + 2, y + 2, 5, board.parent.zLevel + 1);
 	}
 
 }

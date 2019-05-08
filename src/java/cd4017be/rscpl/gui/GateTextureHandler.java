@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GateTextureHandler implements ITextureMapPopulator {
 
+	private static final String TINY_FONT = "rs_ctr:tiny_font";
 	public static final ResourceLocation GATE_ICONS_LOC = new ResourceLocation(Main.ID, "textures/gates");
 	public static final TextureMap GATE_ICONS_TEX = new TextureMap(GATE_ICONS_LOC.getResourcePath(), new GateTextureHandler());
 	public static final ArrayList<Category> ins_sets = new ArrayList<>();
@@ -35,6 +36,7 @@ public class GateTextureHandler implements ITextureMapPopulator {
 
 	@Override
 	public void registerSprites(TextureMap textureMap) {
+		textureMap.setTextureEntry(new RectangularSprite(TINY_FONT));
 		for (Category ins : ins_sets) {
 			textureMap.registerSprite(new ResourceLocation(ins.getIcon()));
 			for (BoundingBox2D<GateType<?>> t : ins.instructions)
@@ -55,6 +57,44 @@ public class GateTextureHandler implements ITextureMapPopulator {
 		b.pos(X, Y, z).tex(U, V).endVertex();
 		b.pos(X, y, z).tex(t ? u:U, t ? V:v).endVertex();
 		b.pos(x, y, z).tex(u, v).endVertex();
+	}
+
+	public static void drawTinyText(BufferBuilder b, String s, int x, int y, int w, double z) {
+		TextureAtlasSprite tex = GateTextureHandler.GATE_ICONS_TEX.getAtlasSprite(TINY_FONT);
+		char[] cs = s.toCharArray();
+		double scale = cs.length <= w ? 1.0 : (double)cs.length / (double)w;
+		double px = (double)x + ((double)w - (double)cs.length / scale) * 2.0, dx = 4.0 / scale;
+		double y0 = (double)y + (scale - 1.0) * 1.25, y1 = y0 + 6.0 / scale;
+		double pu = tex.getMinU(), du = tex.getMaxU() - pu;
+		double pv = tex.getMinV(), dv = tex.getMaxV() - pu;
+		
+		if (tex instanceof RectangularSprite && ((RectangularSprite)tex).uvTransposed()) {
+			du *= 6.0 / (double)tex.getIconHeight();
+			dv *= 4.0 / (double)tex.getIconWidth();
+			for (char c : cs) {
+				double x1 = px + dx;
+				double u0 = pu + du * (double)(c >> 4), u1 = u0 + du;
+				double v0 = pv + dv * (double)(c & 15), v1 = v0 + dv;
+				b.pos(px, y1, z).tex(u1, v0).endVertex();
+				b.pos(x1, y1, z).tex(u1, v1).endVertex();
+				b.pos(x1, y0, z).tex(u0, v1).endVertex();
+				b.pos(px, y0, z).tex(u0, v0).endVertex();
+				px = x1;
+			}
+		} else {
+			du *= 4.0 / (double)tex.getIconWidth();
+			dv *= 6.0 / (double)tex.getIconHeight();
+			for (char c : cs) {
+				double x1 = px + dx;
+				double u0 = pu + du * (double)(c & 15), u1 = u0 + du;
+				double v0 = pv + dv * (double)(c >> 4), v1 = v0 + dv;
+				b.pos(px, y1, z).tex(u0, v1).endVertex();
+				b.pos(x1, y1, z).tex(u1, v1).endVertex();
+				b.pos(x1, y0, z).tex(u1, v0).endVertex();
+				b.pos(px, y0, z).tex(u0, v0).endVertex();
+				px = x1;
+			}
+		}
 	}
 
 }

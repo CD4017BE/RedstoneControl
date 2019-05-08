@@ -72,14 +72,12 @@ public class Combinator extends Gate<BasicType> implements Operator {
 
 	@Override
 	public int getInputHeight(int pin) {
-		// TODO Auto-generated method stub
-		return 0;
+		return pin == 1 && type.inputs == 2 ? 2 : pin;
 	}
 
 	@Override
 	public int getOutputHeight(int pin) {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 }

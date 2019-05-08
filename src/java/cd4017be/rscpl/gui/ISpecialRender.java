@@ -7,6 +7,6 @@ package cd4017be.rscpl.gui;
  */
 public interface ISpecialRender {
 
-	void draw(SchematicBoard board);
+	void draw(SchematicBoard board, int x, int y);
 
 }
