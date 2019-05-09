@@ -3,6 +3,8 @@ package cd4017be.rscpl.editor;
 import java.util.Iterator;
 import java.util.function.IntFunction;
 
+import org.objectweb.asm.Type;
+
 import cd4017be.lib.util.Utils;
 import cd4017be.rscpl.editor.InvalidSchematicException.ErrorType;
 import cd4017be.rscpl.graph.Operator;
@@ -28,7 +30,7 @@ public abstract class Gate<T extends GateType<T>> {
 		this.type = type;
 		this.index = index;
 		this.inputs = new Operator[type.inputs];
-		this.traces = new TraceNode[type.inputs];
+		this.traces = new TraceNode[inputCount()];
 	}
 
 	public int inputCount() {
@@ -43,7 +45,7 @@ public abstract class Gate<T extends GateType<T>> {
 		inputs[pin] = op;
 	}
 
-	protected abstract boolean requiresInput(int pin);
+	protected abstract boolean isInputTypeValid(int pin, Type type);
 
 	public abstract int outputCount();
 
@@ -56,11 +58,13 @@ public abstract class Gate<T extends GateType<T>> {
 		for (int i = 0, l = inputs.length; i < l; i++) {
 			Operator pin = inputs[i];
 			if (pin != null) {
+				if (!isInputTypeValid(i, pin.outType()))
+					throw new InvalidSchematicException(ErrorType.typeMissmatch, this, i);
 				Gate<?> node = pin.getGate();
 				if (node.check < 0)
 					throw new InvalidSchematicException(ErrorType.causalLoop, this, i);
 				node.checkValid();
-			} else if (requiresInput(i))
+			} else if (!isInputTypeValid(i, Type.VOID_TYPE))
 				throw new InvalidSchematicException(ErrorType.missingInput, this, i);
 		}
 		check = 1;
@@ -117,7 +121,7 @@ public abstract class Gate<T extends GateType<T>> {
 	}
 
 	public void remove() {
-		for (int i = 0; i < inputCount(); i++)
+		for (int i = 0; i < inputs.length; i++)
 			setInput(i, null);
 		for (int i = 0; i < outputCount(); i++) {
 			Operator o = getOutput(i);

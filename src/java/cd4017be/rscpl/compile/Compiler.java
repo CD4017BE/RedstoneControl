@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -205,10 +204,15 @@ public abstract class Compiler<P extends CompiledProgram> {
 		if (op == null) return;
 		if (op instanceof WriteOp) {
 			WriteOp w = (WriteOp)op;
+			checkName(w);
 			if (writes.put(w.name(), w) != null)
 				throw new InvalidSchematicException(ErrorType.writeConflict, w.getGate(), w.getPin());
 		}
-		if (op instanceof ReadOp) reads.add((ReadOp)op);
+		if (op instanceof ReadOp) {
+			ReadOp r = (ReadOp)op;
+			checkName(r);
+			reads.add(r);
+		}
 		if (op.hasSideEffects() && op.receivers().isEmpty()) ends.add(op);
 	}
 
@@ -260,6 +264,19 @@ public abstract class Compiler<P extends CompiledProgram> {
 			mv.visitIntInsn(SIPUSH, val);
 		else
 			mv.visitLdcInsn(val);
+	}
+
+	public static void checkName(NamedOp op) throws InvalidSchematicException {
+		valid: {
+			String name = op.name();
+			if (name.isEmpty() || !Character.isJavaIdentifierStart(name.charAt(0)))
+				break valid;
+			for (int i = name.length() - 1; i > 0; i--)
+				if (!Character.isJavaIdentifierPart(name.charAt(i)))
+					break valid;
+			return;
+		}
+		throw new InvalidSchematicException(ErrorType.invalidLabel, op.getGate(), op.getPin());
 	}
 
 }

@@ -60,7 +60,7 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 			px = 220;
 			py = 234 + lastErr.pin * 6;
 			break;
-		case duplicateLabel:
+		case typeMissmatch:
 		case invalidLabel:
 			px = 211;
 			py = 177;

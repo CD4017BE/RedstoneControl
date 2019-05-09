@@ -56,8 +56,14 @@ public class Combinator extends Gate<BasicType> implements Operator {
 	}
 
 	@Override
-	protected boolean requiresInput(int pin) {
-		return true;
+	public void setInput(int pin, Operator op) {
+		Operator.super.setInput(pin, op);
+		super.setInput(pin, op);
+	}
+
+	@Override
+	protected boolean isInputTypeValid(int pin, Type type) {
+		return type.equals(outType());
 	}
 
 	@Override

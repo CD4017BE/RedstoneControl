@@ -30,7 +30,7 @@ public class InvalidSchematicException extends Exception {
 		missingMaterial,
 		invalidLabel,
 		invalidCfg,
-		duplicateLabel,
+		typeMissmatch,
 		readConflict,
 		writeConflict,
 		causalLoop,
