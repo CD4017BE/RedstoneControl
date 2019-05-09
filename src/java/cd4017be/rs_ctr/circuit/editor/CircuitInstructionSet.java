@@ -6,6 +6,8 @@ import cd4017be.rs_ctr.circuit.gates.Combinator;
 import cd4017be.rs_ctr.circuit.gates.ConstNum;
 import cd4017be.rs_ctr.circuit.gates.Input;
 import cd4017be.rs_ctr.circuit.gates.Output;
+import cd4017be.rs_ctr.circuit.gates.ReadVar;
+import cd4017be.rs_ctr.circuit.gates.WriteVar;
 import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.editor.InstructionSet;
 import cd4017be.rscpl.gui.Category;
@@ -24,7 +26,9 @@ public class CircuitInstructionSet extends InstructionSet {
 	public static final BasicType
 		in = new BasicType(Input::new, "in", 1, 2, 0, new Code(INT_TYPE, "%p$", ALOAD, IALOAD)),
 		out = new BasicType(Output::new, "out", 1, 2, 1, new Code(INT_TYPE, "%p$>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E",
-			ALOAD, IALOAD, DUP_X1, IF_ICMPEQ	, DUP, ALOAD, SWAP, IASTORE 	, ALOAD, GETFIELD, AALOAD, SWAP, INVOKEINTERFACE	, ICONST_1, ISTORE, ICONST_0	, POP)),
+			ALOAD, IALOAD, DUP_X1, IF_ICMPEQ	, DUP, ALOAD, SWAP, IASTORE	, ALOAD, GETFIELD, AALOAD, SWAP, INVOKEINTERFACE	, ICONST_1, ISTORE, ICONST_0	, POP)),
+		read = new BasicType(ReadVar::new, "read", 6, 2, 0, new Code(INT_TYPE, null)),
+		write = new BasicType(WriteVar::new, "write", 6, 2, 2, new Code(INT_TYPE, "0>*1>!E*%t*=: I*%m|E", DUP, IF_ICMPEQ, DUP, ALOAD, SWAP, PUTFIELD, ICONST_1, ISTORE)),
 		i_cst = new BasicType(ConstNum::new, "i_cst", 6, 2, 0, new Code(INT_TYPE, null)),
 		not = n("not", 1, new Code(INT_TYPE, ">**", ICONST_M1, IXOR)),
 		or = n("or", 2, new Code(INT_TYPE, "0>1>*", IOR)),
@@ -61,7 +65,7 @@ public class CircuitInstructionSet extends InstructionSet {
 		TABS = new Category[4];
 		Category c;
 		TABS[0] = c = new Category("rs_ctr:io");
-		INS_SET.add(0, c.add(in, out, i_cst));
+		INS_SET.add(0, c.add(in, out, read, write, i_cst));
 		TABS[1] = c = new Category("rs_ctr:logic");
 		INS_SET.add(16, c.add(not, or, nor, and, nand, xor, xnor));
 		TABS[2] = c = new Category("rs_ctr:comp");

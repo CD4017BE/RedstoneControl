@@ -185,6 +185,7 @@ public class Code {
 				if (owner.isEmpty()) owner = context.compiler.C_THIS;
 				j = parseUntil(code, i = j + 1, field ? ' ' : '(');
 				String name = new String(code, i, j);
+				if (name.isEmpty()) name = (String)param[v];
 				i = j; j++;
 				if (!field) {
 					while(code[j] != ')')
