@@ -4,9 +4,8 @@ import java.util.Iterator;
 import java.util.function.IntFunction;
 
 import org.objectweb.asm.Type;
-
+import static cd4017be.rscpl.editor.InvalidSchematicException.*;
 import cd4017be.lib.util.Utils;
-import cd4017be.rscpl.editor.InvalidSchematicException.ErrorType;
 import cd4017be.rscpl.graph.Operator;
 import cd4017be.rscpl.graph.Pin;
 import io.netty.buffer.ByteBuf;
@@ -59,13 +58,13 @@ public abstract class Gate<T extends GateType<T>> {
 			Operator pin = inputs[i];
 			if (pin != null) {
 				if (!isInputTypeValid(i, pin.outType()))
-					throw new InvalidSchematicException(ErrorType.typeMissmatch, this, i);
+					throw new InvalidSchematicException(TYPE_MISSMATCH, this, i);
 				Gate<?> node = pin.getGate();
 				if (node.check < 0)
-					throw new InvalidSchematicException(ErrorType.causalLoop, this, i);
+					throw new InvalidSchematicException(CAUSAL_LOOP, this, i);
 				node.checkValid();
 			} else if (!isInputTypeValid(i, Type.VOID_TYPE))
-				throw new InvalidSchematicException(ErrorType.missingInput, this, i);
+				throw new InvalidSchematicException(MISSING_INPUT, this, i);
 		}
 		check = 1;
 	}

@@ -1,24 +1,5 @@
 package cd4017be.rscpl.compile;
 
-import static org.objectweb.asm.Opcodes.ACC_FINAL;
-import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_SYNTHETIC;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-import static org.objectweb.asm.Opcodes.V1_8;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,13 +7,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.objectweb.asm.Opcodes.*;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
-import cd4017be.rscpl.editor.InvalidSchematicException.ErrorType;
+import static cd4017be.rscpl.editor.InvalidSchematicException.*;
 import cd4017be.rscpl.graph.ArrayVar;
 import cd4017be.rscpl.graph.NamedOp;
 import cd4017be.rscpl.graph.Operator;
@@ -187,7 +169,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 			NamedOp op = variablesOut.put(r.name(), r);
 			if (op instanceof WriteOp) ((WriteOp)op).link(r);
 			else if (op != null)
-				throw new InvalidSchematicException(ErrorType.readConflict, r.getGate(), r.getPin());
+				throw new InvalidSchematicException(READ_CONFLICT, r.getGate(), r.getPin());
 		}
 		for (Operator op : endsOut) op.getGate().checkValid();
 		Collections.sort(endsOut, (a, b)-> {
@@ -206,7 +188,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 			WriteOp w = (WriteOp)op;
 			checkName(w);
 			if (writes.put(w.name(), w) != null)
-				throw new InvalidSchematicException(ErrorType.writeConflict, w.getGate(), w.getPin());
+				throw new InvalidSchematicException(WRITE_CONFLICT, w.getGate(), w.getPin());
 		}
 		if (op instanceof ReadOp) {
 			ReadOp r = (ReadOp)op;
@@ -276,7 +258,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 					break valid;
 			return;
 		}
-		throw new InvalidSchematicException(ErrorType.invalidLabel, op.getGate(), op.getPin());
+		throw new InvalidSchematicException(INVALID_LABEL, op.getGate(), op.getPin());
 	}
 
 }

@@ -19,7 +19,6 @@ import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.editor.Schematic;
-import cd4017be.rscpl.editor.InvalidSchematicException.ErrorType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
@@ -137,10 +136,14 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		ingreds[5] = c;
 	}
 
+	public static final int
+		NO_CIRCUITBOARD = 32,
+		MISSING_RESOURCE = 33;
+
 	void compile() throws InvalidSchematicException {
 		ItemStack stack = inventory;
 		if (stack.getItem() != Objects.circuitboard)
-			throw new InvalidSchematicException(ErrorType.noCircuitBoard, null, 0);
+			throw new InvalidSchematicException(NO_CIRCUITBOARD, null, 0);
 		computeCost();
 		int[] cost = ingreds.clone(), ingr;
 		int n = stack.getCount();
@@ -149,7 +152,7 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		else ingr = new int[3];
 		for (int i = 0; i < 3; i++)
 			if (cost[i] < (cost[i+3] -= ingr[i]) * n)
-				throw new InvalidSchematicException(ErrorType.missingMaterial, null, i);
+				throw new InvalidSchematicException(MISSING_RESOURCE, null, i);
 		
 		CompiledCircuit cc = CircuitCompiler.INSTANCE.compile(schematic.operators);
 		NBTTagCompound nbt = cc.serializeNBT();
