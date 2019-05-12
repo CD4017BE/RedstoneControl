@@ -60,40 +60,22 @@ public class GateTextureHandler implements ITextureMapPopulator {
 	}
 
 	public static void drawTinyText(BufferBuilder b, String s, int x, int y, int w, double z) {
-		TextureAtlasSprite tex = GateTextureHandler.GATE_ICONS_TEX.getAtlasSprite(TINY_FONT);
 		char[] cs = s.toCharArray();
 		double scale = cs.length <= w ? 1.0 : (double)cs.length / (double)w;
 		double px = (double)x + ((double)w - (double)cs.length / scale) * 2.0, dx = 4.0 / scale;
 		double y0 = (double)y + (scale - 1.0) * 1.25, y1 = y0 + 6.0 / scale;
-		double pu = tex.getMinU(), du = tex.getMaxU() - pu;
-		double pv = tex.getMinV(), dv = tex.getMaxV() - pu;
 		
-		if (tex instanceof RectangularSprite && ((RectangularSprite)tex).uvTransposed()) {
-			du *= 6.0 / (double)tex.getIconHeight();
-			dv *= 4.0 / (double)tex.getIconWidth();
-			for (char c : cs) {
-				double x1 = px + dx;
-				double u0 = pu + du * (double)(c >> 4), u1 = u0 + du;
-				double v0 = pv + dv * (double)(c & 15), v1 = v0 + dv;
-				b.pos(px, y1, z).tex(u1, v0).endVertex();
-				b.pos(x1, y1, z).tex(u1, v1).endVertex();
-				b.pos(x1, y0, z).tex(u0, v1).endVertex();
-				b.pos(px, y0, z).tex(u0, v0).endVertex();
-				px = x1;
-			}
-		} else {
-			du *= 4.0 / (double)tex.getIconWidth();
-			dv *= 6.0 / (double)tex.getIconHeight();
-			for (char c : cs) {
-				double x1 = px + dx;
-				double u0 = pu + du * (double)(c & 15), u1 = u0 + du;
-				double v0 = pv + dv * (double)(c >> 4), v1 = v0 + dv;
-				b.pos(px, y1, z).tex(u0, v1).endVertex();
-				b.pos(x1, y1, z).tex(u1, v1).endVertex();
-				b.pos(x1, y0, z).tex(u1, v0).endVertex();
-				b.pos(px, y0, z).tex(u0, v0).endVertex();
-				px = x1;
-			}
+		TextureAtlasSprite tex = GateTextureHandler.GATE_ICONS_TEX.getAtlasSprite(TINY_FONT);
+		float du = 1F/16F, dv = 6F / (float)tex.getIconHeight();
+		float[] t = new float[8];
+		for (char c : cs) {
+			RectangularSprite.getInterpolatedUV(t, tex, (float)(c & 15) * du, (float)(c >> 4) * dv, du, dv);
+			double x1 = px + dx;
+			b.pos(px, y0, z).tex(t[0], t[1]).endVertex();
+			b.pos(px, y1, z).tex(t[2], t[3]).endVertex();
+			b.pos(x1, y1, z).tex(t[4], t[5]).endVertex();
+			b.pos(x1, y0, z).tex(t[6], t[7]).endVertex();
+			px = x1;
 		}
 	}
 
