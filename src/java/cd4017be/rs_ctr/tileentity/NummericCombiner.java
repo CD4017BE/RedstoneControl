@@ -41,15 +41,15 @@ public class NummericCombiner extends SignalCombiner {
 	}
 
 	@Override
-	protected void writePorts(NBTTagCompound nbt, boolean syncPkt) {
-		super.writePorts(nbt, syncPkt);
+	protected void storeState(NBTTagCompound nbt, int mode) {
 		nbt.setByte("mode", inModes);
+		super.storeState(nbt, mode);
 	}
 
 	@Override
-	protected void readPorts(NBTTagCompound nbt, boolean syncPkt) {
-		super.readPorts(nbt, syncPkt);
+	protected void loadState(NBTTagCompound nbt, int mode) {
 		inModes = nbt.getByte("mode");
+		super.loadState(nbt, mode);
 	}
 
 	@Override

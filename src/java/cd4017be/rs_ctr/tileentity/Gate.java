@@ -1,14 +1,17 @@
 package cd4017be.rs_ctr.tileentity;
 
+import java.util.ArrayList;
 import org.apache.commons.lang3.tuple.Triple;
 
 import cd4017be.lib.block.AdvancedBlock.IInteractiveTile;
 import cd4017be.lib.block.AdvancedBlock.ISelfAwareTile;
+import cd4017be.lib.block.MultipartBlock.IModularTile;
 import cd4017be.lib.render.HybridFastTESR;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.rs_ctr.api.interact.IInteractiveDevice;
-import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
@@ -16,11 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Template implementation of {@link ISignalIO}
  * @author CD4017BE
  */
-public abstract class Gate extends BaseTileEntity implements ISignalIO, IInteractiveTile, ISelfAwareTile, IInteractiveDevice {
+public abstract class Gate extends BaseTileEntity implements ISignalIO, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, IModularTile {
 
 	protected MountedSignalPort[] ports;
 
@@ -47,8 +47,7 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 
 	@Override
 	public void onPortModified(SignalPort port, int event) {
-		markDirty();
-		markUpdate();
+		markDirty((event & E_CON_UPDATE) != 0 && (port instanceof IBlockRenderComp || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp) ? REDRAW : SYNC);
 	}
 
 	@Override
@@ -65,41 +64,19 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		writePorts(nbt, true);
-		return new SPacketUpdateTileEntity(pos, -1, nbt);
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readPorts(pkt.getNbtCompound(), true);
-		renderBox = null;
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		readPorts(nbt, false);
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		writePorts(nbt, false);
-		return super.writeToNBT(nbt);
-	}
-
-	protected void writePorts(NBTTagCompound nbt, boolean syncPkt) {
+	protected void storeState(NBTTagCompound nbt, int mode) {
 		NBTTagList list = new NBTTagList();
 		for (MountedSignalPort port : ports)
 			list.appendTag(port.serializeNBT());
 		nbt.setTag("ports", list);
 	}
 
-	protected void readPorts(NBTTagCompound nbt, boolean syncPkt) {
+	@Override
+	protected void loadState(NBTTagCompound nbt, int mode) {
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
 		for (int i = 0; i < ports.length; i++)
 			ports[i].deserializeNBT(list.getCompoundTagAt(i));
+		tesrComps = null;
 	}
 
 	@Override
@@ -130,21 +107,44 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 			port.setConnector(null, null);
 	}
 
-	protected AxisAlignedBB renderBox;
+	@Override
+	public ArrayList<IBlockRenderComp> getBMRComponents() {
+		ArrayList<IBlockRenderComp> res = new ArrayList<>();
+		for (IInteractiveComponent c : getComponents()) {
+			if (c instanceof IBlockRenderComp)
+				res.add((IBlockRenderComp) c);
+			if (c instanceof MountedSignalPort)
+				((MountedSignalPort)c).addRenderComps(res, IBlockRenderComp.class);
+		}
+		return res;
+	}
 
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		if (renderBox == null) {
-			renderBox = super.getRenderBoundingBox();
-			for (MountedSignalPort port : ports) {
-				IConnector c = port.getConnector();
-				if (c == null) continue;
-				AxisAlignedBB box = c.renderSize(world, pos, port);
-				if (box != null)
-					renderBox = renderBox.union(box);
+	@SuppressWarnings("unchecked")
+	public <T> T getModuleState(int m) {
+		return (T)getBMRComponents();
+	}
+
+	@Override
+	public boolean isModulePresent(int m) {
+		return false;
+	}
+
+	/** cached tesr render components */
+	protected ArrayList<ITESRenderComp> tesrComps = null;
+
+	@Override
+	public ArrayList<ITESRenderComp> getTESRComponents() {
+		if (tesrComps == null) {
+			tesrComps = new ArrayList<>();
+			for (IInteractiveComponent c : getComponents()) {
+				if (c instanceof ITESRenderComp)
+					tesrComps.add((ITESRenderComp) c);
+				if (c instanceof MountedSignalPort)
+					((MountedSignalPort)c).addRenderComps(tesrComps, ITESRenderComp.class);
 			}
 		}
-		return renderBox;
+		return tesrComps;
 	}
 
 	@Override

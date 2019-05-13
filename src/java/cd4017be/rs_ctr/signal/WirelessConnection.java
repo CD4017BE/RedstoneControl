@@ -1,34 +1,39 @@
 package cd4017be.rs_ctr.signal;
 
+import java.util.List;
+
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
-import cd4017be.rs_ctr.render.WireRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
+import cd4017be.rs_ctr.render.PortRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class WirelessConnection implements ITagableConnector {
+public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
 
 	public static final String ID = "wireless";
 
+	private MountedSignalPort port;
 	private DimPos linkPos;
 	private int linkPin;
 	private boolean dropsItem;
@@ -74,13 +79,9 @@ public class WirelessConnection implements ITagableConnector {
 	}
 
 	@Override
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer) {
-		WireRenderer.instance.drawModel(buffer, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(2)");
-	}
-
-	@Override
-	public AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port) {
-		return null;
+	@SideOnly(Side.CLIENT)
+	public void render(List<BakedQuad> quads) {
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "plug.main(2)");
 	}
 
 	@Override
@@ -106,6 +107,11 @@ public class WirelessConnection implements ITagableConnector {
 			else ItemFluidUtil.dropStack(stack, world, pos);
 		}
 		port.disconnect();
+	}
+
+	@Override
+	public void onLoad(MountedSignalPort port) {
+		this.port = port;
 	}
 
 	@Override

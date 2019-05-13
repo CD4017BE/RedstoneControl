@@ -5,28 +5,30 @@ import java.util.function.IntConsumer;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.render.WireRenderer;
+import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class StatusLamp implements IConnector, IntConsumer {
+public class StatusLamp implements IConnector, IntConsumer, ITESRenderComp {
 
 	public static final String ID = "lamp";
 
-	private MountedSignalPort link;
+	private MountedSignalPort port;
 	private int state;
 
 	@Override
@@ -43,14 +45,10 @@ public class StatusLamp implements IConnector, IntConsumer {
 	}
 
 	@Override
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer) {
+	@SideOnly(Side.CLIENT)
+	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
 		if (state > 0) light |= 0xf0;
-		WireRenderer.instance.drawModel(buffer, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, state > 0 ? "plug.main(4)" : "plug.main(3)");
-	}
-
-	@Override
-	public AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port) {
-		return null;
+		PortRenderer.PORT_RENDER.drawModel(buffer, (float)(x + port.pos.x), (float)(y + port.pos.y), (float)(z + port.pos.z), Orientation.fromFacing(port.face), light, state > 0 ? "plug.main(4)" : "plug.main(3)");
 	}
 
 	@Override
@@ -67,21 +65,21 @@ public class StatusLamp implements IConnector, IntConsumer {
 
 	@Override
 	public void onLoad(MountedSignalPort port) {
-		this.link = port;
+		this.port = port;
 		port.owner.setPortCallback(port.pin, this);
 	}
 
 	@Override
 	public void onUnload() {
-		if (link == null) return;
-		link.owner.setPortCallback(link.pin, null);
-		this.link = null;
+		if (port == null) return;
+		port.owner.setPortCallback(port.pin, null);
+		this.port = null;
 	}
 
 	@Override
 	public void accept(int value) {
 		state = value;
-		link.owner.onPortModified(link, ISignalIO.E_CON_UPDATE);
+		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
 	}
 
 }

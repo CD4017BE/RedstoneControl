@@ -69,20 +69,24 @@ public abstract class SignalCombiner extends Gate implements IUpdatable {
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		int[] arr = nbt.getIntArray("states");
-		System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
-		o = Orientation.values()[nbt.getByte("o") & 0xf];
-		orient();
-		dirty = false;
+	protected void storeState(NBTTagCompound nbt, int mode) {
+		if (mode == SAVE) nbt.setIntArray("states", inputs);
+		if (mode <= CLIENT) nbt.setByte("o", (byte)o.ordinal());
+		super.storeState(nbt, mode);
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setIntArray("states", inputs);
-		nbt.setByte("o", (byte)o.ordinal());
-		return super.writeToNBT(nbt);
+	protected void loadState(NBTTagCompound nbt, int mode) {
+		super.loadState(nbt, mode);
+		if (mode == SAVE) {
+			int[] arr = nbt.getIntArray("states");
+			System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
+			dirty = false;
+		}
+		if (mode <= CLIENT) {
+			o = Orientation.values()[nbt.getByte("o") & 0xf];
+			orient();
+		}
 	}
 
 	@Override

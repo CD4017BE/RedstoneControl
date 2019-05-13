@@ -4,6 +4,7 @@ import cd4017be.lib.block.BlockCoveredPipe;
 import cd4017be.lib.block.BlockPipe;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.tileentity.RedstonePort;
 import net.minecraft.block.SoundType;
@@ -35,7 +36,7 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 	 * @param tile
 	 */
 	public BlockRedstonePort(String id, Material m, SoundType sound, Class<? extends TileEntity> tile) {
-		super(id, m, sound, BlockPipe.CON_PROPS.length + 1, tile);
+		super(id, m, sound, BlockPipe.CON_PROPS.length + 2, tile);
 		boundingBox = new AxisAlignedBB[] {
 			NULL_AABB,
 			new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75),
@@ -47,6 +48,11 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 			FULL_BLOCK_AABB
 		};
 		setSolid(BY_CONNECTION);
+	}
+
+	@Override
+	public Class<?> moduleType(int i) {
+		return i < 7 ? super.moduleType(i) : IBlockRenderComp[].class;
 	}
 
 	@Override
