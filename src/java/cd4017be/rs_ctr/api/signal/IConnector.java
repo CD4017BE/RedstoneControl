@@ -4,17 +4,11 @@ import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Stores information about a connection between MountedSignalPorts and is mainly used client side to render the connection.<dl>
@@ -34,28 +28,6 @@ public interface IConnector extends INBTSerializable<NBTTagCompound> {
 	default String displayInfo(MountedSignalPort port, int linkID) {
 		return linkID != 0 ? "\nID " + linkID : "";
 	}
-
-	/**
-	 * render this connector on the given port
-	 * @param world the port's world
-	 * @param pos the port's block position
-	 * @param port the port holding this connector
-	 * @param x camera rel port X
-	 * @param y camera rel port Y
-	 * @param z camera rel port Z
-	 * @param light combined light levels at the port's location
-	 * @param buffer vertex buffer to draw in
-	 */
-	@SideOnly(Side.CLIENT)
-	void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer);
-
-	/**
-	 * @param world the port's world
-	 * @param pos the port's block position
-	 * @param port the port holding this connector.
-	 * @return the maximum range in which {@link #renderConnection} may draw stuff.
-	 */
-	AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port);
 
 	/**
 	 * Perform special removal actions like dropping items and/or calling {@link SignalPort#disconnect()}.

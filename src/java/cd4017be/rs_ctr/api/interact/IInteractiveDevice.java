@@ -1,8 +1,13 @@
 package cd4017be.rs_ctr.api.interact;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -16,6 +21,22 @@ import net.minecraft.util.math.Vec3d;
 public interface IInteractiveDevice {
 
 	IInteractiveComponent[] getComponents();
+
+	default Collection<IBlockRenderComp> getBMRComponents() {
+		ArrayList<IBlockRenderComp> comps = new ArrayList<>();
+		for (IInteractiveComponent c : getComponents())
+			if (c instanceof IBlockRenderComp)
+				comps.add((IBlockRenderComp)c);
+		return comps;
+	}
+
+	default Collection<ITESRenderComp> getTESRComponents() {
+		ArrayList<ITESRenderComp> comps = new ArrayList<>();
+		for (IInteractiveComponent c : getComponents())
+			if (c instanceof ITESRenderComp)
+				comps.add((ITESRenderComp)c);
+		return comps;
+	}
 
 	default Triple<IInteractiveComponent, Vec3d, EnumFacing> rayTrace(Entity player, float t) {
 		Vec3d p = player.getPositionEyes(t);

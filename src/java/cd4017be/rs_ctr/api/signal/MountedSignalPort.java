@@ -8,16 +8,11 @@ import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author CD4017BE
@@ -88,12 +83,6 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 		if (connector != null) s += connector.displayInfo(this, linkID);
 		else if (linkID != 0) s += "\nID " + linkID;
 		return Pair.of(pos, s);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void draw(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		if (connector != null) connector.renderConnection(world, pos, this, x + this.pos.x, y + this.pos.y, z + this.pos.z, light, buffer);
 	}
 
 	@Override
