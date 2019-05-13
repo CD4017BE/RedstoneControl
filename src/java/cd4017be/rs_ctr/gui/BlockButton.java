@@ -1,5 +1,6 @@
 package cd4017be.rs_ctr.gui;
 
+import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
@@ -7,13 +8,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.render.WireRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.rs_ctr.render.PortRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class BlockButton implements IInteractiveComponent {
+public class BlockButton implements IInteractiveComponent, IBlockRenderComp {
 
 	final IntConsumer action; //server only
 	final Supplier<String> getModel, getText; //client only
@@ -70,9 +70,8 @@ public class BlockButton implements IInteractiveComponent {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		Vec3d p = this.pos;
-		WireRenderer.instance.drawModel(buffer, (float)(x + p.x), (float)(y + p.y), (float)(z + p.z), face, light, getModel.get());
+	public void render(List<BakedQuad> quads) {
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)pos.x, (float)pos.y, (float)pos.z, face, getModel.get());
 	}
 
 	@Override

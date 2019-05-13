@@ -67,18 +67,18 @@ public class LogicCombiner extends SignalCombiner {
 	}
 
 	@Override
-	protected void writePorts(NBTTagCompound nbt, boolean syncPkt) {
-		super.writePorts(nbt, syncPkt);
+	protected void storeState(NBTTagCompound nbt, int mode) {
 		nbt.setShort("mode", (short)(inModes[0] | inModes[1] << 2 | inModes[2] << 4 | inModes[3] << 6 | outInv & 0x100));
+		super.storeState(nbt, mode);
 	}
 
 	@Override
-	protected void readPorts(NBTTagCompound nbt, boolean syncPkt) {
-		super.readPorts(nbt, syncPkt);
-		int mode = nbt.getShort("mode");
+	protected void loadState(NBTTagCompound nbt, int mode) {
+		int m = nbt.getShort("mode");
 		for (int i = 0; i < inModes.length; i++)
-			inModes[i] = (byte)(mode >> i * 2 & 3);
-		outInv = (mode & 0x100) != 0 ? 0xffff : 0;
+			inModes[i] = (byte)(m >> i * 2 & 3);
+		outInv = (m & 0x100) != 0 ? 0xffff : 0;
+		super.loadState(nbt, mode);
 	}
 
 	@Override

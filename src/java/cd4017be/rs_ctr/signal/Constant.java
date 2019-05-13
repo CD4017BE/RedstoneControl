@@ -1,18 +1,18 @@
 package cd4017be.rs_ctr.signal;
 
+import java.util.List;
+
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.render.WireRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
+import cd4017be.rs_ctr.render.PortRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -21,9 +21,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class Constant implements IConnector {
+public class Constant implements IConnector, IBlockRenderComp {
 
 	public static final String ID = "const";
+	private MountedSignalPort port;
 	public int value;
 
 	@Override
@@ -41,13 +42,8 @@ public class Constant implements IConnector {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder buffer) {
-		WireRenderer.instance.drawModel(buffer, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(1)");
-	}
-
-	@Override
-	public AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port) {
-		return null;
+	public void render(List<BakedQuad> quads) {
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "plug.main(1)");
 	}
 
 	@Override
@@ -66,6 +62,7 @@ public class Constant implements IConnector {
 
 	@Override
 	public void onLoad(MountedSignalPort port) {
+		this.port = port;
 		port.owner.getPortCallback(port.pin).accept(value);
 	}
 

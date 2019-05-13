@@ -1,5 +1,7 @@
 package cd4017be.rs_ctr.api.signal;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -126,6 +128,10 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 			ev |= ISignalIO.E_CON_ADD;
 		}
 		owner.onPortModified(this, ev);
+	}
+
+	public <T> void addRenderComps(List<T> list, Class<T> type) {
+		if (type.isInstance(connector)) list.add(type.cast(connector));
 	}
 
 	/**

@@ -2,19 +2,12 @@ package cd4017be.rs_ctr.render;
 
 import static java.lang.Float.floatToIntBits;
 
-import java.util.HashMap;
-
-import cd4017be.lib.render.IModeledTESR;
-import cd4017be.lib.render.SpecialModelLoader;
 import cd4017be.lib.render.Util;
-import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -23,20 +16,11 @@ import net.minecraft.util.math.Vec3d;
  * @author CD4017BE
  *
  */
-public class WireRenderer implements IModeledTESR {
+public class WireRenderer {
 
-	static final int TYPES = 5;
-	public static WireRenderer instance;
 	static final float WIDTH = 0.03125F, L_PLUG = 0.125F;
 
-	private final HashMap<String, IntArrayModel> cache = new HashMap<>();
-
-	public static void register() {
-		if (instance == null)
-			SpecialModelLoader.instance.tesrs.add(instance = new WireRenderer());
-	}
-
-	public float[] createLine(MountedSignalPort port, Vec3d line) {
+	public static float[] createLine(MountedSignalPort port, Vec3d line) {
 		EnumFacing face = port.face;
 		Vec3d l = new Vec3d(face.getDirectionVec());
 		Vec3d a = line.crossProduct(l), b;
@@ -65,31 +49,12 @@ public class WireRenderer implements IModeledTESR {
 		};
 	}
 
-	public void drawLine(BufferBuilder b, float[] v, float x, float y, float z, int l0, int l1, int c) {
+	public static void drawLine(BufferBuilder b, float[] v, float x, float y, float z, int l0, int l1, int c) {
 		for (int i = 0, j = 0; i < v.length; j++)
 			b.addVertexData(new int[] {
 				floatToIntBits(v[i++] + x), floatToIntBits(v[i++] + y), floatToIntBits(v[i++] + z),
 				c, floatToIntBits(v[i++]), floatToIntBits(v[i++]), (j & 2) == 0 ? l0 : l1
 			});
-	}
-
-	public void drawModel(BufferBuilder b, float x, float y, float z, Orientation o, int l, String model) {
-		IntArrayModel m = cache.get(model);
-		if (m == null)
-			try {
-				cache.put(model, m = SpecialModelLoader.loadTESRModel(Main.ID, model));
-			} catch (Exception e) {
-				Main.LOG.error("failed to load TESR model", e);
-				cache.put(model, m = new IntArrayModel(0));
-			}
-		m.setBrightness(l);
-		if (o != Orientation.N) m = m.rotated(o);
-		b.addVertexData(m.translated(x - 0.5F, y - 0.5F, z - 0.5F).vertexData);
-	}
-
-	@Override
-	public void bakeModels(IResourceManager manager) {
-		cache.clear();
 	}
 
 }

@@ -1,21 +1,26 @@
 package cd4017be.rs_ctr.signal;
 
+import java.util.List;
+
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector;
-import cd4017be.rs_ctr.api.wire.SignalLine;
+import cd4017be.rs_ctr.api.wire.RelayPort;
+import cd4017be.rs_ctr.render.PortRenderer;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -27,10 +32,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author CD4017BE
  */
-public class WireConnection implements ITagableConnector, IWiredConnector {
+public class WireConnection implements ITagableConnector, IWiredConnector, IBlockRenderComp, ITESRenderComp {
 
 	public static final String ID = "wire";
 
+	private MountedSignalPort port;
 	private BlockPos linkPos;
 	private int linkPin;
 	private Vec3d line;
@@ -88,22 +94,27 @@ public class WireConnection implements ITagableConnector, IWiredConnector {
 		port.disconnect();
 	}
 
+	@Override
+	public void onLoad(MountedSignalPort port) {
+		this.port = port;
+	}
+
 	private float[] vertices; //render cache
+	private int light1;
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void renderConnection(World world, BlockPos pos, MountedSignalPort port, double x, double y, double z, int light, BufferBuilder b) {
-		//TODO no plug for anchor
-		if (vertices == null) vertices = WireRenderer.instance.createLine(port, line);
-		WireRenderer.instance.drawModel(b, (float)x, (float)y, (float)z, Orientation.fromFacing(port.face), light, "plug.main(0)");
-		int l1 = world.getCombinedLight(pos.add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
-		WireRenderer.instance.drawLine(b, vertices, (float)x, (float)y, (float)z, light, l1, 0xffffffff);
+	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
+		if (vertices == null) vertices = WireRenderer.createLine(port, line);
+		WireRenderer.drawLine(buffer, vertices, (float)x, (float)y, (float)z, light, light1, 0xffffffff);
 	}
 
 	@Override
-	public AxisAlignedBB renderSize(World world, BlockPos pos, MountedSignalPort port) {
-		Vec3d p = new Vec3d(pos).add(port.pos);
-		return new AxisAlignedBB(p, p.add(line));
+	@SideOnly(Side.CLIENT)
+	public void render(List<BakedQuad> quads) {
+		this.light1 = port.getWorld().getCombinedLight(port.getPos().add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
+		if (port instanceof RelayPort) return;
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "plug.main(0)");
 	}
 
 	@Override

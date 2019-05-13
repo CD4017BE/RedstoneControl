@@ -117,7 +117,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	@Override
-	protected void writePorts(NBTTagCompound nbt, boolean syncPkt) {
+	protected void storeState(NBTTagCompound nbt, int mode) {
 		NBTTagList list = new NBTTagList();
 		for (MountedSignalPort port : ports) {
 			NBTTagCompound tag = port.serializeNBT();
@@ -126,13 +126,12 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		}
 		nbt.setTag("ports", list);
 		nbt.setByte("strong", strong);
-		cover.writeNBT(nbt, "cover", syncPkt);
-		if (!syncPkt)
-			nbt.setIntArray("states", states);
+		cover.writeNBT(nbt, "cover", mode == SYNC);
+		if (mode < SYNC) nbt.setIntArray("states", states);
 	}
 
 	@Override
-	protected void readPorts(NBTTagCompound nbt, boolean syncPkt) {
+	protected void loadState(NBTTagCompound nbt, int mode) {
 		strong = nbt.getByte("strong");
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
 		ports = new MountedSignalPort[list.tagCount()];
@@ -141,13 +140,12 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			int pin = tag.getByte("pin");
 			(ports[i] = createPort(pin)).deserializeNBT(tag);
 		}
-		cover.readNBT(nbt, "cover", syncPkt ? this : null);
-		if (!syncPkt) {
+		cover.readNBT(nbt, "cover", mode == SYNC ? this : null);
+		if (mode < SYNC) {
 			int[] arr = nbt.getIntArray("states");
 			System.arraycopy(arr, 0, states, 0, Math.min(arr.length, 12));
 			if (arr.length < 12) Arrays.fill(states, arr.length, 12, 0);
 		}
-		markUpdate();
 	}
 
 	private MountedSignalPort createPort(int pin) {
@@ -164,6 +162,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getModuleState(int m) {
+		if (m == 7) return (T)getBMRComponents();
 		if (m == 6) return cover.module();
 		int i;
 		if ((strong >> m & 1) != 0) i = 3;
@@ -177,6 +176,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public boolean isModulePresent(int m) {
+		if (m == 7) return false;
 		if (m == 6) return cover.state != null;
 		return getSignalPort(m) != null || getSignalPort(m + 6) != null;
 	}
@@ -193,8 +193,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			if (getSignalPort(side.ordinal() + 6) != null) {
 				if ((strong >> i & 1) != 0) return false;
 				strong |= 1 << i;
-				markDirty();
-				markUpdate();
+				markDirty(REDRAW);
 				return true;
 			}
 			port = createPort(i + 6);
@@ -205,8 +204,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		ports[ports.length - 1] = port;
 		if (!unloaded && !world.isRemote) {
 			port.onLoad();
-			markDirty();
-			markUpdate();
+			markDirty(REDRAW);
 		}
 		return true;
 	}
@@ -235,8 +233,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			port.onUnload();
 			ports = ArrayUtils.remove(ports, in);
 		}
-		markDirty();
-		markUpdate();
+		markDirty(REDRAW);
 		return true;
 	}
 

@@ -65,10 +65,13 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		if (this.connector instanceof IWiredConnector)
-			((IWiredConnector)this.connector).renderWire(quads, pos);
-		if (opposite.connector instanceof IWiredConnector)
-			((IWiredConnector)opposite.connector).renderWire(quads, pos);
+		//TODO render pin
+	}
+
+	@Override
+	public <T> void addRenderComps(List<T> list, Class<T> type) {
+		super.addRenderComps(list, type);
+		opposite.addRenderComps(list, type);
 	}
 
 	@Override
