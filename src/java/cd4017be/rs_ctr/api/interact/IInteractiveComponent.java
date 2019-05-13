@@ -1,8 +1,11 @@
 package cd4017be.rs_ctr.api.interact;
 
+import java.util.List;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -32,9 +35,6 @@ public interface IInteractiveComponent {
 	 * @return consume event
 	 */
 	boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim);
-
-	@SideOnly(Side.CLIENT)
-	void draw(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer);
 
 	/**
 	 * @param aim aimed point
@@ -69,6 +69,39 @@ public interface IInteractiveComponent {
 		default: return null;
 		}
 		return Pair.of(dir.scale(d), side);
+	}
+
+	/**
+	 * Implement this on non animated components that should render as chunk batched block model.
+	 * @author cd4017be
+	 */
+	public interface IBlockRenderComp {
+		/**
+		 * render this component in chunk batched block rendering.<br>
+		 * Coordinate frame reference is the host block, cullface is null, vertex format is BLOCK
+		 * @param quads quad list to add render elements to
+		 */
+		@SideOnly(Side.CLIENT)
+		void render(List<BakedQuad> quads);
+	}
+
+	/**
+	 * Implement this on animated components that should render as fast TESR.
+	 * @author cd4017be
+	 */
+	public interface ITESRenderComp {
+		/**
+		 * render this component in fast TESR
+		 * @param world the TileEntity's world
+		 * @param pos the TileEntity's position
+		 * @param x camera rel block X
+		 * @param y camera rel block Y
+		 * @param z camera rel block Z
+		 * @param light combined light levels at the TileEntity's location
+		 * @param buffer vertex buffer to draw in
+		 */
+		@SideOnly(Side.CLIENT)
+		void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer);
 	}
 
 }

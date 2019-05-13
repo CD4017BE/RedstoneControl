@@ -1,5 +1,7 @@
 package cd4017be.rs_ctr.api.wire;
 
+import java.util.List;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import cd4017be.lib.util.Orientation;
@@ -8,15 +10,14 @@ import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
-import net.minecraft.client.renderer.BufferBuilder;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Used to implement wire anchors.
  * @author cd4017be
  */
-public class RelayPort extends MountedSignalPort {
+public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 
 	public static final float SIZE = MountedSignalPort.SIZE / 4F;
 
@@ -63,12 +64,11 @@ public class RelayPort extends MountedSignalPort {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void draw(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		x += this.pos.x; y += this.pos.y; z += this.pos.z;
-		if (this.connector != null)
-			this.connector.renderConnection(world, pos, this, x, y, z, light, buffer);
-		if (opposite.connector != null)
-			opposite.connector.renderConnection(world, pos, opposite, x, y, z, light, buffer);
+	public void render(List<BakedQuad> quads) {
+		if (this.connector instanceof IWiredConnector)
+			((IWiredConnector)this.connector).renderWire(quads, pos);
+		if (opposite.connector instanceof IWiredConnector)
+			((IWiredConnector)opposite.connector).renderWire(quads, pos);
 	}
 
 	@Override
