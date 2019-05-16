@@ -96,7 +96,7 @@ public class LogicCombiner extends SignalCombiner {
 				(a)-> {
 					inModes[pin] = (byte)((inModes[pin] + ((a & BlockButton.A_SNEAKING) != 0 ? -1 : 1)) & 3);
 					refreshInput(pin);
-					markUpdate();
+					markDirty(REDRAW);
 				},
 				()-> "_plug.logic(" + inModes[pin] + ")",
 				()-> TooltipUtil.translate("port.rs_ctr.logic" + inModes[pin])
@@ -106,8 +106,7 @@ public class LogicCombiner extends SignalCombiner {
 			(a)-> {
 				outInv ^= 0xffff;
 				scheduleUpdate();
-				markDirty();
-				markUpdate();
+				markDirty(REDRAW);
 			},
 			()-> "_plug.logic(" + (outInv != 0 ? 3 : 2) + ")",
 			()-> TooltipUtil.translate("port.rs_ctr.logic" + (outInv != 0 ? 5 : 4))

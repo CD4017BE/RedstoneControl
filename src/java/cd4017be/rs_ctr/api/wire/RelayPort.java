@@ -71,7 +71,10 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	@Override
 	public <T> void addRenderComps(List<T> list, Class<T> type) {
 		super.addRenderComps(list, type);
-		opposite.addRenderComps(list, type);
+		if (type.isInstance(opposite.connector)) {
+			list.add(type.cast(opposite.connector));
+			opposite.connector.setPort(opposite);
+		}
 	}
 
 	@Override

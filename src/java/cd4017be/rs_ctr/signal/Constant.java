@@ -61,8 +61,13 @@ public class Constant implements IConnector, IBlockRenderComp {
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void setPort(MountedSignalPort port) {
 		this.port = port;
+	}
+
+	@Override
+	public void onLoad(MountedSignalPort port) {
+		IConnector.super.onLoad(port);
 		port.owner.getPortCallback(port.pin).accept(value);
 	}
 

@@ -131,7 +131,10 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	}
 
 	public <T> void addRenderComps(List<T> list, Class<T> type) {
-		if (type.isInstance(connector)) list.add(type.cast(connector));
+		if (type.isInstance(connector)) {
+			list.add(type.cast(connector));
+			connector.setPort(this);
+		}
 	}
 
 	/**

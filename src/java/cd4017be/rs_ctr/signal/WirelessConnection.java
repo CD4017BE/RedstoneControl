@@ -110,7 +110,7 @@ public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void setPort(MountedSignalPort port) {
 		this.port = port;
 	}
 
