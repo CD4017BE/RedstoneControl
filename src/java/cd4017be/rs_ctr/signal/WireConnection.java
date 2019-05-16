@@ -114,7 +114,7 @@ public class WireConnection implements ITagableConnector, IWiredConnector, IBloc
 	public void render(List<BakedQuad> quads) {
 		this.light1 = port.getWorld().getCombinedLight(port.getPos().add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
 		if (port instanceof RelayPort) return;
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "plug.main(0)");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(0)");
 	}
 
 	@Override

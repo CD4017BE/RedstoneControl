@@ -59,11 +59,11 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 			int[] vd = bq.getVertexData().clone();
 			for (int i = 0; i < vd.length; i+=7) {
 				Util.rotate(vd, i, r);
-				vd[i + 0] = floatToIntBits(intBitsToFloat(vd[i + 0]) + x + 0.5F);
-				vd[i + 1] = floatToIntBits(intBitsToFloat(vd[i + 1]) + y + 0.5F);
-				vd[i + 2] = floatToIntBits(intBitsToFloat(vd[i + 2]) + z + 0.5F);
+				vd[i + 0] = floatToIntBits(intBitsToFloat(vd[i + 0]) + x - 0.5F);
+				vd[i + 1] = floatToIntBits(intBitsToFloat(vd[i + 1]) + y - 0.5F);
+				vd[i + 2] = floatToIntBits(intBitsToFloat(vd[i + 2]) + z - 0.5F);
 			}
-			quads.add(new BakedQuad(vd, bq.getTintIndex(), o.rotate(bq.getFace()), bq.getSprite(), bq.shouldApplyDiffuseLighting(), bq.getFormat()));
+			quads.add(new BakedQuad(vd, bq.getTintIndex(), o.rotate(bq.getFace()), bq.getSprite(), false, bq.getFormat()));
 		}
 	}
 
@@ -73,13 +73,13 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 		for (ResourceLocation loc : dependencies) {
 			IModel m = ModelLoaderRegistry.getModelOrLogError(loc, "missing");
 			List<BakedQuad> quads = m.bake(m.getDefaultState(), format, textureGetter).getQuads(null, null, 0);
-			models.put(loc.getResourcePath(), quads.toArray(new BakedQuad[quads.size()]));
+			models.put(loc.getResourcePath().substring("block/".length()), quads.toArray(new BakedQuad[quads.size()]));
 		}
 	}
 
 	public void register(String... models) {
 		for (String s : models)
-			dependencies.add(new ResourceLocation(Main.ID, s));
+			dependencies.add(new ResourceLocation(Main.ID, "block/" + s));
 	}
 
 }

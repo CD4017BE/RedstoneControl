@@ -81,7 +81,7 @@ public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "plug.main(2)");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(2)");
 	}
 
 	@Override

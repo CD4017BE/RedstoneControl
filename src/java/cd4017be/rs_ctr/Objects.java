@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.lib.block.AdvancedBlock;
-import cd4017be.lib.block.OrientedBlock;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.item.BaseItemBlock;
 import cd4017be.lib.templates.TabMaterials;
@@ -34,10 +33,10 @@ public class Objects {
 
 	//Blocks
 	public static final BlockRedstonePort RS_PORT = null;
-	public static final OrientedBlock SPLITTER = null;
-	public static final OrientedBlock ANALOG_COMB = null;
-	public static final OrientedBlock LOGIC_COMB = null;
-	public static final OrientedBlock NUM_COMB = null;
+	public static final BlockGate SPLITTER = null;
+	public static final BlockGate ANALOG_COMB = null;
+	public static final BlockGate LOGIC_COMB = null;
+	public static final BlockGate NUM_COMB = null;
 	public static final AdvancedBlock EDITOR = null;
 	
 	//ItemBlocks
@@ -69,10 +68,10 @@ public class Objects {
 		TooltipUtil.CURRENT_DOMAIN = Main.ID;
 		ev.getRegistry().registerAll(
 				new BlockRedstonePort("rs_port", Material.ROCK, SoundType.STONE, RedstonePort.class).setCreativeTab(tabCircuits).setLightOpacity(0).setHardness(0.5F),
-				OrientedBlock.create("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				OrientedBlock.create("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				OrientedBlock.create("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				OrientedBlock.create("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class, PropertyGateOrient.GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new AdvancedBlock("editor", Material.IRON, SoundType.METAL, 0, Editor.class).setCreativeTab(tabCircuits)
 		);
 	}

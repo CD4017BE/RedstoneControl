@@ -89,10 +89,11 @@ public class InteractiveDeviceRenderer extends HybridFastTESR<TileEntity> implem
 			c.accept(format, textureGetter);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void getQuads(List<BakedQuad> quads, Object val, BlockRenderLayer layer, IBlockState state, EnumFacing side, long rand) {
-		if (layer != null && layer != BlockRenderLayer.CUTOUT || !(val instanceof IBlockRenderComp[])) return;
-		for (IBlockRenderComp brc : (IBlockRenderComp[])val)
+		if (layer != null && layer != BlockRenderLayer.CUTOUT || !(val instanceof Collection)) return;
+		for (IBlockRenderComp brc : (Collection<IBlockRenderComp>)val)
 			brc.render(quads);
 	}
 
