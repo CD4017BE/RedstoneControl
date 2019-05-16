@@ -67,7 +67,7 @@ public class NummericCombiner extends SignalCombiner {
 				(a)-> {
 					inModes ^= 1 << pin;
 					refreshInput(pin);
-					markUpdate();
+					markDirty(REDRAW);
 				},
 				()-> "_plug.num(" + (inModes >> pin & 1) + ")",
 				()-> TooltipUtil.translate("port.rs_ctr.num" + (inModes >> pin & 1))

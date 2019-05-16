@@ -64,8 +64,13 @@ public class StatusLamp implements IConnector, IntConsumer, ITESRenderComp {
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void setPort(MountedSignalPort port) {
 		this.port = port;
+	}
+
+	@Override
+	public void onLoad(MountedSignalPort port) {
+		IConnector.super.onLoad(port);
 		port.owner.setPortCallback(port.pin, this);
 	}
 

@@ -47,7 +47,7 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 
 	@Override
 	public void onPortModified(SignalPort port, int event) {
-		markDirty((event & E_CON_UPDATE) != 0 && (port instanceof IBlockRenderComp || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp) ? REDRAW : SYNC);
+		markDirty((event & E_CON_UPDATE) != 0 && ((event & E_CON_REM) != 0 || port instanceof IBlockRenderComp || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp) ? REDRAW : SYNC);
 	}
 
 	@Override

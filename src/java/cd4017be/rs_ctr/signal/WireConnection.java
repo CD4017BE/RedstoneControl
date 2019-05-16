@@ -95,7 +95,7 @@ public class WireConnection implements ITagableConnector, IWiredConnector, IBloc
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void setPort(MountedSignalPort port) {
 		this.port = port;
 	}
 

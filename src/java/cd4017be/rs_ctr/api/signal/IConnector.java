@@ -37,10 +37,18 @@ public interface IConnector extends INBTSerializable<NBTTagCompound> {
 	void onRemoved(MountedSignalPort port, @Nullable EntityPlayer player);
 
 	/**
+	 * updates the port this is connected to
+	 * @param port the port holding this connector.
+	 */
+	default void setPort(MountedSignalPort port) {}
+
+	/**
 	 * called when the given port is loaded into the world.
 	 * @param port the port holding this connector.
 	 */
-	default void onLoad(MountedSignalPort port) {}
+	default void onLoad(MountedSignalPort port) {
+		setPort(port);
+	}
 
 	/**
 	 * called when the port holding this connector is unloaded.
