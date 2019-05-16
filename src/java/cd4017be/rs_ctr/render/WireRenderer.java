@@ -35,7 +35,7 @@ public class WireRenderer {
 		}
 		TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("rs_ctr:blocks/rs_port0");
 		Vec2f t0 = Util.getUV(tex, 0, 14), t1 = Util.getUV(tex, 16, 16);
-		Vec3d p = l.scale(L_PLUG);
+		Vec3d p = l.scale(L_PLUG).add(port.pos);
 		l = line.add(p);
 		return new float[] {
 			(float)(p.x - a.x), (float)(p.y - a.y), (float)(p.z - a.z), t0.x, t0.y,

@@ -69,7 +69,7 @@ public class NummericCombiner extends SignalCombiner {
 					refreshInput(pin);
 					markUpdate();
 				},
-				()-> "plug.num(" + (inModes >> pin & 1) + ")",
+				()-> "_plug.num(" + (inModes >> pin & 1) + ")",
 				()-> TooltipUtil.translate("port.rs_ctr.num" + (inModes >> pin & 1))
 			).setSize(0.0625F, 0.0625F).setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
 		}
