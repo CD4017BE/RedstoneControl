@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
@@ -77,6 +78,7 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 		for (int i = 0; i < ports.length; i++)
 			ports[i].deserializeNBT(list.getCompoundTagAt(i));
 		tesrComps = null;
+		tesrBB = null;
 	}
 
 	@Override
@@ -132,6 +134,8 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 
 	/** cached tesr render components */
 	protected ArrayList<ITESRenderComp> tesrComps = null;
+	/** cached tesr render range */
+	protected AxisAlignedBB tesrBB = null;
 
 	@Override
 	public ArrayList<ITESRenderComp> getTESRComponents() {
@@ -145,6 +149,19 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 			}
 		}
 		return tesrComps;
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBoundingBox() {
+		if (tesrBB == null) {
+			tesrBB = super.getRenderBoundingBox();
+			for (ITESRenderComp c : getTESRComponents()) {
+				AxisAlignedBB bb = c.getRenderBB(world, pos);
+				if (bb != null)
+					tesrBB = tesrBB.union(bb);
+			}
+		}
+		return tesrBB;
 	}
 
 	@Override

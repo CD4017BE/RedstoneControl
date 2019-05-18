@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -115,6 +116,12 @@ public class WireConnection implements ITagableConnector, IWiredConnector, IBloc
 		this.light1 = port.getWorld().getCombinedLight(port.getPos().add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
 		if (port instanceof RelayPort) return;
 		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(0)");
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBB(World world, BlockPos pos) {
+		Vec3d p = new Vec3d(pos).add(port.pos);
+		return new AxisAlignedBB(p, p.add(line));
 	}
 
 	@Override
