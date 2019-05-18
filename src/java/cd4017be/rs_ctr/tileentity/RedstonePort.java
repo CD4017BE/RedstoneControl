@@ -147,6 +147,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			if (arr.length < 12) Arrays.fill(states, arr.length, 12, 0);
 		}
 		tesrComps = null;
+		tesrBB = null;
 	}
 
 	private MountedSignalPort createPort(int pin) {

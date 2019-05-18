@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -102,6 +103,14 @@ public interface IInteractiveComponent {
 		 */
 		@SideOnly(Side.CLIENT)
 		void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer);
+
+		/**
+		 * @param world the TileEntity's world
+		 * @param pos the TileEntity's position
+		 * @return the maximum range in which {@link #render} may draw stuff.
+		 */
+		AxisAlignedBB getRenderBB(World world, BlockPos pos);
+
 	}
 
 }
