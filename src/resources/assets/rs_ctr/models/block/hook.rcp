@@ -1,0 +1,13 @@
+{
+	textures = ["rs_ctr:blocks/rs_port0"];
+}
+
+main() {}
+
+pin() {
+	Loc Q = [7.5,7.5,4.5, 8.5,8.5,8.5]#, T = [0,13, 4,14]#;
+	for(F:["v-U","v+U","-vU","+vU"]) {
+		add(rect(Q, T, F, 0));
+	}
+	add(rect(Q, [4,13, 5,14]#, "uv+", 0));
+}
