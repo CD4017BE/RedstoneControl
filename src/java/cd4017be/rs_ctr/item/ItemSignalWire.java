@@ -6,6 +6,7 @@ import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
+import cd4017be.rs_ctr.api.wire.RelayPort;
 import cd4017be.rs_ctr.signal.WireConnection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,9 +51,12 @@ public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 			return;
 		}
 		if (!nbt.getBoolean("d") ^ port.isSource) {
-			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire0")));
-			stack.setTagCompound(null);
-			return;
+			if (port instanceof RelayPort) port = ((RelayPort)port).opposite;
+			else {
+				player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire0")));
+				stack.setTagCompound(null);
+				return;
+			}
 		}
 		int lx = nbt.getInteger("lx"), ly = nbt.getInteger("ly"), lz = nbt.getInteger("lz");
 		int d = (int)Math.ceil(pos.getDistance(lx, ly, lz));
@@ -73,13 +77,13 @@ public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 			return;
 		}
 		MountedSignalPort lport = (MountedSignalPort)p;
-		//TODO no plugs on anchors
-		Vec3d path = new Vec3d(lpos.subtract(pos))
-				.add(lport.pos.subtract(port.pos))
-				.add(new Vec3d(lport.face.getDirectionVec()).subtract(new Vec3d(port.face.getDirectionVec())).scale(0.125));
+		Vec3d path = new Vec3d(lpos.subtract(pos)).add(lport.pos.subtract(port.pos));
+		if (!(port instanceof RelayPort)) path = path.subtract(new Vec3d(port.face.getDirectionVec()).scale(0.125));
+		if (!(lport instanceof RelayPort)) path = path.add(new Vec3d(lport.face.getDirectionVec()).scale(0.125));
 		port.setConnector(new WireConnection(lpos, lp, path.scale(0.5), d/2), player);
 		lport.setConnector(new WireConnection(pos, port.pin, path.scale(-0.5), d - d/2), player);
-		port.connect(lport);
+		if (lport instanceof RelayPort) lport.connect(port);
+		else port.connect(lport);
 		stack.setTagCompound(null);
 		stack.shrink(d);
 	}

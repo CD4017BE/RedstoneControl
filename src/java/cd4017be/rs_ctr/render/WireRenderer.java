@@ -5,6 +5,7 @@ import static java.lang.Float.floatToIntBits;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.api.wire.RelayPort;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -35,7 +36,7 @@ public class WireRenderer {
 		}
 		TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("rs_ctr:blocks/rs_port0");
 		Vec2f t0 = Util.getUV(tex, 0, 14), t1 = Util.getUV(tex, 16, 16);
-		Vec3d p = l.scale(L_PLUG).add(port.pos);
+		Vec3d p = port instanceof RelayPort ? port.pos : port.pos.add(l.scale(L_PLUG));
 		l = line.add(p);
 		return new float[] {
 			(float)(p.x - a.x), (float)(p.y - a.y), (float)(p.z - a.z), t0.x, t0.y,
