@@ -48,6 +48,16 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	protected Orientation o = Orientation.N;
 
 	@Override
+	public SignalPort getSignalPort(int pin) {
+		SignalPort port = hooks.get(pin);
+		if (port != null)
+			return port;
+		if (pin < ports.length && (port = ports[pin]).pin == pin)
+			return port;
+		return IHookAttachable.super.getSignalPort(pin);
+	}
+
+	@Override
 	public Orientation getOrientation() {
 		return o;
 	}
