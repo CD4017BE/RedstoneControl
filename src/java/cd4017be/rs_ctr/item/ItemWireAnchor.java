@@ -35,14 +35,14 @@ public class ItemWireAnchor extends BaseItemBlock {
 
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		int p = IHookAttachable.getAttachmentPos(new Vec3d(hitX, hitY, hitZ), player);
+		int p = IHookAttachable.getAttachmentPos(new Vec3d(hitX, hitY, hitZ), facing, player);
 		int q = p & 15;
 		if (q >= 4) pos = pos.add(2 - q/4, 0, 0);
 		q = p >> 4 & 15;
 		if (q >= 4) pos = pos.add(0, 2 - q/4, 0);
 		q = p >> 8 & 15;
 		if (q >= 4) pos = pos.add(0, 0, 2 - q/4);
-		p &= 0x333;
+		p &= 0x3f0333;
 		ItemStack stack = player.getHeldItem(hand);
 		if (!player.canPlayerEdit(pos, facing, stack))
 			return EnumActionResult.FAIL;

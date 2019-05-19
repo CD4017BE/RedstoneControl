@@ -4,9 +4,21 @@
 
 main() {}
 
-pin() {
+pin(l) {
+	if (l > 2) {
+		translate(8, 8, 8);
+		rotate(0, 0, 1, -45);
+		scale(1, 1, 1.41);
+		translate(-8, -8, -8);
+	}
+	if (l > 1) {
+		translate(8, 8, 8);
+		rotate(0, 1, 0, -45);
+		scale(1, 1, 1.41);
+		translate(-8, -8, -8);
+	}
 	Loc Q = [7.5,7.5,4.5, 8.5,8.5,8.5]#, T = [0,13, 4,14]#;
-	for(F:["v-U","v+U","-vU","+vU"]) {
+	for(F:["v-u","v+u","-vu","+vu"]) {
 		add(rect(Q, T, F, 0));
 	}
 	add(rect(Q, [4,13, 5,14]#, "uv+", 0));

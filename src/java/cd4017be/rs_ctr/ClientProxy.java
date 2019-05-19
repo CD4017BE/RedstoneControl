@@ -62,7 +62,7 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_plug.num(0)", "_plug.num(1)");
 		PORT_RENDER.register("_plug.logic(0)", "_plug.logic(1)", "_plug.logic(2)", "_plug.logic(3)");
 		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)");
-		PORT_RENDER.register("_hook.pin()");
+		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		
 		registerRenderBS(RS_PORT, 0, 1);
 		registerRender(SPLITTER);

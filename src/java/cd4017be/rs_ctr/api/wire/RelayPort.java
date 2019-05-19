@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -36,6 +37,8 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	public static final float SIZE = MountedSignalPort.SIZE / 4F;
 
 	public final RelayPort opposite;
+	/** the anchor direction for render: 0bZZYYXX, X/Y/Z = {0b01, 0b10, 0b11} */
+	public int orient;
 
 	/**
 	 * @param owner
@@ -44,6 +47,7 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	public RelayPort(ISignalIO owner, int pin) {
 		super(owner, pin & 0xfff | 0x8000, true);
 		this.opposite = new RelayPort(this);
+		this.orient = pin >> 16 & 0x3f;
 	}
 
 	private RelayPort(RelayPort opposite) {
@@ -70,11 +74,34 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)pos.x, (float)pos.y, (float)pos.z, Orientation.fromFacing(face), "_hook.pin()");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)pos.x, (float)pos.y, (float)pos.z, Orientation.values()[orient >> 8 & 15], "_hook.pin(" + Integer.toString(orient >> 12 & 3) + ")");
 	}
 
 	public void orient(Orientation o) {
 		setLocation((double)(pin & 0x3) * 0.25 + 0.125, (double)(pin >> 4 & 0x3) * 0.25 + 0.125, (double)(pin >> 8 & 0x3) * 0.25 + 0.125, face, o);
+		int x = (orient & 3) - 2, y = (orient >> 2 & 3) - 2, z = (orient >> 4 & 3) - 2;
+		Vec3d vec = o.rotate(new Vec3d(x, y, z));
+		x = (int)vec.x; y = (int)vec.y; z = (int)vec.z;
+		int l = x*x + y*y + z*z;
+		int or;
+		switch(l) {
+		case 1:
+			or = z != 0 ? (z < 0 ? 0 : 2) : x != 0 ? (x < 0 ? 3 : 1) : (y < 0 ? 4 : 12);
+			break;
+		case 2:
+			if (y != 0) {
+				or = x < 0 ? 4 : z < 0 ? 5 : z == 0 ? 6 : 7;
+				if (y > 0) or += 8;
+				break;
+			}
+		case 3:
+			or = x > 0 ? 1 : 0;
+			if (z > 0) or = 3 - or;
+			if (y > 0) or = 11 - or;
+			break;
+		default: or = 0;
+		}
+		orient = orient & 0x3f | or << 8 | l << 12;
 	}
 
 	@Override
@@ -126,6 +153,19 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 			rp.linkID = 0;
 			rp.owner.onPortModified(rp, ISignalIO.E_DISCONNECT);
 		}
+	}
+
+	@Override
+	public NBTTagCompound serializeNBT() {
+		NBTTagCompound nbt = super.serializeNBT();
+		nbt.setByte("o", (byte)orient);
+		return nbt;
+	}
+
+	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		super.deserializeNBT(nbt);
+		orient = nbt.getByte("o");
 	}
 
 	@Override
