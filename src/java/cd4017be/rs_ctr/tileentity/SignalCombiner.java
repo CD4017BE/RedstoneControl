@@ -20,7 +20,6 @@ public abstract class SignalCombiner extends Gate implements IUpdatable {
 	protected IntConsumer output = SignalReceiver.NOP;
 	protected final int[] inputs = new int[4];
 	protected boolean dirty;
-	protected Orientation o = Orientation.N;
 
 	{
 		ports = new MountedSignalPort[] {
@@ -77,22 +76,21 @@ public abstract class SignalCombiner extends Gate implements IUpdatable {
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
+		if (mode <= CLIENT) {
+			o = Orientation.values()[nbt.getByte("o") & 0xf];
+			orient();
+		}
 		super.loadState(nbt, mode);
 		if (mode == SAVE) {
 			int[] arr = nbt.getIntArray("states");
 			System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
 			dirty = false;
 		}
-		if (mode <= CLIENT) {
-			o = Orientation.values()[nbt.getByte("o") & 0xf];
-			orient();
-		}
 	}
 
 	@Override
 	public void updateContainingBlockInfo() {
 		super.updateContainingBlockInfo();
-		o = getOrientation();
 		orient();
 	}
 

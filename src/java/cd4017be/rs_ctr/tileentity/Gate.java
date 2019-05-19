@@ -1,6 +1,9 @@
 package cd4017be.rs_ctr.tileentity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang3.tuple.Triple;
 
 import cd4017be.lib.block.AdvancedBlock.IInteractiveTile;
@@ -8,6 +11,7 @@ import cd4017be.lib.block.AdvancedBlock.ISelfAwareTile;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
 import cd4017be.lib.render.HybridFastTESR;
 import cd4017be.lib.tileentity.BaseTileEntity;
+import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
@@ -15,6 +19,10 @@ import cd4017be.rs_ctr.api.interact.IInteractiveDevice;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
+import cd4017be.rs_ctr.api.wire.IHookAttachable;
+import cd4017be.rs_ctr.api.wire.RelayPort;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,14 +40,38 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Template implementation of {@link ISignalIO}
  * @author CD4017BE
  */
-public abstract class Gate extends BaseTileEntity implements ISignalIO, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, IModularTile {
+public abstract class Gate extends BaseTileEntity implements IHookAttachable, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, IModularTile {
 
 	protected MountedSignalPort[] ports;
+	protected IInteractiveComponent[] gui;
+	protected Int2ObjectOpenHashMap<RelayPort> hooks = new Int2ObjectOpenHashMap<>();
+	protected Orientation o = Orientation.N;
+
+	@Override
+	public Orientation getOrientation() {
+		return o;
+	}
+
+	@Override
+	public Int2ObjectMap<RelayPort> getHookPins() {
+		return hooks;
+	}
 
 	@Override
 	public IInteractiveComponent[] getComponents() {
-		return ports;
+		if (gui == null) {
+			List<IInteractiveComponent> list = new ArrayList<>();
+			Collections.addAll(list, ports);
+			for (RelayPort port : hooks.values())
+				if (port.isSource)
+					list.add(port);
+			initGuiComps(list);
+			gui = list.toArray(new IInteractiveComponent[list.size()]);
+		}
+		return gui;
 	}
+
+	protected void initGuiComps(List<IInteractiveComponent> list) {}
 
 	@Override
 	public SignalPort[] getSignalPorts() {
@@ -48,7 +80,14 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 
 	@Override
 	public void onPortModified(SignalPort port, int event) {
-		markDirty((event & E_CON_UPDATE) != 0 && ((event & E_CON_REM) != 0 || port instanceof IBlockRenderComp || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp) ? REDRAW : SYNC);
+		int mode;
+		if ((event & (E_HOOK_ADD | E_HOOK_REM)) != 0) {
+			gui = null;
+			mode = REDRAW;
+		} else if ((event & E_CON_UPDATE) != 0 && ((event & E_CON_REM) != 0 || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp)) {
+			mode = REDRAW;
+		} else mode = SYNC;
+		markDirty(mode);
 	}
 
 	@Override
@@ -70,6 +109,8 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 		for (MountedSignalPort port : ports)
 			list.appendTag(port.serializeNBT());
 		nbt.setTag("ports", list);
+		NBTTagCompound ctag = storeHooks();
+		if (ctag != null) nbt.setTag("hooks", ctag);
 	}
 
 	@Override
@@ -77,8 +118,10 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
 		for (int i = 0; i < ports.length; i++)
 			ports[i].deserializeNBT(list.getCompoundTagAt(i));
+		loadHooks(nbt.getCompoundTag("hooks"));
 		tesrComps = null;
 		tesrBB = null;
+		gui = null;
 	}
 
 	@Override
@@ -168,6 +211,15 @@ public abstract class Gate extends BaseTileEntity implements ISignalIO, IInterac
 	@SideOnly(Side.CLIENT)
 	public boolean hasFastRenderer() {
 		return !HybridFastTESR.isAimedAt(this);
+	}
+
+	@Override
+	public void updateContainingBlockInfo() {
+		super.updateContainingBlockInfo();
+		o = super.getOrientation();
+		for (RelayPort port : hooks.values())
+			port.orient(o);
+		gui = null;
 	}
 
 }
