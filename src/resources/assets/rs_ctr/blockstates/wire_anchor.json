@@ -1,0 +1,6 @@
+{
+    "variants": {
+		"empty": { "model": "rs_ctr:_hook" },
+		"inventory": { "model": "rs_ctr:_hook.pin"}
+    }
+}
