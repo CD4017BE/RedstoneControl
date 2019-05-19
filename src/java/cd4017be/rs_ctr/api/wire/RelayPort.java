@@ -10,14 +10,17 @@ import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
+import cd4017be.rs_ctr.render.PortRenderer;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,6 +31,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 
+	@ObjectHolder(value = "rs_ctr:wire_anchor")
+	public static final Item HOOK_ITEM = null;
 	public static final float SIZE = MountedSignalPort.SIZE / 4F;
 
 	public final RelayPort opposite;
@@ -58,14 +63,18 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 		if (this.connector != null) s = this.connector.displayInfo(this, linkID);
 		else if (opposite.connector != null) s = opposite.connector.displayInfo(opposite, linkID);
 		else s = TooltipUtil.translate(name);
-		if (s.charAt(0) == '\n') s = s.substring(1);
+		if (!s.isEmpty() && s.charAt(0) == '\n') s = s.substring(1);
 		return Pair.of(pos, s);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		//TODO render pin
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)pos.x, (float)pos.y, (float)pos.z, Orientation.fromFacing(face), "_hook.pin()");
+	}
+
+	public void orient(Orientation o) {
+		setLocation((double)(pin & 0x3) * 0.25 + 0.125, (double)(pin >> 4 & 0x3) * 0.25 + 0.125, (double)(pin >> 8 & 0x3) * 0.25 + 0.125, face, o);
 	}
 
 	@Override
@@ -81,29 +90,16 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
 		ItemStack stack = player.getHeldItemMainhand();
 		if (hit || player.isSneaking() && stack.isEmpty()) {
-			setConnector(null, player);
+			if (connector != null) setConnector(null, player);
+			else if (opposite.connector != null) opposite.setConnector(null, player);
+			else ((IHookAttachable)owner).removeHook(pin, player);
 			return true;
 		}
 		if (stack.getItem() instanceof IWiredConnectorItem) {
-			((IWiredConnectorItem)stack.getItem()).doAttach(stack, this, player);
+			((IWiredConnectorItem)stack.getItem()).doAttach(stack, connector != null && opposite.connector == null ? opposite : this, player);
 			return true;
-		}
+		} 
 		return false;
-	}
-
-	@Override
-	public MountedSignalPort setLocation(double x, double y, double z, EnumFacing face) {
-		opposite.pos = this.pos = new Vec3d(x, y, z);
-		opposite.face = (this.face = face).getOpposite();
-		return this;
-	}
-
-	@Override
-	public MountedSignalPort setLocation(double x, double y, double z, EnumFacing face, Orientation o) {
-		super.setLocation(x, y, z, face, o);
-		opposite.pos = this.pos;
-		opposite.face = this.face.getOpposite();
-		return this;
 	}
 
 	@Override

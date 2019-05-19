@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.IntConsumer;
 
 import cd4017be.lib.util.TooltipUtil;
@@ -14,9 +15,32 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class LogicCombiner extends SignalCombiner {
 
-	IInteractiveComponent[] gui = ports;
 	byte[] inModes = new byte[4];
 	int outInv;
+	BlockButton[] buttons = new BlockButton[5];
+	{
+		for (int i = 0; i < 4; i++) {
+			int pin = i;
+			buttons[i] = new BlockButton(
+				(a)-> {
+					inModes[pin] = (byte)((inModes[pin] + ((a & BlockButton.A_SNEAKING) != 0 ? -1 : 1)) & 3);
+					refreshInput(pin);
+					markDirty(REDRAW);
+				},
+				()-> "_plug.logic(" + inModes[pin] + ")",
+				()-> TooltipUtil.translate("port.rs_ctr.logic" + inModes[pin])
+			).setSize(0.0625F, 0.0625F);
+		}
+		buttons[4] = new BlockButton(
+			(a)-> {
+				outInv ^= 0xffff;
+				scheduleUpdate();
+				markDirty(REDRAW);
+			},
+			()-> "_plug.logic(" + (outInv != 0 ? 3 : 2) + ")",
+			()-> TooltipUtil.translate("port.rs_ctr.logic" + (outInv != 0 ? 5 : 4))
+		).setSize(0.0625F, 0.0625F);
+	}
 
 	@Override
 	public void process() {
@@ -82,35 +106,16 @@ public class LogicCombiner extends SignalCombiner {
 	}
 
 	@Override
-	public IInteractiveComponent[] getComponents() {
-		return gui;
+	protected void initGuiComps(List<IInteractiveComponent> list) {
+		Collections.addAll(list, buttons);
 	}
 
 	@Override
 	protected void orient() {
+		for (int i = 0; i < 4; i++)
+			buttons[i].setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
+		buttons[4].setLocation(0.625F, 0.5F, 0.25F, o);
 		super.orient();
-		gui = Arrays.copyOf(ports, 10, IInteractiveComponent[].class);
-		for (int i = 0; i < 4; i++) {
-			int pin = i;
-			gui[i + 5] = new BlockButton(
-				(a)-> {
-					inModes[pin] = (byte)((inModes[pin] + ((a & BlockButton.A_SNEAKING) != 0 ? -1 : 1)) & 3);
-					refreshInput(pin);
-					markDirty(REDRAW);
-				},
-				()-> "_plug.logic(" + inModes[pin] + ")",
-				()-> TooltipUtil.translate("port.rs_ctr.logic" + inModes[pin])
-			).setSize(0.0625F, 0.0625F).setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
-		}
-		gui[9] = new BlockButton(
-			(a)-> {
-				outInv ^= 0xffff;
-				scheduleUpdate();
-				markDirty(REDRAW);
-			},
-			()-> "_plug.logic(" + (outInv != 0 ? 3 : 2) + ")",
-			()-> TooltipUtil.translate("port.rs_ctr.logic" + (outInv != 0 ? 5 : 4))
-		).setSize(0.0625F, 0.0625F).setLocation(0.625F, 0.5F, 0.25F, o);
 	}
 
 }

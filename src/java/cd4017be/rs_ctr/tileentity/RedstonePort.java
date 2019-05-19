@@ -127,6 +127,8 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		nbt.setTag("ports", list);
 		nbt.setByte("strong", strong);
 		cover.writeNBT(nbt, "cover", mode == SYNC);
+		NBTTagCompound tag = storeHooks();
+		if (tag != null) nbt.setTag("hooks", tag);
 		if (mode < SYNC) nbt.setIntArray("states", states);
 	}
 
@@ -146,8 +148,10 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			System.arraycopy(arr, 0, states, 0, Math.min(arr.length, 12));
 			if (arr.length < 12) Arrays.fill(states, arr.length, 12, 0);
 		}
+		loadHooks(nbt.getCompoundTag("hooks"));
 		tesrComps = null;
 		tesrBB = null;
+		gui = null;
 	}
 
 	private MountedSignalPort createPort(int pin) {
@@ -206,7 +210,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		ports[ports.length - 1] = port;
 		if (!unloaded && !world.isRemote) {
 			port.onLoad();
-			markDirty(REDRAW);
+			onPortModified(port, E_HOOK_ADD);
 		}
 		return true;
 	}
@@ -235,7 +239,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			port.onUnload();
 			ports = ArrayUtils.remove(ports, in);
 		}
-		markDirty(REDRAW);
+		onPortModified(null, E_HOOK_REM);
 		return true;
 	}
 

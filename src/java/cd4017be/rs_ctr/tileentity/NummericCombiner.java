@@ -1,6 +1,5 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.Arrays;
 import java.util.function.IntConsumer;
 
 import cd4017be.lib.util.TooltipUtil;
@@ -14,8 +13,22 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class NummericCombiner extends SignalCombiner {
 
-	IInteractiveComponent[] gui = ports;
 	byte inModes;
+	BlockButton[] buttons = new BlockButton[4];
+	{
+		for (int i = 0; i < 4; i++) {
+			int pin = i;
+			buttons[i] = new BlockButton(
+				(a)-> {
+					inModes ^= 1 << pin;
+					refreshInput(pin);
+					markDirty(REDRAW);
+				},
+				()-> "_plug.num(" + (inModes >> pin & 1) + ")",
+				()-> TooltipUtil.translate("port.rs_ctr.num" + (inModes >> pin & 1))
+			).setSize(0.0625F, 0.0625F);
+		}
+	}
 
 	@Override
 	public void process() {
@@ -59,20 +72,9 @@ public class NummericCombiner extends SignalCombiner {
 
 	@Override
 	protected void orient() {
+		for (int i = 0; i < 4; i++)
+			buttons[i].setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
 		super.orient();
-		gui = Arrays.copyOf(ports, 9, IInteractiveComponent[].class);
-		for (int i = 0; i < 4; i++) {
-			int pin = i;
-			gui[i + 5] = new BlockButton(
-				(a)-> {
-					inModes ^= 1 << pin;
-					refreshInput(pin);
-					markDirty(REDRAW);
-				},
-				()-> "_plug.num(" + (inModes >> pin & 1) + ")",
-				()-> TooltipUtil.translate("port.rs_ctr.num" + (inModes >> pin & 1))
-			).setSize(0.0625F, 0.0625F).setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
-		}
 	}
 
 }
