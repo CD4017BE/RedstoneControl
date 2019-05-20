@@ -10,6 +10,7 @@ import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
+import cd4017be.rs_ctr.api.wire.SignalLine.WireLoopException;
 import cd4017be.rs_ctr.render.PortRenderer;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -133,7 +134,10 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	public void connect(SignalPort to) {
 		if (!(to instanceof MountedSignalPort)) return;
 		MountedSignalPort port = (MountedSignalPort)to;
-		SignalLine line = new SignalLine(this);
+		
+		SignalLine line;
+		try {line = new SignalLine(this);}
+		catch (WireLoopException e) {return;}
 		if (line.source == null || line.sink == null || !line.contains(port)) return;
 		//TODO label
 		line.source.connect(line.sink);
@@ -146,7 +150,9 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 
 	@Override
 	public void disconnect() {
-		SignalLine line = new SignalLine(this);
+		SignalLine line;
+		try {line = new SignalLine(this);}
+		catch (WireLoopException e) {return;}
 		if (line.source != null) line.source.disconnect();
 		else if (line.sink != null) line.sink.disconnect();
 		for (RelayPort rp : line.hooks) {

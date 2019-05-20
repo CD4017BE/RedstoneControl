@@ -25,8 +25,9 @@ public class SignalLine implements Collection<MountedSignalPort> {
 	/**
 	 * Parses the connection of the given port.
 	 * @param port
+	 * @throws WireLoopException if the ports are connected in a loop
 	 */
-	public SignalLine(MountedSignalPort port) {
+	public SignalLine(MountedSignalPort port) throws WireLoopException {
 		ArrayDeque<RelayPort> list = new ArrayDeque<>();
 		MountedSignalPort p0 = scan(port, list);
 		MountedSignalPort p1 = port instanceof RelayPort ? scan(((RelayPort)port).opposite, list) : port;
@@ -53,13 +54,14 @@ public class SignalLine implements Collection<MountedSignalPort> {
 		return (MountedSignalPort)sp;
 	}
 
-	private static MountedSignalPort scan(MountedSignalPort port, ArrayDeque<RelayPort> list) {
+	private static MountedSignalPort scan(MountedSignalPort port, ArrayDeque<RelayPort> list) throws WireLoopException {
 		boolean dir = port.isSource;
 		if (port instanceof RelayPort && port.getConnector() != null)
 			if (dir) list.addLast((RelayPort)port);
 			else list.addFirst((RelayPort)port);
 		while ((port = getLink(port)) instanceof RelayPort) {
 			RelayPort sr = (RelayPort)port;
+			if (list.contains(sr)) throw new WireLoopException();
 			if (dir) list.addLast(sr);
 			else list.addFirst(sr);
 			port = sr = sr.opposite;
@@ -176,5 +178,8 @@ public class SignalLine implements Collection<MountedSignalPort> {
 	public void clear() {
 		throw new UnsupportedOperationException();
 	}
+
+	@SuppressWarnings("serial")
+	public static class WireLoopException extends Exception {}
 
 }
