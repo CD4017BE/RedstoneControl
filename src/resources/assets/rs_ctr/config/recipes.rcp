@@ -1,4 +1,8 @@
-VERSION = 6;
+VERSION = 7;
+
+!The maximum distance between signal ports or anchors connected via wire.
+!Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
+max_wire_length = 16;
 
 INIT() {
 	Loc slab = it("minecraft:stone_slab");
