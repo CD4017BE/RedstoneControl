@@ -92,6 +92,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	public void onPortModified(SignalPort port, int event) {
 		int mode;
 		if ((event & (E_HOOK_ADD | E_HOOK_REM)) != 0) {
+			if (unloaded) return;
 			gui = null;
 			mode = REDRAW;
 		} else if ((event & E_CON_UPDATE) != 0 && ((event & E_CON_REM) != 0 || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp)) {
@@ -118,7 +119,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 		NBTTagList list = new NBTTagList();
 		for (MountedSignalPort port : ports)
 			list.appendTag(port.serializeNBT());
-		nbt.setTag("ports", list);
+		if (!list.hasNoTags()) nbt.setTag("ports", list);
 		NBTTagCompound ctag = storeHooks();
 		if (ctag != null) nbt.setTag("hooks", ctag);
 	}
@@ -139,6 +140,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 		if (world.isRemote) return;
 		for (MountedSignalPort port : ports)
 			port.onLoad();
+		for (MountedSignalPort port : hooks.values())
+			port.onLoad();
 	}
 
 	@Override
@@ -146,13 +149,18 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 		if (world.isRemote) return;
 		for (MountedSignalPort port : ports)
 			port.onUnload();
+		for (MountedSignalPort port : hooks.values())
+			port.onUnload();
 	}
 
 	@Override
 	public void invalidate() {
-		if (!world.isRemote)
+		if (!world.isRemote) {
 			for (MountedSignalPort port : ports)
 				port.disconnect();
+			for (MountedSignalPort port : hooks.values())
+				port.disconnect();
+		}
 		super.invalidate();
 	}
 
@@ -160,6 +168,9 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	public void breakBlock() {
 		for (MountedSignalPort port : ports)
 			port.setConnector(null, null);
+		unloaded = true;
+		for (int pin : hooks.keySet().toIntArray())
+			removeHook(pin, null);
 	}
 
 	@Override

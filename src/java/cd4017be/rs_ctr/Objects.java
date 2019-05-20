@@ -69,7 +69,7 @@ public class Objects {
 				new BlockGate("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, null).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 

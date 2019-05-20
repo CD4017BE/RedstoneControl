@@ -1,10 +1,14 @@
 package cd4017be.rs_ctr.block;
 
 import cd4017be.lib.block.AdvancedBlock;
+import cd4017be.lib.block.MultipartBlock;
+import cd4017be.lib.block.MultipartBlock.IModularTile;
 import cd4017be.rs_ctr.api.wire.IHookAttachable;
 import cd4017be.rs_ctr.api.wire.RelayPort;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -13,6 +17,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -33,6 +40,19 @@ public class BlockWireAnchor extends AdvancedBlock {
 	public BlockWireAnchor(String id, Material m, SoundType sound, int flags, Class<? extends TileEntity> tile) {
 		super(id, m, sound, flags, tile);
 		setBlockBounds(new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5));
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[] {MultipartBlock.moduleRef});
+	}
+
+	@Override
+	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof IModularTile)
+			return ((IExtendedBlockState)state).withProperty(MultipartBlock.moduleRef, ((IModularTile)te));
+		else return state;
 	}
 
 	@Override
