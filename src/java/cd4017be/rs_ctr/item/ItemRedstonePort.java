@@ -9,7 +9,6 @@ import net.minecraft.block.BlockCommandBlock;
 import net.minecraft.block.BlockStructure;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,12 +44,7 @@ public class ItemRedstonePort extends BaseItemBlock {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean canPlaceBlockOnSide(World world, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack) {
-		if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) {
-			if (world.getTileEntity(pos) instanceof RedstonePort) return true;
-			pos = pos.offset(side);
-			if (world.getTileEntity(pos) instanceof RedstonePort) return true;
-		}
-		return world.mayPlace(this.block, pos, false, side, (Entity)null);
+		return true;
 	}
 
 	@Override
