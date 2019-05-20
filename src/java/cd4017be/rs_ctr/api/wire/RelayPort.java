@@ -6,7 +6,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
+import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
+import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
@@ -134,12 +136,22 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	public void connect(SignalPort to) {
 		if (!(to instanceof MountedSignalPort)) return;
 		MountedSignalPort port = (MountedSignalPort)to;
-		
 		SignalLine line;
 		try {line = new SignalLine(this);}
 		catch (WireLoopException e) {return;}
 		if (line.source == null || line.sink == null || !line.contains(port)) return;
-		//TODO label
+		
+		IConnector con = line.source.getConnector();
+		String label = con instanceof ITagableConnector ? ((ITagableConnector)con).getTag() : null;
+		if (label == null && (con = line.sink.getConnector()) instanceof ITagableConnector)
+			label = ((ITagableConnector)con).getTag();
+		String label_ = label;
+		line.forEach((c)-> {
+			IConnector cn = c.getConnector();
+			if (cn instanceof ITagableConnector)
+				((ITagableConnector)cn).setTag(c, label_);
+		});
+		
 		line.source.connect(line.sink);
 		int id = line.source.getLink();
 		for (RelayPort rp : line.hooks) {
