@@ -1,5 +1,7 @@
 package cd4017be.rs_ctr.tileentity;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.IntConsumer;
 
 import cd4017be.lib.util.TooltipUtil;
@@ -66,8 +68,8 @@ public class NummericCombiner extends SignalCombiner {
 	}
 
 	@Override
-	public IInteractiveComponent[] getComponents() {
-		return gui;
+	protected void initGuiComps(List<IInteractiveComponent> list) {
+		Collections.addAll(list, buttons);
 	}
 
 	@Override
