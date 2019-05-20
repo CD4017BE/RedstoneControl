@@ -36,7 +36,7 @@ item.rs_ctr.lamp.tip=Attach on output port to see its signal state.
 item.rs_ctr.tag.name=Wire Tag
 item.rs_ctr.tag.tip=§aUse§7 in air to set name.\n§aUse§7 on connected port to rename its signal connection. It will then show the name instead of an ID.
 tile.rs_ctr.wire_anchor.name=Wire Anchor
-tile.rs_ctr.wire_anchor.tip=§6Signal Wire§7s can be attached on these to customize their path.\n§oMultiple of these may be placed into a single block.
+tile.rs_ctr.wire_anchor.tip=§6Signal Wire§7s can be attached on these to customize their path.\n§oMultiple of them may be placed inside a single block.
 
 #Signal port names
 port.rs_ctr.rsR=Read

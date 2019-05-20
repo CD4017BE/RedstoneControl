@@ -13,6 +13,8 @@ tile.rs_ctr.logic_comb.name=logischer Signalkombinator
 tile.rs_ctr.logic_comb.tip=Kombiniert die 4 eingehenden Signale durch logische §eODER§7-Verknüpfung, wobei die Werte §e65536§7 für §eWahr§7 und §e0§7 für §eFalsch§7 ausgegeben werden.\nDer Ausgang, sowie jeder Eingang können individuell invertiert werden, was auch die anderen Logikgattertypen §eUND§7, §enicht-UND§7 und §enicht-ODER§7 liefert.
 tile.rs_ctr.num_comb.name=arithmetischer Signalkombinator
 tile.rs_ctr.num_comb.tip=Kombiniert die 4 eingehenden Signale durch Addition.\nEingänge können negiert werden, was auch subtraktion ermöglicht.
+tile.rs_ctr.wire_anchor.name=Kabelhalter
+tile.rs_ctr.wire_anchor.tip=§6Signalkabel§7 können and diesen angebracht werden um ihren Verlauf anzupassen.\n§oEs können mehrere davon im gleichen Block plaziert werden.
 
 # Chat Hinweise
 msg.rs_ctr.wire0=§cAusgänge können nur mit Eingängen verbunden werden und umgekehrt!

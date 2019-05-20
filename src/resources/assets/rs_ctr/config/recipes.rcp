@@ -1,9 +1,10 @@
-VERSION = 5;
+VERSION = 6;
 
 INIT() {
 	Loc slab = it("minecraft:stone_slab");
 	add("shaped", 2 * it("tile.rs_port"):0, "0/1", "dustRedstone", slab);
 	add("shaped", 2 * it("tile.rs_port"):1, "0/1", it("minecraft:redstone_torch"), slab);
+	add("shaped", 8 * it("tile.wire_anchor"), "0/0", it("minecraft:iron_bars"));
 	add("shaped", it("tile.splitter"), " 0 /010/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	add("shaped", it("tile.analog_comb"), " 0 /010/ 0 ", it("tile.rs_port"):1, it("tile.rs_port"):0);
 	add("shaped", it("tile.logic_comb"), "020/212/020", it("tile.rs_port"):1, it("tile.rs_port"):0, it("minecraft:redstone_torch"));
