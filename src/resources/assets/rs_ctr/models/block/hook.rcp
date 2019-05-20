@@ -7,13 +7,12 @@ main() {}
 pin(l) {
 	if (l > 2) {
 		translate(8, 8, 8);
-		rotate(0, 0, 1, -45);
-		scale(1, 1, 1.41);
+		rotate(-1, 1, 0, 54.7);
+		scale(1, 1, 1.73);
 		translate(-8, -8, -8);
-	}
-	if (l > 1) {
+	} else if (l > 1) {
 		translate(8, 8, 8);
-		rotate(0, 1, 0, -45);
+		rotate(0, 1, 0, 45);
 		scale(1, 1, 1.41);
 		translate(-8, -8, -8);
 	}

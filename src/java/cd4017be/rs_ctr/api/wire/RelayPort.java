@@ -97,7 +97,7 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 		case 3:
 			or = x > 0 ? 1 : 0;
 			if (z > 0) or = 3 - or;
-			if (y > 0) or = 11 - or;
+			if (y > 0) or = or + 1 & 3 | 8;
 			break;
 		default: or = 0;
 		}

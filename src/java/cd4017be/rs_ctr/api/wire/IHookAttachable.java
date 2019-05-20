@@ -31,15 +31,20 @@ public interface IHookAttachable extends ISignalIO {
 	Int2ObjectMap<RelayPort> getHookPins();
 
 	public static int getAttachmentPos(Vec3d target, EnumFacing side, EntityPlayer player) {
-		target = target.scale(4.0);
+		target = target.scale(4.0).add(new Vec3d(side.getDirectionVec()).scale(-0.125));
 		int x0 = (int)Math.floor(target.x), y0 = (int)Math.floor(target.y), z0 = (int)Math.floor(target.z);
-		target = target.subtract(player.getLook(1).scale(0.25));
+		switch(side) {
+		case DOWN: case UP: target = new Vec3d(target.x, (double)(y0 + 0.5), target.z); break;
+		case NORTH: case SOUTH: target = new Vec3d(target.x, target.y, (double)(z0 + 0.5)); break;
+		default: target = new Vec3d((double)(x0 + 0.5), target.y, target.z); break;
+		}
+		target = target.subtract(player.getLook(1).scale(0.5));
 		int x1 = (int)Math.floor(target.x), y1 = (int)Math.floor(target.y), z1 = (int)Math.floor(target.z);
-		int p = x1 & 0xf | y1 << 4 & 0xf0 | z1 << 8 & 0xf00;
-		x1 = MathHelper.clamp(x1 - x0 - side.getFrontOffsetX(), -1, 1) + 2;
-		y1 = MathHelper.clamp(y1 - y0 - side.getFrontOffsetY(), -1, 1) + 2;
-		z1 = MathHelper.clamp(z1 - z0 - side.getFrontOffsetZ(), -1, 1) + 2;
-		return p | x1 << 16 | y1 << 18 | z1 << 20;
+		x1 = MathHelper.clamp(x0 - x1 - side.getFrontOffsetX(), -1, 1);
+		y1 = MathHelper.clamp(y0 - y1 - side.getFrontOffsetY(), -1, 1);
+		z1 = MathHelper.clamp(z0 - z1 - side.getFrontOffsetZ(), -1, 1);
+		int p = (x0 - x1 & 0xf) | (y0 - y1 & 0xf) << 4 | (z0 - z1 & 0xf) << 8;
+		return p | (x1 + 2) << 16 | (y1 + 2) << 18 | (z1 + 2) << 20;
 	}
 
 	default int applyOrientation(int pin) {
