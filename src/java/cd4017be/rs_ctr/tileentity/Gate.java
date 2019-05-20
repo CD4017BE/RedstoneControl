@@ -95,7 +95,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			if (unloaded) return;
 			gui = null;
 			mode = REDRAW;
-		} else if ((event & E_CON_UPDATE) != 0 && ((event & E_CON_REM) != 0 || ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp)) {
+		} else if ((event & E_CON_REM) == E_CON_REM || (event & E_CON_UPDATE) != 0 && ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp) {
 			mode = REDRAW;
 		} else mode = SYNC;
 		markDirty(mode);
