@@ -11,12 +11,12 @@ import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.item.BaseItem;
-import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
 import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector;
+import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
 import cd4017be.rs_ctr.api.wire.SignalLine;
 import cd4017be.rs_ctr.api.wire.SignalLine.WireLoopException;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -39,7 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class ItemWireTag extends BaseItem implements IConnectorItem, IGuiItem, ClientItemPacketReceiver {
+public class ItemWireTag extends BaseItem implements IWiredConnectorItem, IGuiItem, ClientItemPacketReceiver {
 
 	/**
 	 * @param id
@@ -68,7 +68,7 @@ public class ItemWireTag extends BaseItem implements IConnectorItem, IGuiItem, C
 					new SignalLine(port).forEach(p -> {
 						IConnector con = p.getConnector();
 						if (con instanceof ITagableConnector)
-							((ITagableConnector)c).setTag(p, tag);
+							((ITagableConnector)con).setTag(p, tag);
 					});
 				} catch (WireLoopException e) {
 					return;
