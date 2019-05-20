@@ -1,3 +1,17 @@
+v0.0.3
+Changes:
+- changed most rendering to run in chunk batched block models instead of TESR now
+- added wire anchors
+- made wire anchors placeable within gates and redstone ports as well
+- fixed embedded placement of redstone ports not working when block face obstructed
+- added config option for wire length
+- added recipes
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.4.0
+
 v0.0.2
 Changes:
 - tweaked some tool-tips
