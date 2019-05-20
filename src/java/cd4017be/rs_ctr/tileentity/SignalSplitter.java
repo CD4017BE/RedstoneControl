@@ -16,7 +16,6 @@ public class SignalSplitter extends Gate {
 
 	private final IntConsumer[] callbacks = new IntConsumer[4];
 	private int state;
-	private Orientation o = Orientation.N;
 
 	{
 		ports = new MountedSignalPort[] {
@@ -46,24 +45,25 @@ public class SignalSplitter extends Gate {
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		state = nbt.getInteger("state");
-		o = Orientation.values()[nbt.getByte("o") & 0xf];
-		orient();
+	protected void storeState(NBTTagCompound nbt, int mode) {
+		if (mode <= CLIENT) nbt.setByte("o", (byte)o.ordinal());
+		if (mode == SAVE) nbt.setInteger("state", state);
+		super.storeState(nbt, mode);
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setInteger("state", state);
-		nbt.setByte("o", (byte)o.ordinal());
-		return super.writeToNBT(nbt);
+	protected void loadState(NBTTagCompound nbt, int mode) {
+		if (mode <= CLIENT) {
+			o = Orientation.values()[nbt.getByte("o") & 0xf];
+			orient();
+		}
+		if (mode == SAVE) state = nbt.getInteger("state");
+		super.loadState(nbt, mode);
 	}
 
 	@Override
 	public void updateContainingBlockInfo() {
 		super.updateContainingBlockInfo();
-		o = getOrientation();
 		orient();
 	}
 
