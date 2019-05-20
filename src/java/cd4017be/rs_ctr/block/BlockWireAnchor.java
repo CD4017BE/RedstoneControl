@@ -11,7 +11,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
@@ -29,11 +32,12 @@ public class BlockWireAnchor extends AdvancedBlock {
 	 */
 	public BlockWireAnchor(String id, Material m, SoundType sound, int flags, Class<? extends TileEntity> tile) {
 		super(id, m, sound, flags, tile);
-		setBlockBounds(NULL_AABB);
+		setBlockBounds(new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5));
 	}
 
 	@Override
-	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
 		double x0 = 1, x1 = 0, y0 = 1, y1 = 0, z0 = 1, z1 = 0;
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IHookAttachable)
@@ -49,7 +53,17 @@ public class BlockWireAnchor extends AdvancedBlock {
 				if (d < z0) z0 = d;
 				if (d > z1) z1 = d;
 			}
-		return rayTrace(pos, start, end, new AxisAlignedBB(x0 - 0.0625, x1 + 0.0625, y0 - 0.0625, y1 + 0.0625, z0 - 0.0625, z1 + 0.0625));
+		return new AxisAlignedBB(x0 - 0.03125, y0 - 0.03125, z0 - 0.03125, x1 + 0.03125, y1 + 0.03125, z1 + 0.03125).offset(pos);
+	}
+
+	@Override
+	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) {
+		return IHookAttachable.addBlockRayTrace(null, world, pos, start, end);
+	}
+
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+		return NULL_AABB;
 	}
 
 }

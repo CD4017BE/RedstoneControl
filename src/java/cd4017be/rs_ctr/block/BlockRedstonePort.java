@@ -6,6 +6,7 @@ import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.api.wire.IHookAttachable;
 import cd4017be.rs_ctr.tileentity.RedstonePort;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -19,6 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -94,6 +96,11 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 	@Override
 	public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side) {
 		return isSideSolid(state, world, pos, side) ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+	}
+
+	@Override
+	public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
+		return IHookAttachable.addBlockRayTrace(super.collisionRayTrace(state, world, pos, start, end), world, pos, start, end);
 	}
 
 }

@@ -2,16 +2,23 @@ package cd4017be.rs_ctr.api.wire;
 
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -115,5 +122,32 @@ public interface IHookAttachable extends ISignalIO {
 	}
 
 	public static final int E_HOOK_ADD = 256, E_HOOK_REM = 512;
+
+	/**
+	 * utility method for implementing {@link Block#collisionRayTrace()}
+	 * @param pre existing RayTraceResult from previous code (if any)
+	 * @param world
+	 * @param pos
+	 * @param start
+	 * @param end
+	 * @return the new RayTraceResult that also accounts for wire hooks
+	 */
+	public static RayTraceResult addBlockRayTrace(@Nullable RayTraceResult pre, World world, BlockPos pos, Vec3d start, Vec3d end) {
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof IHookAttachable)) return pre;
+		Vec3d start1 = start.subtract(pos.getX(), pos.getY(), pos.getZ());
+		Vec3d dir = (pre != null ? pre.hitVec : end).subtract(start);
+		Pair<Vec3d, EnumFacing> res = null;
+		for (RelayPort port : ((IHookAttachable)te).getHookPins().values()) {
+			Pair<Vec3d, EnumFacing> r = port.rayTrace(start1, dir);
+			if (r != null) {
+				res = r;
+				dir = r.getLeft();
+			}
+		}
+		if (res != null)
+			return new RayTraceResult(res.getLeft().add(start), res.getRight(), pos);
+		return pre;
+	}
 
 }

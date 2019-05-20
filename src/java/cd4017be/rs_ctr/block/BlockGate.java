@@ -3,6 +3,7 @@ package cd4017be.rs_ctr.block;
 import cd4017be.lib.block.MultipartBlock;
 import cd4017be.lib.block.OrientedBlock;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
+import cd4017be.rs_ctr.api.wire.IHookAttachable;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -10,7 +11,10 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -45,6 +49,12 @@ public class BlockGate extends OrientedBlock {
 		if (te instanceof IModularTile)
 			return ((IExtendedBlockState)state).withProperty(MultipartBlock.moduleRef, ((IModularTile)te));
 		else return state;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) {
+		return IHookAttachable.addBlockRayTrace(super.collisionRayTrace(blockState, world, pos, start, end), world, pos, start, end);
 	}
 
 }
