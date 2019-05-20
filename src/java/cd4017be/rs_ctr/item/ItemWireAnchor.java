@@ -13,6 +13,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
@@ -30,6 +32,12 @@ public class ItemWireAnchor extends BaseItemBlock {
 
 	@Override
 	public boolean canItemEditBlocks() {
+		return true;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean canPlaceBlockOnSide(World worldIn, BlockPos pos, EnumFacing side, EntityPlayer player, ItemStack stack) {
 		return true;
 	}
 
