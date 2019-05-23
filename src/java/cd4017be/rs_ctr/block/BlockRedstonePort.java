@@ -7,6 +7,7 @@ import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.wire.IHookAttachable;
+import cd4017be.rs_ctr.api.wire.RelayPort;
 import cd4017be.rs_ctr.tileentity.RedstonePort;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -81,7 +82,8 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 		RedstonePort port = (RedstonePort)te;
 		int i = target.subHit - 1;
 		//if (i == 6 && target.hitVec.squareDistanceTo(0.5, 0.5, 0.5) < 0.7) i = target.sideHit.ordinal();
-		if (i < 6) {
+		if (i == -2) return new ItemStack(RelayPort.HOOK_ITEM);
+		if (i >= 0 && i < 6) {
 			MountedSignalPort p = (MountedSignalPort)port.getSignalPort(i);
 			if (p == null) p = (MountedSignalPort)port.getSignalPort(i + 6);
 			if (p != null) return new ItemStack(Objects.rs_port, 1, p.isSource ? 0 : 1);
