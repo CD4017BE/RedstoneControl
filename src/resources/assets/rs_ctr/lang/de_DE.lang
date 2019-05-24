@@ -13,6 +13,10 @@ tile.rs_ctr.logic_comb.name=logischer Signalkombinator
 tile.rs_ctr.logic_comb.tip=Kombiniert die 4 eingehenden Signale durch logische §eODER§7-Verknüpfung, wobei die Werte §e65536§7 für §eWahr§7 und §e0§7 für §eFalsch§7 ausgegeben werden.\nDer Ausgang, sowie jeder Eingang können individuell invertiert werden, was auch die anderen Logikgattertypen §eUND§7, §enicht-UND§7 und §enicht-ODER§7 liefert.
 tile.rs_ctr.num_comb.name=arithmetischer Signalkombinator
 tile.rs_ctr.num_comb.tip=Kombiniert die 4 eingehenden Signale durch Addition.\nEingänge können negiert werden, was auch subtraktion ermöglicht.
+tile.rs_ctr.bin_comb.name=binärer Signalpacker
+tile.rs_ctr.bin_comb.tip=Das Ausgangssignal ergibt sich durch aneinanderreihung der Binärdarstellungen der 4 Eingangssignale. Es ist einstellbar, wie viele Bits jeweils von den Eingängen verwendet werden\:\n§e1 bit§7 unterscheidet nur zwischen §e0§7 und §e1\n§e2 bit§7 unterscheidet zwischen §e0§7, §e1§7, §e2§7 und §e3\n§e4 bit§7 unterscheidet die Werte §e0§7 - §e15\n§e8 bit§7 unterscheidet die Werte §e0§7 - §e255\n§oNur Werte innerhalb des entsprechenden Wertebereichs lassen sich später mit dem §6§obinären Signalentpacker§7§o verlustfrei zurückgewinnen.
+tile.rs_ctr.bin_split.name=binärer Signalentpacker
+tile.rs_ctr.bin_split.tip=Funktioniert genau umgekehrt zum §6binären Signalpacker§7\:\nDie Binärdarstellung des Eingangssignals wird in 4 Stücke je §e1§7, §e2§7, §e4§7 oder §e8 bit§7 (je nach Einstellung) zerlegt, welche dann die Ausgangssignale bilden.\n\n§oDies ermöglicht es, mehrere Signale durch eine gemeinsame Leitung zu schicken, sowie die Operation eines §6§ologischen Signalkombinator§7§os im §e§obitweise§7§o-Modus für alle gepackten Signale parallel durzuführen.
 tile.rs_ctr.wire_anchor.name=Kabelhalter
 tile.rs_ctr.wire_anchor.tip=§6Signalkabel§7 können and diesen angebracht werden um ihren Verlauf anzupassen.\n§oEs können mehrere davon im gleichen Block plaziert werden.
 
@@ -39,15 +43,31 @@ item.rs_ctr.tag.tip=§aBenutze§7 in die Luft um den Namen einzustellen.\n§aBen
 port.rs_ctr.rsR=Lesen
 port.rs_ctr.rsW=Schreiben
 port.rs_ctr.i=EIN
+port.rs_ctr.i0=EIN 0\n§okleinste Signifikanz
+port.rs_ctr.i1=EIN 1
+port.rs_ctr.i2=EIN 2
+port.rs_ctr.i3=EIN 3\n§ogrößte Signifikanz
 port.rs_ctr.o=AUS
+port.rs_ctr.o0=AUS 0\n§okleinste Signifikanz
+port.rs_ctr.o1=AUS 1
+port.rs_ctr.o2=AUS 2
+port.rs_ctr.o3=AUS 3\n§ogrößte Signifikanz
 port.rs_ctr.num0=positiv
 port.rs_ctr.num1=negiert
 port.rs_ctr.logic0=x > 0
 port.rs_ctr.logic1=x <\= 0
-port.rs_ctr.logic2=bit-weise
-port.rs_ctr.logic3=bit-weise\ninvertiert
+port.rs_ctr.logic2=bitweise
+port.rs_ctr.logic3=bitweise\ninvertiert
 port.rs_ctr.logic4=ODER
 port.rs_ctr.logic5=nicht-ODER
+port.rs_ctr.bin1=4x1bit -> 4bit
+port.rs_ctr.bin2=4x2bit -> 8bit
+port.rs_ctr.bin4=4x4bit -> 16bit
+port.rs_ctr.bin8=4x8bit -> 32bit
+port.rs_ctr.bins1=4bit -> 4x1bit
+port.rs_ctr.bins2=8bit -> 4x2bit
+port.rs_ctr.bins4=16bit -> 4x4bit
+port.rs_ctr.bins8=32bit -> 4x8bit\n
 
 # GUI
 # Inventory names

@@ -14,6 +14,12 @@ tile.rs_ctr.logic_comb.name=Logic Signal Combiner
 tile.rs_ctr.logic_comb.tip=Combines the for incomming signals by logical §eOR§7, where the outputs will emit §e65536§7 for §etrue§7 and §e0§7 for §efalse§7.\nThe output as well as each individual input can be set to inverted which also gives you the other logic-gate types §eAND§7, §eNAND§7 and §eNOR§7. 
 tile.rs_ctr.num_comb.name=Arithmetic Signal Combiner
 tile.rs_ctr.num_comb.tip=Combines the 4 incomming signals by adding their values together.\nInputs can be negated which allows computing subtractions too.
+tile.rs_ctr.bin_comb.name=Binary Signal Packer
+tile.rs_ctr.bin_comb.tip=The output signal results from concatenating the binary representations of the 4 input signals. How many bits are taken from each input signal is configurable\:\n§e1 bit§7 only distinguishes between §e0§7 and §e1\\n§e2 bit§7 distinguishes between §e0§7, §e1§7, §e2§7 und §e3\\n§e4 bit§7 distinguishes the values §e0§7 - §e15\\n§e8 bit§7 distinguishes the values §e0§7 - §e255\n§oOnly values within the given range can be losslessly retrieved later on by a §6§oBinary Signal Unpacker§7§o.
+tile.rs_ctr.bin_split.name=Binary Signal Unpacker
+tile.rs_ctr.bin_split.tip=Works the opposite way of the §6Binary Signal Packer§7\:\nThe binary representation of the input signal is split into 4 pieces of §e1§7, §e2§7, §e4§7 or §e8 bit§7 each (depending on setting) which then form the individual output signals.\n\n§oThis makes it possible to send multiple signals through a shared wire. Also the operation of a §6§oLogic Signal Combiner§7§o in §e§obitwise§7§o-mode runs for all packed signals in parallel.
+tile.rs_ctr.wire_anchor.name=Wire Anchor
+tile.rs_ctr.wire_anchor.tip=§6Signal Wire§7s can be attached on these to customize their path.\n§oMultiple of them may be placed inside a single block.
 
 # chat messages
 msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
@@ -35,14 +41,20 @@ item.rs_ctr.lamp.name=Signal Status Lamp
 item.rs_ctr.lamp.tip=Attach on output port to see its signal state.
 item.rs_ctr.tag.name=Wire Tag
 item.rs_ctr.tag.tip=§aUse§7 in air to set name.\n§aUse§7 on connected port to rename its signal connection. It will then show the name instead of an ID.
-tile.rs_ctr.wire_anchor.name=Wire Anchor
-tile.rs_ctr.wire_anchor.tip=§6Signal Wire§7s can be attached on these to customize their path.\n§oMultiple of them may be placed inside a single block.
 
 #Signal port names
 port.rs_ctr.rsR=Read
 port.rs_ctr.rsW=Write
 port.rs_ctr.i=IN
+port.rs_ctr.i0=IN 0\n§oleast significant
+port.rs_ctr.i1=IN 1
+port.rs_ctr.i2=IN 2
+port.rs_ctr.i3=IN 3\n§omost significant
 port.rs_ctr.o=OUT
+port.rs_ctr.o0=OUT 0\n§oleast significant
+port.rs_ctr.o1=OUT 1
+port.rs_ctr.o2=OUT 2
+port.rs_ctr.o3=OUT 3\n§omost significant
 port.rs_ctr.num0=positive
 port.rs_ctr.num1=negative
 port.rs_ctr.logic0=x > 0
@@ -51,6 +63,14 @@ port.rs_ctr.logic2=bit-wise
 port.rs_ctr.logic3=bit-wise\ninverted
 port.rs_ctr.logic4=OR
 port.rs_ctr.logic5=NOR
+port.rs_ctr.bin4=4x4bit -> 16bit
+port.rs_ctr.bin2=4x2bit -> 8bit
+port.rs_ctr.bin1=4x1bit -> 4bit
+port.rs_ctr.bin8=4x8bit -> 32bit
+port.rs_ctr.bins1=4bit -> 4x1bit
+port.rs_ctr.bins2=8bit -> 4x2bit
+port.rs_ctr.bins4=16bit -> 4x4bit
+port.rs_ctr.bins8=32bit -> 4x8bit
 
 # GUI
 # Inventory names

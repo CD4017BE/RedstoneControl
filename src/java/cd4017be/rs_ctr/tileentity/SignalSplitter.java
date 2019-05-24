@@ -14,8 +14,8 @@ import net.minecraft.util.EnumFacing;
  */
 public class SignalSplitter extends Gate {
 
-	private final IntConsumer[] callbacks = new IntConsumer[4];
-	private int state;
+	protected final IntConsumer[] callbacks = new IntConsumer[4];
+	protected int state;
 
 	{
 		ports = new MountedSignalPort[] {
@@ -67,7 +67,7 @@ public class SignalSplitter extends Gate {
 		orient();
 	}
 
-	private void orient() {
+	protected void orient() {
 		for (int i = 0; i < 4; i++)
 			ports[i].setLocation(0.75F, 0.125F + i * 0.25F, 0.125F, EnumFacing.EAST, o);
 		ports[4].setLocation(0.25F, 0.5F, 0.125F, EnumFacing.WEST, o);
