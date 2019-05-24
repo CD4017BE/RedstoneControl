@@ -7,6 +7,8 @@ import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.gui.CircuitEditor;
 import cd4017be.rs_ctr.render.WireRenderer;
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
+
+import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.Gate;
 import cd4017be.rscpl.gui.Category;
 import cd4017be.rscpl.gui.GateTextureHandler;
@@ -45,36 +47,34 @@ public class ClientProxy extends CommonProxy {
 	@SubscribeEvent
 	public void registerModels(ModelRegistryEvent ev) {
 		setMod(Main.ID);
-		IStateMapper sm = new DefaultStateMapper();
-		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
-		overrideBlockModel(SPLITTER, new MultipartModel(SPLITTER, sm.putStateModelLocations(SPLITTER), false, PORT_RENDER));
-		overrideBlockModel(ANALOG_COMB, new MultipartModel(ANALOG_COMB, sm.putStateModelLocations(ANALOG_COMB), false, PORT_RENDER));
-		overrideBlockModel(LOGIC_COMB, new MultipartModel(LOGIC_COMB, sm.putStateModelLocations(LOGIC_COMB), false, PORT_RENDER));
-		overrideBlockModel(NUM_COMB, new MultipartModel(NUM_COMB, sm.putStateModelLocations(NUM_COMB), false, PORT_RENDER));
-		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), false, PORT_RENDER));
 		
-		SPLITTER.setBlockLayer(BlockRenderLayer.CUTOUT);
-		ANALOG_COMB.setBlockLayer(BlockRenderLayer.CUTOUT);
-		LOGIC_COMB.setBlockLayer(BlockRenderLayer.CUTOUT);
-		NUM_COMB.setBlockLayer(BlockRenderLayer.CUTOUT);
+		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
+		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), false, PORT_RENDER));
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB);
+		
 		WIRE_ANCHOR.setBlockLayer(BlockRenderLayer.CUTOUT);
 		
-		PORT_RENDER.register("_plug.num(0)", "_plug.num(1)");
-		PORT_RENDER.register("_plug.logic(0)", "_plug.logic(1)", "_plug.logic(2)", "_plug.logic(3)");
+		PORT_RENDER.register("_buttons.num(0)", "_buttons.num(1)");
+		PORT_RENDER.register("_buttons.logic(0)", "_buttons.logic(1)", "_buttons.logic(2)", "_buttons.logic(3)");
 		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		
 		registerRenderBS(RS_PORT, 0, 1);
-		registerRender(SPLITTER);
-		registerRender(ANALOG_COMB);
-		registerRender(LOGIC_COMB);
-		registerRender(NUM_COMB);
 		registerRender(WIRE_ANCHOR);
 		registerRender(wire);
 		registerRender(wireless);
 		registerRender(constant);
 		registerRender(lamp);
 		registerRender(tag);
+	}
+
+	private static void addGates(BlockGate... gates) {
+		IStateMapper sm = new DefaultStateMapper();
+		for (BlockGate gate : gates) {
+			gate.setBlockLayer(BlockRenderLayer.CUTOUT);
+			overrideBlockModel(gate, new MultipartModel(gate, sm.putStateModelLocations(gate), false, PORT_RENDER));
+			registerRender(gate);
+		}
 	}
 
 }
