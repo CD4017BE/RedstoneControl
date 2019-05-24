@@ -1,4 +1,4 @@
-VERSION = 7;
+VERSION = 9;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -13,6 +13,8 @@ INIT() {
 	add("shaped", it("tile.analog_comb"), " 0 /010/ 0 ", it("tile.rs_port"):1, it("tile.rs_port"):0);
 	add("shaped", it("tile.logic_comb"), "020/212/020", it("tile.rs_port"):1, it("tile.rs_port"):0, it("minecraft:redstone_torch"));
 	add("shaped", it("tile.num_comb"), "020/313/020", it("tile.rs_port"):1, it("tile.rs_port"):0, "gemQuartz", "dustRedstone");
+	add("shaped", it("tile.bin_comb"), "020/212/020", it("tile.rs_port"):0, it("tile.rs_port"):1, it("item.wire"));
+	add("shaped", it("tile.bin_split"), "020/212/020", it("tile.rs_port"):1, it("tile.rs_port"):0, it("item.wire"));
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
 	add("shaped", it("item.constant"), "0/1", it("item.wire"), "gemLapis");

@@ -37,6 +37,8 @@ public class Objects {
 	public static final BlockGate ANALOG_COMB = null;
 	public static final BlockGate LOGIC_COMB = null;
 	public static final BlockGate NUM_COMB = null;
+	public static final BlockGate BIN_COMB = null;
+	public static final BlockGate BIN_SPLIT = null;
 	public static final AdvancedBlock EDITOR = null;
 	public static final BlockWireAnchor WIRE_ANCHOR = null;
 	
@@ -46,6 +48,8 @@ public class Objects {
 	public static final BaseItemBlock analog_comb = null;
 	public static final BaseItemBlock logic_comb = null;
 	public static final BaseItemBlock num_comb = null;
+	public static final BaseItemBlock bin_comb = null;
+	public static final BaseItemBlock bin_split = null;
 	public static final BaseItemBlock editor = null;
 	public static final ItemWireAnchor wire_anchor = null;
 
@@ -74,6 +78,8 @@ public class Objects {
 				new BlockGate("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("bin_comb", Material.ROCK, SoundType.STONE, 3, BinaryCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("bin_split", Material.ROCK, SoundType.STONE, 3, BinarySplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new AdvancedBlock("editor", Material.IRON, SoundType.METAL, 0, Editor.class).setCreativeTab(tabCircuits),
 				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
@@ -88,6 +94,8 @@ public class Objects {
 				new BaseItemBlock(ANALOG_COMB),
 				new BaseItemBlock(LOGIC_COMB),
 				new BaseItemBlock(NUM_COMB),
+				new BaseItemBlock(BIN_COMB),
+				new BaseItemBlock(BIN_SPLIT),
 				new BaseItemBlock(EDITOR),
 				new ItemWireAnchor(WIRE_ANCHOR),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
