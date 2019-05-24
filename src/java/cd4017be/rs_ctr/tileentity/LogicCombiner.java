@@ -27,7 +27,7 @@ public class LogicCombiner extends SignalCombiner {
 					refreshInput(pin);
 					markDirty(REDRAW);
 				},
-				()-> "_plug.logic(" + inModes[pin] + ")",
+				()-> "_buttons.logic(" + inModes[pin] + ")",
 				()-> TooltipUtil.translate("port.rs_ctr.logic" + inModes[pin])
 			).setSize(0.0625F, 0.0625F);
 		}
@@ -37,7 +37,7 @@ public class LogicCombiner extends SignalCombiner {
 				scheduleUpdate();
 				markDirty(REDRAW);
 			},
-			()-> "_plug.logic(" + (outInv != 0 ? 3 : 2) + ")",
+			()-> "_buttons.logic(" + (outInv != 0 ? 3 : 2) + ")",
 			()-> TooltipUtil.translate("port.rs_ctr.logic" + (outInv != 0 ? 5 : 4))
 		).setSize(0.0625F, 0.0625F);
 	}

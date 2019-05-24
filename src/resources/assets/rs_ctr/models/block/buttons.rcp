@@ -1,0 +1,12 @@
+{
+	textures = ["rs_ctr:blocks/buttons"];
+}
+
+logic(t) {
+	offsetUV(4 * t, 0);
+	add(rect([7,7,8, 9,9,8.1]#, [0,0, 3,3]#, "uV+", 0));
+}
+
+num(t) {
+	logic(t);
+}
