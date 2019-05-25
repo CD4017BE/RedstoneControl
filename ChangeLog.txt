@@ -1,3 +1,14 @@
+v0.0.4
+Changes:
+- fixed #3 pick block for wire anchors leading to crash
+- fixed wire light glitches when status lamp updates
+- added Binary Signal Packer and Unpacker
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.4.1
+
 v0.0.3
 Changes:
 - changed most rendering to run in chunk batched block models instead of TESR now
