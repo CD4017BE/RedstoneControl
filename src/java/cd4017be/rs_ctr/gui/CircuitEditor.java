@@ -12,10 +12,13 @@ import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.Gui.comp.Tooltip;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
+import cd4017be.rs_ctr.circuit.CircuitCompiler;
+import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.Gate;
+import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GatePalette;
 import cd4017be.rscpl.gui.SchematicBoard;
 
@@ -44,7 +47,7 @@ public class CircuitEditor extends ModularGui {
 	public final GatePalette palette;
 	public final TextField editLabel;// editCfg;
 	public final GuiErrorMarker error;
-	//private GuiDebugger debug;
+	private GuiDebugger debug;
 
 	/**
 	 * @param container
@@ -74,12 +77,12 @@ public class CircuitEditor extends ModularGui {
 		new Button(comps, 16, 16, 196, 210, 0, null, (i)-> sendCommand(A_SAVE)).tooltip("gui.rs_ctr.editor.save");
 		new Button(comps, 16, 16, 174, 210, 0, null, this::compile).tooltip("gui.rs_ctr.editor.compile");
 		
-		new Progressbar(comps, 56, 4, 192, 232, 0, 226, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[0], 112), 0, 112);
-		new Progressbar(comps, 56, 4, 192, 238, 0, 232, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[1], 112), 0, 112);
-		new Progressbar(comps, 56, 4, 192, 244, 0, 238, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[2], 112), 0, 112);
-		new Progressbar(comps, 56, 2, 192, 233, 0, 230, Progressbar.PIXELS, ()-> this.tile.ingreds[3], 0, 112);
-		new Progressbar(comps, 56, 2, 192, 239, 0, 236, Progressbar.PIXELS, ()-> this.tile.ingreds[4], 0, 112);
-		new Progressbar(comps, 56, 2, 192, 245, 0, 242, Progressbar.PIXELS, ()-> this.tile.ingreds[5], 0, 112);
+		new Progressbar(comps, 56, 4, 192, 232, 200, 0, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[0], 112), 0, 112);
+		new Progressbar(comps, 56, 4, 192, 238, 200, 6, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[1], 112), 0, 112);
+		new Progressbar(comps, 56, 4, 192, 244, 200, 12, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[2], 112), 0, 112);
+		new Progressbar(comps, 56, 2, 192, 233, 200, 4, Progressbar.PIXELS, ()-> this.tile.ingreds[3], 0, 112);
+		new Progressbar(comps, 56, 2, 192, 239, 200, 10, Progressbar.PIXELS, ()-> this.tile.ingreds[4], 0, 112);
+		new Progressbar(comps, 56, 2, 192, 245, 200, 16, Progressbar.PIXELS, ()-> this.tile.ingreds[5], 0, 112);
 		new Tooltip(comps, 56, 16, 192, 232, "gui.rs_ctr.editor.ingreds", ()-> new Object[] {
 			this.tile.ingreds[0], this.tile.ingreds[3], this.tile.ingreds[1], this.tile.ingreds[4], this.tile.ingreds[2], this.tile.ingreds[5]
 		});
@@ -118,20 +121,19 @@ public class CircuitEditor extends ModularGui {
 	}
 
 	private void compile(int b) {
-		/*if (isShiftKeyDown()) {
-			Item item = tile.inventory.getItem();
-			if (item instanceof IChipItem) {
-				IChipItem cp = (IChipItem)item;
-				Chip chip = cp.provideChip(tile.inventory);
-				if (chip != null) {
-					compGroup.remove(debug);
-					debug = new GuiDebugger((GuiFrame)compGroup, chip);
-					debug.init(width, height, zLevel, fontRenderer);
-					debug.position(8, 8);
-				}
+		if (isShiftKeyDown()) {
+			compGroup.remove(debug);
+			try {
+				CompiledCircuit cc = CircuitCompiler.INSTANCE.compile(tile.schematic.operators);
+				debug = new GuiDebugger((GuiFrame)compGroup, cc);
+				debug.init(width, height, zLevel, fontRenderer);
+				debug.position(8, 8);
+			} catch (InvalidSchematicException e) {
+				tile.ingreds[6] = e.compact();
+			} catch (Throwable e) {
+				Main.LOG.error("internal compilation error: ", e);
 			}
-		}*/
-		sendCommand(A_COMPILE);
+		} else sendCommand(A_COMPILE);
 	}
 
 	@Override
@@ -139,8 +141,7 @@ public class CircuitEditor extends ModularGui {
 		super.updateScreen();
 		board.update();
 		error.update(tile.ingreds[6]);
-		//if (debug != null)
-		//	debug.update();
+		if (debug != null) debug.update();
 	}
 
 }

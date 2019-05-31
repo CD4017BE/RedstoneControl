@@ -28,7 +28,7 @@ import net.minecraftforge.common.util.Constants.NBT;
  */
 public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram {
 
-	String[] ioLabels;
+	public String[] ioLabels;
 	byte[] classCode;
 
 	@Override
@@ -37,7 +37,7 @@ public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram 
 		//This is quite simple since we know it's stored in constant pool index 1,
 		//also all names have the same length and only contain single byte UTF8 chars.
 		this.ID = hash(code);
-		int i = 12; //4 magic + 4 version + 2 pool size + 2 string length
+		int i = 13; //4 magic + 4 version + 2 pool size + 1 tagID + 2 string length
 		for (char c : name(ID).toCharArray())
 			code[i++] = (byte)c;
 		this.classCode = code;
