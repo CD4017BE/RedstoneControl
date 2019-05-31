@@ -54,6 +54,7 @@ public class LoadOp extends Pin implements Operator {
 
 	@Override
 	public void setInput(int pin, Operator op) {
+		Operator.super.setInput(pin, op);
 		this.source = op;
 	}
 
@@ -72,5 +73,10 @@ public class LoadOp extends Pin implements Operator {
 
 	@Override
 	public int getPin() { return 0; }
+
+	@Override
+	public Operator getActual() {
+		return source == null ? null : source.getActual();
+	}
 
 }

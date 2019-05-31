@@ -103,13 +103,17 @@ public abstract class Compiler<P extends CompiledProgram> {
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitMethodInsn(INVOKESPECIAL, C_SUPER, "<init>", "()V", false);
+		boolean hasArrays = false;
 		for (NamedOp var : variables)
 			if (var instanceof ArrayVar) {
+				mv.visitVarInsn(ALOAD, 0);
 				i_const(mv, ((ArrayVar)var).size());
 				mv.visitIntInsn(NEWARRAY, var.outType().getElementType().getSort());
 				mv.visitFieldInsn(PUTFIELD, C_THIS, var.name(), var.outType().getDescriptor());
+				hasArrays = true;
 			}
 		mv.visitInsn(RETURN);
+		mv.visitMaxs(hasArrays ? 2 : 1, 1);
 		mv.visitEnd();
 		
 		if (!stateSerialize) return;
@@ -131,6 +135,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 			mv.visitMethodInsn(INVOKEVIRTUAL, C_STATE_BUFFER, "set", "(" + D_STRING + desc + ")" + D_STATE_BUFFER, false);
 		}
 		mv.visitInsn(ARETURN);
+		mv.visitMaxs(3, 1);
 		mv.visitEnd();
 		
 		//implement setState()
@@ -153,6 +158,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 			}
 		}
 		mv.visitInsn(RETURN);
+		mv.visitMaxs(3, 2);
 		mv.visitEnd();
 	}
 
@@ -161,6 +167,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 		for (Gate<?> g : gatesIn) {
 			if (g == null) continue;
 			g.check = 0;
+			g.restoreInputs();
 			int i = g.outputCount();
 			do addOperator(g.getOutput(--i), variablesOut, reads, endsOut);
 			while(i > 0); //there is always at least one output pin, even if outputCount() == 0 (invisible pin).
@@ -213,7 +220,8 @@ public abstract class Compiler<P extends CompiledProgram> {
 			Operator op = load.getInput(0);
 			Branch b = provided.get(op);
 			if (b == null) {
-				b = Branch.from(op);
+				if (op instanceof Branch) b = (Branch)op;
+				else b = Branch.from(op);
 				provided.put(op, b);
 				for (LoadOp o : b.inputs)
 					required.add(o);

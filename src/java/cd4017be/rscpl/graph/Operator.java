@@ -45,8 +45,8 @@ public interface Operator {
 		Operator old = getInput(pin);
 		if (old == op) return;
 		Pin p = new Pin(this, pin);
-		if (old != null) old.receivers().remove(p);
-		if (op != null) op.receivers().add(p);
+		if (old != null) try {old.receivers().remove(p);} catch (UnsupportedOperationException e) {}
+		if (op != null) try {op.receivers().add(p);} catch(UnsupportedOperationException e) {}
 	}
 
 	/**
@@ -96,5 +96,10 @@ public interface Operator {
 	 * @return the gate's output pin this is assigned with
 	 */
 	int getPin();
+
+	/**
+	 * @return the actual gate hosted operator if this operator is replacing another operator during compilation, otherwise just this.
+	 */
+	default Operator getActual() { return this; }
 
 }

@@ -69,6 +69,15 @@ public abstract class Gate<T extends GateType<T>> {
 		check = 1;
 	}
 
+	public void restoreInputs() {
+		Operator[] inputs = this.inputs;
+		for (int i = 0, l = inputs.length; i < l; i++) {
+			Operator in = inputs[i];
+			if (in != null && in.getGate() == null)
+				setInput(i, in.getActual());
+		}
+	}
+
 	public void read(ByteBuf data) {
 		rasterX = data.readUnsignedByte();
 		rasterY = data.readUnsignedByte();
@@ -89,6 +98,7 @@ public abstract class Gate<T extends GateType<T>> {
 	}
 
 	public void write(ByteBuf data) {
+		restoreInputs();
 		data.writeByte(rasterX);
 		data.writeByte(rasterY);
 		for (int i = 0; i < traces.length; i++) {
@@ -139,5 +149,13 @@ public abstract class Gate<T extends GateType<T>> {
 	public abstract int getInputHeight(int pin);
 
 	public abstract int getOutputHeight(int pin);
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(Integer.toHexString(index)).append(' ').append(type);
+		if (!label.isEmpty()) sb.append(" \"").append(label).append('"');
+		return sb.toString();
+	}
 
 }

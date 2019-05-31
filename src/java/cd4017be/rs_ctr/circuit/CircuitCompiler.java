@@ -37,10 +37,14 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		List<Input> inputs = new ArrayList<>();
 		List<Output> outputs = new ArrayList<>();
 		for (Gate<?> g : gatesIn)
-			if (g.type == CircuitInstructionSet.in)
+			if (g == null);
+			else if (g.type == CircuitInstructionSet.in) {
+				((Input)g).portID = inputs.size();
 				inputs.add((Input)g);
-			else if (g.type == CircuitInstructionSet.out)
+			} else if (g.type == CircuitInstructionSet.out) {
+				((Output)g).portID = outputs.size();
 				outputs.add((Output)g);
+			}
 		cc.setIOPins(inputs, outputs);
 		return cc;
 	}
@@ -67,6 +71,7 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		}
 		mv.visitVarInsn(ILOAD, Context.DIRTY_IDX);
 		mv.visitInsn(IRETURN);
+		mv.visitMaxs(0, 3); //automatically computed
 		mv.visitEnd();
 	}
 

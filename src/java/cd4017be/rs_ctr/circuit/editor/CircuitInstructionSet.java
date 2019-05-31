@@ -24,12 +24,12 @@ public class CircuitInstructionSet extends InstructionSet {
 	public static Category[] TABS;
 
 	public static final BasicType
-		in = new BasicType(Input::new, "in", 1, 2, 0, new Code(INT_TYPE, "%p$", ALOAD, IALOAD)),
-		out = new BasicType(Output::new, "out", 1, 2, 1, new Code(INT_TYPE, "%p$>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E",
+		in = new BasicType(Input::new, "in", 1, 2, 0, new Code(INT_TYPE, "%p$*", ALOAD, IALOAD)),
+		out = new BasicType(Output::new, "out", 1, 2, 1, new Code(INT_TYPE, "%p$*>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E*",
 			ALOAD, IALOAD, DUP_X1, IF_ICMPEQ	, DUP, ALOAD, SWAP, IASTORE	, ALOAD, GETFIELD, AALOAD, SWAP, INVOKEINTERFACE	, ICONST_1, ISTORE, ICONST_0	, POP)),
 		read = new BasicType(ReadVar::new, "read", 6, 2, 0, new Code(INT_TYPE, null)),
 		write = new BasicType(WriteVar::new, "write", 6, 2, 2, new Code(INT_TYPE, "0>*1>!E*%t*=: I*%m|E", DUP, IF_ICMPEQ, DUP, ALOAD, SWAP, PUTFIELD, ICONST_1, ISTORE)),
-		i_cst = new BasicType(ConstNum::new, "i_cst", 6, 2, 0, new Code(INT_TYPE, null)),
+		i_cst = new BasicType(ConstNum::new, "i_cst", 6, 2, 0, new Code(INT_TYPE, "$")),
 		not = n("not", 1, new Code(INT_TYPE, ">**", ICONST_M1, IXOR)),
 		or = n("or", 2, new Code(INT_TYPE, "0>1>*", IOR)),
 		nor = n("nor", 2, new Code(INT_TYPE, "0>1>3*", IOR, ICONST_M1, IXOR)),

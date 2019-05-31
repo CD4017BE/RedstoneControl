@@ -9,7 +9,7 @@ import cd4017be.rscpl.util.StateBuffer;
  */
 public class UnloadedCircuit extends Circuit {
 
-	private StateBuffer state;
+	private StateBuffer state = new StateBuffer();
 
 	@Override
 	public boolean tick() {return false;}

@@ -28,4 +28,9 @@ public abstract class GateType<T extends GateType<T>> {
 		return name;
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

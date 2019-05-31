@@ -120,4 +120,19 @@ public class Branch implements Operator, Comparable<Branch> {
 	@Override
 	public int getPin() { return 0; }
 
+	@Override
+	public Operator getActual() {
+		return result.getActual();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(Arrays.toString(inputs));
+		sb.setCharAt(0, '(');
+		sb.setCharAt(sb.length() - 1, ')');
+		sb.append("->").append(result);
+		if (ordinal >= 0) sb.append('@').append(localIdx);
+		return sb.toString();
+	}
+
 }

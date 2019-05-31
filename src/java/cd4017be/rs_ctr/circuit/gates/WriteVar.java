@@ -93,6 +93,8 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
 		@Override
 		public Gate<?> getGate() {return null;}
 		@Override
+		public Operator getActual() {return null;}
+		@Override
 		public InsnList compile(Context context) {
 			InsnList ins = new InsnList();
 			ins.add(new VarInsnNode(ALOAD, Context.THIS_IDX));

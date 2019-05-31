@@ -31,4 +31,9 @@ public class Pin {
 		return idx == other.idx && op == other.op;
 	}
 
+	@Override
+	public String toString() {
+		return op.toString() + '#' + Integer.toString(idx);
+	}
+
 }

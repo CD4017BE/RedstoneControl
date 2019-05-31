@@ -27,7 +27,7 @@ public class CircuitLoader extends ClassLoader {
 	 * A white-list of safe classes and methods that are allowed to appear inside the constant pool of a compiled circuit.
 	 */
 	public static final SecurityChecker CHECKER = new SecurityChecker()
-			.put(Circuit.class)
+			.putAll(Circuit.class)
 			.putAll(StateBuffer.class)
 			.putAll(IntConsumer.class)
 			.putAll(String.class)

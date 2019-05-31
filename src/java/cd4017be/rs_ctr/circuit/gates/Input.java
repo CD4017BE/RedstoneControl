@@ -15,6 +15,7 @@ import io.netty.buffer.ByteBuf;
 public class Input extends Combinator implements ConfigurableGate, ISpecialRender {
 
 	public boolean interrupt = true;
+	public int portID;
 
 	/**
 	 * @param type

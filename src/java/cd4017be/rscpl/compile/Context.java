@@ -17,8 +17,9 @@ public class Context {
 
 	public Context(Compiler<?> compiler, int fixed) {
 		this.compiler = compiler;
-		usedLocals = new BitSet();
+		this.usedLocals = new BitSet();
 		usedLocals.set(0, fixed);
+		this.fixed = fixed;
 	}
 
 	/**

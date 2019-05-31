@@ -11,6 +11,8 @@ import cd4017be.rscpl.gui.SchematicBoard;
  */
 public class Output extends Combinator implements ISpecialRender {
 
+	public int portID;
+
 	/**
 	 * @param type
 	 * @param index
