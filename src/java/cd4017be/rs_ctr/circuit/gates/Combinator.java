@@ -4,9 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.InsnList;
-
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
@@ -31,8 +30,12 @@ public class Combinator extends Gate<BasicType> implements Operator {
 	}
 
 	@Override
-	public InsnList compile(Context context) {
-		return type.outputs[0].compile(context, inputs);
+	public void compile(MethodVisitor mv, Context context) {
+		type.outputs[0].compile(mv, context, inputs, compParams());
+	}
+
+	protected Object[] compParams() {
+		return new Object[0];
 	}
 
 	@Override

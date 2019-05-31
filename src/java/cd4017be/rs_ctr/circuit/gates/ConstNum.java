@@ -1,17 +1,7 @@
 package cd4017be.rs_ctr.circuit.gates;
 
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-
 import cd4017be.rs_ctr.circuit.editor.BasicType;
-import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialRender;
@@ -37,19 +27,8 @@ public class ConstNum extends Combinator implements ConfigurableGate, ISpecialRe
 	}
 
 	@Override
-	public InsnList compile(Context context) {
-		InsnList ins = new InsnList();
-		if (outType() == Type.INT_TYPE) {
-			int val = (Integer)value;
-			if (val >= -1 && val <= 5)
-				ins.add(new InsnNode(ICONST_0 + val));
-			else if (val >= Byte.MIN_VALUE && val < Byte.MAX_VALUE)
-				ins.add(new IntInsnNode(BIPUSH, val));
-			else if (val >= Short.MIN_VALUE && val < Short.MAX_VALUE)
-				ins.add(new IntInsnNode(SIPUSH, val));
-			else ins.add(new LdcInsnNode(val));
-		} else ins.add(new LdcInsnNode(value));
-		return ins;
+	protected Object[] compParams() {
+		return new Object[] {value};
 	}
 
 	@Override

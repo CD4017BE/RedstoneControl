@@ -4,9 +4,8 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.InsnList;
-
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
 
@@ -20,10 +19,10 @@ public interface Operator {
 	/**
 	 * compile the gate.
 	 * This typically involves calling {@link #compile()} recursively on the input operands.
-	 * @param context the method context
-	 * @return list of instructions needed to add the gate's result on top of the Java operand stack.
+	 * @param mv should receive all the instructions needed to add the gate's result on top of the Java operand stack.
+	 * @param context the method context (manages local variables, etc.)
 	 */
-	InsnList compile(Context context);
+	void compile(MethodVisitor mv, Context context);
 
 	/**
 	 * @return number of input pins

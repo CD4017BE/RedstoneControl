@@ -4,11 +4,8 @@ import static org.objectweb.asm.Opcodes.*;
 
 import java.util.Set;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.VarInsnNode;
-
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
@@ -37,20 +34,21 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
 	}
 
 	@Override
-	public InsnList compile(Context context) {
+	public void compile(MethodVisitor mv, Context context) {
 		Operator op = inputs[inputCount()];
 		if (isInterrupt) {
-			if (op == null) inputs[inputCount()] = new Read();
-			return type.outputs[0].compile(context, inputs, label);
+			if (op == null)
+				inputs[inputCount()] = new Read();
+			type.outputs[0].compile(mv, context, inputs, label);
+			if (receivers.isEmpty()) mv.visitInsn(POP);
 		} else {
 			//not actually using the code, just make sure any local variable is freed up
-			if (op != null) op.compile(context);
+			if (op != null) op.compile(null, context);
 			
-			InsnList ins = new InsnList();
-			ins.add(new VarInsnNode(ALOAD, Context.THIS_IDX));
-			ins.add(inputs[0].compile(context));
-			ins.add(new FieldInsnNode(PUTFIELD, context.compiler.C_THIS, label, outType().getDescriptor()));
-			return ins;
+			mv.visitVarInsn(ALOAD, Context.THIS_IDX);
+			inputs[0].compile(mv, context);
+			if (!receivers().isEmpty()) mv.visitInsn(DUP_X1);
+			mv.visitFieldInsn(PUTFIELD, context.compiler.C_THIS, label, outType().getDescriptor());
 		}
 	}
 
@@ -95,11 +93,9 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
 		@Override
 		public Operator getActual() {return null;}
 		@Override
-		public InsnList compile(Context context) {
-			InsnList ins = new InsnList();
-			ins.add(new VarInsnNode(ALOAD, Context.THIS_IDX));
-			ins.add(new FieldInsnNode(GETFIELD, context.compiler.C_THIS, label, outType().getDescriptor()));
-			return ins;
+		public void compile(MethodVisitor mv, Context context) {
+			mv.visitVarInsn(ALOAD, Context.THIS_IDX);
+			mv.visitFieldInsn(GETFIELD, context.compiler.C_THIS, label, outType().getDescriptor());
 		}
 	}
 

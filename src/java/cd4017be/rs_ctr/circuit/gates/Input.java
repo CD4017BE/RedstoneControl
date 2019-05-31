@@ -46,4 +46,9 @@ public class Input extends Combinator implements ConfigurableGate, ISpecialRende
 		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x - 1, y - 1, l, board.parent.zLevel);
 	}
 
+	@Override
+	protected Object[] compParams() {
+		return new Object[] {portID};
+	}
+
 }

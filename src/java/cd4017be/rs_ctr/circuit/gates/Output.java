@@ -42,4 +42,9 @@ public class Output extends Combinator implements ISpecialRender {
 		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x - l * 4 + 7, y + 5, l, board.parent.zLevel);
 	}
 
+	@Override
+	protected Object[] compParams() {
+		return new Object[] {portID};
+	}
+
 }

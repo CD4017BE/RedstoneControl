@@ -1,8 +1,5 @@
 package cd4017be.rscpl.compile;
 
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.VarInsnNode;
-
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.graph.Operator;
 import cd4017be.rscpl.graph.Pin;
@@ -10,9 +7,11 @@ import cd4017be.rscpl.graph.Pin;
 import static org.objectweb.asm.Opcodes.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 /**
@@ -66,13 +65,14 @@ public class Branch implements Operator, Comparable<Branch> {
 	}
 
 	@Override
-	public InsnList compile(Context context) {
-		InsnList ins = result.compile(context);
+	public void compile(MethodVisitor mv, Context context) {
+		result.compile(mv, context);
 		Type t = result.outType();
-		localIdx = context.newLocal(t);
 		uses = result.receivers().size();
-		ins.add(new VarInsnNode(t.getOpcode(ISTORE), localIdx));
-		return ins;
+		if (uses > 0) {
+			localIdx = context.newLocal(t);
+			mv.visitVarInsn(t.getOpcode(ISTORE), localIdx);
+		}
 	}
 
 	@Override

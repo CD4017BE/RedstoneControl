@@ -3,11 +3,9 @@ package cd4017be.rscpl.compile;
 import java.util.Collections;
 import java.util.Set;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.VarInsnNode;
-
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.graph.Operator;
 import cd4017be.rscpl.graph.Pin;
@@ -32,14 +30,12 @@ public class LoadOp extends Pin implements Operator {
 	}
 
 	@Override
-	public InsnList compile(Context context) {
-		InsnList ins = new InsnList();
+	public void compile(MethodVisitor mv, Context context) {
 		Type t = source.outType();
 		Branch b = (Branch)source;
-		ins.add(new VarInsnNode(t.getOpcode(Opcodes.ILOAD), b.localIdx));
+		if (mv != null) mv.visitVarInsn(t.getOpcode(Opcodes.ILOAD), b.localIdx);
 		if (--b.uses == 0)
 			context.releaseLocal(b.localIdx, t);
-		return ins;
 	}
 
 	@Override

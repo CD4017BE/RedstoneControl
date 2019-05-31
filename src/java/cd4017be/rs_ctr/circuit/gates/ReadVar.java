@@ -1,9 +1,7 @@
 package cd4017be.rs_ctr.circuit.gates;
 
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.InsnList;
-
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.graph.ReadOp;
@@ -24,10 +22,10 @@ public class ReadVar extends ConstNum implements ReadOp {
 	}
 
 	@Override
-	public InsnList compile(Context context) {
-		InsnList ins = new InsnList();
-		ins.add(new FieldInsnNode(Opcodes.GETFIELD, context.compiler.C_THIS, label, outType().getDescriptor()));
-		return ins;
+	public void compile(MethodVisitor mv, Context context) {
+		if (mv == null) return;
+		mv.visitVarInsn(Opcodes.ALOAD, Context.THIS_IDX);
+		mv.visitFieldInsn(Opcodes.GETFIELD, context.compiler.C_THIS, label, outType().getDescriptor());
 	}
 
 	@Override

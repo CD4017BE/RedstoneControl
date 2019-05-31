@@ -67,7 +67,7 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 				mv.visitVarInsn(ASTORE, Context.IO_IDX);
 				processIn = false;
 			}
-			b.compile(c).accept(mv);
+			b.compile(mv, c);
 		}
 		mv.visitVarInsn(ILOAD, Context.DIRTY_IDX);
 		mv.visitInsn(IRETURN);

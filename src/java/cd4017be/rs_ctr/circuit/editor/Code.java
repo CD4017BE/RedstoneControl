@@ -4,22 +4,10 @@ import static org.objectweb.asm.Opcodes.BIPUSH;
 import static org.objectweb.asm.Opcodes.ICONST_0;
 import static org.objectweb.asm.Opcodes.SIPUSH;
 
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.IincInsnNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.IntInsnNode;
-import org.objectweb.asm.tree.JumpInsnNode;
-import org.objectweb.asm.tree.LabelNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.LookupSwitchInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.TableSwitchInsnNode;
-import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
-
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.graph.Operator;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
@@ -84,12 +72,11 @@ public class Code {
 	/**
 	 * compile the gate.
 	 * This typically involves calling {@link #compile()} recursively on the input operands.
+	 * @param mv receives all the instructions needed to add the gate's result on top of the Java operand stack.
 	 * @param context the method context
-	 * @return list of instructions needed to add the gate's result on top of the Java operand stack.
 	 */
-	public InsnList compile(Context context, Operator[] in, Object... param) {
-		InsnList list = new InsnList();
-		Char2ObjectArrayMap<LabelNode> labels = new Char2ObjectArrayMap<>();
+	public void compile(MethodVisitor mv, Context context, Operator[] in, Object... param) {
+		Char2ObjectArrayMap<Label> labels = new Char2ObjectArrayMap<>();
 		Char2ObjectArrayMap<Local> locals = new Char2ObjectArrayMap<>();
 		locals.put('m', new Local(Type.INT_TYPE, Context.DIRTY_IDX));
 		locals.put('p', new Local(Type.getType("[I"), Context.IO_IDX));
@@ -113,44 +100,44 @@ public class Code {
 				context.releaseLocal(l.idx, l.type);
 			}	break;
 			case '+':
-				list.add(new IincInsnNode(locals.get(code[++i]).idx, v));
+				mv.visitIincInsn(locals.get(code[++i]).idx, v);
 				break;
 			case '%':
-				list.add(new VarInsnNode(bytecode[bi++] & 0xff, locals.get(code[++i]).idx));
+				mv.visitVarInsn(bytecode[bi++] & 0xff, locals.get(code[++i]).idx);
 				break;
 			case '>':
-				list.add(in[v].compile(context));
+				in[v].compile(mv, context);
 				break;
 			case '*':
-				do list.add(new InsnNode(bytecode[bi++] & 0xff));
+				do mv.visitInsn(bytecode[bi++] & 0xff);
 				while(--v >= 0);
 				break;
 			case '#':
-				list.add(new IntInsnNode(bytecode[bi++] & 0xff, v));
+				mv.visitIntInsn(bytecode[bi++] & 0xff, v);
 				break;
 			case '$': {
 				Object o = param[v];
 				if (o instanceof Integer) {
 					v = (Integer)o;
 					if (v >= -1 && v <= 5)
-						list.add(new InsnNode(ICONST_0 + v));
+						mv.visitInsn(ICONST_0 + v);
 					else if (v >= Byte.MIN_VALUE && v < Byte.MAX_VALUE)
-						list.add(new IntInsnNode(BIPUSH, v));
+						mv.visitIntInsn(BIPUSH, v);
 					else if (v >= Short.MIN_VALUE && v < Short.MAX_VALUE)
-						list.add(new IntInsnNode(SIPUSH, v));
-					else list.add(new LdcInsnNode(o));
-				} else list.add(new LdcInsnNode(o));
+						mv.visitIntInsn(SIPUSH, v);
+					else mv.visitLdcInsn(o);
+				} else mv.visitLdcInsn(o);
 			}	break;
 			case '&': {
 				int j = parseDescriptor(code, ++i);
-				list.add(new TypeInsnNode(bytecode[bi++] & 0xff, new String(code, i, j)));
+				mv.visitTypeInsn(bytecode[bi++] & 0xff, new String(code, i, j));
 				i += j - 1;
 			}	break;
 			case '|':
-				list.add(label(labels, code[++i]));
+				mv.visitLabel(label(labels, code[++i]));
 				break;
 			case '!':
-				list.add(new JumpInsnNode(bytecode[bi++] & 0xff, label(labels, code[++i])));
+				mv.visitJumpInsn(bytecode[bi++] & 0xff, label(labels, code[++i]));
 				break;
 			case '?':
 				c = code[++i];
@@ -159,15 +146,15 @@ public class Code {
 					int min = n[1];
 					i = n[0];
 					if ((c = code[i]) == ':') c = code[++i];
-					LabelNode dflt = label(labels, c);
-					LabelNode[] lbls = new LabelNode[v];
+					Label dflt = label(labels, c);
+					Label[] lbls = new Label[v];
 					for (int j = 0; j < v; j++)
 						lbls[j] = label(labels, code[++i]);
-					list.add(new TableSwitchInsnNode(min, min + v, dflt, lbls));
+					mv.visitTableSwitchInsn(min, min + v, dflt, lbls);
 				} else {
-					LabelNode dflt = label(labels, c);
+					Label dflt = label(labels, c);
 					int[] keys = new int[v];
-					LabelNode[] lbls = new LabelNode[v];
+					Label[] lbls = new Label[v];
 					for (int j = 0; j < v; j++) {
 						int[] n = parseNumber(code, i + 1);
 						i = n[0];
@@ -175,30 +162,31 @@ public class Code {
 						if ((c = code[i]) == ':') c = code[++i];
 						lbls[j] = label(labels, c);
 					}
-					list.add(new LookupSwitchInsnNode(dflt, keys, lbls));
+					mv.visitLookupSwitchInsn(dflt, keys, lbls);
 				}
 				break;
 			case '=': case ';': {
 				boolean field = c == '=';
 				int j = parseUntil(code, ++i, ':');
-				String owner = new String(code, i, j);
+				String owner = new String(code, i, j - i);
 				if (owner.isEmpty()) owner = context.compiler.C_THIS;
 				j = parseUntil(code, i = j + 1, field ? ' ' : '(');
-				String name = new String(code, i, j);
+				String name = new String(code, i, j - i);
 				if (name.isEmpty()) name = (String)param[v];
 				i = j; j++;
 				if (!field) {
 					while(code[j] != ')')
 						j += parseDescriptor(code, j);
-				}
-				j += parseDescriptor(code, ++j);
-				String desc = new String(code, i, j);
-				if (field) list.add(new FieldInsnNode(bytecode[bi++] & 0xff, owner, name, desc));
+					j++;
+				} else i++;
+				j += parseDescriptor(code, j);
+				String desc = new String(code, i, j - i);
+				if (field) mv.visitFieldInsn(bytecode[bi++] & 0xff, owner, name, desc);
 				else {
 					int ins = bytecode[bi++] & 0xff;
-					list.add(new MethodInsnNode(ins, owner, name, desc, ins == Opcodes.INVOKEINTERFACE));
+					mv.visitMethodInsn(ins, owner, name, desc, ins == Opcodes.INVOKEINTERFACE);
 				}
-				i = j;
+				i = j - 1;
 			}	break;
 			case 'x':
 				hex = true;
@@ -215,7 +203,6 @@ public class Code {
 		}
 		for (Local l : locals.values())
 			context.releaseLocal(l.idx, l.type);
-		return list;
 	}
 
 	static int digit(char c, boolean hex) {
@@ -240,9 +227,9 @@ public class Code {
 		return new int[] {ofs, v};
 	}
 
-	static LabelNode label(Char2ObjectArrayMap<LabelNode> labels, char k) {
-		LabelNode l = labels.get(k);
-		if (l == null) labels.put(k, l = new LabelNode());
+	static Label label(Char2ObjectArrayMap<Label> labels, char k) {
+		Label l = labels.get(k);
+		if (l == null) labels.put(k, l = new Label());
 		return l;
 	}
 
