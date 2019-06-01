@@ -11,7 +11,9 @@ import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 
 /**
@@ -41,8 +43,8 @@ public class GuiDebugger extends GuiFrame {
 		new FrameGrip(this, 8, 8, 0, 0);
 		new Button(this, 8, 8, w - 8, 0, 0, null, (i)-> close()).tooltip("gui.cd4017be.close");
 		new Spinner(this, 36, 18, 7, 15, false, "\\%.2fs", ()-> (double)interval / 20.0, (v)-> interval = (int)Math.round(v * 20.0), 0.05, 60.0, 1.0, 0.05).tooltip("gui.rs_ctr.interval");
-		new Button(this, 18, 18, 43, 15, 2, ()-> timer < -interval ? 1 : 0, (s)-> timer = s == 0 ? -interval : Integer.MIN_VALUE).texture(230, 0).tooltip("gui.rs_ctr.debug.run#");
-		new Button(this, 18, 18, 61, 15, 0, ()-> dirty & 1, this::tickChip).texture(230, 36).tooltip("gui.rs_ctr.debug.step#");
+		new Button(this, 18, 18, 43, 15, 2, ()-> timer < -interval ? 1 : 0, (s)-> timer = s == 0 ? -interval : Integer.MIN_VALUE).texture(86, 184).tooltip("gui.rs_ctr.debug.run#");
+		new Button(this, 18, 18, 61, 15, 0, ()-> dirty & 1, this::tickChip).texture(86, 220).tooltip("gui.rs_ctr.debug.step#");
 		for (int i = 0; i < in; i++) {
 			final String label = circuit.ioLabels[i];
 			final int idx = i;
@@ -83,15 +85,19 @@ public class GuiDebugger extends GuiFrame {
 
 	@Override
 	public void drawBackground(int mx, int my, float t) {
+		if (parent != null) parent.drawNow();
+		GlStateManager.disableDepth();
 		int y = this.y;
-		drawRect(x, y, 0, 180, 86, 33);
+		bindTexture(mainTex);
+		GuiUtils.drawTexturedModalRect(x, y, 0, 180, 86, 33, zLevel);
 		y += 33;
 		for (int n = circuit.inputs.length; n > 0; n--, y += 18)
-			drawRect(x, y, 0, 213, 86, 18);
+			GuiUtils.drawTexturedModalRect(x, y, 0, 213, 86, 18, zLevel);
 		for (int n = circuit.outputs.length; n > 0; n--, y += 18)
-			drawRect(x, y, 0, 231, 86, 18);
-		drawRect(x, y, 0, 249, 86, 7);
+			GuiUtils.drawTexturedModalRect(x, y, 0, 231, 86, 18, zLevel);
+		GuiUtils.drawTexturedModalRect(x, y, 0, 249, 86, 7, zLevel);
 		super.drawBackground(mx, my, t);
+		GlStateManager.enableDepth();
 	}
 
 	@Override

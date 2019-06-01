@@ -113,6 +113,7 @@ public class CircuitEditor extends ModularGui {
 			editLabel.setEnabled(true);
 			//editCfg.setEnabled(false);
 		}
+		tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
 	}
 
 	private String getLabel() {
@@ -124,6 +125,7 @@ public class CircuitEditor extends ModularGui {
 		if (isShiftKeyDown()) {
 			compGroup.remove(debug);
 			try {
+				tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
 				CompiledCircuit cc = CircuitCompiler.INSTANCE.compile(tile.schematic.operators);
 				debug = new GuiDebugger((GuiFrame)compGroup, cc);
 				debug.init(width, height, zLevel, fontRenderer);
@@ -133,6 +135,8 @@ public class CircuitEditor extends ModularGui {
 			} catch (Throwable e) {
 				Main.LOG.error("internal compilation error: ", e);
 			}
+			for (Gate<?> g : tile.schematic.operators)
+				if (g != null) g.restoreInputs();
 		} else sendCommand(A_COMPILE);
 	}
 

@@ -51,4 +51,24 @@ port.rs_ctr.logic5=nicht-ODER
 # Inventory names
 gui.rs_ctr.constant.name=Signalwert:
 gui.rs_ctr.tag.name=Beschriftung:
+gui.rs_ctr.debug.name=Debugger
 # Gui tooltips
+gui.rs_ctr.interval=Interval
+gui.rs_ctr.debug.step0=§4§ostabiler Zustand
+gui.rs_ctr.debug.step1=Einzelschritt\n§2§oinstabiler Zustand
+gui.rs_ctr.debug.run0=automatische Ausführung
+gui.rs_ctr.debug.run1=manuelle Ausführung
+#added by ingame editor:
+gui.rs_ctr.error6=§4mehrfaches Schreiben auf gleiche Variable
+gui.rs_ctr.error4=§4unerlaubter Variablenname
+#added by ingame editor:
+gui.rs_ctr.error3=§4Eingang nicht angeschlossen
+#added by ingame editor:
+gui.rs_ctr.error5=§4variable ist mehrfach deklariert
+#added by ingame editor:
+gui.rs_ctr.error1=§4Kausalschleife
+#added by ingame editor:
+gui.rs_ctr.error32=§4Platine benötigt
+#added by ingame editor:
+gui.rs_ctr.palette.open1=Inventar öffen
+gui.rs_ctr.palette.open0=Bauteilpalette öffnen
