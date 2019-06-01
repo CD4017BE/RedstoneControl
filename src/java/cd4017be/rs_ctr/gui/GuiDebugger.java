@@ -42,14 +42,14 @@ public class GuiDebugger extends GuiFrame {
 		new Button(this, 8, 8, w - 8, 0, 0, null, (i)-> close()).tooltip("gui.cd4017be.close");
 		new Spinner(this, 36, 18, 7, 15, false, "\\%.2fs", ()-> (double)interval / 20.0, (v)-> interval = (int)Math.round(v * 20.0), 0.05, 60.0, 1.0, 0.05).tooltip("gui.rs_ctr.interval");
 		new Button(this, 18, 18, 43, 15, 2, ()-> timer < -interval ? 1 : 0, (s)-> timer = s == 0 ? -interval : Integer.MIN_VALUE).texture(230, 0).tooltip("gui.rs_ctr.debug.run#");
-		new Button(this, 18, 18, 61, 15, 0, ()-> dirty ? 1 : 0, this::tickChip).texture(230, 36).tooltip("gui.rs_ctr.debug.step#");
+		new Button(this, 18, 18, 61, 15, 0, ()-> dirty & 1, this::tickChip).texture(230, 36).tooltip("gui.rs_ctr.debug.step#");
 		for (int i = 0; i < in; i++) {
 			final String label = circuit.ioLabels[i];
 			final int idx = i;
 			new FormatText(this, 70, 9, 8, 34 + i * 18, "\\" + label, null).color(0xff00007f);
 			new TextField(this, 70, 7, 8, 43 + i * 18, 16, ()-> "" + this.circuit.inputs[idx], (t)-> {try {
 					this.circuit.inputs[idx] = Integer.parseInt(t);
-					if (this.circuit.isInterrupt(idx)) dirty = true;
+					if (this.circuit.isInterrupt(idx)) dirty |= 1;
 				} catch (NumberFormatException e) {}});
 		}
 		for (int i = 0; i < out; i++) {
@@ -67,12 +67,12 @@ public class GuiDebugger extends GuiFrame {
 	}
 
 	private void tickChip(int b) {
-		if (!dirty) return;
+		if ((dirty & 1) == 0) return;
 		try {
 			dirty = circuit.tick();
 		} catch(Exception e) {
 			Main.LOG.error("circuit crashed!", e);
-			dirty = false;
+			dirty = 0;
 		}
 	}
 

@@ -2,9 +2,6 @@ package cd4017be.rs_ctr.circuit;
 
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.function.IntConsumer;
-
-import cd4017be.rs_ctr.api.signal.SignalReceiver;
 import cd4017be.rscpl.util.IStateSerializable;
 import cd4017be.rscpl.util.StateBuffer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,14 +19,12 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound>, IStat
 	protected int interruptPins;
 	/**IO buffers */
 	public int[] inputs, outputs;
-	/**callbacks to notify changed output signals */
-	public IntConsumer[] callbacks;
 
 	/**
 	 * The main update routine
-	 * @return whether the circuit state changed
+	 * @return 1 when internal circuit state changed {@code | 2 << i} for each output i that changed
 	 */
-	public abstract boolean tick();
+	public abstract int tick();
 
 	/**
 	 * @param pin input pin index
@@ -56,7 +51,6 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound>, IStat
 		interruptPins = nbt.getByte("intpin") & 0xff;
 		inputs = nbt.getIntArray("in");
 		outputs = nbt.getIntArray("out");
-		Arrays.fill(callbacks = new IntConsumer[outputs.length], SignalReceiver.NOP);
 		setState(new StateBuffer(nbt.getCompoundTag("state")));
 		ID = new UUID(nbt.getLong("IDm"), nbt.getLong("IDl"));
 	}

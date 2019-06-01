@@ -13,6 +13,7 @@ import cd4017be.rscpl.compile.Compiler;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.circuit.gates.Input;
 import cd4017be.rs_ctr.circuit.gates.Output;
+import cd4017be.rs_ctr.circuit.gates.SyntheticOp;
 import cd4017be.rscpl.compile.Branch;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
@@ -36,14 +37,22 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		CompiledCircuit cc = new CompiledCircuit();
 		List<Input> inputs = new ArrayList<>();
 		List<Output> outputs = new ArrayList<>();
+		SyntheticOp in =  new SyntheticOp(0, CircuitInstructionSet.getInArr),
+				out = new SyntheticOp(0, CircuitInstructionSet.getOutArr);
 		for (Gate<?> g : gatesIn)
 			if (g == null);
 			else if (g.type == CircuitInstructionSet.in) {
-				((Input)g).portID = inputs.size();
-				inputs.add((Input)g);
+				Input i = (Input)g;
+				i.portID = inputs.size();
+				i.setInput(0, in);
+				inputs.add(i);
 			} else if (g.type == CircuitInstructionSet.out) {
-				((Output)g).portID = outputs.size();
-				outputs.add((Output)g);
+				Output o = (Output)g;
+				o.portID = outputs.size();
+				o.setInput(1, o.getInput(0));
+				o.setInput(2, out);
+				o.setInput(3, out);
+				outputs.add(o);
 			}
 		cc.setIOPins(inputs, outputs);
 		return cc;
@@ -51,27 +60,15 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 
 	@Override
 	protected void addMain(CompiledCircuit program, ClassWriter cw, List<Branch> parts) throws InvalidSchematicException {
-		Context c = new Context(this, 3);
-		MethodVisitor mv = cw.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC, "tick", "()Z", null, null);
+		Context c = new Context(this, 2);
+		MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "tick", "()I", null, null);
 		mv.visitCode();
 		mv.visitInsn(ICONST_0);
 		mv.visitVarInsn(ISTORE, Context.DIRTY_IDX);
-		mv.visitVarInsn(ALOAD, Context.THIS_IDX);
-		mv.visitFieldInsn(GETFIELD, C_THIS, "inputs", "[I");
-		mv.visitVarInsn(ASTORE, Context.IO_IDX);
-		boolean processIn = true;
-		for (Branch b : parts) {
-			if (processIn && b.hasIO == Branch.IS_OUT) {
-				mv.visitVarInsn(ALOAD, Context.THIS_IDX);
-				mv.visitFieldInsn(GETFIELD, C_THIS, "outputs", "[I");
-				mv.visitVarInsn(ASTORE, Context.IO_IDX);
-				processIn = false;
-			}
-			b.compile(mv, c);
-		}
+		for (Branch b : parts) b.compile(mv, c);
 		mv.visitVarInsn(ILOAD, Context.DIRTY_IDX);
 		mv.visitInsn(IRETURN);
-		mv.visitMaxs(0, 3); //automatically computed
+		mv.visitMaxs(0, 2); //automatically computed
 		mv.visitEnd();
 	}
 

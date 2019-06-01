@@ -76,16 +76,19 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 		case CAUSAL_LOOP:
 		case MISSING_INPUT:
 			if (node == null) return;
-			if (lastErr.pin < node.inputCount()) {
+			if (lastErr.pin < node.visibleInputs()) {
 				px = (node.rasterX << 2) + 10;
 				py = ((node.rasterY + node.getInputHeight(lastErr.pin)) << 2) + 18;
-				break;
+			} else {
+				px = (node.rasterX << 2) + 14;
+				py = (node.rasterY << 2) + 19;
 			}
+			break;
 		default: return;
 		}
 		gui.mc.renderEngine.bindTexture(parent.mainTex);
 		gui.drawTexturedModalRect(x + px - 4, y + py - 8, 248, 236, 8, 8);
-		parent.drawTooltip(Arrays.asList(TooltipUtil.getConfigFormat("gui.circuits.error" + lastErr.errcode).split("\n")), x + px, y + py);
+		parent.drawTooltip(Arrays.asList(TooltipUtil.getConfigFormat("gui.rs_ctr.error" + lastErr.errcode).split("\n")), x + px, y + py);
 	}
 
 }

@@ -59,6 +59,16 @@ public class Combinator extends Gate<BasicType> implements Operator {
 	}
 
 	@Override
+	public int visibleInputs() {
+		return inputs.length - type.invisibleInputs;
+	}
+
+	@Override
+	public int inputCount() {
+		return inputs.length;
+	}
+
+	@Override
 	public void setInput(int pin, Operator op) {
 		Operator.super.setInput(pin, op);
 		super.setInput(pin, op);
@@ -66,7 +76,7 @@ public class Combinator extends Gate<BasicType> implements Operator {
 
 	@Override
 	protected boolean isInputTypeValid(int pin, Type type) {
-		return type.equals(outType());
+		return type.equals(outType()) || pin >= visibleInputs() && type == Type.VOID_TYPE;
 	}
 
 	@Override

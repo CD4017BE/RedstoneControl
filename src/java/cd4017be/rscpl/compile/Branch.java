@@ -8,7 +8,6 @@ import static org.objectweb.asm.Opcodes.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import org.objectweb.asm.MethodVisitor;
@@ -20,48 +19,32 @@ import org.objectweb.asm.Type;
  */
 public class Branch implements Operator, Comparable<Branch> {
 
-	public static final byte IS_IN = 1, IS_OUT = 2;
-
 	public final Operator result;
 	public final LoadOp[] inputs;
-	public final byte hasIO;
 	int ordinal = -1;
 	int localIdx;
 	int uses;
 
 	public static Branch from(Operator result) {
 		ArrayList<LoadOp> list = new ArrayList<>();
-		byte io = 0;
-		if (addRecursive(list, result, false)) io = IS_IN;
-		else if (result.isOutPin()) io = IS_OUT;
-		return new Branch(result, list.toArray(new LoadOp[list.size()]), io);
+		addRecursive(list, result, false);
+		return new Branch(result, list.toArray(new LoadOp[list.size()]));
 	}
 
-	private static boolean addRecursive(ArrayList<LoadOp> list, Operator op, boolean cond) {
-		boolean isOut = op.isOutPin();
-		boolean hasIn = op.isInPin();
+	private static void addRecursive(ArrayList<LoadOp> list, Operator op, boolean cond) {
 		for (int i = 0, n = op.inputCount(); i < n; i++) {
 			Operator o = op.getInput(i);
 			if (o == null) continue;
 			if (o.multiUse() || cond && o.hasSideEffects())
 				list.add(new LoadOp(op, i, o));
-			else if (isOut) {
-				int size = list.size();
-				if (addRecursive(list, o, cond | op.isConditional(i))) {
-					List<LoadOp> sl = list.subList(size, list.size());
-					o = new Branch(o, sl.toArray(new LoadOp[sl.size()]), IS_IN);
-					sl.clear();
-					list.add(new LoadOp(op, i, o));
-				}
-			} else if (addRecursive(list, o, cond | op.isConditional(i))) hasIn = true;
+			else
+				addRecursive(list, o, cond | op.isConditional(i));
 		}
-		return hasIn;
 	}
 
-	public Branch(Operator result, LoadOp[] inputs, byte hasIO) {
+	public Branch(Operator result, LoadOp[] inputs) {
 		this.result = result;
 		this.inputs = inputs;
-		this.hasIO = hasIO;
 	}
 
 	@Override
@@ -105,7 +88,6 @@ public class Branch implements Operator, Comparable<Branch> {
 		int n = 0;
 		for (LoadOp in : inputs)
 			n = Math.max(n, ((Branch)in.getInput(0)).ordinal() + 1);
-		if (hasIO == IS_OUT) n += 65536;
 		return ordinal = n;
 	}
 

@@ -10,7 +10,7 @@ import org.objectweb.asm.Type;
  */
 public class Context {
 
-	public static final int THIS_IDX = 0, DIRTY_IDX = 1, IO_IDX = 2;
+	public static final int THIS_IDX = 0, DIRTY_IDX = 1;
 	private final BitSet usedLocals;
 	public final Compiler<?> compiler;
 	public int fixed;

@@ -99,7 +99,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 			cw.visitField(ACC_PRIVATE | (var instanceof ArrayVar ? ACC_FINAL : 0), var.name(), var.outType().getDescriptor(), null, null);
 		
 		//implement constructor
-		MethodVisitor mv = cw.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC, "<init>", "()V", null, null);
+		MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitMethodInsn(INVOKESPECIAL, C_SUPER, "<init>", "()V", false);
@@ -122,7 +122,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 				((ReadOp)var).initState(state);
 		
 		//implement getState()
-		mv = cw.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC, "getState", "()" + D_STATE_BUFFER, null, null);
+		mv = cw.visitMethod(ACC_PUBLIC, "getState", "()" + D_STATE_BUFFER, null, null);
 		mv.visitCode();
 		mv.visitTypeInsn(NEW, C_STATE_BUFFER);
 		mv.visitInsn(DUP);
@@ -139,7 +139,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 		mv.visitEnd();
 		
 		//implement setState()
-		mv = cw.visitMethod(ACC_PUBLIC | ACC_SYNTHETIC, "setState", "(" + D_STATE_BUFFER + ")V", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC, "setState", "(" + D_STATE_BUFFER + ")V", null, null);
 		mv.visitCode();
 		for (NamedOp var : variables) {
 			String name = var.name(), desc = var.outType().getDescriptor();

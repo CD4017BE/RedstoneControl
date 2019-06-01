@@ -35,7 +35,6 @@ public class Code {
 	/**
 	 * <b>default local variables:</b><br>
 	 * <b>m</b> int modified<br>
-	 * <b>p</b> int[] ioBuffer<br>
 	 * <b>t</b> __ this<dl>
 	 * 
 	 * <b>description patterns:</b><br>
@@ -79,7 +78,6 @@ public class Code {
 		Char2ObjectArrayMap<Label> labels = new Char2ObjectArrayMap<>();
 		Char2ObjectArrayMap<Local> locals = new Char2ObjectArrayMap<>();
 		locals.put('m', new Local(Type.INT_TYPE, Context.DIRTY_IDX));
-		locals.put('p', new Local(Type.getType("[I"), Context.IO_IDX));
 		locals.put('t', new Local(Type.getObjectType(context.compiler.C_THIS), Context.THIS_IDX));
 		int bi = 0, v = 0;
 		boolean hex = false;

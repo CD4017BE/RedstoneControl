@@ -29,10 +29,10 @@ public abstract class Gate<T extends GateType<T>> {
 		this.type = type;
 		this.index = index;
 		this.inputs = new Operator[type.inputs];
-		this.traces = new TraceNode[inputCount()];
+		this.traces = new TraceNode[visibleInputs()];
 	}
 
-	public int inputCount() {
+	public int visibleInputs() {
 		return inputs.length;
 	}
 
@@ -73,8 +73,9 @@ public abstract class Gate<T extends GateType<T>> {
 		Operator[] inputs = this.inputs;
 		for (int i = 0, l = inputs.length; i < l; i++) {
 			Operator in = inputs[i];
-			if (in != null && in.getGate() == null)
-				setInput(i, in.getActual());
+			if (in == null) continue;
+			Operator in1 = in.getActual();
+			if (in != in1) setInput(i, in1);
 		}
 	}
 

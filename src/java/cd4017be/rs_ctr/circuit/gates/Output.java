@@ -1,5 +1,7 @@
 package cd4017be.rs_ctr.circuit.gates;
 
+import org.objectweb.asm.Type;
+
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialRender;
@@ -22,11 +24,6 @@ public class Output extends Combinator implements ISpecialRender {
 	}
 
 	@Override
-	public boolean isOutPin() {
-		return true;
-	}
-
-	@Override
 	public boolean hasSideEffects() {
 		return true;
 	}
@@ -44,7 +41,11 @@ public class Output extends Combinator implements ISpecialRender {
 
 	@Override
 	protected Object[] compParams() {
-		return new Object[] {portID};
+		return new Object[] {portID, 2 << portID};
 	}
-
+	@Override
+	protected boolean isInputTypeValid(int pin, Type type) {
+		if (pin == 0) return type == Type.INT_TYPE;
+		return true;
+	}
 }

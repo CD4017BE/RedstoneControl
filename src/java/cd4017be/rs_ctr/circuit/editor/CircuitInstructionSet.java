@@ -2,6 +2,8 @@ package cd4017be.rs_ctr.circuit.editor;
 
 import static org.objectweb.asm.Type.INT_TYPE;
 
+import org.objectweb.asm.Type;
+
 import cd4017be.rs_ctr.circuit.gates.Combinator;
 import cd4017be.rs_ctr.circuit.gates.ConstNum;
 import cd4017be.rs_ctr.circuit.gates.Input;
@@ -24,11 +26,10 @@ public class CircuitInstructionSet extends InstructionSet {
 	public static Category[] TABS;
 
 	public static final BasicType
-		in = new BasicType(Input::new, "in", 1, 2, 0, new Code(INT_TYPE, "%p$*", ALOAD, IALOAD)),
-		out = new BasicType(Output::new, "out", 1, 2, 1, new Code(INT_TYPE, "%p$*>*!E	*%p**	%t=:callbacks [I$**;java/util/function/IntConsumer:accept(I)V	*%m*	|E*",
-			ALOAD, IALOAD, DUP_X1, IF_ICMPEQ	, DUP, ALOAD, SWAP, IASTORE	, ALOAD, GETFIELD, AALOAD, SWAP, INVOKEINTERFACE	, ICONST_1, ISTORE, ICONST_0	, POP)),
+		in = new BasicType(Input::new, "in", 1, 2, 1, 1, new Code(INT_TYPE, ">$*", IALOAD)),
+		out = new BasicType(Output::new, "out", 1, 2, 4, 3, new Code(INT_TYPE, "2>$*0>!E 3>$1>* %m1$*%m |E", IALOAD, IF_ICMPEQ, IASTORE, ILOAD, IOR, ISTORE)),
 		read = new BasicType(ReadVar::new, "read", 6, 2, 0, new Code(INT_TYPE, null)),
-		write = new BasicType(WriteVar::new, "write", 6, 2, 2, new Code(INT_TYPE, "0>*1>!E*%t*=: I*%m|E", DUP, IF_ICMPEQ, DUP, ALOAD, SWAP, PUTFIELD, ICONST_1, ISTORE)),
+		write = new BasicType(WriteVar::new, "write", 6, 2, 2, 1, new Code(INT_TYPE, "0>*1>!E*%t*=: I %m**%m |E", DUP, IF_ICMPEQ, DUP, ALOAD, SWAP, PUTFIELD, ILOAD, ICONST_1, IOR, ISTORE)),
 		i_cst = new BasicType(ConstNum::new, "i_cst", 6, 2, 0, new Code(INT_TYPE, "$")),
 		not = n("not", 1, new Code(INT_TYPE, ">**", ICONST_M1, IXOR)),
 		or = n("or", 2, new Code(INT_TYPE, "0>1>*", IOR)),
@@ -60,6 +61,10 @@ public class CircuitInstructionSet extends InstructionSet {
 		max = n("max", 2, new Code(INT_TYPE, "0>1>*!X*|X*", DUP2, IF_ICMPGE, SWAP, POP)),
 		min = n("min", 2, new Code(INT_TYPE, "0>1>*!X*|X*", DUP2, IF_ICMPLE, SWAP, POP)),
 		swt = n("swt", 3, new Code(INT_TYPE, "0>!A1>!X|A2>|X", IFNE, GOTO));
+
+	public static final Code
+		getInArr = new Code(Type.getType("[I"), "%t=:inputs [I", ALOAD, GETFIELD),
+		getOutArr = new Code(Type.getType("[I"), "%t=:outputs [I", ALOAD, GETFIELD);
 
 	static {
 		TABS = new Category[4];

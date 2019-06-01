@@ -223,7 +223,7 @@ public class Schematic {
 			Gate<?> op = get(i), op1 = get(data.readUnsignedByte());
 			if (op == null) return false;
 			int pins = data.readUnsignedByte();
-			if ((pins & 15) >= op.inputCount()) return false;
+			if ((pins & 15) >= op.visibleInputs()) return false;
 			op.setInput(pins & 15, op1 != null ? op1.getOutput(pins >> 4) : null);
 			toSync.set(i << 1);
 		}	return true;

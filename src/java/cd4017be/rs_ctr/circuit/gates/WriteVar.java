@@ -35,10 +35,10 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
 
 	@Override
 	public void compile(MethodVisitor mv, Context context) {
-		Operator op = inputs[inputCount()];
+		Operator op = inputs[visibleInputs()];
 		if (isInterrupt) {
 			if (op == null)
-				inputs[inputCount()] = new Read();
+				inputs[visibleInputs()] = new Read();
 			type.outputs[0].compile(mv, context, inputs, label);
 			if (receivers.isEmpty()) mv.visitInsn(POP);
 		} else {
@@ -63,18 +63,8 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
 	}
 
 	@Override
-	public int inputCount() {
-		return inputs.length - 1;
-	}
-
-	@Override
-	protected boolean isInputTypeValid(int pin, Type type) {
-		return super.isInputTypeValid(pin, type) || pin == inputCount() && type == Type.VOID_TYPE;
-	}
-
-	@Override
 	public void link(ReadOp read) {
-		this.setInput(inputCount(), read);
+		this.setInput(visibleInputs(), read);
 	}
 
 	private class Read implements Operator {

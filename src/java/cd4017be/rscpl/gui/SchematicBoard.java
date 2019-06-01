@@ -49,7 +49,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 					PinRef pin = new PinRef(g.getOutput(i));
 					pins.putIfAbsent(pin.hashCode(), pin);
 				}
-				for (int i = g.inputCount() - 1; i >= 0; i--)
+				for (int i = g.visibleInputs() - 1; i >= 0; i--)
 					for (PinRef pin = new PinRef(g, i); pin != null; pin = pin.link)
 						pins.put(pin.hashCode(), pin);
 			}

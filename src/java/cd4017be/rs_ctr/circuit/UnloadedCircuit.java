@@ -12,7 +12,7 @@ public class UnloadedCircuit extends Circuit {
 	private StateBuffer state = new StateBuffer();
 
 	@Override
-	public boolean tick() {return false;}
+	public int tick() {return 0;}
 
 	@Override
 	public void setState(StateBuffer state) {

@@ -63,17 +63,7 @@ public interface Operator {
 	/**
 	 * @return the output value type.
 	 */
-	Type outType();	
-
-	/**
-	 * @return whether this operator may generate output events that could affect input values before they are processed
-	 */
-	default boolean isOutPin() { return false; }
-
-	/**
-	 * @return whether this operator will access external input values
-	 */
-	default boolean isInPin() { return false; }
+	Type outType();
 
 	/**
 	 * @return whether this operator effects the circuit state
