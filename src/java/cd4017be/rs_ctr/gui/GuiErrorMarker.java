@@ -87,7 +87,7 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 		default: return;
 		}
 		gui.mc.renderEngine.bindTexture(parent.mainTex);
-		gui.drawTexturedModalRect(x + px - 4, y + py - 8, 248, 236, 8, 8);
+		gui.drawTexturedModalRect(x + px - 4, y + py - 8, 248, 18, 8, 8);
 		parent.drawTooltip(Arrays.asList(TooltipUtil.getConfigFormat("gui.rs_ctr.error" + lastErr.errcode).split("\n")), x + px, y + py);
 	}
 

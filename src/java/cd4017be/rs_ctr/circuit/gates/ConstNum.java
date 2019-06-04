@@ -1,19 +1,23 @@
 package cd4017be.rs_ctr.circuit.gates;
 
 import org.objectweb.asm.Type;
+
+import cd4017be.lib.Gui.comp.GuiFrame;
+import cd4017be.lib.Gui.comp.IGuiComp;
+import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.rs_ctr.circuit.editor.BasicType;
-import cd4017be.rscpl.editor.ConfigurableGate;
+import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GateTextureHandler;
+import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
 import cd4017be.rscpl.gui.SchematicBoard;
-import io.netty.buffer.ByteBuf;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class ConstNum extends Combinator implements ConfigurableGate, ISpecialRender {
+public class ConstNum extends Combinator implements ISpecialRender, ISpecialCfg {
 
 	public Number value;
 
@@ -23,7 +27,16 @@ public class ConstNum extends Combinator implements ConfigurableGate, ISpecialRe
 	 */
 	public ConstNum(BasicType type, int index) {
 		super(type, index);
-		this.value = 0;
+	}
+
+	@Override
+	public void checkValid() throws InvalidSchematicException {
+		super.checkValid();
+		try {
+			this.value = parse(label, outType());
+		} catch (NumberFormatException e) {
+			throw new InvalidSchematicException(InvalidSchematicException.INVALID_CFG, getGate(), getPin());
+		}
 	}
 
 	@Override
@@ -32,30 +45,30 @@ public class ConstNum extends Combinator implements ConfigurableGate, ISpecialRe
 	}
 
 	@Override
-	public void writeCfg(ByteBuf data) {
-		switch(outType().getSort()) {
-		default:
-		case Type.INT: data.writeInt(value.intValue()); break;
-		case Type.LONG: data.writeLong(value.longValue()); break;
-		case Type.FLOAT: data.writeFloat(value.floatValue()); break;
-		case Type.DOUBLE: data.writeDouble(value.doubleValue()); break;
-		}
-	}
-
-	@Override
-	public void readCfg(ByteBuf data) {
-		switch(outType().getSort()) {
-		default:
-		case Type.INT: value = data.readInt(); break;
-		case Type.LONG: value = data.readLong(); break;
-		case Type.FLOAT: value = data.readFloat(); break;
-		case Type.DOUBLE: value = data.readDouble(); break;
-		}
-	}
-
-	@Override
 	public void draw(SchematicBoard board, int x, int y) {
 		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x + 2, y + 2, 5, board.parent.zLevel + 1);
+	}
+
+	public static Number parse(String s, Type t) throws NumberFormatException {
+		if (s.isEmpty()) throw new NumberFormatException();
+		int rad;
+		if (s.charAt(0) == 'x') {s = s.substring(1); rad = 16;}
+		else if (s.charAt(0) == 'b') {s = s.substring(1); rad = 2;}
+		else rad = 10;
+		switch(t.getSort()) {
+		case Type.INT: return Integer.valueOf(s, rad);
+		case Type.LONG: return Long.valueOf(s, rad);
+		case Type.FLOAT: return Float.valueOf(s);
+		case Type.DOUBLE: return Double.valueOf(s);
+		default: throw new NumberFormatException();
+		}
+	}
+
+	@Override
+	public void setupCfgGUI(GuiFrame gui, Runnable updateCfg) {
+		for (IGuiComp c : gui)
+			if (c instanceof TextField)
+				((TextField)c).tooltip("gui.rs_ctr.value");
 	}
 
 }

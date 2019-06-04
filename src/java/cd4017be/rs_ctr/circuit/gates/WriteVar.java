@@ -6,6 +6,9 @@ import java.util.Set;
 
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
+
+import cd4017be.lib.Gui.comp.Button;
+import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.editor.Gate;
@@ -14,6 +17,7 @@ import cd4017be.rscpl.graph.Pin;
 import cd4017be.rscpl.graph.ReadOp;
 import cd4017be.rscpl.graph.WriteOp;
 import cd4017be.rscpl.gui.GateTextureHandler;
+import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
 import cd4017be.rscpl.gui.SchematicBoard;
 
@@ -21,9 +25,9 @@ import cd4017be.rscpl.gui.SchematicBoard;
  * @author CD4017BE
  *
  */
-public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
+public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISpecialCfg {
 
-	private boolean isInterrupt;
+	private boolean isInterrupt = true;
 
 	/**
 	 * @param type
@@ -92,6 +96,14 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender {
 	@Override
 	public void draw(SchematicBoard board, int x, int y) {
 		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x + 2, y + 2, 5, board.parent.zLevel + 1);
+	}
+
+	@Override
+	public void setupCfgGUI(GuiFrame gui, Runnable updateCfg) {
+		new Button(gui, 76, 9, 0, 9, 2, ()-> isInterrupt ? 1 : 0, (i)-> {
+			isInterrupt = i != 0;
+			updateCfg.run();
+		}).texture(180, 59).tooltip("gui.rs_ctr.interrupt#");
 	}
 
 }

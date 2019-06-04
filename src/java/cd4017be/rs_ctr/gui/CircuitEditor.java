@@ -17,10 +17,13 @@ import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.editor.BoundingBox2D;
+import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GatePalette;
+import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.SchematicBoard;
+import io.netty.buffer.ByteBuf;
 
 import static cd4017be.rs_ctr.tileentity.Editor.*;
 import static cd4017be.rscpl.editor.Schematic.*;
@@ -45,7 +48,7 @@ public class CircuitEditor extends ModularGui {
 	public final Editor tile;
 	public final SchematicBoard board;
 	public final GatePalette palette;
-	public final TextField editLabel;// editCfg;
+	public final GuiFrame cfg;
 	public final GuiErrorMarker error;
 	private GuiDebugger debug;
 
@@ -61,8 +64,7 @@ public class CircuitEditor extends ModularGui {
 		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.name");
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
 		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place)).title("\\Gate Palette", 0.5F);
-		(this.editLabel = new TextField(comps, 74, 7, 174, 174, 20, this::getLabel, (s)-> send(SET_LABEL, s))).tooltip("gui.rs_ctr.opLabel");
-		//this.editCfg = new TextField(comps, 74, 7, 174, 185, 20, this::getConfig, (s)-> send(SET_VALUE, s));
+		(this.cfg = new GuiFrame(comps, 76, 18, 2)).position(173, 173);
 		new Button(comps, 18, 9, 231, 195, 0, null, board::del).tooltip("gui.rs_ctr.editor.del");
 		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, (s)-> {
 			boolean hide = !palette.enabled();
@@ -92,33 +94,25 @@ public class CircuitEditor extends ModularGui {
 		changeSelPart();
 	}
 
-	private void send(byte tag, String s) {
-		BoundingBox2D<Gate<?>> part = board.selPart;
-		if (part == null) return;
-		PacketBuffer pkt = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
-		pkt.writeByte(tag).writeByte(part.owner.index).writeCharSequence(s, Utils.UTF8);
-		BlockGuiHandler.sendPacketToServer(pkt);
-	}
-
 	void changeSelPart() {
+		cfg.clear();
+		cfg.titleY = -11;
 		BoundingBox2D<Gate<?>> part = board.selPart;
-		if (part == null) {
-			editLabel.setEnabled(false);
-			//editCfg.setEnabled(false);
-		} /*else if (part.owner instanceof IConfigurable) {
-			editLabel.setEnabled(true);
-			editCfg.tooltip(((IConfigurable)part.owner).cfgTooltip());
-			editCfg.setEnabled(true);
-		}*/ else {
-			editLabel.setEnabled(true);
-			//editCfg.setEnabled(false);
+		if (part != null) {
+			Gate<?> g = part.owner;
+			cfg.background(COMP_TEX, 180, 41).title("gate." + g.type.name.replace(':', '.'), 0.5F);
+			int i = cfg.title.indexOf('\n');
+			if (i >= 0) cfg.title = cfg.title.substring(0, i);
+			new TextField(cfg, 74, 7, 1, 1, 20, ()-> g.label, this::sendLabel).tooltip("gui.rs_ctr.opLabel");
+			if (g instanceof ISpecialCfg)
+				((ISpecialCfg)g).setupCfgGUI(cfg, ()-> {
+					
+				});
+		} else {
+			cfg.bgTexture = null;
+			cfg.title = null;
 		}
 		tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
-	}
-
-	private String getLabel() {
-		BoundingBox2D<Gate<?>> part = board.selPart;
-		return part != null ? part.owner.label : "";
 	}
 
 	private void compile(int b) {
@@ -146,6 +140,27 @@ public class CircuitEditor extends ModularGui {
 		board.update();
 		error.update(tile.ingreds[6]);
 		if (debug != null) debug.update();
+	}
+
+	public void sendPacket(ByteBuf pkt) {
+		
+	}
+
+	public void sendLabel(String label) {
+		BoundingBox2D<Gate<?>> part = board.selPart;
+		PacketBuffer pkt = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+		pkt.writeByte(SET_LABEL).writeByte(part.owner.index);
+		pkt.writeCharSequence(label, Utils.UTF8);
+		BlockGuiHandler.sendPacketToServer(pkt);
+	}
+
+	public void updateCfg() {
+		BoundingBox2D<Gate<?>> part = board.selPart;
+		if (part == null || !(part.owner instanceof ConfigurableGate)) return;
+		PacketBuffer pkt = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+		pkt.writeByte(SET_VALUE).writeByte(part.owner.index);
+		((ConfigurableGate)part.owner).writeCfg(pkt);
+		BlockGuiHandler.sendPacketToServer(pkt);
 	}
 
 }

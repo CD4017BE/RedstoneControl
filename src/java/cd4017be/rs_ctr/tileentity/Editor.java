@@ -241,4 +241,9 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		}
 	}
 
+	@Override
+	protected void setupData() {
+		schematic.server = !world.isRemote;
+	}
+
 }
