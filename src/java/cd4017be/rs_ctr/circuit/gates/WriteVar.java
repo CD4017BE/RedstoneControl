@@ -11,6 +11,7 @@ import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.rs_ctr.circuit.editor.BasicType;
 import cd4017be.rscpl.compile.Context;
+import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.graph.Operator;
 import cd4017be.rscpl.graph.Pin;
@@ -20,14 +21,15 @@ import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
 import cd4017be.rscpl.gui.SchematicBoard;
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author CD4017BE
  *
  */
-public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISpecialCfg {
+public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISpecialCfg, ConfigurableGate {
 
-	private boolean isInterrupt = true;
+	private boolean interrupt = true;
 
 	/**
 	 * @param type
@@ -38,9 +40,19 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISp
 	}
 
 	@Override
+	public void writeCfg(ByteBuf data) {
+		data.writeBoolean(interrupt);
+	}
+
+	@Override
+	public void readCfg(ByteBuf data) {
+		interrupt = data.readBoolean();
+	}
+
+	@Override
 	public void compile(MethodVisitor mv, Context context) {
 		Operator op = inputs[visibleInputs()];
-		if (isInterrupt) {
+		if (interrupt) {
 			if (op == null)
 				inputs[visibleInputs()] = new Read();
 			type.outputs[0].compile(mv, context, inputs, label);
@@ -100,8 +112,8 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISp
 
 	@Override
 	public void setupCfgGUI(GuiFrame gui, Runnable updateCfg) {
-		new Button(gui, 76, 9, 0, 9, 2, ()-> isInterrupt ? 1 : 0, (i)-> {
-			isInterrupt = i != 0;
+		new Button(gui, 76, 9, 0, 9, 2, ()-> interrupt ? 1 : 0, (i)-> {
+			interrupt = i != 0;
 			updateCfg.run();
 		}).texture(180, 59).tooltip("gui.rs_ctr.interrupt#");
 	}

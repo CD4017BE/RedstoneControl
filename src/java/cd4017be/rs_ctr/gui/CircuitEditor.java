@@ -23,8 +23,6 @@ import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GatePalette;
 import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.SchematicBoard;
-import io.netty.buffer.ByteBuf;
-
 import static cd4017be.rs_ctr.tileentity.Editor.*;
 import static cd4017be.rscpl.editor.Schematic.*;
 
@@ -62,10 +60,10 @@ public class CircuitEditor extends ModularGui {
 		comps.texture(COMP_TEX, 256, 256);
 		new InfoTab(comps, 7, 8, 7, 6, "gui.rs_ctr.editor.info");
 		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.name");
+		(this.cfg = new GuiFrame(comps, 76, 18, 2)).position(173, 173);
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
 		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place)).title("\\Gate Palette", 0.5F);
-		(this.cfg = new GuiFrame(comps, 76, 18, 2)).position(173, 173);
-		new Button(comps, 18, 9, 231, 195, 0, null, board::del).tooltip("gui.rs_ctr.editor.del");
+		new Button(comps, 7, 7, 242, 191, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(241, 18).tooltip("gui.rs_ctr.editor.del");
 		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, (s)-> {
 			boolean hide = !palette.enabled();
 			palette.setEnabled(hide);
@@ -101,8 +99,12 @@ public class CircuitEditor extends ModularGui {
 		if (part != null) {
 			Gate<?> g = part.owner;
 			cfg.background(COMP_TEX, 180, 41).title("gate." + g.type.name.replace(':', '.'), 0.5F);
-			int i = cfg.title.indexOf('\n');
-			if (i >= 0) cfg.title = cfg.title.substring(0, i);
+			String s = cfg.title;
+			int i = s.indexOf('\n');
+			if (i >= 0) s = s.substring(0, i);
+			if (fontRenderer.getStringWidth(s) > cfg.w)
+				s = fontRenderer.trimStringToWidth(s, cfg.w - fontRenderer.getStringWidth("..")) + "..";
+			cfg.title = s;
 			new TextField(cfg, 74, 7, 1, 1, 20, ()-> g.label, this::sendLabel).tooltip("gui.rs_ctr.opLabel");
 			if (g instanceof ISpecialCfg)
 				((ISpecialCfg)g).setupCfgGUI(cfg, ()-> {
@@ -140,10 +142,6 @@ public class CircuitEditor extends ModularGui {
 		board.update();
 		error.update(tile.ingreds[6]);
 		if (debug != null) debug.update();
-	}
-
-	public void sendPacket(ByteBuf pkt) {
-		
 	}
 
 	public void sendLabel(String label) {
