@@ -134,7 +134,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
-		mx = (mx - x - 2) / 4;
+		mx = (mx - x - 1) / 4;
 		my = (my - y) / 4;
 		if (b == 0) {
 			if (placing != null && d != 1) {
