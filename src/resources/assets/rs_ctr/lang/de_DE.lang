@@ -17,9 +17,9 @@ tile.rs_ctr.bin_comb.name=binärer Signalpacker
 tile.rs_ctr.bin_comb.tip=Das Ausgangssignal ergibt sich durch aneinanderreihung der Binärdarstellungen der 4 Eingangssignale. Es ist einstellbar, wie viele Bits jeweils von den Eingängen verwendet werden\:\n§e1 bit§7 unterscheidet nur zwischen §e0§7 und §e1\n§e2 bit§7 unterscheidet zwischen §e0§7, §e1§7, §e2§7 und §e3\n§e4 bit§7 unterscheidet die Werte §e0§7 - §e15\n§e8 bit§7 unterscheidet die Werte §e0§7 - §e255\n§oNur Werte innerhalb des entsprechenden Wertebereichs lassen sich später mit dem §6§obinären Signalentpacker§7§o verlustfrei zurückgewinnen.
 tile.rs_ctr.bin_split.name=binärer Signalentpacker
 tile.rs_ctr.bin_split.tip=Funktioniert genau umgekehrt zum §6binären Signalpacker§7\:\nDie Binärdarstellung des Eingangssignals wird in 4 Stücke je §e1§7, §e2§7, §e4§7 oder §e8 bit§7 (je nach Einstellung) zerlegt, welche dann die Ausgangssignale bilden.\n\n§oDies ermöglicht es, mehrere Signale durch eine gemeinsame Leitung zu schicken, sowie die Operation eines §6§ologischen Signalkombinator§7§os im §e§obitweise§7§o-Modus für alle gepackten Signale parallel durzuführen.
-tile.rs_ctr.editor.name=Schaltplaneditor
 tile.rs_ctr.wire_anchor.name=Kabelhalter
 tile.rs_ctr.wire_anchor.tip=§6Signalkabel§7 können and diesen angebracht werden um ihren Verlauf anzupassen.\n§oEs können mehrere davon im gleichen Block plaziert werden.
+tile.rs_ctr.editor.name=Schaltplaneditor
 
 # Chat Hinweise
 msg.rs_ctr.wire0=§cAusgänge können nur mit Eingängen verbunden werden und umgekehrt!
