@@ -1,0 +1,33 @@
+{
+	"parent": "block/block",
+    "textures": {
+		"side": "rs_ctr:blocks/gate",
+		"back": "blocks/stone_slab_top",
+		"main": "rs_ctr:blocks/processor",
+        "particle": "rs_ctr:blocks/processor",
+		"chip": "rs_ctr:blocks/processor1"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 4 ],
+            "faces": {
+				"east":  { "uv": [ 0, 8, 16, 12 ], "rotation": 270, "texture": "#side", "cullface": "east" },
+                "west":    { "uv": [ 0, 8, 16, 12 ], "rotation": 90, "texture": "#side", "cullface": "west" },
+                "north": { "uv": [ 0, 0, 16, 16 ], "rotation": 90, "texture": "#back", "cullface": "north" },
+                "south": { "uv": [ 0, 0, 16, 16 ], "rotation": 90, "texture": "#main" },
+                "down":  { "uv": [ 0, 8, 16, 12 ], "texture": "#side", "cullface": "down" },
+                "up":  { "uv": [ 0, 12, 16, 8 ], "texture": "#side", "cullface": "up"  }
+            }
+        }, {
+			"from": [ 4, 4, 4 ],
+            "to": [ 12, 12, 7 ],
+            "faces": {
+				"east":  { "uv": [ 0, 8, 8, 11 ], "rotation": 270, "texture": "#chip" },
+                "west":    { "uv": [ 0, 8, 8, 11 ], "rotation": 90, "texture": "#chip" },
+                "south": { "uv": [ 0, 0, 8, 8 ], "rotation": 90, "texture": "#chip" },
+                "down":  { "uv": [ 0, 8, 8, 11 ], "texture": "#chip" },
+                "up":  { "uv": [ 0, 11, 8, 8 ], "texture": "#chip" }
+            }
+        }
+    ]
+}
