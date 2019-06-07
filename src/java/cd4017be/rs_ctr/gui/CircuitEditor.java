@@ -59,10 +59,10 @@ public class CircuitEditor extends ModularGui {
 		GuiFrame comps = new GuiFrame(this, 256, 256, 17).background(BG_TEX, 0, 0).title(tile.getName(), 0.1F);
 		comps.texture(COMP_TEX, 256, 256);
 		new InfoTab(comps, 7, 8, 7, 6, "gui.rs_ctr.editor.info");
-		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.name");
+		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.title");
 		(this.cfg = new GuiFrame(comps, 76, 18, 2)).position(173, 173);
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
-		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place)).title("\\Gate Palette", 0.5F);
+		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place)).title("gui.rs_ctr.palette", 0.5F);
 		new Button(comps, 7, 7, 242, 191, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(241, 18).tooltip("gui.rs_ctr.editor.del");
 		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, (s)-> {
 			boolean hide = !palette.enabled();
@@ -113,8 +113,8 @@ public class CircuitEditor extends ModularGui {
 		} else {
 			cfg.bgTexture = null;
 			cfg.title = null;
+			tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
 		}
-		tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
 	}
 
 	private void compile(int b) {

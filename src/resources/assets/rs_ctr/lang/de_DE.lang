@@ -13,6 +13,7 @@ tile.rs_ctr.logic_comb.name=logischer Signalkombinator
 tile.rs_ctr.logic_comb.tip=Kombiniert die 4 eingehenden Signale durch logische §eODER§7-Verknüpfung, wobei die Werte §e65536§7 für §eWahr§7 und §e0§7 für §eFalsch§7 ausgegeben werden.\nDer Ausgang, sowie jeder Eingang können individuell invertiert werden, was auch die anderen Logikgattertypen §eUND§7, §enicht-UND§7 und §enicht-ODER§7 liefert.
 tile.rs_ctr.num_comb.name=arithmetischer Signalkombinator
 tile.rs_ctr.num_comb.tip=Kombiniert die 4 eingehenden Signale durch Addition.\nEingänge können negiert werden, was auch subtraktion ermöglicht.
+tile.rs_ctr.editor.name=Schaltplaneditor
 
 # Chat Hinweise
 msg.rs_ctr.wire0=§cAusgänge können nur mit Eingängen verbunden werden und umgekehrt!
@@ -47,28 +48,72 @@ port.rs_ctr.logic3=bit-weise\ninvertiert
 port.rs_ctr.logic4=ODER
 port.rs_ctr.logic5=nicht-ODER
 
+gategroup.rs_ctr.io=Variablen & E/A
+gate.rs_ctr.in=Signaleingang\n§7Empfängt Signale von außen.
+gate.rs_ctr.out=Signalausgang\n§7Sendet Signale nach außen.
+gate.rs_ctr.i_cst=konstante Zahl\n§7A \= #
+gate.rs_ctr.write=Variable schreiben\n§7Speichert den Eingangswert in einer Variable,\n§7um ihn an den nächsten Zyklus weiterzugeben.
+gate.rs_ctr.read=Variable lesen\n§7Gibt den Wert einer Variable aus, der\n§7im vorherigen Zyklus gesetzt wurde.
+gategroup.rs_ctr.logic=Logik
+gate.rs_ctr.not=Nicht-Gatter\n§7A \= ¬E\n§7bitweise
+gate.rs_ctr.or=Oder-Gatter\n§7A \= E1 ∨ E2\n§7bitweise
+gate.rs_ctr.nand=Nicht-Und-Gatter\n§7A \= ¬(E1 ∧ E2)\n§7bitweise
+gate.rs_ctr.xor=Exklusiv-Oder-Gatter\n§7A \= E1 ⊻ E2\n§7bitweise
+gate.rs_ctr.nor=Nicht-Oder-Gatter\n§7A \= ¬(E1 ∨ E2)\n§7bitweise
+gate.rs_ctr.and=Und-Gatter\n§7A \= E1 ∧ E2\n§7bitweise
+gate.rs_ctr.xnor=Invers-Exklusiv-Oder-Gatter\n§7A \= ¬(E1 ⊻ E2)\n§7bitweise
+gategroup.rs_ctr.comp=Komparatoren
+gate.rs_ctr.is0=ist Null\n§7E \= 0 -> A \= -1\n§7sonst -> A \= 0
+gate.rs_ctr.eq=gleich\n§7E1 \= E2 -> A \= -1\n§7sonst -> A \= 0
+gate.rs_ctr.not0=nicht Null\n§7E \= 0 -> A \= 0\n§7sonst -> A \= -1
+gate.rs_ctr.nsgn=ist negativ\n§7E < 0 -> A \= -1\n§7sonst -> A \= 0
+gate.rs_ctr.psgn=nicht negativ\n§7E < 0 -> A \= 0\n§7sonst -> A \= -1
+gate.rs_ctr.neq=ungleich\n§7E1 \= E2 -> A \= 0\n§7sonst -> A \= -1
+gate.rs_ctr.ls=kleiner als\n§7E1 < E2 -> A \= -1\n§7sonst -> A \= 0
+gate.rs_ctr.geq=größer/gleich\n§7E1 < E2 -> A \= 0\n§7sonst -> A \= -1
+gategroup.rs_ctr.num=Arithmetik
+gate.rs_ctr.inc=erhöhen\n§7A \= E + 1
+gate.rs_ctr.dec=erniedrigen\n§7A \= E - 1
+gate.rs_ctr.neg=negieren\n§7A \= -E
+gate.rs_ctr.abs=Absolutbetrag\n§7E < 0 -> A \= -E\n§7sonst -> A \= E
+gate.rs_ctr.add=addieren\n§7A \= E1 + E2
+gate.rs_ctr.sub=subtrahieren\n§7A \= E1 - E2
+gate.rs_ctr.mul=multiplizieren\n§7A \= E1 * E2
+gate.rs_ctr.div=dividieren\n§7A \= E1 / E2\n§7A wird abgerundet\n§4§odiv/0 verursacht Ausfall!
+gate.rs_ctr.mod=Divisionsrestwert\n§7A \= E1 mod E2\n§7A übernimmt Vorzeichen von E2\n§4§odiv/0 verursacht Ausfall!
+gate.rs_ctr.max=Maximum\n§7E1 > E2 -> A \= E1\n§7sonst -> A \= E2
+gate.rs_ctr.min=Minimum\n§7E1 < E2 -> A \= E1\n§7sonst -> A \= E2
+
 # GUI
 # Inventory names
 gui.rs_ctr.constant.name=Signalwert:
 gui.rs_ctr.tag.name=Beschriftung:
+gui.rs_ctr.editor.name=Schaltplaneditor\:
 gui.rs_ctr.debug.name=Debugger
 # Gui tooltips
-gui.rs_ctr.interval=Interval
-gui.rs_ctr.debug.step0=§4§ostabiler Zustand
-gui.rs_ctr.debug.step1=Einzelschritt\n§2§oinstabiler Zustand
-gui.rs_ctr.debug.run0=automatische Ausführung
-gui.rs_ctr.debug.run1=manuelle Ausführung
-#added by ingame editor:
-gui.rs_ctr.error6=§4mehrfaches Schreiben auf gleiche Variable
-gui.rs_ctr.error4=§4unerlaubter Variablenname
-#added by ingame editor:
-gui.rs_ctr.error3=§4Eingang nicht angeschlossen
-#added by ingame editor:
-gui.rs_ctr.error5=§4variable ist mehrfach deklariert
-#added by ingame editor:
-gui.rs_ctr.error1=§4Kausalschleife
-#added by ingame editor:
-gui.rs_ctr.error32=§4Platine benötigt
-#added by ingame editor:
 gui.rs_ctr.palette.open1=Inventar öffen
 gui.rs_ctr.palette.open0=Bauteilpalette öffnen
+gui.rs_ctr.interval=Interval
+gui.rs_ctr.debug.run0=automatische Ausführung
+gui.rs_ctr.debug.run1=manuelle Ausführung
+gui.rs_ctr.debug.step0=§4§ostabiler Zustand
+gui.rs_ctr.debug.step1=Einzelschritt\n§2§oinstabiler Zustand
+gui.rs_ctr.error1=§4Kausalschleife
+gui.rs_ctr.error2=§4inkompatibler Datentyp
+gui.rs_ctr.error3=§4Eingang nicht angeschlossen
+gui.rs_ctr.error4=§4ungültiger Variablenname
+gui.rs_ctr.error5=§4variable ist mehrfach deklariert
+gui.rs_ctr.error6=§4mehrfaches Schreiben auf gleiche Variable
+gui.rs_ctr.error7=§4ungültiger Wert
+gui.rs_ctr.error32=§4Platine benötigt
+gui.rs_ctr.opLabel=Beschriftung\n§7(relevant für\n§7Variablen & E/A)
+gui.rs_ctr.value=Wert
+gui.rs_ctr.interrupt0=Wertänderung triggert §nkeinen§r neuen Zyklus
+gui.rs_ctr.interrupt1=Wertänderung triggert neuen Zyklus
+gui.rs_ctr.editor.del=§4Bauteil löschen
+gui.rs_ctr.editor.title=Name der Schaltung
+gui.rs_ctr.editor.compile=Schaltung Compilieren\n§7+§aSHIFT§7\: Debugger öffen
+gui.rs_ctr.editor.load=Schaltung importieren
+gui.rs_ctr.editor.save=Schaltung exportieren
+gui.rs_ctr.editor.new=Neue Schaltung\n§4Löscht das Board
+gui.rs_ctr.palette=Bauteilpalette

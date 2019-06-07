@@ -14,6 +14,7 @@ tile.rs_ctr.logic_comb.name=Logic Signal Combiner
 tile.rs_ctr.logic_comb.tip=Combines the for incomming signals by logical §eOR§7, where the outputs will emit §e65536§7 for §etrue§7 and §e0§7 for §efalse§7.\nThe output as well as each individual input can be set to inverted which also gives you the other logic-gate types §eAND§7, §eNAND§7 and §eNOR§7. 
 tile.rs_ctr.num_comb.name=Arithmetic Signal Combiner
 tile.rs_ctr.num_comb.tip=Combines the 4 incomming signals by adding their values together.\nInputs can be negated which allows computing subtractions too.
+tile.rs_ctr.editor.name=Circuit Editor
 
 # chat messages
 msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
@@ -54,9 +55,9 @@ port.rs_ctr.logic5=NOR
 gategroup.rs_ctr.io=Variables & IO
 gate.rs_ctr.in=Input Socket\n§7receives external sinals
 gate.rs_ctr.out=Output Socket\n§7emits external signals
-gate.rs_ctr.write=Pipe entrance\n§7Stores input in a variable to\n§7feed into next evaluation cycle
-gate.rs_ctr.read=Pipe exit\n§7Outputs the variable value set\n§7in previous evaluation cycle.
-gate.rs_ctr.i_cst=Nummeric Constant\n§7out \= #
+gate.rs_ctr.write=Variable Write\n§7Stores input in a variable to\n§7feed into next evaluation cycle
+gate.rs_ctr.read=Variable read\n§7Outputs the variable value set\n§7in previous evaluation cycle.
+gate.rs_ctr.i_cst=Constant Number\n§7out \= #
 gategroup.rs_ctr.logic=Logic
 gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
 gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
@@ -91,13 +92,32 @@ gate.rs_ctr.max=Maximum\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
 # Inventory names
 gui.rs_ctr.constant.name=Set Value
 gui.rs_ctr.tag.name=Label:
+gui.rs_ctr.editor.name=Circuit Editor\:
 # Gui tooltips
+gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette
 gui.rs_ctr.palette.open1=Open Inventory
-#added by ingame editor:
-gui.rs_ctr.editor.name=Name of your circuit
+gui.rs_ctr.editor.title=Name of your circuit
 gui.rs_ctr.opLabel=Gate Label\n§7(relevant for\n§7variables & IO)
+gui.rs_ctr.value=Value
+gui.rs_ctr.interrupt0=changed value §ndoes not§r trigger next cycle
+gui.rs_ctr.interrupt1=changed value triggers next cycle
+gui.rs_ctr.editor.del=§4delete Gate
 gui.rs_ctr.editor.new=New Schematic\n§4clears the board
 gui.rs_ctr.editor.compile=Compile Circuit
 gui.rs_ctr.editor.load=Import Schematic
 gui.rs_ctr.editor.save=Export Schematic
+gui.rs_ctr.debug.name=Debugger
+gui.rs_ctr.debug.run0=automatic execution
+gui.rs_ctr.debug.run1=manual execution
+gui.rs_ctr.debug.step0=§4§ostable state
+gui.rs_ctr.debug.step1=run cycle\n§2§ounstable
+gui.rs_ctr.interval=Interval
+gui.rs_ctr.error1=§4causal loop
+gui.rs_ctr.error2=§4incompatible data type
+gui.rs_ctr.error3=§4missing input signal
+gui.rs_ctr.error4=§4invalid identifier
+gui.rs_ctr.error5=§4duplicate variable declaration
+gui.rs_ctr.error6=§4conflicting writes on same variable
+gui.rs_ctr.error7=§4invalid value
+gui.rs_ctr.error32=§4missing Circuit Board

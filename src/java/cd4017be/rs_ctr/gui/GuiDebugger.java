@@ -25,7 +25,7 @@ public class GuiDebugger extends GuiFrame {
 	private static final ResourceLocation TEX = new ResourceLocation(Main.ID, "textures/gui/palette.png");
 	public Circuit circuit;
 	private int interval = 1, timer = Integer.MIN_VALUE;
-	private int dirty;
+	private int dirty = 1;
 
 	/**
 	 * @param parent
@@ -50,14 +50,15 @@ public class GuiDebugger extends GuiFrame {
 			final int idx = i;
 			new FormatText(this, 70, 9, 8, 34 + i * 18, "\\" + label, null).color(0xff00007f);
 			new TextField(this, 70, 7, 8, 43 + i * 18, 16, ()-> "" + this.circuit.inputs[idx], (t)-> {try {
-					this.circuit.inputs[idx] = Integer.parseInt(t);
-					if (this.circuit.isInterrupt(idx)) dirty |= 1;
+					int v = Integer.parseInt(t);
+					if (this.circuit.isInterrupt(idx) && v != this.circuit.inputs[idx]) dirty |= 1;
+					this.circuit.inputs[idx] = v;
 				} catch (NumberFormatException e) {}});
 		}
 		for (int i = 0; i < out; i++) {
 			final String label = circuit.ioLabels[in + i];
 			final int idx = i;
-			new FormatText(this, 70, 9, 8, 34 + (i + in) * 18, "\\" + label + "\n%d", ()-> new Object[] {circuit.outputs[idx]}).color(0xff007f00);
+			new FormatText(this, 70, 9, 8, 34 + (i + in) * 18, "\\" + label.replace("%", "%%") + "\n%d", ()-> new Object[] {circuit.outputs[idx]}).color(0xff007f00);
 		}
 		//TODO state
 	}
