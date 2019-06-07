@@ -108,7 +108,7 @@ public class Code {
 				break;
 			case '*':
 				do mv.visitInsn(bytecode[bi++] & 0xff);
-				while(--v >= 0);
+				while(--v > 0);
 				break;
 			case '#':
 				mv.visitIntInsn(bytecode[bi++] & 0xff, v);
