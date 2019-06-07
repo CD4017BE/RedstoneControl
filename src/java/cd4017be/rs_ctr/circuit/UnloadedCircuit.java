@@ -26,6 +26,7 @@ public class UnloadedCircuit extends Circuit {
 
 	@Override
 	public Circuit load() {
+		if (ID == null) return this;
 		String name = name(ID);
 		CircuitLoader.INSTANCE.register(name, null);
 		Circuit c = CircuitLoader.INSTANCE.newCircuit(name);
