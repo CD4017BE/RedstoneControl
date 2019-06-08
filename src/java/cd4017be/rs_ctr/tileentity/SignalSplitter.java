@@ -2,7 +2,6 @@ package cd4017be.rs_ctr.tileentity;
 
 import java.util.function.IntConsumer;
 
-import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -12,7 +11,7 @@ import net.minecraft.util.EnumFacing;
  * @author CD4017BE
  *
  */
-public class SignalSplitter extends Gate {
+public class SignalSplitter extends WallMountGate {
 
 	protected final IntConsumer[] callbacks = new IntConsumer[4];
 	protected int state;
@@ -46,25 +45,14 @@ public class SignalSplitter extends Gate {
 
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
-		if (mode <= CLIENT) nbt.setByte("o", (byte)o.ordinal());
 		if (mode == SAVE) nbt.setInteger("state", state);
 		super.storeState(nbt, mode);
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		if (mode <= CLIENT) {
-			o = Orientation.values()[nbt.getByte("o") & 0xf];
-			orient();
-		}
 		if (mode == SAVE) state = nbt.getInteger("state");
 		super.loadState(nbt, mode);
-	}
-
-	@Override
-	public void updateContainingBlockInfo() {
-		super.updateContainingBlockInfo();
-		orient();
 	}
 
 	protected void orient() {

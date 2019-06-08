@@ -1,29 +1,42 @@
 package cd4017be.rs_ctr.tileentity;
 
+import java.util.List;
 import java.util.Random;
 import java.util.function.IntConsumer;
 
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
+import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.rs_ctr.Main;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rs_ctr.circuit.UnloadedCircuit;
+import cd4017be.rs_ctr.gui.BlockButton;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.common.util.Constants.NBT;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class Processor extends Gate implements IUpdatable {
+public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHarvest {
 
 	public static int BURNOUT_INTERVAL = 50;
 
+	String name;
+	BlockButton coreBtn = new BlockButton(null, ()-> null, ()-> name);
 	Circuit circuit;
 	IntConsumer[] callbacks;
 	private long burnoutTime = -1;
@@ -91,18 +104,37 @@ public class Processor extends Gate implements IUpdatable {
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		super.storeState(nbt, mode);
-		nbt.setTag("circuit", circuit.serializeNBT());
-		nbt.setLong("burnout", burnoutTime);
-		nbt.setBoolean("active", update);
+		if (mode <= CLIENT || mode == ITEM) {
+			nbt.setTag("circuit", circuit.serializeNBT());
+			NBTTagList names = new NBTTagList();
+			for (MountedSignalPort port : ports)
+				names.appendTag(new NBTTagString(port.name.substring(1)));
+			nbt.setTag("labels", names);
+			nbt.setString("name", name);
+		}
+		if (mode == SAVE) {
+			nbt.setLong("burnout", burnoutTime);
+			nbt.setBoolean("active", update);
+		}
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		circuit = new UnloadedCircuit();
-		circuit.deserializeNBT(nbt.getCompoundTag("circuit"));
-		burnoutTime = nbt.getLong("burnout");
-		update = nbt.getBoolean("active");
+		if (mode <= CLIENT || mode == ITEM) {
+			circuit = new UnloadedCircuit();
+			circuit.deserializeNBT(nbt);
+			NBTTagList names = nbt.getTagList("labels", NBT.TAG_STRING);
+			int in = circuit.inputs.length, out = circuit.outputs.length;
+			ports = new MountedSignalPort[in + out];
+			for (int i = 0; i < ports.length; i++)
+				ports[i] = new MountedSignalPort(this, i, i >= in).setName("\\" + names.getStringTagAt(i));
+			name = nbt.getString("name");
+		}
 		super.loadState(nbt, mode);
+		if (mode == SAVE) {
+			burnoutTime = nbt.getLong("burnout");
+			update = nbt.getBoolean("active");
+		}
 	}
 
 	@Override
@@ -113,6 +145,41 @@ public class Processor extends Gate implements IUpdatable {
 			circuit = circuit.load();
 		else circuit = new UnloadedCircuit();
 		if (update && unloaded) TickRegistry.schedule(this);
+	}
+
+	@Override
+	protected void initGuiComps(List<IInteractiveComponent> list) {
+		list.add(coreBtn);
+	}
+
+	protected void orient() {
+		coreBtn.setLocation(0.5, 0.5, 0.4375, o);
+		int in = circuit.inputs.length, out = circuit.outputs.length;
+		int oin = (4 - in) >> 1, oout = (5 - out) >> 1;
+		for (int i = 0; i < ports.length; i++) {
+			int j = i + (i < in ? oin : oout);
+			int k = j < 0 ? 0 : j > 3 ? 3 : j;
+			j = k > j ? k - j : j - k;
+			ports[i].setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.125 + k * 0.25, 0.25, EnumFacing.SOUTH, o);
+		}
+	}
+
+	@Override
+	public void onPlaced(EntityLivingBase entity, ItemStack item) {
+		NBTTagCompound nbt = item.getTagCompound();
+		if (nbt == null) return;
+		clearData();
+		loadState(nbt, ITEM);
+		setupData();
+		if (!update && !world.isRemote) {
+			update = true;
+			TickRegistry.schedule(this);
+		}
+	}
+
+	@Override
+	public List<ItemStack> dropItem(IBlockState state, int fortune) {
+		return makeDefaultDrops();
 	}
 
 }

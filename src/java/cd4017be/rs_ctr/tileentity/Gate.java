@@ -116,20 +116,24 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
-		NBTTagList list = new NBTTagList();
-		for (MountedSignalPort port : ports)
-			list.appendTag(port.serializeNBT());
-		if (!list.hasNoTags()) nbt.setTag("ports", list);
-		NBTTagCompound ctag = storeHooks();
-		if (ctag != null) nbt.setTag("hooks", ctag);
+		if (mode <= SYNC) {
+			NBTTagList list = new NBTTagList();
+			for (MountedSignalPort port : ports)
+				list.appendTag(port.serializeNBT());
+			if (!list.hasNoTags()) nbt.setTag("ports", list);
+			NBTTagCompound ctag = storeHooks();
+			if (ctag != null) nbt.setTag("hooks", ctag);
+		}
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
-		for (int i = 0; i < ports.length; i++)
-			ports[i].deserializeNBT(list.getCompoundTagAt(i));
-		loadHooks(nbt.getCompoundTag("hooks"));
+		if (mode <= SYNC) {
+			NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
+			for (int i = 0; i < ports.length; i++)
+				ports[i].deserializeNBT(list.getCompoundTagAt(i));
+			loadHooks(nbt.getCompoundTag("hooks"));
+		}
 		tesrComps = null;
 		tesrBB = null;
 		gui = null;
