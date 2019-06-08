@@ -37,7 +37,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public static int BURNOUT_INTERVAL = 50;
 
 	String name = "";
-	BlockButton coreBtn = new BlockButton(null, ()-> null, ()-> name);
+	BlockButton coreBtn = new BlockButton(null, ()-> null, ()-> name).setSize(0.25F, 0.25F);
 	Circuit circuit;
 	IntConsumer[] callbacks;
 	private long burnoutTime = -1;
@@ -157,12 +157,12 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	protected void orient() {
 		coreBtn.setLocation(0.5, 0.5, 0.4375, o);
 		int in = circuit.inputs.length, out = circuit.outputs.length;
-		int oin = (4 - in) >> 1, oout = (5 - out) >> 1 - in;
+		int oin = (4 - in) >> 1, oout = ((4 - out) >> 1) - in;
 		for (int i = 0; i < ports.length; i++) {
 			int j = i + (i < in ? oin : oout);
 			int k = j < 0 ? 0 : j > 3 ? 3 : j;
 			j = k > j ? k - j : j - k;
-			ports[i].setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.125 + k * 0.25, 0.25, EnumFacing.SOUTH, o);
+			ports[i].setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.875 - k * 0.25, 0.25, EnumFacing.SOUTH, o);
 		}
 	}
 

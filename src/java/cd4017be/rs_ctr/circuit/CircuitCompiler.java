@@ -6,6 +6,8 @@ import static org.objectweb.asm.Opcodes.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,18 +44,20 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		for (Gate<?> g : gatesIn)
 			if (g == null);
 			else if (g.type == CircuitInstructionSet.in) {
-				Input i = (Input)g;
-				i.portID = inputs.size();
-				i.setInput(0, in);
-				inputs.add(i);
+				g.setInput(0, in);
+				inputs.add((Input)g);
 			} else if (g.type == CircuitInstructionSet.out) {
-				Output o = (Output)g;
-				o.portID = outputs.size();
-				o.setInput(1, o.getInput(0));
-				o.setInput(2, out);
-				o.setInput(3, out);
-				outputs.add(o);
+				g.setInput(1, g.getInput(0));
+				g.setInput(2, out);
+				g.setInput(3, out);
+				outputs.add((Output)g);
 			}
+		Collections.sort(inputs, BY_VERT_POS);
+		for (int i = 0; i < inputs.size(); i++)
+			inputs.get(i).portID = i;
+		Collections.sort(outputs, BY_VERT_POS);
+		for (int i = 0; i < outputs.size(); i++)
+			outputs.get(i).portID = i;
 		cc.setIOPins(inputs, outputs);
 		return cc;
 	}
@@ -71,5 +75,7 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		mv.visitMaxs(0, 2); //automatically computed
 		mv.visitEnd();
 	}
+
+	private static final Comparator<Gate<?>> BY_VERT_POS = (g1, g2) -> g1.rasterY - g2.rasterY;
 
 }

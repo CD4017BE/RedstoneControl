@@ -80,8 +80,7 @@ public abstract class Gate<T extends GateType<T>> {
 	}
 
 	public void read(ByteBuf data) {
-		rasterX = data.readUnsignedByte();
-		rasterY = data.readUnsignedByte();
+		setPosition(data.readUnsignedByte(), data.readUnsignedByte());
 		for (int i = 0; i < traces.length; i++) {
 			int n = data.readUnsignedByte();
 			if (n == 0) continue;
@@ -141,6 +140,11 @@ public abstract class Gate<T extends GateType<T>> {
 				p.op.setInput(p.idx, null);
 			}
 		}
+	}
+
+	public void setPosition(int x, int y) {
+		rasterX = x;
+		rasterY = y;
 	}
 
 	public BoundingBox2D<Gate<?>> getBounds() {

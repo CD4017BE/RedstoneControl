@@ -68,8 +68,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 		for (BoundingBox2D<Gate<?>> part : parts)
 			drawPart(part);
 		if (placing != null) {
-			placing.rasterX = (mx - x) / 4;
-			placing.rasterY = (my - y) / 4;
+			placing.setPosition((mx - x) / 4, (my - y) / 4);
 			BoundingBox2D<Gate<?>> part = placing.getBounds();
 			drawPart(part);
 		}

@@ -64,4 +64,9 @@ public class Input extends Combinator implements ConfigurableGate, ISpecialRende
 		}).texture(180, 59).tooltip("gui.rs_ctr.interrupt#");
 	}
 
+	@Override
+	public void setPosition(int x, int y) {
+		super.setPosition(0, y);
+	}
+
 }

@@ -43,9 +43,16 @@ public class Output extends Combinator implements ISpecialRender {
 	protected Object[] compParams() {
 		return new Object[] {portID, 2 << portID};
 	}
+
 	@Override
 	protected boolean isInputTypeValid(int pin, Type type) {
 		if (pin == 0) return type == Type.INT_TYPE;
 		return true;
 	}
+
+	@Override
+	public void setPosition(int x, int y) {
+		super.setPosition(58, y);
+	}
+
 }

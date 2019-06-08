@@ -191,8 +191,7 @@ public class Schematic {
 			if (i >= 256) return false;
 			Gate<?> op = INS_SET.newGate(data.readByte(), i);
 			if (op == null) return false;
-			op.rasterX = data.readUnsignedByte();
-			op.rasterY = data.readUnsignedByte();
+			op.setPosition(data.readUnsignedByte(), data.readUnsignedByte());
 			if (getCollision(op.getBounds()) != null) return false;
 			if (i == operators.size()) operators.add(op);
 			else operators.set(i, op);
@@ -211,8 +210,7 @@ public class Schematic {
 			Gate<?> op = get(i);
 			if (op == null) return false;
 			int prevX = op.rasterX, prevY = op.rasterY;
-			op.rasterX = data.readUnsignedByte();
-			op.rasterY = data.readUnsignedByte();
+			op.setPosition(data.readUnsignedByte(), data.readUnsignedByte());
 			if (getCollision(op.getBounds()) != null) {
 				op.rasterX = prevX;
 				op.rasterY = prevY;
