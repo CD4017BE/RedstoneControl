@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 
 import cd4017be.lib.util.Utils;
+import cd4017be.rs_ctr.Main;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTBase;
@@ -50,7 +51,8 @@ public class Schematic {
 		int n = data.readUnsignedByte();
 		for (int i = 0; i < n; i++) {
 			GateType<?> t = INS_SET.get(data.readUnsignedByte());
-			int p = data.readUnsignedShort() + data.readerIndex();
+			int l = data.readUnsignedShort();
+			int p = l + data.readerIndex();
 			if (t != null) {
 				Gate<?> g = t.newGate(operators.size());
 				g.read(data);
@@ -59,8 +61,8 @@ public class Schematic {
 				operators.add(g);
 			}
 			if (data.readerIndex() != p) {
+				Main.LOG.warn("corrupted data in circuit schematic:\ntype = {}, exp_size = {}, read_size = {}", t, l, l - p + data.readerIndex());
 				data.readerIndex(p);
-				//TODO complain in log
 			}
 		}
 		for (Gate<?> g : operators) g.reconnect(this::get);
@@ -148,7 +150,7 @@ public class Schematic {
 				buf.clear();
 			}
 			if (op instanceof ConfigurableGate && tag.hasKey("c", NBT.TAG_BYTE_ARRAY)) {
-				buf.writeBytes(tag.getByteArray("d"));
+				buf.writeBytes(tag.getByteArray("c"));
 				((ConfigurableGate)op).readCfg(buf);
 				buf.clear();
 			}
