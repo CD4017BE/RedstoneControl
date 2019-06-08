@@ -30,7 +30,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
-import scala.actors.threadpool.Arrays;
 
 /**
  * @author CD4017BE
@@ -145,7 +144,7 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		if (stack.getItem() != Objects.processor)
 			throw new InvalidSchematicException(NO_CIRCUITBOARD, null, 0);
 		computeCost();
-		int[] cost = ingreds.clone(), ingr;
+		/*int[] cost = ingreds.clone(), ingr;
 		int n = stack.getCount();
 		if (stack.hasTagCompound())
 			ingr = Arrays.copyOf(stack.getTagCompound().getIntArray("ingr"), 3);
@@ -153,15 +152,15 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		for (int i = 0; i < 3; i++)
 			if (cost[i] < (cost[i+3] -= ingr[i]) * n)
 				throw new InvalidSchematicException(MISSING_RESOURCE, null, i);
-		
+		*/
 		CompiledCircuit cc = CircuitCompiler.INSTANCE.compile(schematic.operators);
 		NBTTagCompound nbt = cc.serializeNBT();
-		for (int i = 0, c; i < 3; i++)
+		/*for (int i = 0, c; i < 3; i++)
 			if ((c = cost[i + 3]) > 0) {
 				ingr[i] += c;
 				ingreds[i] -= c * n;
 			}
-		nbt.setIntArray("ingr", ingr);
+		nbt.setIntArray("ingr", ingr);*/
 		nbt.setString("name", name);
 		stack.setTagCompound(nbt);
 	}

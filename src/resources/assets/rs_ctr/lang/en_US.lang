@@ -132,6 +132,7 @@ gui.rs_ctr.editor.new=New Schematic\n§4clears the board
 gui.rs_ctr.editor.compile=Compile Circuit
 gui.rs_ctr.editor.load=Import Schematic
 gui.rs_ctr.editor.save=Export Schematic
+gui.rs_ctr.editor.ingreds=Circuit Complexity [WIP]
 gui.rs_ctr.debug.name=Debugger
 gui.rs_ctr.debug.run0=automatic execution
 gui.rs_ctr.debug.run1=manual execution
