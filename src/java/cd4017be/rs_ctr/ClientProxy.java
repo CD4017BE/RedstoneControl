@@ -4,7 +4,6 @@ import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.gui.CircuitEditor;
-import cd4017be.rs_ctr.render.WireRenderer;
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
 
 import cd4017be.rs_ctr.block.BlockGate;

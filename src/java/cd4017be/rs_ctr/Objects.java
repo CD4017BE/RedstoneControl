@@ -51,7 +51,7 @@ public class Objects {
 	public static final BaseItemBlock num_comb = null;
 	public static final BaseItemBlock bin_comb = null;
 	public static final BaseItemBlock bin_split = null;
-	public static final BaseItemBlock processor = null;
+	public static final ItemProcessor processor = null;
 	public static final BaseItemBlock editor = null;
 	public static final ItemWireAnchor wire_anchor = null;
 
@@ -100,7 +100,7 @@ public class Objects {
 				new BaseItemBlock(BIN_COMB),
 				new BaseItemBlock(BIN_SPLIT),
 				new ItemWireAnchor(WIRE_ANCHOR),
-				new BaseItemBlock(PROCESSOR),
+				new ItemProcessor(PROCESSOR),
 				new BaseItemBlock(EDITOR),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
