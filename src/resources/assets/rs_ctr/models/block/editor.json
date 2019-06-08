@@ -1,0 +1,12 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"particle": "rs_ctr:blocks/editor_top",
+        "up": "rs_ctr:blocks/editor_top",
+		"north": "rs_ctr:blocks/editor_side",
+		"down": "rs_ctr:blocks/editor_bot",
+		"south": "rs_ctr:blocks/editor_bot",
+		"west": "rs_ctr:blocks/editor_bot",
+		"east": "rs_ctr:blocks/editor_bot"
+    }
+}

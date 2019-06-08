@@ -1,4 +1,4 @@
-VERSION = 9;
+VERSION = 12;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -6,6 +6,8 @@ max_wire_length = 16;
 
 INIT() {
 	Loc slab = it("minecraft:stone_slab");
+	!add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf")); !WIP
+	!add("shaped", it("tile.processor"), "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone"); !WIP
 	add("shaped", 2 * it("tile.rs_port"):0, "0/1", "dustRedstone", slab);
 	add("shaped", 2 * it("tile.rs_port"):1, "0/1", it("minecraft:redstone_torch"), slab);
 	add("shaped", 8 * it("tile.wire_anchor"), "0/0", it("minecraft:iron_bars"));

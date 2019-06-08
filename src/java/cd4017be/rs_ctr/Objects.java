@@ -12,8 +12,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.lib.block.AdvancedBlock;
+import cd4017be.lib.block.OrientedBlock;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.item.BaseItemBlock;
+import cd4017be.lib.property.PropertyOrientation;
 import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
@@ -84,7 +86,7 @@ public class Objects {
 				new BlockGate("bin_split", Material.ROCK, SoundType.STONE, 3, BinarySplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 3, Processor.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new AdvancedBlock("editor", Material.IRON, SoundType.METAL, 0, Editor.class).setCreativeTab(tabCircuits)
+				OrientedBlock.create("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits)
 		);
 	}
 
