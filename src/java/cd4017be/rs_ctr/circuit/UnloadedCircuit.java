@@ -11,6 +11,11 @@ public class UnloadedCircuit extends Circuit {
 
 	private StateBuffer state = new StateBuffer();
 
+	{
+		inputs = new int[0];
+		outputs = new int[0];
+	}
+
 	@Override
 	public int tick() {return 0;}
 

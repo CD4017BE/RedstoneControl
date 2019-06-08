@@ -142,7 +142,7 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 
 	void compile() throws InvalidSchematicException {
 		ItemStack stack = inventory;
-		if (stack.getItem() != Objects.circuitboard)
+		if (stack.getItem() != Objects.processor)
 			throw new InvalidSchematicException(NO_CIRCUITBOARD, null, 0);
 		computeCost();
 		int[] cost = ingreds.clone(), ingr;

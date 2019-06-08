@@ -37,12 +37,14 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound>, IStat
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setByte("intpin", (byte)interruptPins);
-		nbt.setIntArray("in", inputs);
-		nbt.setIntArray("out", outputs);
-		nbt.setTag("state", getState().nbt);
-		nbt.setLong("IDm", ID.getMostSignificantBits());
-		nbt.setLong("IDl", ID.getLeastSignificantBits());
+		if (ID != null) {
+			nbt.setByte("intpin", (byte)interruptPins);
+			nbt.setIntArray("in", inputs);
+			nbt.setIntArray("out", outputs);
+			nbt.setTag("state", getState().nbt);
+			nbt.setLong("IDm", ID.getMostSignificantBits());
+			nbt.setLong("IDl", ID.getLeastSignificantBits());
+		}
 		return nbt;
 	}
 
@@ -52,7 +54,7 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound>, IStat
 		inputs = nbt.getIntArray("in");
 		outputs = nbt.getIntArray("out");
 		setState(new StateBuffer(nbt.getCompoundTag("state")));
-		ID = new UUID(nbt.getLong("IDm"), nbt.getLong("IDl"));
+		if (nbt.hasKey("IDm")) ID = new UUID(nbt.getLong("IDm"), nbt.getLong("IDl"));
 	}
 
 	@Override

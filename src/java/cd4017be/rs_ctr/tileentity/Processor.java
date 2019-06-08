@@ -11,6 +11,7 @@ import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.circuit.Circuit;
+import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.UnloadedCircuit;
 import cd4017be.rs_ctr.gui.BlockButton;
 import net.minecraft.block.state.IBlockState;
@@ -35,7 +36,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	public static int BURNOUT_INTERVAL = 50;
 
-	String name;
+	String name = "";
 	BlockButton coreBtn = new BlockButton(null, ()-> null, ()-> name);
 	Circuit circuit;
 	IntConsumer[] callbacks;
@@ -105,7 +106,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		super.storeState(nbt, mode);
 		if (mode <= CLIENT || mode == ITEM) {
-			nbt.setTag("circuit", circuit.serializeNBT());
+			nbt.merge(circuit.serializeNBT());
 			NBTTagList names = new NBTTagList();
 			for (MountedSignalPort port : ports)
 				names.appendTag(new NBTTagString(port.name.substring(1)));
@@ -121,7 +122,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode <= CLIENT || mode == ITEM) {
-			circuit = new UnloadedCircuit();
+			circuit = mode == ITEM ? new CompiledCircuit() : new UnloadedCircuit();
 			circuit.deserializeNBT(nbt);
 			NBTTagList names = nbt.getTagList("labels", NBT.TAG_STRING);
 			int in = circuit.inputs.length, out = circuit.outputs.length;
@@ -139,12 +140,13 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	protected void setupData() {
-		super.setupData();
-		if (world.isRemote) return;
-		if (circuit != null)
+		if (circuit == null) circuit = new UnloadedCircuit();
+		if (!world.isRemote) {
 			circuit = circuit.load();
-		else circuit = new UnloadedCircuit();
-		if (update && unloaded) TickRegistry.schedule(this);
+			callbacks = new IntConsumer[circuit.outputs.length];
+			if (update && unloaded) TickRegistry.schedule(this);
+		}
+		super.setupData();
 	}
 
 	@Override
@@ -155,7 +157,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	protected void orient() {
 		coreBtn.setLocation(0.5, 0.5, 0.4375, o);
 		int in = circuit.inputs.length, out = circuit.outputs.length;
-		int oin = (4 - in) >> 1, oout = (5 - out) >> 1;
+		int oin = (4 - in) >> 1, oout = (5 - out) >> 1 - in;
 		for (int i = 0; i < ports.length; i++) {
 			int j = i + (i < in ? oin : oout);
 			int k = j < 0 ? 0 : j > 3 ? 3 : j;
@@ -170,11 +172,9 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (nbt == null) return;
 		clearData();
 		loadState(nbt, ITEM);
+		if (!update) unloaded = true;
 		setupData();
-		if (!update && !world.isRemote) {
-			update = true;
-			TickRegistry.schedule(this);
-		}
+		unloaded = false;
 	}
 
 	@Override
