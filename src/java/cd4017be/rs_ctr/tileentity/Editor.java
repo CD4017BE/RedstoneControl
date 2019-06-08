@@ -2,6 +2,7 @@ package cd4017be.rs_ctr.tileentity;
 
 import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.INS_SET;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -13,6 +14,7 @@ import cd4017be.lib.capability.LinkedInventory;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.ItemKey;
+import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
@@ -29,6 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.util.Constants.NBT;
 
 /**
@@ -48,6 +51,8 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		RECIPES.put(new ItemKey(new ItemStack(Items.QUARTZ)), new int[] {0, 4, 0});
 		RECIPES.put(new ItemKey(new ItemStack(Blocks.QUARTZ_BLOCK)), new int[] {0, 16, 0});
 	}
+
+	public File lastFile;
 
 	public final Schematic schematic = new Schematic(INS_SET, 60, 35);
 	public String name = "";
@@ -106,7 +111,12 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 			schematic.clear();
 			name = "";
 			break;
-		case A_LOAD: return;
+		case A_LOAD:
+			pkt.readInt();//magic
+			name = pkt.readCharSequence(pkt.readUnsignedByte(), Utils.UTF8).toString();
+			schematic.deserialize(pkt);
+			sender.sendMessage(new TextComponentTranslation("msg.rs_ctr.load_succ"));
+			break;
 		case A_SAVE: return;
 		case A_COMPILE:
 			try {

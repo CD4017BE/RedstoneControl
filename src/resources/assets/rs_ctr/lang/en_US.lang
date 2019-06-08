@@ -32,6 +32,10 @@ msg.rs_ctr.wire2=§cToo far away, max length is %d blocks!
 msg.rs_ctr.wire3=§cFirst port doesn't exist anymore!
 msg.rs_ctr.const=§cConstants can only connect to inputs!
 msg.rs_ctr.lamp=§cLamps can only connect to outputs!
+msg.rs_ctr.save_succ=§aCircuit Schematic successfully saved!
+msg.rs_ctr.load_succ=§aCircuit Schematic successfully loaded!
+msg.rs_ctr.invalid_file=§cThe selected file does'nt contain Circuit Schematic data!
+msg.rs_ctr.no_file§cThe selected file does'nt exist!
 
 # Items
 # names & tooltips
@@ -129,9 +133,9 @@ gui.rs_ctr.interrupt0=changed value §ndoes not§r trigger next cycle
 gui.rs_ctr.interrupt1=changed value triggers next cycle
 gui.rs_ctr.editor.del=§4delete Gate
 gui.rs_ctr.editor.new=New Schematic\n§4clears the board
-gui.rs_ctr.editor.compile=Compile Circuit
+gui.rs_ctr.editor.compile=Compile Circuit\n§aR-C§7\: Debugger
 gui.rs_ctr.editor.load=Import Schematic
-gui.rs_ctr.editor.save=Export Schematic
+gui.rs_ctr.editor.save=Save Schematic\n§aR-C§7\: export as ...
 gui.rs_ctr.editor.ingreds=Circuit Complexity [WIP]
 gui.rs_ctr.debug.name=Debugger
 gui.rs_ctr.debug.run0=automatic execution
@@ -147,3 +151,5 @@ gui.rs_ctr.error5=§4duplicate variable declaration
 gui.rs_ctr.error6=§4conflicting writes on same variable
 gui.rs_ctr.error7=§4invalid value
 gui.rs_ctr.error32=§4missing Circuit Board
+gui.rs_ctr.save_file=Export
+gui.rs_ctr.load_file=Import

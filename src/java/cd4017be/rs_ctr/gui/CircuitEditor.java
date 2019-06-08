@@ -10,6 +10,7 @@ import cd4017be.lib.Gui.comp.InfoTab;
 import cd4017be.lib.Gui.comp.Progressbar;
 import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.Gui.comp.Tooltip;
+import cd4017be.lib.util.TooltipUtil;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
@@ -23,11 +24,24 @@ import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GatePalette;
 import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.SchematicBoard;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import static cd4017be.rs_ctr.tileentity.Editor.*;
 import static cd4017be.rscpl.editor.Schematic.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import javax.swing.JFileChooser;
+
+import org.lwjgl.opengl.Display;
+
 import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.TileContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.network.PacketBuffer;
@@ -40,6 +54,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class CircuitEditor extends ModularGui {
 
+	private static final int FILE_MAGIC = 0x4017CB00;
 	private static final ResourceLocation BG_TEX = new ResourceLocation(Main.ID, "textures/gui/editor.png");
 	private static final ResourceLocation COMP_TEX = new ResourceLocation(Main.ID, "textures/gui/palette.png");
 
@@ -73,8 +88,8 @@ public class CircuitEditor extends ModularGui {
 			drawInvTitle = !hide;
 		}).texture(178, 0).tooltip("gui.rs_ctr.palette.open#");
 		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> sendCommand(A_NEW)).tooltip("gui.rs_ctr.editor.new");
-		new Button(comps, 16, 16, 214, 210, 0, null, (i)-> sendCommand(A_LOAD)).tooltip("gui.rs_ctr.editor.load");
-		new Button(comps, 16, 16, 196, 210, 0, null, (i)-> sendCommand(A_SAVE)).tooltip("gui.rs_ctr.editor.save");
+		new Button(comps, 16, 16, 214, 210, 0, null, this::load).tooltip("gui.rs_ctr.editor.load");
+		new Button(comps, 16, 16, 196, 210, 0, null, this::save).tooltip("gui.rs_ctr.editor.save");
 		new Button(comps, 16, 16, 174, 210, 0, null, this::compile).tooltip("gui.rs_ctr.editor.compile");
 		
 		new Progressbar(comps, 56, 4, 192, 232, 200, 0, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[0], 112), 0, 112);
@@ -117,8 +132,61 @@ public class CircuitEditor extends ModularGui {
 		}
 	}
 
-	private void compile(int b) {
-		if (isShiftKeyDown()) {
+	private File selFile(boolean save) {
+		File file = new File(Minecraft.getMinecraft().mcDataDir, "circuitSchematics");
+		if (save) file.mkdirs();
+		JFileChooser fd = new JFileChooser(file);
+		fd.setSelectedFile(new File(file, tile.name + ".cb"));
+		int r = fd.showDialog(Display.getParent(), TooltipUtil.translate("gui.rs_ctr." + (save ? "save_file" : "load_file")));
+		return r == JFileChooser.APPROVE_OPTION ? fd.getSelectedFile() : null;
+	}
+
+	void load(int b) {
+		File file = selFile(false);
+		if (file == null) return;
+		try {
+			PacketBuffer data = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+			data.writeByte(A_LOAD);
+			int p = data.writerIndex();
+			FileInputStream fis = new FileInputStream(file);
+			int i;
+			while ((i = fis.available()) > 0)
+				data.writeBytes(fis, i);
+			fis.close();
+			if (data.getInt(p) != FILE_MAGIC)
+				sendChat(TooltipUtil.translate("msg.rs_ctr.invalid_file"));
+			tile.lastFile = file;
+			BlockGuiHandler.sendPacketToServer(data);
+		} catch(FileNotFoundException e) {
+			sendChat(TooltipUtil.format("msg.rs_ctr.no_file", file));
+		} catch(Exception e) {
+			sendChat("\u00a74" + e.toString());
+		}
+	}
+
+	void save(int b) {
+		File file = tile.lastFile;
+		if ((file == null || b == Button.B_RIGHT) && (file = selFile(true)) == null) return;
+		try {
+			ByteBuf data = Unpooled.buffer();
+			data.writeInt(FILE_MAGIC);
+			int i = data.writerIndex();
+			data.writeByte(0);
+			data.setByte(i, data.writeCharSequence(tile.name, Utils.UTF8));
+			tile.schematic.serialize(data);
+			file.createNewFile();
+			FileOutputStream fos = new FileOutputStream(file);
+			data.readBytes(fos, data.writerIndex());
+			fos.close();
+			tile.lastFile = file;
+			sendChat(TooltipUtil.translate("msg.rs_ctr.save_succ"));
+		} catch (Exception e) {
+			sendChat("\u00a74" + e.toString());
+		}
+	}
+
+	void compile(int b) {
+		if (b == Button.B_RIGHT) {
 			compGroup.remove(debug);
 			try {
 				tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
@@ -133,7 +201,8 @@ public class CircuitEditor extends ModularGui {
 			}
 			for (Gate<?> g : tile.schematic.operators)
 				if (g != null) g.restoreInputs();
-		} else sendCommand(A_COMPILE);
+		} else if (b == Button.B_LEFT)
+			sendCommand(A_COMPILE);
 	}
 
 	@Override
