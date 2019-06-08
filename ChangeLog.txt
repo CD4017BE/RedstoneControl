@@ -1,3 +1,18 @@
+v0.0.5
+Changes:
+- added Circuit Designer
+- added Redstone Processor
+(recipes disabled in config by default)
+- added data-flow oriented block diagram editor and compiler for programmable circuits
+- added a decent collection of gates/operations for programmable circuits
+- added debugger to the editor
+- added import/export from/to local file feature for circuit schematics
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.4.2
+
 v0.0.4
 Changes:
 - fixed #3 pick block for wire anchors leading to crash
