@@ -1,10 +1,14 @@
 package cd4017be.rs_ctr;
 
+import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.render.model.MultipartModel;
+import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.gui.CircuitEditor;
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
-
 import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.Gate;
+import cd4017be.rscpl.gui.Category;
+import cd4017be.rscpl.gui.GateTextureHandler;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
@@ -28,7 +32,13 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init() {
 		super.init();
+		BlockGuiHandler.registerGui(EDITOR, CircuitEditor.class);
+		
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
+		
+		for (Category c : CircuitInstructionSet.TABS)
+			GateTextureHandler.ins_sets.add(c);
+		GateTextureHandler.register();
 	}
 
 	@SubscribeEvent
@@ -37,7 +47,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), false, PORT_RENDER));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, PROCESSOR);
 		
 		WIRE_ANCHOR.setBlockLayer(BlockRenderLayer.CUTOUT);
 		
@@ -49,6 +59,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerRenderBS(RS_PORT, 0, 1);
 		registerRender(WIRE_ANCHOR);
+		registerRender(EDITOR);
 		registerRender(wire);
 		registerRender(wireless);
 		registerRender(constant);

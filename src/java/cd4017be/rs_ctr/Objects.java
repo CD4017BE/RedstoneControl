@@ -11,7 +11,11 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.lib.block.AdvancedBlock;
+import cd4017be.lib.block.OrientedBlock;
+import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.item.BaseItemBlock;
+import cd4017be.lib.property.PropertyOrientation;
 import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
@@ -37,6 +41,8 @@ public class Objects {
 	public static final BlockGate NUM_COMB = null;
 	public static final BlockGate BIN_COMB = null;
 	public static final BlockGate BIN_SPLIT = null;
+	public static final BlockGate PROCESSOR = null;
+	public static final AdvancedBlock EDITOR = null;
 	public static final BlockWireAnchor WIRE_ANCHOR = null;
 	
 	//ItemBlocks
@@ -47,6 +53,8 @@ public class Objects {
 	public static final BaseItemBlock num_comb = null;
 	public static final BaseItemBlock bin_comb = null;
 	public static final BaseItemBlock bin_split = null;
+	public static final ItemProcessor processor = null;
+	public static final BaseItemBlock editor = null;
 	public static final ItemWireAnchor wire_anchor = null;
 
 	//Items
@@ -55,6 +63,7 @@ public class Objects {
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
 	public static final ItemWireTag tag = null;
+	public static final BaseItem circuitboard = null;
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(wire);
@@ -75,7 +84,9 @@ public class Objects {
 				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("bin_comb", Material.ROCK, SoundType.STONE, 3, BinaryCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("bin_split", Material.ROCK, SoundType.STONE, 3, BinarySplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 3, Processor.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				OrientedBlock.create("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -91,6 +102,8 @@ public class Objects {
 				new BaseItemBlock(BIN_COMB),
 				new BaseItemBlock(BIN_SPLIT),
 				new ItemWireAnchor(WIRE_ANCHOR),
+				new ItemProcessor(PROCESSOR),
+				new BaseItemBlock(EDITOR),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),

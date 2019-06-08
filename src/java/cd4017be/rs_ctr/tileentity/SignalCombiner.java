@@ -4,7 +4,6 @@ import java.util.function.IntConsumer;
 
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
-import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalReceiver;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +14,7 @@ import net.minecraft.util.EnumFacing;
  * @author CD4017BE
  *
  */
-public abstract class SignalCombiner extends Gate implements IUpdatable {
+public abstract class SignalCombiner extends WallMountGate implements IUpdatable {
 
 	protected IntConsumer output = SignalReceiver.NOP;
 	protected final int[] inputs = new int[4];
@@ -70,28 +69,17 @@ public abstract class SignalCombiner extends Gate implements IUpdatable {
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		if (mode == SAVE) nbt.setIntArray("states", inputs);
-		if (mode <= CLIENT) nbt.setByte("o", (byte)o.ordinal());
 		super.storeState(nbt, mode);
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		if (mode <= CLIENT) {
-			o = Orientation.values()[nbt.getByte("o") & 0xf];
-			orient();
-		}
 		super.loadState(nbt, mode);
 		if (mode == SAVE) {
 			int[] arr = nbt.getIntArray("states");
 			System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
 			dirty = false;
 		}
-	}
-
-	@Override
-	public void updateContainingBlockInfo() {
-		super.updateContainingBlockInfo();
-		orient();
 	}
 
 	protected void orient() {

@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "orient=n": { "model": "rs_ctr:editor" },
+		"orient=e": { "model": "rs_ctr:editor" , "y": 90 },
+		"orient=s": { "model": "rs_ctr:editor" , "y": 180 },
+		"orient=w": { "model": "rs_ctr:editor" , "y": 270 },
+		"inventory": { "model": "rs_ctr:editor" }
+    }
+}

@@ -20,6 +20,10 @@ tile.rs_ctr.bin_split.name=Binary Signal Unpacker
 tile.rs_ctr.bin_split.tip=Works the opposite way of the §6Binary Signal Packer§7\:\nThe binary representation of the input signal is split into 4 pieces of §e1§7, §e2§7, §e4§7 or §e8 bit§7 each (depending on setting) which then form the individual output signals.\n\n§oThis makes it possible to send multiple signals through a shared wire. Also the operation of a §6§oLogic Signal Combiner§7§o in §e§obitwise§7§o-mode runs for all packed signals in parallel.
 tile.rs_ctr.wire_anchor.name=Wire Anchor
 tile.rs_ctr.wire_anchor.tip=§6Signal Wire§7s can be attached on these to customize their path.\n§oMultiple of them may be placed inside a single block.
+tile.rs_ctr.processor.tip=Compact circuit that's programmable with the §6Circuit Designer§7.\nOffers up to §16 Input§7 and §26 Output§7 ports with no limit on gate count.\n\n§d§oThis feature is still WIP so only available in creative mode by default.
+tile.rs_ctr.processor.name=Redstone Processor
+tile.rs_ctr.editor.name=Circuit Designer
+tile.rs_ctr.editor.tip=Used to program assembled §6Processor§7s.\n\n§d§oThis feature is still WIP so only available in creative mode by default.
 
 # chat messages
 msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
@@ -28,6 +32,10 @@ msg.rs_ctr.wire2=§cToo far away, max length is %d blocks!
 msg.rs_ctr.wire3=§cFirst port doesn't exist anymore!
 msg.rs_ctr.const=§cConstants can only connect to inputs!
 msg.rs_ctr.lamp=§cLamps can only connect to outputs!
+msg.rs_ctr.save_succ=§aCircuit Schematic successfully saved!
+msg.rs_ctr.load_succ=§aCircuit Schematic successfully loaded!
+msg.rs_ctr.invalid_file=§cThe selected file does'nt contain Circuit Schematic data!
+msg.rs_ctr.no_file§cThe selected file does'nt exist!
 
 # Items
 # names & tooltips
@@ -72,8 +80,76 @@ port.rs_ctr.bins2=8bit -> 4x2bit
 port.rs_ctr.bins4=16bit -> 4x4bit
 port.rs_ctr.bins8=32bit -> 4x8bit
 
+#Circuit gates
+gategroup.rs_ctr.io=Variables & IO
+gate.rs_ctr.in=Input Socket\n§7receives external sinals
+gate.rs_ctr.out=Output Socket\n§7emits external signals
+gate.rs_ctr.write=Variable Write\n§7Stores input in a variable to\n§7feed into next evaluation cycle
+gate.rs_ctr.read=Variable read\n§7Outputs the variable value set\n§7in previous evaluation cycle.
+gate.rs_ctr.i_cst=Constant Number\n§7out \= #
+gategroup.rs_ctr.logic=Logic
+gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
+gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
+gate.rs_ctr.xor=XOR-Gate\n§7out \= in1 ⊻ in2\n§7bitwise
+gate.rs_ctr.nor=NOR-Gate\n§7in \= ¬(in1 ∨ in2)\n§7bitwise
+gate.rs_ctr.not=NOT-Gate\n§7out \= ¬in\n§7bitwise
+gate.rs_ctr.and=AND-Gate\n§7out \= in1 ∧ in2\n§7bitwise
+gate.rs_ctr.xnor=XNOR-Gate\n§7in \= ¬(in1 ⊻ in2)\n§7bitwise
+gategroup.rs_ctr.comp=Comparators
+gate.rs_ctr.nsgn=Is Negative\n§7in < 0 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.psgn=Not Negative\n§7in < 0 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.is0=Is Zero\n§7in \= 0 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.not0=Not Zero\n§7in \= 0 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.neq=Not Equal\n§7in1 \= in2 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.ls=Less than\n§7in1 < in2 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.eq=Equal\n§7in1 \= in2 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.geq=Greater or Equal\n§7in1 < in2 -> out \= 0\n§7else -> out \= -1
+gategroup.rs_ctr.num=Arithmetic
+gate.rs_ctr.neg=Negate\n§7out \= -in
+gate.rs_ctr.sub=Subtract\n§7out \= in1 - in2
+gate.rs_ctr.add=Add\n§7out \= in1 + in2
+gate.rs_ctr.div=Divide\n§7out \= in1 / in2\n§7rounding down\n§4§oDiv/0 causes burnout!
+gate.rs_ctr.dec=Decrement\n§7out \= in - 1
+gate.rs_ctr.abs=Absolute value\n§7in < 0 -> out \= -in\n§7else -> out \= in
+gate.rs_ctr.mul=Multiply\n§7out \= in1 * in2
+gate.rs_ctr.inc=Increment\n§7out \= in + 1
+gate.rs_ctr.mod=Div Remainder\n§7out \= in1 mod in2\n§7sgn(out) \= sgn(in1)\n§4§oDiv/0 causes burnout!
+gate.rs_ctr.min=Minimum\n§7in1 < in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.max=Maximum\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
+
 # GUI
 # Inventory names
 gui.rs_ctr.constant.name=Set Value
 gui.rs_ctr.tag.name=Label:
+gui.rs_ctr.editor.name=Circuit Editor\:
 # Gui tooltips
+gui.rs_ctr.palette=Gate Palette
+gui.rs_ctr.palette.open0=Open Gate Palette
+gui.rs_ctr.palette.open1=Open Inventory
+gui.rs_ctr.editor.title=Name of your circuit
+gui.rs_ctr.opLabel=Gate Label\n§7(relevant for\n§7variables & IO)
+gui.rs_ctr.value=Value
+gui.rs_ctr.interrupt0=changed value §ndoes not§r trigger next cycle
+gui.rs_ctr.interrupt1=changed value triggers next cycle
+gui.rs_ctr.editor.del=§4delete Gate
+gui.rs_ctr.editor.new=New Schematic\n§4clears the board
+gui.rs_ctr.editor.compile=Compile Circuit\n§aR-C§7\: Debugger
+gui.rs_ctr.editor.load=Import Schematic
+gui.rs_ctr.editor.save=Save Schematic\n§aR-C§7\: export as ...
+gui.rs_ctr.editor.ingreds=Circuit Complexity [WIP]
+gui.rs_ctr.debug.name=Debugger
+gui.rs_ctr.debug.run0=automatic execution
+gui.rs_ctr.debug.run1=manual execution
+gui.rs_ctr.debug.step0=§4§ostable state
+gui.rs_ctr.debug.step1=run cycle\n§2§ounstable
+gui.rs_ctr.interval=Interval
+gui.rs_ctr.error1=§4causal loop
+gui.rs_ctr.error2=§4incompatible data type
+gui.rs_ctr.error3=§4missing input signal
+gui.rs_ctr.error4=§4invalid identifier
+gui.rs_ctr.error5=§4duplicate variable declaration
+gui.rs_ctr.error6=§4conflicting writes on same variable
+gui.rs_ctr.error7=§4invalid value
+gui.rs_ctr.error32=§4missing Circuit Board
+gui.rs_ctr.save_file=Export
+gui.rs_ctr.load_file=Import
