@@ -1,3 +1,12 @@
+v0.0.6
+Changes:
+- hotfix: aparently some mods not only add their textures to texture maps they don't belong but also have those textures so badly broken that it crashes the game
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.4.2
+
 v0.0.5
 Changes:
 - added Circuit Designer
