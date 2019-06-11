@@ -1,10 +1,7 @@
 package cd4017be.rscpl.gui;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import cd4017be.lib.render.ModTextureMap;
 import cd4017be.lib.render.RectangularSprite;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.editor.BoundingBox2D;
@@ -25,28 +22,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GateTextureHandler implements ITextureMapPopulator {
 
-	private static final Field TextureMap_mapRegisteredSprites;
 	private static final String TINY_FONT = "rs_ctr:tiny_font";
 	public static final ResourceLocation GATE_ICONS_LOC = new ResourceLocation(Main.ID, "textures/gates");
-	public static final TextureMap GATE_ICONS_TEX = new TextureMap(GATE_ICONS_LOC.getResourcePath(), new GateTextureHandler());
+	public static final ModTextureMap GATE_ICONS_TEX = new ModTextureMap(GATE_ICONS_LOC.getResourcePath(), new GateTextureHandler());
 	public static final ArrayList<Category> ins_sets = new ArrayList<>();
 	private static boolean registered;
-
-	static {
-		Field f = null;
-		try {
-			try {f = TextureMap.class.getDeclaredField("field_110574_e");
-			} catch (NoSuchFieldException e) {
-				try {f = TextureMap.class.getDeclaredField("mapRegisteredSprites");
-				} catch (NoSuchFieldException e1) {}
-			}
-			f.setAccessible(true);
-		} catch(SecurityException e) {
-			f = null;
-			e.printStackTrace();
-		}
-		TextureMap_mapRegisteredSprites = f;
-	}
 
 	public static void register() {
 		if (registered) return;
@@ -54,36 +34,8 @@ public class GateTextureHandler implements ITextureMapPopulator {
 		Minecraft.getMinecraft().renderEngine.loadTickableTexture(GATE_ICONS_LOC, GATE_ICONS_TEX);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void removeIllegallyRegisteredTextures(TextureMap textureMap) {
-		if (TextureMap_mapRegisteredSprites == null) return;
-		HashSet<String> authorizedMods = new HashSet<>();
-		authorizedMods.add("minecraft"); //missingno
-		for (Category c : ins_sets)
-			for (BoundingBox2D<GateType<?>> g : c.instructions)
-				authorizedMods.add(new ResourceLocation(g.owner.name).getResourceDomain());
-		try {
-			HashSet<String> badMods = new HashSet<>();
-			for (Iterator<String> it = ((Map<String, TextureAtlasSprite>)TextureMap_mapRegisteredSprites.get(textureMap)).keySet().iterator(); it.hasNext();) {
-				String modId = new ResourceLocation(it.next()).getResourceDomain();
-				if (authorizedMods.contains(modId)) continue;
-				badMods.add(modId);
-				it.remove();
-			}
-			if (!badMods.isEmpty()) {
-				StringBuilder sb = new StringBuilder("The following mods attempted to register textures into a texture atlas they don't belong:\n");
-				for (String modId : badMods) sb.append("- ").append(modId).append("\n");
-				sb.append("Modders please check whether the TextureMap given in texture stitch event is actually the one you want to register to!");
-				Main.LOG.fatal(sb.toString());
-			}
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	public void registerSprites(TextureMap textureMap) {
-		removeIllegallyRegisteredTextures(textureMap);
 		textureMap.setTextureEntry(new RectangularSprite(TINY_FONT));
 		for (Category ins : ins_sets) {
 			textureMap.registerSprite(new ResourceLocation(ins.getIcon()));
