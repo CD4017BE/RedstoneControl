@@ -122,6 +122,7 @@ gate.rs_ctr.max=Maximum\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
 gui.rs_ctr.constant.name=Set Value
 gui.rs_ctr.tag.name=Label:
 gui.rs_ctr.editor.name=Circuit Editor\:
+gui.rs_ctr.state.name=Variables:
 # Gui tooltips
 gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette
@@ -140,8 +141,12 @@ gui.rs_ctr.editor.ingreds=Circuit Complexity [WIP]
 gui.rs_ctr.debug.name=Debugger
 gui.rs_ctr.debug.run0=automatic execution
 gui.rs_ctr.debug.run1=manual execution
-gui.rs_ctr.debug.step0=§4§ostable state
+gui.rs_ctr.debug.step0=force cycle\n§4§ostable state
 gui.rs_ctr.debug.step1=run cycle\n§2§ounstable
+gui.rs_ctr.debug.reset=reset count
+gui.rs_ctr.state.io=Signal IO\:
+gui.rs_ctr.hex0=decimal format
+gui.rs_ctr.hex1=hexadecimal format
 gui.rs_ctr.interval=Interval
 gui.rs_ctr.error1=§4causal loop
 gui.rs_ctr.error2=§4incompatible data type
