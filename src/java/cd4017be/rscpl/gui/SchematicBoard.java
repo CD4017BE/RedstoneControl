@@ -132,6 +132,13 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	}
 
 	@Override
+	public void drawOverlay(int mx, int my) {
+		BoundingBox2D<Gate<?>> part = findPart((mx - x - 1) / 4, (my - y) / 4);
+		if (part != null)
+			parent.drawTooltip(part.owner.label, mx, my);
+	}
+
+	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
 		mx = (mx - x - 1) / 4;
 		my = (my - y) / 4;
