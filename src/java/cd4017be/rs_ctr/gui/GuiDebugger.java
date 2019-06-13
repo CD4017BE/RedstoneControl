@@ -11,7 +11,6 @@ import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rscpl.gui.StateEditor;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -45,18 +44,13 @@ public class GuiDebugger extends GuiFrame {
 		new FrameGrip(this, 8, 8, 0, 0);
 		new Button(this, 8, 8, w - 8, 0, 0, null, (i)-> close()).tooltip("gui.cd4017be.close");
 		new Spinner(this, 36, 18, 7, 15, false, "\\%.2fs", ()-> (double)interval / 20.0, (v)-> interval = (int)Math.round(v * 20.0), 0.05, 60.0, 1.0, 0.05).tooltip("gui.rs_ctr.interval");
-		new Button(this, 18, 18, 43, 15, 2, ()-> timer < -interval ? 1 : 0, (s)-> timer = s == 0 ? -interval : Integer.MIN_VALUE).texture(168, 184).tooltip("gui.rs_ctr.debug.run#");
+		new Button(this, 18, 18, 43, 15, 2, ()-> timer < -interval ? 1 : 0, (s)-> timer = s == 0 ? -interval : Integer.MIN_VALUE).texture(168, 184).tooltip("gui.rs_ctr.debug.run");
 		new Button(this, 18, 18, 61, 15, 0, ()-> dirty & 1, this::tickChip).texture(168, 220).tooltip("gui.rs_ctr.debug.step#");
 		new FormatText(this, 80, 8, 80, 16, "\\%s", ()-> new Object[] {lastErr});
 		new FormatText(this, 62, 8, 80, 24, "\\cycle: %d", ()-> new Object[] {cycles});
 		new Button(this, 62, 7, 80, 24, 0, null, ((b)-> cycles = 0)).tooltip("gui.rs_ctr.debug.reset");
 		(state = StateEditor.of(this, this.circuit, circuit.ioLabels, 6, this::modify)).move(0, h);
 		new Button(this, 18, 9, 143, 24, 2, ()-> state.hex ? 1 : 0, (s)-> state.hex = s != 0).texture(168, 166).tooltip("gui.rs_ctr.hex#");
-	}
-
-	@Override
-	public boolean isInside(int mx, int my) {
-		return super.isInside(mx, my) || state.isInside(mx, my);
 	}
 
 	private void modify(int var) {
@@ -87,7 +81,6 @@ public class GuiDebugger extends GuiFrame {
 
 	public void close() {
 		parent.remove(this);
-		parent.remove(state);
 	}
 
 	@Override
@@ -104,12 +97,6 @@ public class GuiDebugger extends GuiFrame {
 			return true;
 		}
 		return super.keyIn(c, k, d);
-	}
-
-	@Override
-	public void init(int sw, int sh, float z, FontRenderer fr) {
-		super.init(sw, sh, z, fr);
-		if (state != null) state.init(sw, sh, z, fr);
 	}
 
 }

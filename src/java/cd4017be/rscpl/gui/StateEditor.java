@@ -47,7 +47,7 @@ public class StateEditor extends GuiCompGroup {
 
 	private StateEditor(GuiFrame parent, Circuit circuit, StateBuffer state, String[] keys, String[] ioLabels, int n, IntConsumer set) {
 		super(parent, 168, 19 + (circuit.inputs.length + circuit.outputs.length + n) * 18 + (n > 0 ? 12 : 0), 2 * (circuit.inputs.length + circuit.outputs.length + n) + 1);
-		inheritRender();
+		parent.extendBy(this);
 		this.circuit = circuit;
 		this.state = circuit.getState();
 		this.set = set;
