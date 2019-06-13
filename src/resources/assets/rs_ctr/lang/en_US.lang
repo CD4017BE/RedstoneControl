@@ -158,3 +158,4 @@ gui.rs_ctr.error7=§4invalid value
 gui.rs_ctr.error32=§4missing Circuit Board
 gui.rs_ctr.save_file=Export
 gui.rs_ctr.load_file=Import
+gui.rs_ctr.processor.run=manually trigger cycle

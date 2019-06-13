@@ -144,3 +144,4 @@ gui.rs_ctr.editor.load=Schaltung importieren
 gui.rs_ctr.editor.save=Schaltung exportieren
 gui.rs_ctr.editor.new=Neue Schaltung\n§4Löscht das Board
 gui.rs_ctr.palette=Bauteilpalette
+gui.rs_ctr.processor.run=Zyklus manuell triggern

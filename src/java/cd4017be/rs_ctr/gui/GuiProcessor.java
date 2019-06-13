@@ -30,14 +30,13 @@ public class GuiProcessor extends ModularGui {
 		GuiFrame comps = new GuiFrame(this, 168, 24, 3).background(TEX, 0, 90).title(tile.getName(), 0.5F);
 		new FormatText(comps, 116, 7, 8, 16, "\\%s", ()-> new Object[] {tile.getError()});
 		new Button(comps, 18, 9, 125, 15, 0, ()-> tile.update ? 1 : 0, (i)-> sendPkt((byte)-1)).texture(168, 148).tooltip("gui.rs_ctr.processor.run");
-		this.state = StateEditor.of(comps, tile.circuit, tile.getIOLabels(), 12, this::updateVar);
+		this.state = StateEditor.of(comps, tile.circuit, tile.getIOLabels(), 12, this::updateVar, false);
 		state.move(0, 24);
 		new Button(comps, 18, 9, 143, 15, 2, ()-> state.hex ? 1 : 0, (s)-> state.hex = s != 0).texture(168, 166).tooltip("gui.rs_ctr.hex#");
 		this.compGroup = comps;
 	}
 
 	private void updateVar(int i) {
-		if (i < 0) return;
 		PacketBuffer buf = GuiNetworkHandler.preparePacket(container);
 		buf.writeByte(i);
 		NBTTagCompound nbt = state.circuit.getState().nbt;

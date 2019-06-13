@@ -27,6 +27,7 @@ public class StateEditor extends GuiCompGroup {
 	private StateBuffer state;
 	public final Circuit circuit;
 	public final IntConsumer set;
+	public final boolean editIO;
 	public boolean hex;
 	int scroll;
 
@@ -38,14 +39,14 @@ public class StateEditor extends GuiCompGroup {
 	 * @param set
 	 * @return
 	 */
-	public static StateEditor of(GuiFrame parent, Circuit circuit, String[] ioLabels, int max, IntConsumer set) {
+	public static StateEditor of(GuiFrame parent, Circuit circuit, String[] ioLabels, int max, IntConsumer set, boolean editIO) {
 		StateBuffer state = circuit.getState();
 		String[] keys = state.nbt.getKeySet().toArray(new String[state.nbt.getSize()]);
 		Arrays.sort(keys);
-		return new StateEditor(parent, circuit, state, keys, ioLabels, Math.min(max, keys.length), set);
+		return new StateEditor(parent, circuit, state, keys, ioLabels, Math.min(max, keys.length), set, editIO);
 	}
 
-	private StateEditor(GuiFrame parent, Circuit circuit, StateBuffer state, String[] keys, String[] ioLabels, int n, IntConsumer set) {
+	private StateEditor(GuiFrame parent, Circuit circuit, StateBuffer state, String[] keys, String[] ioLabels, int n, IntConsumer set, boolean editIO) {
 		super(parent, 168, 19 + (circuit.inputs.length + circuit.outputs.length + n) * 18 + (n > 0 ? 12 : 0), 2 * (circuit.inputs.length + circuit.outputs.length + n) + 1);
 		parent.extendBy(this);
 		this.circuit = circuit;
@@ -53,17 +54,19 @@ public class StateEditor extends GuiCompGroup {
 		this.set = set;
 		this.keys = keys;
 		this.maxVar = n;
+		this.editIO = editIO;
 		int y = 12, in = circuit.inputs.length;
 		for (int i = 0; i < in; i++, y += 9) {
 			final String label = ioLabels[i];
 			final int idx = i;
 			new FormatText(this, 70, 7, 8, y + 1, "\\" + label.replace("%", "%%"), null).color(0xff00007f);
-			new TextField(this, 70, 7, 90, y + 1, 16, ()-> Integer.toString(this.circuit.inputs[idx], hex ? 16 : 10), (t)-> {try {
-					int v = Integer.parseInt(t, hex ? 16 : 10);
-					if (v == circuit.inputs[idx]) return;
-					circuit.inputs[idx] = v;
-					set.accept(-1 - idx);
-				} catch (NumberFormatException e) {}});
+			if (editIO) new TextField(this, 70, 7, 90, y + 1, 16, ()-> Integer.toString(this.circuit.inputs[idx], hex ? 16 : 10), (t)-> {try {
+						int v = Integer.parseInt(t, hex ? 16 : 10);
+						if (v == circuit.inputs[idx]) return;
+						circuit.inputs[idx] = v;
+						set.accept(-1 - idx);
+					} catch (NumberFormatException e) {}});
+			else new FormatText(this, 70, 7, 90, y + 1, "\\%s", ()-> new Object[] {Integer.toString(this.circuit.inputs[idx], hex ? 16 : 10)});
 		}
 		int out = circuit.outputs.length;
 		for (int i = 0; i < out; i++, y += 9) {
@@ -136,7 +139,7 @@ public class StateEditor extends GuiCompGroup {
 		drawRect(x, y, 0, 165, 168, 12);
 		y += 12;
 		for (int n = circuit.inputs.length; n > 0; n--, y += 9)
-			drawRect(x, y, 0, 147, 168, 9);
+			drawRect(x, y, 0, editIO ? 147 : 81, 168, 9);
 		for (int n = circuit.outputs.length; n > 0; n--, y += 9)
 			drawRect(x, y, 0, 156, 168, 9);
 		if (maxVar > 0) {
