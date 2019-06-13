@@ -1,8 +1,5 @@
 package cd4017be.rs_ctr.gui;
 
-import cd4017be.lib.Gui.DataContainer.IGuiData;
-import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.HidableSlot;
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
@@ -10,6 +7,7 @@ import cd4017be.lib.Gui.comp.InfoTab;
 import cd4017be.lib.Gui.comp.Progressbar;
 import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.Gui.comp.Tooltip;
+import static cd4017be.lib.network.GuiNetworkHandler.*;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
@@ -40,7 +38,6 @@ import javax.swing.JFileChooser;
 import org.lwjgl.opengl.Display;
 
 import cd4017be.lib.Gui.ModularGui;
-import cd4017be.lib.Gui.TileContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -68,9 +65,9 @@ public class CircuitEditor extends ModularGui {
 	/**
 	 * @param container
 	 */
-	public CircuitEditor(IGuiData data, EntityPlayer player) {
-		super(new TileContainer(data, player));
-		this.tile = (Editor)data;
+	public CircuitEditor(Editor tile, EntityPlayer player) {
+		super(tile.getContainer(player, 0));
+		this.tile = tile;
 		GuiFrame comps = new GuiFrame(this, 256, 256, 17).background(BG_TEX, 0, 0).title(tile.getName(), 0.1F);
 		comps.texture(COMP_TEX, 256, 256);
 		new InfoTab(comps, 7, 8, 7, 6, "gui.rs_ctr.editor.info");
@@ -145,7 +142,7 @@ public class CircuitEditor extends ModularGui {
 		File file = selFile(false);
 		if (file == null) return;
 		try {
-			PacketBuffer data = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+			PacketBuffer data = preparePacket(container);
 			data.writeByte(A_LOAD);
 			int p = data.writerIndex();
 			FileInputStream fis = new FileInputStream(file);
@@ -156,7 +153,7 @@ public class CircuitEditor extends ModularGui {
 			if (data.getInt(p) != FILE_MAGIC)
 				sendChat(TooltipUtil.translate("msg.rs_ctr.invalid_file"));
 			tile.lastFile = file;
-			BlockGuiHandler.sendPacketToServer(data);
+			GNH_INSTANCE.sendToServer(data);
 		} catch(FileNotFoundException e) {
 			sendChat(TooltipUtil.format("msg.rs_ctr.no_file", file));
 		} catch(Exception e) {
@@ -215,19 +212,19 @@ public class CircuitEditor extends ModularGui {
 
 	public void sendLabel(String label) {
 		BoundingBox2D<Gate<?>> part = board.selPart;
-		PacketBuffer pkt = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+		PacketBuffer pkt = preparePacket(container);
 		pkt.writeByte(SET_LABEL).writeByte(part.owner.index);
 		pkt.writeCharSequence(label, Utils.UTF8);
-		BlockGuiHandler.sendPacketToServer(pkt);
+		GNH_INSTANCE.sendToServer(pkt);
 	}
 
 	public void updateCfg() {
 		BoundingBox2D<Gate<?>> part = board.selPart;
 		if (part == null || !(part.owner instanceof ConfigurableGate)) return;
-		PacketBuffer pkt = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
+		PacketBuffer pkt = preparePacket(container);
 		pkt.writeByte(SET_VALUE).writeByte(part.owner.index);
 		((ConfigurableGate)part.owner).writeCfg(pkt);
-		BlockGuiHandler.sendPacketToServer(pkt);
+		GNH_INSTANCE.sendToServer(pkt);
 	}
 
 }

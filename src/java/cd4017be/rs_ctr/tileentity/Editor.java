@@ -3,42 +3,46 @@ package cd4017be.rs_ctr.tileentity;
 import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.INS_SET;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
-import cd4017be.lib.BlockGuiHandler.ClientPacketReceiver;
-import cd4017be.lib.Gui.DataContainer;
-import cd4017be.lib.Gui.DataContainer.IGuiData;
+import cd4017be.lib.Gui.AdvancedContainer;
+import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.GlitchSaveSlot;
 import cd4017be.lib.capability.LinkedInventory;
-import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.network.IGuiHandlerTile;
+import cd4017be.lib.network.StateSyncClient;
+import cd4017be.lib.network.StateSyncServer;
+import cd4017be.lib.network.StateSynchronizer;
+import cd4017be.lib.network.StateSynchronizer.Builder;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
+import cd4017be.rs_ctr.gui.CircuitEditor;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.editor.Schematic;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author CD4017BE
  *
  */
-public class Editor extends BaseTileEntity implements IGuiData, ClientPacketReceiver {
+public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInteractionHandler {
 
 	public static int CAPACITY = 256;
 	public static final HashMap<ItemKey, int[]> RECIPES = new HashMap<>();
@@ -61,74 +65,38 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 	public ItemStack inventory = ItemStack.EMPTY;
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		name = nbt.getString("name");
-		{int[] buf = nbt.getIntArray("ingred");
-		System.arraycopy(buf, 0, ingreds, 0, buf.length < 7 ? buf.length : 7);}
-		if (nbt.hasKey("inv", NBT.TAG_COMPOUND))
-			inventory = new ItemStack(nbt.getCompoundTag("inv"));
-		else inventory = ItemStack.EMPTY;
-		if (nbt.hasKey("schematic", NBT.TAG_BYTE_ARRAY))
-			schematic.deserialize(Unpooled.wrappedBuffer(nbt.getByteArray("schematic")));
-		else schematic.clear();
-		schematic.resetSync();
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setString("name", name);
-		nbt.setIntArray("ingred", ingreds);
-		if (!inventory.isEmpty())
-			nbt.setTag("inv", inventory.writeToNBT(new NBTTagCompound()));
-		ByteBuf buf = Unpooled.buffer();
-		schematic.serialize(buf);
-		byte[] data = new byte[buf.writerIndex()];
-		buf.readBytes(data);
-		nbt.setByteArray("schematic", data);
-		return super.writeToNBT(nbt);
-	}
-
-	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(pos, -1, schematic.getChanges());
-	}
-
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		schematic.applyChanges(pkt.getNbtCompound());
-		computeCost();
-	}
-
-	public static final byte A_NEW = -1, A_LOAD = -2, A_SAVE = -3, A_COMPILE = -4, A_NAME = -5;
-
-	@Override
-	public void onPacketFromClient(PacketBuffer pkt, EntityPlayer sender) throws IOException {
-		ingreds[6] = InvalidSchematicException.NO_ERROR;
-		byte cmd = pkt.readByte();
-		switch(cmd) {
-		case A_NEW:
-			schematic.clear();
-			name = "";
-			break;
-		case A_LOAD:
-			pkt.readInt();//magic
-			name = pkt.readCharSequence(pkt.readUnsignedByte(), Utils.UTF8).toString();
-			schematic.deserialize(pkt);
-			sender.sendMessage(new TextComponentTranslation("msg.rs_ctr.load_succ"));
-			break;
-		case A_SAVE: return;
-		case A_COMPILE:
-			try {
-				compile();
-			} catch (InvalidSchematicException e) {
-				ingreds[6] = e.compact();
-			} return;
-		case A_NAME: name = pkt.readString(64); return;
-		default: if (!schematic.handleUserInput(cmd, pkt)) return;
+	protected void storeState(NBTTagCompound nbt, int mode) {
+		if (mode == SYNC) schematic.getChanges(nbt);
+		else {
+			nbt.setString("name", name);
+			nbt.setIntArray("ingred", ingreds);
+			if (!inventory.isEmpty())
+				nbt.setTag("inv", inventory.writeToNBT(new NBTTagCompound()));
+			ByteBuf buf = Unpooled.buffer();
+			schematic.serialize(buf);
+			byte[] data = new byte[buf.writerIndex()];
+			buf.readBytes(data);
+			nbt.setByteArray("schematic", data);
 		}
-		markUpdate();
-		markDirty();
+	}
+
+	@Override
+	protected void loadState(NBTTagCompound nbt, int mode) {
+		if (mode == SYNC) {
+			schematic.applyChanges(nbt);
+			computeCost();
+		} else {
+			name = nbt.getString("name");
+			{int[] buf = nbt.getIntArray("ingred");
+			System.arraycopy(buf, 0, ingreds, 0, buf.length < 7 ? buf.length : 7);}
+			if (nbt.hasKey("inv", NBT.TAG_COMPOUND))
+				inventory = new ItemStack(nbt.getCompoundTag("inv"));
+			else inventory = ItemStack.EMPTY;
+			if (nbt.hasKey("schematic", NBT.TAG_BYTE_ARRAY))
+				schematic.deserialize(Unpooled.wrappedBuffer(nbt.getByteArray("schematic")));
+			else schematic.clear();
+			schematic.resetSync();
+		}
 	}
 
 	private void computeCost() {
@@ -175,49 +143,6 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 		stack.setTagCompound(nbt);
 	}
 
-	@Override
-	public void initContainer(DataContainer container) {
-		TileContainer cont = (TileContainer)container;
-		LinkedInventory inv = new LinkedInventory(1, 64, (s)-> inventory, this::putItem);
-		cont.addItemSlot(new GlitchSaveSlot(inv, 0, 174, 232, false));
-		cont.addPlayerInventory(8, 174);
-		if (world.isRemote) {
-			schematic.modified = true;
-			name = "";
-		} else {
-			computeCost();
-			container.extraRef = "";
-		}
-	}
-
-	@Override
-	public int[] getSyncVariables() {
-		return ingreds;
-	}
-
-	@Override
-	public void setSyncVariable(int i, int v) {
-		ingreds[i] = v;
-	}
-
-	@Override
-	public boolean detectAndSendChanges(DataContainer container, PacketBuffer dos) {
-		if (!name.equals(container.extraRef)) {
-			dos.writeByte(1);
-			dos.writeString(name);
-			return true;
-		} else {
-			dos.writeByte(0);
-			return false;
-		}
-	}
-
-	@Override
-	public void updateClientChanges(DataContainer container, PacketBuffer dis) {
-		if (dis.readByte() == 1)
-			name = dis.readString(64);
-	}
-
 	private void putItem(ItemStack stack, int slot) {
 		inventory = stack;
 		int n = stack.getCount();
@@ -253,6 +178,72 @@ public class Editor extends BaseTileEntity implements IGuiData, ClientPacketRece
 	@Override
 	protected void setupData() {
 		schematic.server = !world.isRemote;
+	}
+
+	private static final Builder ssb = StateSynchronizer.builder().addMulFix(4, 7).addVar(1);
+
+	@Override
+	public AdvancedContainer getContainer(EntityPlayer player, int id) {
+		AdvancedContainer cont = new AdvancedContainer(this, ssb.build(world.isRemote), player);
+		LinkedInventory inv = new LinkedInventory(1, 64, (s)-> inventory, this::putItem);
+		cont.addItemSlot(new GlitchSaveSlot(inv, 0, 174, 232, false), false);
+		cont.addPlayerInventory(8, 174);
+		if (world.isRemote) schematic.modified = true;
+		else computeCost();
+		return cont;
+	}
+
+	@Override
+	public void writeState(StateSyncServer state, AdvancedContainer cont) {
+		state.writeIntArray(ingreds).endFixed()
+		.putAll(name);
+	}
+
+	@Override
+	public void readState(StateSyncClient state, AdvancedContainer cont) {
+		ingreds = state.get(ingreds);
+		name = state.get(name);
+	}
+
+	@Override
+	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
+		return !unloaded && !player.isDead && player.getDistanceSqToCenter(pos) < 256.0;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public CircuitEditor getGuiScreen(EntityPlayer player, int id) {
+		return new CircuitEditor(this, player);
+	}
+
+	public static final byte A_NEW = -1, A_LOAD = -2, A_SAVE = -3, A_COMPILE = -4, A_NAME = -5;
+
+	@Override
+	public void handleAction(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
+		byte cmd = pkt.readByte();
+		ingreds[6] = InvalidSchematicException.NO_ERROR;
+		switch(cmd) {
+		case A_NEW:
+			schematic.clear();
+			name = "";
+			break;
+		case A_LOAD:
+			pkt.readInt();//magic
+			name = pkt.readCharSequence(pkt.readUnsignedByte(), Utils.UTF8).toString();
+			schematic.deserialize(pkt);
+			sender.sendMessage(new TextComponentTranslation("msg.rs_ctr.load_succ"));
+			break;
+		case A_SAVE: return;
+		case A_COMPILE:
+			try {
+				compile();
+			} catch (InvalidSchematicException e) {
+				ingreds[6] = e.compact();
+			} return;
+		case A_NAME: name = pkt.readString(64); return;
+		default: if (!schematic.handleUserInput(cmd, pkt)) return;
+		}
+		markDirty(SYNC);
 	}
 
 }

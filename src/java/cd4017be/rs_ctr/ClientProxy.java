@@ -1,9 +1,7 @@
 package cd4017be.rs_ctr;
 
-import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
-import cd4017be.rs_ctr.gui.CircuitEditor;
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
 import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.Gate;
@@ -32,8 +30,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void init() {
 		super.init();
-		BlockGuiHandler.registerGui(EDITOR, CircuitEditor.class);
-		
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
 		
 		for (Category c : CircuitInstructionSet.TABS)

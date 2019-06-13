@@ -1,7 +1,6 @@
 package cd4017be.rs_ctr;
 
-import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.signal.Constant;
 import cd4017be.rs_ctr.signal.StatusLamp;
@@ -15,7 +14,7 @@ import cd4017be.rs_ctr.signal.WirelessConnection;
 public class CommonProxy {
 
 	public void init() {
-		BlockGuiHandler.registerContainer(Objects.EDITOR, TileContainer.class);
+		GuiNetworkHandler.register();
 		
 		IConnector.REGISTRY.put(WireConnection.ID, WireConnection.class);
 		IConnector.REGISTRY.put(WirelessConnection.ID, WirelessConnection.class);

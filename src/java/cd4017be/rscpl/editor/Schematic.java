@@ -89,8 +89,7 @@ public class Schematic {
 		data.setByte(i, n);
 	}
 
-	public NBTTagCompound getChanges() {
-		NBTTagCompound nbt = new NBTTagCompound();
+	public void getChanges(NBTTagCompound nbt) {
 		NBTTagList list = new NBTTagList();
 		int j = -1;
 		ByteBuf buf = Unpooled.buffer();
@@ -121,7 +120,6 @@ public class Schematic {
 		}
 		nbt.setTag("d", list);
 		toSync.clear();
-		return nbt;
 	}
 
 	public void applyChanges(NBTTagCompound nbt) {
