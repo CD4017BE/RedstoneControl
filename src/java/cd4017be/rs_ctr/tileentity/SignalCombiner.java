@@ -6,7 +6,6 @@ import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.rs_ctr.api.DelayedSignal;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalReceiver;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
@@ -19,7 +18,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	protected IntConsumer output = SignalReceiver.NOP;
 	protected final int[] inputs = new int[4];
-	protected boolean dirty;
+	protected byte tick;
 	protected DelayedSignal delayed;
 
 	{
@@ -41,9 +40,9 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	public void setPortCallback(int pin, IntConsumer callback) {
 		if (callback == null) {
 			output = SignalReceiver.NOP;
-			dirty = true;
+			dirty = 1;
 		} else {
-			if (output == SignalReceiver.NOP) dirty = false;
+			if (output == SignalReceiver.NOP) dirty = 0;
 			scheduleUpdate();
 			output = callback;
 		}
@@ -51,17 +50,16 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	@Override
 	public void process() {
-		for (; delayed != null; delayed = delayed.next, dirty = true)
+		for (tick = 0; delayed != null; delayed = delayed.next, scheduleUpdate())
 			inputs[delayed.id] = delayed.value;
-		if (dirty) TickRegistry.instance.updates.add(this);
 	}
 
 	protected void setInput(int pin, int val) {
 		if (val != inputs[pin]) {
-			if (!dirty) {
-				dirty = true;
-				TickRegistry.instance.updates.add(this);
-			} else if (TickRegistry.TICKING) {
+			if (tick == 0) {
+				tick = TickRegistry.TICK;
+				TickRegistry.schedule(this);
+			} else if (tick != TickRegistry.TICK) {
 				delayed = new DelayedSignal(pin, val, delayed);
 				return;
 			}
@@ -70,9 +68,9 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	}
 
 	protected void scheduleUpdate() {
-		if (dirty) return;
-		dirty = true;
-		TickRegistry.instance.updates.add(this);
+		if (tick != 0) return;
+		tick = TickRegistry.TICK;
+		TickRegistry.schedule(this);
 	}
 
 	protected void refreshInput(int pin) {
@@ -95,7 +93,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 		if (mode == SAVE) {
 			int[] arr = nbt.getIntArray("states");
 			System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
-			dirty = false;
+			tick = 0;
 		}
 	}
 

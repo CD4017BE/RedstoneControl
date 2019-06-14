@@ -36,7 +36,6 @@ public class BinaryCombiner extends SignalCombiner {
 
 	@Override
 	public void process() {
-		dirty = false;
 		int v = inputs[0] | inputs[1] | inputs[2] | inputs[3];
 		super.process();
 		output.accept(v);

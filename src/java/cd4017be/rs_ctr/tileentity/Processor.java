@@ -64,7 +64,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public Circuit circuit;
 	IntConsumer[] callbacks;
 	private long burnoutTime = -1;
-	public boolean update;
+	public byte tick;
 	public String lastError;
 	DelayedSignal delayed;
 	String[] keys = new String[0];
@@ -73,7 +73,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public void process() {
-		update = false;
+		tick = 0;
 		if (unloaded) return;
 		if (burnoutTime > 0) {
 			if (burnoutTime > world.getTotalWorldTime()) return;
@@ -84,8 +84,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			for (; delayed != null; delayed = delayed.next, d |= 1)
 				circuit.inputs[delayed.id] = delayed.value;
 			if ((d & 1) != 0) {
+				tick = TickRegistry.TICK;
 				TickRegistry.schedule(this);
-				update = true;
 			}
 			d >>>= 1;
 			for (int i = 0; d != 0; i++, d >>>= 1)
@@ -126,10 +126,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		return circuit.isInterrupt(pin) ?
 			(val)-> {
 				if (inputs[pin] == val) return;
-				if (!update) {
-					update = true;
+				if (tick == 0) {
+					tick = TickRegistry.TICK;
 					TickRegistry.schedule(this);
-				} else if (TickRegistry.TICKING) {
+				} else if (tick != TickRegistry.TICK) {
 					delayed = new DelayedSignal(pin, val, delayed);
 					return;
 				}
@@ -161,7 +161,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		}
 		if (mode == SAVE) {
 			nbt.setLong("burnout", burnoutTime);
-			nbt.setBoolean("active", update);
+			nbt.setBoolean("active", tick != 0);
 		}
 	}
 
@@ -184,7 +184,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		super.loadState(nbt, mode);
 		if (mode == SAVE) {
 			burnoutTime = nbt.getLong("burnout");
-			update = nbt.getBoolean("active");
+			tick = (byte)(nbt.getBoolean("active") ? 1 : 0);
 		}
 	}
 
@@ -194,7 +194,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (!world.isRemote) {
 			circuit = circuit.load();
 			callbacks = new IntConsumer[circuit.outputs.length];
-			if (update && unloaded) TickRegistry.schedule(this);
+			if (tick == 1) {
+				tick = TickRegistry.TICK;
+				TickRegistry.schedule(this);
+			}
 		}
 		super.setupData();
 	}
@@ -223,9 +226,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (nbt == null) return;
 		clearData();
 		loadState(nbt, ITEM);
-		if (!update) unloaded = true;
+		tick = 1;
 		setupData();
-		unloaded = false;
 	}
 
 	@Override
@@ -260,7 +262,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public void writeState(StateSyncServer state, AdvancedContainer cont) {
-		state.writeInt(update ? 1 : 0);
+		state.writeInt(tick > 0 ? 1 : 0);
 		state.writeIntArray(circuit.inputs).writeIntArray(circuit.outputs).endFixed();
 		NBTTagCompound nbt = circuit.getState().nbt;
 		for (String key : keys) {
@@ -271,7 +273,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public void readState(StateSyncClient state, AdvancedContainer cont) {
-		update = state.get(update ? 1 : 0) != 0;
+		tick = (byte)state.get(tick);
 		circuit.inputs = state.get(circuit.inputs);
 		circuit.outputs = state.get(circuit.outputs);
 		NBTTagCompound nbt = circuit.getState().nbt;
@@ -295,8 +297,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public void handleAction(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
 		int var = pkt.readUnsignedByte();
 		if (var == 255) {
-			if (!update) {
-				update = true;
+			if (tick == 0) {
+				tick = TickRegistry.TICK;
 				TickRegistry.schedule(this);
 			}
 			return;
