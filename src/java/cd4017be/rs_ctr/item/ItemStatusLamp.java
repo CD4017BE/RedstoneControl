@@ -25,7 +25,7 @@ public class ItemStatusLamp extends BaseItem implements IConnectorItem {
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
-		if (!port.isSource) {
+		if (!port.isMaster) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.lamp")));
 			return;
 		}

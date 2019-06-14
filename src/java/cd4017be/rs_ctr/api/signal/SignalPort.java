@@ -15,14 +15,16 @@ import net.minecraftforge.common.util.INBTSerializable;
  * And when multiple Entities are cramped into the same BlockPos they should use unique pin IDs for their Ports if possible so that additionally each port could be identified by a BlockPos and a pin ID.
  * @author CD4017BE
  */
-public class SignalPort implements INBTSerializable<NBTTagCompound> {
+public abstract class SignalPort implements INBTSerializable<NBTTagCompound> {
 
 	/**the block, entity or whatever that is providing the port */
 	public final ISignalIO owner;
 	/**number to identify this port if the owner provides multiple ports */
 	public final int pin;
 	/**true if this is a source port, false if it is a sink port */
-	public final boolean isSource;
+	public final boolean isMaster;
+	/**the callback type class */
+	public final Class<?> type;
 	/**identifies the connection of this port in that two connected ports have the same linkID (all unconnected ports have linkID 0). */
 	protected int linkID = 0;
 
@@ -33,12 +35,14 @@ public class SignalPort implements INBTSerializable<NBTTagCompound> {
 	/**
 	 * @param owner the block, entity or whatever that is providing the port
 	 * @param pin number to identify this port if the owner provides multiple ports
+	 * @param type the type of interaction this port will use or provide
 	 * @param isSource true if this is a source port, false if it is a sink port
 	 */
-	public SignalPort(ISignalIO owner, int pin, boolean isSource) {
+	public SignalPort(ISignalIO owner, int pin, Class<?> type, boolean isSource) {
 		this.owner = owner;
 		this.pin = pin;
-		this.isSource = isSource;
+		this.type = type;
+		this.isMaster = isSource;
 	}
 
 	/**
@@ -68,7 +72,7 @@ public class SignalPort implements INBTSerializable<NBTTagCompound> {
 	public void connect(SignalPort to) {
 		if (linkID != 0) disconnect();
 		if (to.linkID != 0) to.disconnect();
-		if (isSource) new Link(this, to);
+		if (isMaster) new Link(this, to);
 		else new Link(to, this);
 	}
 

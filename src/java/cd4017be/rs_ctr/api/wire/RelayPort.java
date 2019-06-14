@@ -48,13 +48,13 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 	 * @param pin convention: 0x8??? for source, 0x9??? for sink
 	 */
 	public RelayPort(ISignalIO owner, int pin) {
-		super(owner, pin & 0xfff | 0x8000, true);
+		super(owner, pin & 0xfff | 0x8000, null, true);
 		this.opposite = new RelayPort(this);
 		this.orient = pin >> 16 & 0x3f;
 	}
 
 	private RelayPort(RelayPort opposite) {
-		super(opposite.owner, opposite.pin ^ 0x1000, !opposite.isSource);
+		super(opposite.owner, opposite.pin ^ 0x1000, null, !opposite.isMaster);
 		this.opposite = opposite;
 	}
 

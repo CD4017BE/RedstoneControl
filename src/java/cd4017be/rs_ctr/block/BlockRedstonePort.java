@@ -86,7 +86,7 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 		if (i >= 0 && i < 6) {
 			MountedSignalPort p = (MountedSignalPort)port.getSignalPort(i);
 			if (p == null) p = (MountedSignalPort)port.getSignalPort(i + 6);
-			if (p != null) return new ItemStack(Objects.rs_port, 1, p.isSource ? 0 : 1);
+			if (p != null) return new ItemStack(Objects.rs_port, 1, p.isMaster ? 0 : 1);
 		}
 		state = port.cover.state;
 		if (state == null) return ItemStack.EMPTY;

@@ -31,7 +31,7 @@ public class SignalLine implements Collection<MountedSignalPort> {
 		ArrayDeque<RelayPort> list = new ArrayDeque<>();
 		MountedSignalPort p0 = scan(port, list);
 		MountedSignalPort p1 = port instanceof RelayPort ? scan(((RelayPort)port).opposite, list) : port;
-		if (port.isSource) {
+		if (port.isMaster) {
 			this.source = p1;
 			this.sink = p0;
 		} else {
@@ -46,7 +46,7 @@ public class SignalLine implements Collection<MountedSignalPort> {
 		if (!(c instanceof IWiredConnector)) return null;
 		IWiredConnector con = (IWiredConnector)c;
 		SignalPort sp = ISignalIO.getPort(port.getWorld(), con.getLinkPos(), con.getLinkPin());
-		if (!(sp instanceof MountedSignalPort) || !(sp.isSource ^ port.isSource)) return null;
+		if (!(sp instanceof MountedSignalPort) || !(sp.isMaster ^ port.isMaster)) return null;
 		c = ((MountedSignalPort)sp).getConnector();
 		if (!(c instanceof IWiredConnector)) return null;
 		con = (IWiredConnector)c;
@@ -55,7 +55,7 @@ public class SignalLine implements Collection<MountedSignalPort> {
 	}
 
 	private static MountedSignalPort scan(MountedSignalPort port, ArrayDeque<RelayPort> list) throws WireLoopException {
-		boolean dir = port.isSource;
+		boolean dir = port.isMaster;
 		if (port instanceof RelayPort && port.getConnector() != null)
 			if (dir) list.addLast((RelayPort)port);
 			else list.addFirst((RelayPort)port);

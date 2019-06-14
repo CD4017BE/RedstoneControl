@@ -62,7 +62,7 @@ public class BlockWireAnchor extends AdvancedBlock {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IHookAttachable)
 			for (RelayPort port : ((IHookAttachable)te).getHookPins().values()) {
-				if (!port.isSource) continue;
+				if (!port.isMaster) continue;
 				double d = port.pos.x;
 				if (d < x0) x0 = d;
 				if (d > x1) x1 = d;

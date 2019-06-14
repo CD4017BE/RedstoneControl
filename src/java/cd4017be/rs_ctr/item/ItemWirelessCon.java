@@ -42,10 +42,10 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 			nbt.setInteger("lz", pos.getZ());
 			nbt.setInteger("ld", pos.dimId);
 			nbt.setInteger("lp", port.pin);
-			nbt.setBoolean("d", port.isSource);
+			nbt.setBoolean("d", port.isMaster);
 			return;
 		}
-		if (!nbt.getBoolean("d") ^ port.isSource) {
+		if (!nbt.getBoolean("d") ^ port.isMaster) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire0")));
 			return;
 		}

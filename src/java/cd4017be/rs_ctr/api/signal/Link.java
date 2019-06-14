@@ -78,7 +78,7 @@ public class Link {
 
 	public Link(SignalPort port) {
 		this.id = port.linkID;
-		if (port.isSource) source = port;
+		if (port.isMaster) source = port;
 		else sink = port;
 		if (id >= nextLinkID) {
 			nextLinkID = id + 1;
@@ -87,7 +87,7 @@ public class Link {
 	}
 
 	public Link(SignalPort source, SignalPort sink) {
-		if (!source.isSource || sink.isSource)
+		if (!source.isMaster || sink.isMaster)
 			throw new IllegalArgumentException("invalid port directions!");
 		this.source = source;
 		this.sink = sink;
@@ -99,7 +99,7 @@ public class Link {
 
 	public void load(SignalPort port) {
 		boolean link;
-		if (port.isSource) {
+		if (port.isMaster) {
 			link = source == null && sink != null;
 			source = port;
 		} else {
@@ -113,7 +113,7 @@ public class Link {
 	public void unload(SignalPort port) {
 		if (source != null)
 			source.owner.setPortCallback(source.pin, null);
-		if (port.isSource) source = null;
+		if (port.isMaster) source = null;
 		else sink = null;
 		if (source == null && sink == null)
 			links.remove(id);
@@ -127,7 +127,7 @@ public class Link {
 		}
 		if (sink != null) {
 			sink.linkID = 0;
-			sink.owner.getPortCallback(sink.pin).accept(0);
+			//TODO sink.owner.getPortCallback(sink.pin).accept(0);
 			sink.owner.onPortModified(sink, ISignalIO.E_DISCONNECT);
 		}
 		links.remove(id);

@@ -52,7 +52,7 @@ public class Constant implements IConnector, IBlockRenderComp {
 		stack.setTagCompound(serializeNBT());
 		if (player == null) ItemFluidUtil.dropStack(stack, port.getWorld(), port.getPos());
 		else if (!player.isCreative()) ItemFluidUtil.dropStack(stack, player);
-		port.owner.getPortCallback(port.pin).accept(0);
+		port.owner.onPortModified(port, ISignalIO.E_DISCONNECT);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class Constant implements IConnector, IBlockRenderComp {
 	@Override
 	public void onLoad(MountedSignalPort port) {
 		IConnector.super.onLoad(port);
-		port.owner.getPortCallback(port.pin).accept(value);
+		((IntConsumer)port.owner.getPortCallback(port.pin)).accept(value);
 	}
 
 }

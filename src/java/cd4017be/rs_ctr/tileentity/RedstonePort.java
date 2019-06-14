@@ -55,9 +55,10 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	@Override
-	public void setPortCallback(int pin, IntConsumer callback) {
-		callbacks[pin] = callback;
-		if (callback != null) callback.accept(states[pin]);
+	public void setPortCallback(int pin, Object callback) {
+		IntConsumer c = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		callbacks[pin] = c;
+		if (c != null) c.accept(states[pin]);
 	}
 
 	@Override
@@ -156,12 +157,12 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	private MountedSignalPort createPort(int pin) {
 		boolean in = pin < 6;
-		MountedSignalPort port = new MountedSignalPort(this, pin, in);
+		MountedSignalPort port = new MountedSignalPort(this, pin, IntConsumer.class, in);
 		EnumFacing side = EnumFacing.VALUES[pin % 6];
 		Orientation o = Orientation.fromFacing(side);
 		Vec3d p = o.rotate(new Vec3d(in ? -SIZE : SIZE, in ? -SIZE : SIZE, -0.375));
 		port.setLocation((float)p.x + 0.5F, (float)p.y + 0.5F, (float)p.z + 0.5F, o.back);
-		port.setName(port.isSource ? "port.rs_ctr.rsR" : "port.rs_ctr.rsW");
+		port.setName(port.isMaster ? "port.rs_ctr.rsR" : "port.rs_ctr.rsW");
 		return port;
 	}
 
@@ -252,7 +253,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	public List<ItemStack> dropItem(IBlockState state, int fortune) {
 		int in = 0, out = 0;
 		for (MountedSignalPort port : ports) {
-			if (port.isSource) in++;
+			if (port.isMaster) in++;
 			else if ((strong >> (port.pin - 6) & 1) != 0) out+=2;
 			else out++;
 		}

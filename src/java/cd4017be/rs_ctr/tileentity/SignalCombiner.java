@@ -23,12 +23,12 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	{
 		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 1, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 2, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 3, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 4, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 5, true).setName("port.rs_ctr.o")
+			new MountedSignalPort(this, 0, IntConsumer.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 1, IntConsumer.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 2, IntConsumer.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 3, IntConsumer.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 4, IntConsumer.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 5, IntConsumer.class, true).setName("port.rs_ctr.o")
 		};
 	}
 
@@ -38,10 +38,14 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	}
 
 	@Override
-	public void setPortCallback(int pin, IntConsumer callback) {
-		if (callback != null) scheduleUpdate();
-		if (pin == 4) output0 = callback;
-		else output1 = callback;
+	public void setPortCallback(int pin, Object callback) {
+		IntConsumer scb;
+		if (callback instanceof IntConsumer) {
+			scb = (IntConsumer)callback;
+			scheduleUpdate();
+		} else scb = null;
+		if (pin == 4) output0 = scb;
+		else output1 = scb;
 	}
 
 	@Override

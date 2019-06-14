@@ -18,11 +18,11 @@ public class SignalSplitter extends WallMountGate {
 
 	{
 		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 1, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 2, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 3, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 4, false).setName("port.rs_ctr.i")
+			new MountedSignalPort(this, 0, IntConsumer.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 1, IntConsumer.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 2, IntConsumer.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 3, IntConsumer.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 4, IntConsumer.class, false).setName("port.rs_ctr.i")
 		};
 	}
 
@@ -38,9 +38,10 @@ public class SignalSplitter extends WallMountGate {
 	}
 
 	@Override
-	public void setPortCallback(int pin, IntConsumer callback) {
-		callbacks[pin] = callback;
-		if (callback != null) callback.accept(state);
+	public void setPortCallback(int pin, Object callback) {
+		IntConsumer c = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		callbacks[pin] = c;
+		if (c != null) c.accept(state);
 	}
 
 	@Override

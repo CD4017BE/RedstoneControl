@@ -49,7 +49,7 @@ public class ItemConstantPlug extends BaseItem implements IConnectorItem, IGuiHa
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
-		if (port.isSource) {
+		if (port.isMaster) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.const")));
 			return;
 		}

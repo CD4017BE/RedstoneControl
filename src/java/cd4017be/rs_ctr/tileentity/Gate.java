@@ -3,7 +3,6 @@ package cd4017be.rs_ctr.tileentity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.lang3.tuple.Triple;
 
 import cd4017be.lib.block.AdvancedBlock.IInteractiveTile;
@@ -54,7 +53,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			return port;
 		if (pin < ports.length && (port = ports[pin]).pin == pin)
 			return port;
-		return IHookAttachable.super.getSignalPort(pin);
+		return null;//TODO unordered port list
 	}
 
 	@Override
@@ -73,7 +72,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			List<IInteractiveComponent> list = new ArrayList<>();
 			Collections.addAll(list, ports);
 			for (RelayPort port : hooks.values())
-				if (port.isSource)
+				if (port.isMaster)
 					list.add(port);
 			initGuiComps(list);
 			gui = list.toArray(new IInteractiveComponent[list.size()]);
@@ -82,11 +81,6 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	}
 
 	protected void initGuiComps(List<IInteractiveComponent> list) {}
-
-	@Override
-	public SignalPort[] getSignalPorts() {
-		return ports;
-	}
 
 	@Override
 	public void onPortModified(SignalPort port, int event) {

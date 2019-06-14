@@ -1,7 +1,5 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.function.IntConsumer;
-
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 
@@ -15,12 +13,12 @@ public class WireAnchor extends Gate {
 	{ports = new MountedSignalPort[0];}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public Object getPortCallback(int pin) {
 		return null;
 	}
 
 	@Override
-	public void setPortCallback(int pin, IntConsumer callback) {
+	public void setPortCallback(int pin, Object callback) {
 	}
 
 	@Override

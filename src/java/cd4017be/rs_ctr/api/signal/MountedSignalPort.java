@@ -39,8 +39,8 @@ public class MountedSignalPort extends SignalPort implements IInteractiveCompone
 	 * @param pin
 	 * @param isSource
 	 */
-	public MountedSignalPort(ISignalIO owner, int pin, boolean isSource) {
-		super(owner, pin, isSource);
+	public MountedSignalPort(ISignalIO owner, int pin, Class<?> type, boolean isSource) {
+		super(owner, pin, type, isSource);
 	}
 
 	/**

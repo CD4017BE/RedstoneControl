@@ -1,7 +1,5 @@
 package cd4017be.rs_ctr.api.signal;
 
-import java.util.function.IntConsumer;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -18,20 +16,10 @@ import net.minecraft.world.World;
 public interface ISignalIO {
 
 	/**
-	 * @return a list of all SignalPorts provided by this device
-	 */
-	SignalPort[] getSignalPorts();
-
-	/**
 	 * @param pin the SignalPort's pin id
 	 * @return the SignalPort for given pin
 	 */
-	default @Nullable SignalPort getSignalPort(int pin) {
-		for (SignalPort port : getSignalPorts())
-			if (port.pin == pin)
-				return port;
-		return null;
-	}
+	@Nullable SignalPort getSignalPort(int pin);
 
 	/**
 	 * get the callback of the given sink/receiving port<dl>
@@ -40,7 +28,7 @@ public interface ISignalIO {
 	 * @param pin the SignalPort's pin id
 	 * @return a function to call whenever the state of the transmitted signal changes
 	 */
-	@Nonnull IntConsumer getPortCallback(int pin);
+	@Nonnull Object getPortCallback(int pin);
 
 	/**
 	 * set the callback of the given source/sending port
@@ -48,7 +36,7 @@ public interface ISignalIO {
 	 * @param callback a function to call whenever the state of the transmitted signal changes.<br>
 	 * null indicates that transmission is currently not possible (the receiver became unloaded)
 	 */
-	void setPortCallback(int pin, @Nullable IntConsumer callback);
+	void setPortCallback(int pin, @Nullable Object callback);
 
 	/**
 	 * @param pin the SignalPort's pin id
@@ -75,7 +63,7 @@ public interface ISignalIO {
 	 * @return the signal port hosted at given location
 	 */
 	public static SignalPort getPort(World world, BlockPos pos, int pin) {
-		if (world == null) return null;
+		if (world == null || pos == null) return null;
 		if (pin >= 0) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof ISignalIO)

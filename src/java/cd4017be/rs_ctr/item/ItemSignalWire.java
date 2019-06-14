@@ -47,10 +47,10 @@ public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 			nbt.setInteger("ly", pos.getY());
 			nbt.setInteger("lz", pos.getZ());
 			nbt.setInteger("lp", port.pin);
-			nbt.setBoolean("d", port.isSource);
+			nbt.setBoolean("d", port.isMaster);
 			return;
 		}
-		if (!nbt.getBoolean("d") ^ port.isSource) {
+		if (!nbt.getBoolean("d") ^ port.isMaster) {
 			if (port instanceof RelayPort) port = ((RelayPort)port).opposite;
 			else {
 				player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire0")));
