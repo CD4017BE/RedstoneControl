@@ -44,7 +44,7 @@ public class BinaryCombiner extends SignalCombiner {
 
 	@Override
 	public IntConsumer getPortCallback(int pin) {
-		return (val)-> setInput(pin, (val & mask) << (shift * pin));
+		return (val)-> setInput(pin, val <= 0 ? 0 : (val > mask ? mask : val) << (shift * pin));
 	}
 
 	@Override
