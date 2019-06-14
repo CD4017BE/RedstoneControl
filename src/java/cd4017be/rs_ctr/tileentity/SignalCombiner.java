@@ -4,6 +4,7 @@ import java.util.function.IntConsumer;
 
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
+import cd4017be.rs_ctr.api.DelayedSignal;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalReceiver;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +20,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	protected IntConsumer output = SignalReceiver.NOP;
 	protected final int[] inputs = new int[4];
 	protected boolean dirty;
+	protected DelayedSignal delayed;
 
 	{
 		ports = new MountedSignalPort[] {
@@ -32,12 +34,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	@Override
 	public IntConsumer getPortCallback(int pin) {
-		return (val)-> {
-			if (val != inputs[pin]) {
-				inputs[pin] = val;
-				scheduleUpdate();
-			}
-		};
+		return (val)-> setInput(pin, val);
 	}
 
 	@Override
@@ -49,6 +46,26 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 			if (output == SignalReceiver.NOP) dirty = false;
 			scheduleUpdate();
 			output = callback;
+		}
+	}
+
+	@Override
+	public void process() {
+		for (; delayed != null; delayed = delayed.next, dirty = true)
+			inputs[delayed.id] = delayed.value;
+		if (dirty) TickRegistry.instance.updates.add(this);
+	}
+
+	protected void setInput(int pin, int val) {
+		if (val != inputs[pin]) {
+			if (!dirty) {
+				dirty = true;
+				TickRegistry.instance.updates.add(this);
+			} else if (TickRegistry.TICKING) {
+				delayed = new DelayedSignal(pin, val, delayed);
+				return;
+			}
+			inputs[pin] = val;
 		}
 	}
 

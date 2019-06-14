@@ -45,48 +45,18 @@ public class LogicCombiner extends SignalCombiner {
 	@Override
 	public void process() {
 		dirty = false;
-		int val = inputs[0]
-				| inputs[1]
-				| inputs[2]
-				| inputs[3];
+		int val = inputs[0] | inputs[1] | inputs[2] | inputs[3];
+		super.process();
 		output.accept(val ^ outInv);
 	}
 
 	@Override
 	public IntConsumer getPortCallback(int pin) {
 		switch(inModes[pin]) {
-		case 0:
-			return (val)-> {
-				val = val > 0 ? 0xffff : 0;
-				if (val != inputs[pin]) {
-					inputs[pin] = val;
-					scheduleUpdate();
-				}
-			};
-		case 1:
-			return (val)-> {
-				val = val <= 0 ? 0xffff : 0;
-				if (val != inputs[pin]) {
-					inputs[pin] = val;
-					scheduleUpdate();
-				}
-			};
-		case 2:
-			return (val)-> {
-				val &= 0xffff;
-				if (val != inputs[pin]) {
-					inputs[pin] = val;
-					scheduleUpdate();
-				}
-			};
-		default:
-			return (val)-> {
-				val = (val ^ -1) & 0xffff;
-				if (val != inputs[pin]) {
-					inputs[pin] = val;
-					scheduleUpdate();
-				}
-			};
+		case 0: return (val)-> setInput(pin, val > 0 ? 0xffff : 0);
+		case 1: return (val)-> setInput(pin, val <= 0 ? 0xffff : 0);
+		case 2: return (val)-> setInput(pin, val & 0xffff);
+		default: return (val)-> setInput(pin, ~val & 0xffff);
 		}
 	}
 

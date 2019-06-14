@@ -37,18 +37,14 @@ public class BinaryCombiner extends SignalCombiner {
 	@Override
 	public void process() {
 		dirty = false;
-		output.accept(inputs[0] | inputs[1] | inputs[2] | inputs[3]);
+		int v = inputs[0] | inputs[1] | inputs[2] | inputs[3];
+		super.process();
+		output.accept(v);
 	}
 
 	@Override
 	public IntConsumer getPortCallback(int pin) {
-		return (val)-> {
-			val = (val & mask) << (shift * pin);
-			if (val != inputs[pin]) {
-				inputs[pin] = val;
-				scheduleUpdate();
-			}
-		};
+		return (val)-> setInput(pin, (val & mask) << (shift * pin));
 	}
 
 	@Override

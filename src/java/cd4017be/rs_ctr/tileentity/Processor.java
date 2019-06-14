@@ -17,6 +17,7 @@ import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
+import cd4017be.rs_ctr.api.DelayedSignal;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.circuit.Circuit;
@@ -65,6 +66,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	private long burnoutTime = -1;
 	public boolean update;
 	public String lastError;
+	DelayedSignal delayed;
 	String[] keys = new String[0];
 
 	{ports = new MountedSignalPort[0];}
@@ -79,6 +81,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		}
 		try {
 			int d = circuit.tick();
+			for (; delayed != null; delayed = delayed.next, d |= 1)
+				circuit.inputs[delayed.id] = delayed.value;
 			if ((d & 1) != 0) {
 				TickRegistry.schedule(this);
 				update = true;
@@ -122,10 +126,14 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		return circuit.isInterrupt(pin) ?
 			(val)-> {
 				if (inputs[pin] == val) return;
+				if (!update) {
+					update = true;
+					TickRegistry.schedule(this);
+				} else if (TickRegistry.TICKING) {
+					delayed = new DelayedSignal(pin, val, delayed);
+					return;
+				}
 				inputs[pin] = val;
-				if (update) return;
-				TickRegistry.schedule(this);
-				update = true;
 			} : (val)-> inputs[pin] = val;
 	}
 

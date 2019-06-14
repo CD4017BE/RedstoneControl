@@ -35,10 +35,8 @@ public class NummericCombiner extends SignalCombiner {
 	@Override
 	public void process() {
 		dirty = false;
-		int val = inputs[0]
-				+ inputs[1]
-				+ inputs[2]
-				+ inputs[3];
+		int val = inputs[0] + inputs[1] + inputs[2] + inputs[3];
+		super.process();
 		output.accept(val);
 	}
 
@@ -46,13 +44,7 @@ public class NummericCombiner extends SignalCombiner {
 	public IntConsumer getPortCallback(int pin) {
 		if ((inModes >> pin & 1) == 0)
 			return super.getPortCallback(pin);
-		return (val)-> {
-			val = -val;
-			if (val != inputs[pin]) {
-				inputs[pin] = val;
-				scheduleUpdate();
-			}
-		};
+		return (val)-> setInput(pin, -val);
 	}
 
 	@Override
