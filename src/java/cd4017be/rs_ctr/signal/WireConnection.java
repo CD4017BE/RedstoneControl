@@ -109,7 +109,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
 		if (vertices == null) vertices = WireRenderer.createLine(port, line);
 		if (light1 < 0) light1 = port.getWorld().getCombinedLight(port.getPos().add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
-		WireRenderer.drawLine(buffer, vertices, (float)x, (float)y, (float)z, light, light1, 0xffffffff);
+		WireRenderer.drawLine(buffer, vertices, (float)x, (float)y, (float)z, light, light1, 0xff0000ff);
 	}
 
 	@Override
