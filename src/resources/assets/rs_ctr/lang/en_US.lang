@@ -26,6 +26,7 @@ tile.rs_ctr.editor.name=Circuit Designer
 tile.rs_ctr.editor.tip=Used to program assembled §6Processor§7s.\n\n§d§oThis feature is still WIP so only available in creative mode by default.
 
 # chat messages
+msg.rs_ctr.type=§cIncompatible socket type!
 msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
 msg.rs_ctr.wire1=§cToo far away, not enough wire!
 msg.rs_ctr.wire2=§cToo far away, max length is %d blocks!

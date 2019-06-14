@@ -72,6 +72,23 @@ public class SignalLine implements Collection<MountedSignalPort> {
 		return port;
 	}
 
+	/**
+	 * @return whether this signal line is in itself type compatible
+	 */
+	public boolean checkTypes() {
+		Class<?> type = null;
+		if (source != null) type = source.type;
+		if (sink != null) {
+			if (type == null) type = sink.type;
+			else if (sink.type != type) return false;
+		}
+		if (type == null) return true;
+		for (RelayPort port : hooks)
+			if (!((IWiredConnector)port.getConnector()).isCompatible(type))
+				return false;
+		return true;
+	}
+
 	@Override
 	public int size() {
 		int n = hooks.length;

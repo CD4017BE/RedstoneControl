@@ -26,6 +26,12 @@ public interface IWiredConnector extends IConnector {
 	int getLinkPin();
 
 	/**
+	 * @param type the interaction callback class
+	 * @return whether this connector supports the given interaction type
+	 */
+	boolean isCompatible(Class<?> type);
+
+	/**
 	 * implemented by {@link Item}s that want to interact with {@link RelayPort}s.
 	 * @see IConnectorItem
 	 * @author cd4017be

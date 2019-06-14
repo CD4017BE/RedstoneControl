@@ -139,7 +139,7 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 		SignalLine line;
 		try {line = new SignalLine(this);}
 		catch (WireLoopException e) {return;}
-		if (line.source == null || line.sink == null || !line.contains(port)) return;
+		if (line.source == null || line.sink == null || !line.contains(port) || !line.checkTypes()) return;
 		
 		IConnector con = line.source.getConnector();
 		String label = con instanceof ITagableConnector ? ((ITagableConnector)con).getTag() : null;

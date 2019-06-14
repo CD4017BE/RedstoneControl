@@ -1,13 +1,14 @@
 package cd4017be.rs_ctr.item;
 
+import java.util.function.IntConsumer;
+
 import cd4017be.lib.item.BaseItem;
-import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
 import cd4017be.rs_ctr.signal.StatusLamp;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 
 /**
@@ -25,8 +26,11 @@ public class ItemStatusLamp extends BaseItem implements IConnectorItem {
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
-		if (!port.isMaster) {
-			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.lamp")));
+		if (port.type != IntConsumer.class) {
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
+			return;
+		} else if (!port.isMaster) {
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.lamp"));
 			return;
 		}
 		port.setConnector(new StatusLamp(), player);

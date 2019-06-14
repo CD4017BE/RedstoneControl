@@ -1,5 +1,7 @@
 package cd4017be.rs_ctr.item;
 
+import java.util.function.IntConsumer;
+
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
@@ -19,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 /**
@@ -38,6 +41,10 @@ public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+		if (port.type != IntConsumer.class && port.type != null) {
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
+			return;
+		}
 		boolean creative = player.isCreative();
 		NBTTagCompound nbt = stack.getTagCompound();
 		BlockPos pos = port.getPos();

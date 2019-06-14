@@ -1,5 +1,7 @@
 package cd4017be.rs_ctr.item;
 
+import java.util.function.IntConsumer;
+
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.TooltipUtil;
@@ -15,6 +17,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 
@@ -33,6 +36,10 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+		if (port.type != IntConsumer.class) {
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
+			return;
+		}
 		NBTTagCompound nbt = stack.getTagCompound();
 		DimPos pos = new DimPos(port.getPos(), port.getWorld());
 		if (nbt == null) {

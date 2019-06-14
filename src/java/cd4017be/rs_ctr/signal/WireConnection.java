@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.signal;
 
 import java.util.List;
+import java.util.function.IntConsumer;
 
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
@@ -144,6 +145,11 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	@Override
 	public int getLinkPin() {
 		return linkPin;
+	}
+
+	@Override
+	public boolean isCompatible(Class<?> type) {
+		return type == IntConsumer.class;
 	}
 
 }

@@ -22,6 +22,7 @@ tile.rs_ctr.wire_anchor.tip=§6Signalkabel§7 können and diesen angebracht werd
 tile.rs_ctr.editor.name=Schaltplaneditor
 
 # Chat Hinweise
+msg.rs_ctr.type=§cInkompatibler Anschlusstyp!
 msg.rs_ctr.wire0=§cAusgänge können nur mit Eingängen verbunden werden und umgekehrt!
 msg.rs_ctr.wire1=§cZu weit weg, nicht genug Kabel!
 msg.rs_ctr.wire2=§cZu weit weg, maximale Distanz ist %dm!
