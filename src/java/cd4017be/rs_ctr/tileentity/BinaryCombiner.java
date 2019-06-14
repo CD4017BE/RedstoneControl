@@ -38,7 +38,7 @@ public class BinaryCombiner extends SignalCombiner {
 	public void process() {
 		int v = inputs[0] | inputs[1] | inputs[2] | inputs[3];
 		super.process();
-		output.accept(v);
+		setOutput(v);
 	}
 
 	@Override

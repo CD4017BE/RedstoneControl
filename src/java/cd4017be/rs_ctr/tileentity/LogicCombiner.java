@@ -46,7 +46,7 @@ public class LogicCombiner extends SignalCombiner {
 	public void process() {
 		int val = inputs[0] | inputs[1] | inputs[2] | inputs[3];
 		super.process();
-		output.accept(val ^ outInv);
+		setOutput(val ^ outInv);
 	}
 
 	@Override

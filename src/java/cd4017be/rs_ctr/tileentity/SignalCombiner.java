@@ -16,7 +16,7 @@ import net.minecraft.util.EnumFacing;
  */
 public abstract class SignalCombiner extends WallMountGate implements IUpdatable {
 
-	protected IntConsumer output = SignalReceiver.NOP;
+	protected IntConsumer output0, output1;
 	protected final int[] inputs = new int[4];
 	protected byte tick;
 	protected DelayedSignal delayed;
@@ -27,7 +27,8 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 			new MountedSignalPort(this, 1, false).setName("port.rs_ctr.i"),
 			new MountedSignalPort(this, 2, false).setName("port.rs_ctr.i"),
 			new MountedSignalPort(this, 3, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 4, true).setName("port.rs_ctr.o")
+			new MountedSignalPort(this, 4, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 5, true).setName("port.rs_ctr.o")
 		};
 	}
 
@@ -38,14 +39,9 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	@Override
 	public void setPortCallback(int pin, IntConsumer callback) {
-		if (callback == null) {
-			output = SignalReceiver.NOP;
-			dirty = 1;
-		} else {
-			if (output == SignalReceiver.NOP) dirty = 0;
-			scheduleUpdate();
-			output = callback;
-		}
+		if (callback != null) scheduleUpdate();
+		if (pin == 4) output0 = callback;
+		else output1 = callback;
 	}
 
 	@Override
@@ -65,6 +61,11 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 			}
 			inputs[pin] = val;
 		}
+	}
+
+	protected void setOutput(int val) {
+		if (output0 != null) output0.accept(val);
+		if (output1 != null) output1.accept(val);
 	}
 
 	protected void scheduleUpdate() {
@@ -100,7 +101,8 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	protected void orient() {
 		for (int i = 0; i < 4; i++)
 			ports[i].setLocation(0.25F, 0.125F + i * 0.25F, 0.125F, EnumFacing.WEST, o);
-		ports[4].setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST, o);
+		ports[4].setLocation(0.75F, 0.375F, 0.125F, EnumFacing.EAST, o);
+		ports[5].setLocation(0.75F, 0.625F, 0.125F, EnumFacing.EAST, o);
 	}
 
 }
