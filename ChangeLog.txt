@@ -1,3 +1,16 @@
+v0.0.7
+Changes:
+- fixed #4 & #5 the TextureStitch event incompatibility with other mods
+- adapted to the new gui & network packet system added in the library
+- improved the debugger gui and made it also show/edit variables
+- added a circuit state editor GUI similar to the debugger but for the placed Redstone Processor
+- made assigned gate labels show up as tool-tip overlay in the circuit shematic
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.0.2512 (or newer)
+- CD4017BE_lib-6.4.3
+
 v0.0.6
 Changes:
 - hotfix: aparently some mods not only add their textures to texture maps they don't belong but also have those textures so badly broken that it crashes the game
