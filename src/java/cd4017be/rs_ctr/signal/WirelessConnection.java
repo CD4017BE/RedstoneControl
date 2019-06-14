@@ -3,7 +3,6 @@ package cd4017be.rs_ctr.signal;
 import java.util.List;
 
 import cd4017be.lib.util.DimPos;
-import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
@@ -29,11 +28,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
+public class WirelessConnection extends Plug implements ITagableConnector, IBlockRenderComp {
 
 	public static final String ID = "wireless";
 
-	private MountedSignalPort port;
 	private DimPos linkPos;
 	private int linkPin;
 	private boolean dropsItem;
@@ -48,9 +46,13 @@ public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
 	}
 
 	@Override
+	protected String id() {
+		return ID;
+	}
+
+	@Override
 	public NBTTagCompound serializeNBT() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString("id", ID);
+		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setLong("pos", linkPos.toLong());
 		nbt.setInteger("dim", linkPos.dimId);
 		nbt.setInteger("pin", linkPin);
@@ -86,7 +88,6 @@ public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
 
 	@Override
 	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
-		ItemStack stack = new ItemStack(Objects.wireless);
 		World world = port.getWorld();
 		BlockPos pos = port.getPos();
 		SignalPort p = ISignalIO.getPort(linkPos.getWorldServer(), linkPos, linkPin);
@@ -102,16 +103,13 @@ public class WirelessConnection implements ITagableConnector, IBlockRenderComp {
 				}
 			}
 		}
-		if (dropsItem) {
-			if (player != null) ItemFluidUtil.dropStack(stack, player);
-			else ItemFluidUtil.dropStack(stack, world, pos);
-		}
+		if (dropsItem) super.onRemoved(port, player);
 		port.disconnect();
 	}
 
 	@Override
-	public void setPort(MountedSignalPort port) {
-		this.port = port;
+	protected ItemStack drop() {
+		return new ItemStack(Objects.wireless);
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package cd4017be.rs_ctr.signal;
 
 import java.util.List;
+import java.util.function.IntConsumer;
 
-import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.signal.IConnector;
+import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -21,16 +21,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class Constant implements IConnector, IBlockRenderComp {
+public class Constant extends Plug implements IBlockRenderComp {
 
 	public static final String ID = "const";
-	private MountedSignalPort port;
 	public int value;
 
 	@Override
+	protected String id() {
+		return ID;
+	}
+
+	@Override
 	public NBTTagCompound serializeNBT() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString("id", ID);
+		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setInteger("val", value);
 		return nbt;
 	}
@@ -48,11 +51,15 @@ public class Constant implements IConnector, IBlockRenderComp {
 
 	@Override
 	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
+		super.onRemoved(port, player);
+		port.owner.onPortModified(port, ISignalIO.E_DISCONNECT);
+	}
+
+	@Override
+	protected ItemStack drop() {
 		ItemStack stack = new ItemStack(Objects.constant);
 		stack.setTagCompound(serializeNBT());
-		if (player == null) ItemFluidUtil.dropStack(stack, port.getWorld(), port.getPos());
-		else if (!player.isCreative()) ItemFluidUtil.dropStack(stack, player);
-		port.owner.onPortModified(port, ISignalIO.E_DISCONNECT);
+		return stack;
 	}
 
 	@Override
@@ -61,13 +68,8 @@ public class Constant implements IConnector, IBlockRenderComp {
 	}
 
 	@Override
-	public void setPort(MountedSignalPort port) {
-		this.port = port;
-	}
-
-	@Override
 	public void onLoad(MountedSignalPort port) {
-		IConnector.super.onLoad(port);
+		super.onLoad(port);
 		((IntConsumer)port.owner.getPortCallback(port.pin)).accept(value);
 	}
 

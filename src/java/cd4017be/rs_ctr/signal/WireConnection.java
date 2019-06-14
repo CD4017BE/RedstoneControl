@@ -2,7 +2,6 @@ package cd4017be.rs_ctr.signal;
 
 import java.util.List;
 
-import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
@@ -33,11 +32,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author CD4017BE
  */
-public class WireConnection implements ITagableConnector, IWiredConnector, IBlockRenderComp, ITESRenderComp {
+public class WireConnection extends Plug implements ITagableConnector, IWiredConnector, IBlockRenderComp, ITESRenderComp {
 
 	public static final String ID = "wire";
 
-	private MountedSignalPort port;
 	private BlockPos linkPos;
 	private int linkPin;
 	private Vec3d line;
@@ -54,9 +52,13 @@ public class WireConnection implements ITagableConnector, IWiredConnector, IBloc
 	}
 
 	@Override
+	protected String id() {
+		return ID;
+	}
+
+	@Override
 	public NBTTagCompound serializeNBT() {
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setString("id", ID);
+		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setLong("pos", linkPos.toLong());
 		nbt.setInteger("pin", linkPin);
 		nbt.setFloat("dx", (float)line.x);
@@ -78,11 +80,9 @@ public class WireConnection implements ITagableConnector, IWiredConnector, IBloc
 
 	@Override
 	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
-		ItemStack stack = new ItemStack(Objects.wire, count);
+		super.onRemoved(port, player);
 		World world = port.getWorld();
 		BlockPos pos = port.getPos();
-		if (player != null) ItemFluidUtil.dropStack(stack, player);
-		else ItemFluidUtil.dropStack(stack, world, pos);
 		SignalPort p = ISignalIO.getPort(world, linkPos, linkPin);
 		if (p instanceof MountedSignalPort) {
 			IConnector c = ((MountedSignalPort)p).getConnector();
@@ -96,8 +96,8 @@ public class WireConnection implements ITagableConnector, IWiredConnector, IBloc
 	}
 
 	@Override
-	public void setPort(MountedSignalPort port) {
-		this.port = port;
+	protected ItemStack drop() {
+		return new ItemStack(Objects.wire, count);
 	}
 
 	private float[] vertices; //render cache
