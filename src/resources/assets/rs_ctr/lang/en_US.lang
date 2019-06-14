@@ -24,6 +24,8 @@ tile.rs_ctr.processor.tip=Compact circuit that's programmable with the §6Circui
 tile.rs_ctr.processor.name=Redstone Processor
 tile.rs_ctr.editor.name=Circuit Designer
 tile.rs_ctr.editor.tip=Used to program assembled §6Processor§7s.\n\n§d§oThis feature is still WIP so only available in creative mode by default.
+tile.rs_ctr.comparator.name=Remote Comparator
+tile.rs_ctr.comparator.tip=Whenever the value of §eClock IN§7 changes, §eOUT§7 will be updated to the current comparator value read from §eBlock IN§7.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -50,6 +52,8 @@ item.rs_ctr.lamp.name=Signal Status Lamp
 item.rs_ctr.lamp.tip=Attach on output port to see its signal state.
 item.rs_ctr.tag.name=Wire Tag
 item.rs_ctr.tag.tip=§aUse§7 in air to set name.\n§aUse§7 on connected port to rename its signal connection. It will then show the name instead of an ID.
+item.rs_ctr.block_wire.name=Block Probe Wire
+item.rs_ctr.block_wire.tip=Used to connect block faces to devices like Sensors, etc.
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -80,6 +84,8 @@ port.rs_ctr.bins1=4bit -> 4x1bit
 port.rs_ctr.bins2=8bit -> 4x2bit
 port.rs_ctr.bins4=16bit -> 4x4bit
 port.rs_ctr.bins8=32bit -> 4x8bit
+port.rs_ctr.clk=Clock IN
+port.rs_ctr.bi=Block IN
 
 #Circuit gates
 gategroup.rs_ctr.io=Variables & IO
@@ -160,6 +166,3 @@ gui.rs_ctr.error32=§4missing Circuit Board
 gui.rs_ctr.save_file=Export
 gui.rs_ctr.load_file=Import
 gui.rs_ctr.processor.run=manually trigger cycle
-#added by ingame editor:
-item.rs_ctr.block_wire.name=Block Probe Wire
-item.rs_ctr.block_wire.tip=Used to connect block faces to devices like Sensors, etc.
