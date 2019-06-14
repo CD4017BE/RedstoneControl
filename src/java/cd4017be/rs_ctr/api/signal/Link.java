@@ -127,7 +127,6 @@ public class Link {
 		}
 		if (sink != null) {
 			sink.linkID = 0;
-			//TODO sink.owner.getPortCallback(sink.pin).accept(0);
 			sink.owner.onPortModified(sink, ISignalIO.E_DISCONNECT);
 		}
 		links.remove(id);

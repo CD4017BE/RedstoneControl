@@ -138,11 +138,17 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	}
 
 	@Override
-	public void setPortCallback(int pin, IntConsumer callback) {
+	public void setPortCallback(int pin, Object callback) {
+		IntConsumer scb = callback instanceof IntConsumer ? (IntConsumer)callback : null;
 		pin -= circuit.inputs.length;
-		callbacks[pin] = callback;
-		if (callback != null)
-			callback.accept(circuit.outputs[pin]);
+		callbacks[pin] = scb;
+		if (scb != null)
+			scb.accept(circuit.outputs[pin]);
+	}
+
+	@Override
+	protected void resetPin(int pin) {
+		getPortCallback(pin).accept(0);
 	}
 
 	@Override
@@ -174,7 +180,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			int in = circuit.inputs.length, out = circuit.outputs.length;
 			ports = new MountedSignalPort[in + out];
 			for (int i = 0; i < ports.length; i++)
-				ports[i] = new MountedSignalPort(this, i, i >= in).setName("\\" + names.getStringTagAt(i));
+				ports[i] = new MountedSignalPort(this, i, IntConsumer.class, i >= in).setName("\\" + names.getStringTagAt(i));
 			name = nbt.getString("name");
 			keys = circuit.getState().nbt.getKeySet().toArray(keys);
 			Arrays.sort(keys);

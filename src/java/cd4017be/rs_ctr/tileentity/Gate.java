@@ -53,7 +53,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			return port;
 		if (pin < ports.length && (port = ports[pin]).pin == pin)
 			return port;
-		return null;//TODO unordered port list
+		return null;
 	}
 
 	@Override
@@ -81,9 +81,12 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	}
 
 	protected void initGuiComps(List<IInteractiveComponent> list) {}
+	protected abstract void resetPin(int pin);
 
 	@Override
 	public void onPortModified(SignalPort port, int event) {
+		if (event == E_DISCONNECT && !port.isMaster && port.pin < 0x8000)
+			resetPin(port.pin);
 		int mode;
 		if ((event & (E_HOOK_ADD | E_HOOK_REM)) != 0) {
 			if (unloaded) return;

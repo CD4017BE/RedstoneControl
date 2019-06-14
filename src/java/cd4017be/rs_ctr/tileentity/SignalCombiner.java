@@ -49,6 +49,11 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	}
 
 	@Override
+	protected void resetPin(int pin) {
+		getPortCallback(pin).accept(0);
+	}
+
+	@Override
 	public void process() {
 		for (tick = 0; delayed != null; delayed = delayed.next, scheduleUpdate())
 			inputs[delayed.id] = delayed.value;

@@ -22,6 +22,10 @@ public class WireAnchor extends Gate {
 	}
 
 	@Override
+	protected void resetPin(int pin) {
+	}
+
+	@Override
 	public void onPortModified(SignalPort port, int event) {
 		if (event == E_HOOK_REM && hooks.isEmpty() && !unloaded)
 			world.setBlockToAir(pos);

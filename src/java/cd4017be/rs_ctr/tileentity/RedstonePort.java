@@ -19,6 +19,8 @@ import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.api.signal.SignalPort;
+
 import static cd4017be.rs_ctr.api.signal.MountedSignalPort.SIZE;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -50,6 +52,16 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	{ports = new MountedSignalPort[0];}
 
 	@Override
+	public SignalPort getSignalPort(int pin) {
+		SignalPort port = super.getSignalPort(pin);
+		if (port != null) return port;
+		for (MountedSignalPort p : ports)
+			if (p.pin == pin)
+				return p;
+		return port;
+	}
+
+	@Override
 	public IntConsumer getPortCallback(int pin) {
 		return new RSOut(pin);
 	}
@@ -59,6 +71,11 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		IntConsumer c = callback instanceof IntConsumer ? (IntConsumer)callback : null;
 		callbacks[pin] = c;
 		if (c != null) c.accept(states[pin]);
+	}
+
+	@Override
+	protected void resetPin(int pin) {
+		getPortCallback(pin).accept(0);
 	}
 
 	@Override

@@ -47,9 +47,10 @@ public class BinarySplitter extends SignalSplitter {
 	}
 
 	@Override
-	public void setPortCallback(int pin, IntConsumer callback) {
-		callbacks[pin] = callback;
-		if (callback != null) callback.accept(state >>> (shift * pin) & mask);
+	public void setPortCallback(int pin, Object callback) {
+		IntConsumer scb = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		callbacks[pin] = scb;
+		if (scb != null) scb.accept(state >>> (shift * pin) & mask);
 	}
 
 	@Override

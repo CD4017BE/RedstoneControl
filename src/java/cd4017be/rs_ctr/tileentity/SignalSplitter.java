@@ -45,6 +45,11 @@ public class SignalSplitter extends WallMountGate {
 	}
 
 	@Override
+	protected void resetPin(int pin) {
+		getPortCallback(pin).accept(0);
+	}
+
+	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		if (mode == SAVE) nbt.setInteger("state", state);
 		super.storeState(nbt, mode);
