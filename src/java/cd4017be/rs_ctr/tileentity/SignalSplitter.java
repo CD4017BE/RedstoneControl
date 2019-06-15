@@ -1,7 +1,6 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.function.IntConsumer;
-
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -13,40 +12,40 @@ import net.minecraft.util.EnumFacing;
  */
 public class SignalSplitter extends WallMountGate {
 
-	protected final IntConsumer[] callbacks = new IntConsumer[4];
+	protected final SignalHandler[] callbacks = new SignalHandler[4];
 	protected int state;
 
 	{
 		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, IntConsumer.class, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 1, IntConsumer.class, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 2, IntConsumer.class, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 3, IntConsumer.class, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 4, IntConsumer.class, false).setName("port.rs_ctr.i")
+			new MountedSignalPort(this, 0, SignalHandler.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 1, SignalHandler.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 2, SignalHandler.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 3, SignalHandler.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 4, SignalHandler.class, false).setName("port.rs_ctr.i")
 		};
 	}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		return (val)-> {
 			if (val == state) return;
 			state = val;
-			for (IntConsumer c : callbacks)
+			for (SignalHandler c : callbacks)
 				if (c != null)
-					c.accept(val);
+					c.updateSignal(val);
 		};
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		IntConsumer c = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		SignalHandler c = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 		callbacks[pin] = c;
-		if (c != null) c.accept(state);
+		if (c != null) c.updateSignal(state);
 	}
 
 	@Override
 	protected void resetPin(int pin) {
-		getPortCallback(pin).accept(0);
+		getPortCallback(pin).updateSignal(0);
 	}
 
 	@Override

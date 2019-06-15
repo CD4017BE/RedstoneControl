@@ -1,9 +1,8 @@
 package cd4017be.rs_ctr.tileentity;
 
 import java.util.List;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.util.TooltipUtil;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.gui.BlockButton;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,22 +34,22 @@ public class BinarySplitter extends SignalSplitter {
 	}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		return (val)-> {
 			if (val == state) return;
 			state = val;
 			for (int i = 0, s = shift, m = mask; i < 4; i++, val >>>= s) {
-				IntConsumer c = callbacks[i];
-				if (c != null) c.accept(val & m);
+				SignalHandler c = callbacks[i];
+				if (c != null) c.updateSignal(val & m);
 			}
 		};
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		IntConsumer scb = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		SignalHandler scb = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 		callbacks[pin] = scb;
-		if (scb != null) scb.accept(state >>> (shift * pin) & mask);
+		if (scb != null) scb.updateSignal(state >>> (shift * pin) & mask);
 	}
 
 	@Override

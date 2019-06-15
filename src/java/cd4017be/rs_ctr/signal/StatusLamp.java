@@ -1,9 +1,8 @@
 package cd4017be.rs_ctr.signal;
 
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
@@ -22,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class StatusLamp extends Plug implements IntConsumer, ITESRenderComp {
+public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 
 	public static final String ID = "lamp";
 
@@ -81,7 +80,7 @@ public class StatusLamp extends Plug implements IntConsumer, ITESRenderComp {
 	}
 
 	@Override
-	public void accept(int value) {
+	public void updateSignal(int value) {
 		state = value;
 		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
 	}

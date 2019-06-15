@@ -1,10 +1,9 @@
 package cd4017be.rs_ctr.signal;
 
 import java.util.List;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
@@ -70,7 +69,7 @@ public class Constant extends Plug implements IBlockRenderComp {
 	@Override
 	public void onLoad(MountedSignalPort port) {
 		super.onLoad(port);
-		((IntConsumer)port.owner.getPortCallback(port.pin)).accept(value);
+		((SignalHandler)port.owner.getPortCallback(port.pin)).updateSignal(value);
 	}
 
 }

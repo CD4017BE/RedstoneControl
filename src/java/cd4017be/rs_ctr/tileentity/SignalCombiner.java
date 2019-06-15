@@ -1,10 +1,9 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.rs_ctr.api.DelayedSignal;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -16,32 +15,32 @@ import net.minecraft.util.EnumFacing;
  */
 public abstract class SignalCombiner extends WallMountGate implements IUpdatable {
 
-	protected IntConsumer output0, output1;
+	protected SignalHandler output0, output1;
 	protected final int[] inputs = new int[4];
 	protected byte tick;
 	protected DelayedSignal delayed;
 
 	{
 		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, IntConsumer.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 1, IntConsumer.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 2, IntConsumer.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 3, IntConsumer.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 4, IntConsumer.class, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 5, IntConsumer.class, true).setName("port.rs_ctr.o")
+			new MountedSignalPort(this, 0, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 2, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 3, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedSignalPort(this, 4, SignalHandler.class, true).setName("port.rs_ctr.o"),
+			new MountedSignalPort(this, 5, SignalHandler.class, true).setName("port.rs_ctr.o")
 		};
 	}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		return (val)-> setInput(pin, val);
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		IntConsumer scb;
-		if (callback instanceof IntConsumer) {
-			scb = (IntConsumer)callback;
+		SignalHandler scb;
+		if (callback instanceof SignalHandler) {
+			scb = (SignalHandler)callback;
 			scheduleUpdate();
 		} else scb = null;
 		if (pin == 4) output0 = scb;
@@ -50,7 +49,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	@Override
 	protected void resetPin(int pin) {
-		getPortCallback(pin).accept(0);
+		getPortCallback(pin).updateSignal(0);
 	}
 
 	@Override
@@ -73,8 +72,8 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	}
 
 	protected void setOutput(int val) {
-		if (output0 != null) output0.accept(val);
-		if (output1 != null) output1.accept(val);
+		if (output0 != null) output0.updateSignal(val);
+		if (output1 != null) output1.updateSignal(val);
 	}
 
 	protected void scheduleUpdate() {
@@ -88,7 +87,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 		if (port.getConnector() != null) {
 			port.onUnload();
 			port.onLoad();
-		} else getPortCallback(pin).accept(0);
+		} else getPortCallback(pin).updateSignal(0);
 	}
 
 	@Override

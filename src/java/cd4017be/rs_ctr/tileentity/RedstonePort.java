@@ -3,8 +3,6 @@ package cd4017be.rs_ctr.tileentity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.IntConsumer;
-
 import org.apache.commons.lang3.ArrayUtils;
 
 import cd4017be.lib.TickRegistry;
@@ -18,6 +16,7 @@ import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 
@@ -43,7 +42,7 @@ import net.minecraftforge.common.util.Constants.NBT;
  */
 public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareTile, IUpdatable, IModularTile, ITilePlaceHarvest {
 
-	IntConsumer[] callbacks = new IntConsumer[6];
+	SignalHandler[] callbacks = new SignalHandler[6];
 	/**0-5: input, 6-11: output */
 	final int[] states = new int[12];
 	byte strong, dirty;
@@ -62,20 +61,20 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		return new RSOut(pin);
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		IntConsumer c = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		SignalHandler c = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 		callbacks[pin] = c;
-		if (c != null) c.accept(states[pin]);
+		if (c != null) c.updateSignal(states[pin]);
 	}
 
 	@Override
 	protected void resetPin(int pin) {
-		getPortCallback(pin).accept(0);
+		getPortCallback(pin).updateSignal(0);
 	}
 
 	@Override
@@ -116,8 +115,8 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	public void process() {
 		for (int j = dirty, i = 0; j != 0; j >>>= 1, i++) {
 			if ((j & 1) == 0) continue;
-			IntConsumer c = callbacks[i];
-			if (c != null) c.accept(states[i]);
+			SignalHandler c = callbacks[i];
+			if (c != null) c.updateSignal(states[i]);
 		}
 		dirty = 0;
 	}
@@ -174,7 +173,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	private MountedSignalPort createPort(int pin) {
 		boolean in = pin < 6;
-		MountedSignalPort port = new MountedSignalPort(this, pin, IntConsumer.class, in);
+		MountedSignalPort port = new MountedSignalPort(this, pin, SignalHandler.class, in);
 		EnumFacing side = EnumFacing.VALUES[pin % 6];
 		Orientation o = Orientation.fromFacing(side);
 		Vec3d p = o.rotate(new Vec3d(in ? -SIZE : SIZE, in ? -SIZE : SIZE, -0.375));
@@ -298,7 +297,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		dirty = 0; //cancel scheduled updates
 	}
 
-	class RSOut implements IntConsumer {
+	class RSOut implements SignalHandler {
 
 		final BlockPos target;
 		final EnumFacing side;
@@ -311,7 +310,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		}
 
 		@Override
-		public void accept(int value) {
+		public void updateSignal(int value) {
 			if (value != states[id]) {
 				states[id] = value;
 				world.neighborChanged(target, blockType, pos);

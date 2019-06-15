@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.Function;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.jvm_utils.SecurityChecker;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.util.StateBuffer;
@@ -29,7 +27,6 @@ public class CircuitLoader extends ClassLoader {
 	public static final SecurityChecker CHECKER = new SecurityChecker()
 			.putAll(Circuit.class)
 			.putAll(StateBuffer.class)
-			.putAll(IntConsumer.class)
 			.putAll(String.class)
 			.putAll(Math.class)
 			.put(Object.class);

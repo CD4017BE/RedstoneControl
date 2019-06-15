@@ -1,13 +1,12 @@
 package cd4017be.rs_ctr.signal;
 
 import java.util.List;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.ITickReceiver;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
@@ -30,7 +29,7 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	long phase;
 	int interval;
 	WorldInfo worldRef;
-	IntConsumer callback;
+	SignalHandler callback;
 
 	@Override
 	public NBTTagCompound serializeNBT() {
@@ -63,10 +62,10 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 		if (worldRef == null) return false;
 		int t = (int)(worldRef.getWorldTotalTime() - phase);
 		if (t == 0) {
-			callback.accept(65535);
+			callback.updateSignal(65535);
 		} else if (t >= interval) {
 			phase += interval << 1;
-			callback.accept(0);
+			callback.updateSignal(0);
 		}
 		return true;
 	}
@@ -76,10 +75,10 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 		super.onLoad(port);
 		if (worldRef == null) TickRegistry.instance.add(this);
 		worldRef = port.getWorld().getWorldInfo();
-		callback = (IntConsumer)port.owner.getPortCallback(port.pin);
+		callback = (SignalHandler)port.owner.getPortCallback(port.pin);
 		long t = Math.floorMod(worldRef.getWorldTotalTime() - phase + interval, interval << 1) - interval;
 		phase = worldRef.getWorldTotalTime() - t;
-		callback.accept(t >= 0 ? 65535 : 0);
+		callback.updateSignal(t >= 0 ? 65535 : 0);
 	}
 
 	@Override

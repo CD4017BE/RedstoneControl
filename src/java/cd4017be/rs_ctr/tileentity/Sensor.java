@@ -1,9 +1,8 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.function.IntConsumer;
-
 import cd4017be.rs_ctr.api.com.BlockReference;
 import cd4017be.rs_ctr.api.com.BlockReference.BlockHandler;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -12,29 +11,29 @@ import net.minecraft.util.EnumFacing;
  * @author CD4017BE
  *
  */
-public abstract class Sensor extends WallMountGate implements BlockHandler, IntConsumer {
+public abstract class Sensor extends WallMountGate implements BlockHandler, SignalHandler {
 
-	protected IntConsumer out;
+	protected SignalHandler out;
 	protected BlockReference blockRef;
 	protected int clock, value;
 
 	{
 		ports = new MountedSignalPort[] {
 			new MountedSignalPort(this, 0, BlockHandler.class, false).setName("port.rs_ctr.bi"),
-			new MountedSignalPort(this, 1, IntConsumer.class, false).setName("port.rs_ctr.clk"),
-			new MountedSignalPort(this, 2, IntConsumer.class, true).setName("port.rs_ctr.o")
+			new MountedSignalPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.clk"),
+			new MountedSignalPort(this, 2, SignalHandler.class, true).setName("port.rs_ctr.o")
 		};
 	}
 
 	@Override
-	public Object getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		return this;
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		out = callback instanceof IntConsumer ? (IntConsumer)callback : null;
-		if (out != null) out.accept(value);
+		out = callback instanceof SignalHandler ? (SignalHandler)callback : null;
+		if (out != null) out.updateSignal(value);
 	}
 
 	@Override
@@ -49,13 +48,13 @@ public abstract class Sensor extends WallMountGate implements BlockHandler, IntC
 	}
 
 	@Override
-	public void accept(int val) {
+	public void updateSignal(int val) {
 		if (val == clock) return;
 		clock = val;
 		if (blockRef == null) return;
 		if ((val = readValue(blockRef)) == value) return;
 		value = val;
-		if (out != null) out.accept(val);
+		if (out != null) out.updateSignal(val);
 	}
 
 	protected abstract int readValue(BlockReference ref);

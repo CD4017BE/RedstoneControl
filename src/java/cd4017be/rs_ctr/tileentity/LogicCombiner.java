@@ -2,9 +2,8 @@ package cd4017be.rs_ctr.tileentity;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.util.TooltipUtil;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.gui.BlockButton;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,7 +49,7 @@ public class LogicCombiner extends SignalCombiner {
 	}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		switch(inModes[pin]) {
 		case 0: return (val)-> setInput(pin, val > 0 ? 0xffff : 0);
 		case 1: return (val)-> setInput(pin, val <= 0 ? 0xffff : 0);

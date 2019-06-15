@@ -3,8 +3,6 @@ package cd4017be.rs_ctr.tileentity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.Gui.AdvancedContainer;
@@ -18,6 +16,7 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.api.DelayedSignal;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.circuit.Circuit;
@@ -62,7 +61,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		}
 	}.setSize(0.25F, 0.25F);
 	public Circuit circuit;
-	IntConsumer[] callbacks;
+	SignalHandler[] callbacks;
 	private long burnoutTime = -1;
 	public byte tick;
 	public String lastError;
@@ -90,7 +89,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			d >>>= 1;
 			for (int i = 0; d != 0; i++, d >>>= 1)
 				if ((d & 1) != 0 && callbacks[i] != null)
-					callbacks[i].accept(circuit.outputs[i]);
+					callbacks[i].updateSignal(circuit.outputs[i]);
 			if (lastError != null) {
 				lastError = null;
 				markDirty(SYNC);
@@ -121,7 +120,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	}
 
 	@Override
-	public IntConsumer getPortCallback(int pin) {
+	public SignalHandler getPortCallback(int pin) {
 		int[] inputs = circuit.inputs;
 		return circuit.isInterrupt(pin) ?
 			(val)-> {
@@ -139,16 +138,16 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		IntConsumer scb = callback instanceof IntConsumer ? (IntConsumer)callback : null;
+		SignalHandler scb = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 		pin -= circuit.inputs.length;
 		callbacks[pin] = scb;
 		if (scb != null)
-			scb.accept(circuit.outputs[pin]);
+			scb.updateSignal(circuit.outputs[pin]);
 	}
 
 	@Override
 	protected void resetPin(int pin) {
-		getPortCallback(pin).accept(0);
+		getPortCallback(pin).updateSignal(0);
 	}
 
 	@Override
@@ -180,7 +179,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			int in = circuit.inputs.length, out = circuit.outputs.length;
 			ports = new MountedSignalPort[in + out];
 			for (int i = 0; i < ports.length; i++)
-				ports[i] = new MountedSignalPort(this, i, IntConsumer.class, i >= in).setName("\\" + names.getStringTagAt(i));
+				ports[i] = new MountedSignalPort(this, i, SignalHandler.class, i >= in).setName("\\" + names.getStringTagAt(i));
 			name = nbt.getString("name");
 			keys = circuit.getState().nbt.getKeySet().toArray(keys);
 			Arrays.sort(keys);
@@ -199,7 +198,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (circuit == null) circuit = new UnloadedCircuit();
 		if (!world.isRemote) {
 			circuit = circuit.load();
-			callbacks = new IntConsumer[circuit.outputs.length];
+			callbacks = new SignalHandler[circuit.outputs.length];
 			if (tick == 1) {
 				tick = TickRegistry.TICK;
 				TickRegistry.schedule(this);

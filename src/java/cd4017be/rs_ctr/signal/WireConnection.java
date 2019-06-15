@@ -1,10 +1,9 @@
 package cd4017be.rs_ctr.signal;
 
 import java.util.List;
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.rs_ctr.api.signal.IConnector;
@@ -149,7 +148,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 
 	@Override
 	public boolean isCompatible(Class<?> type) {
-		return type == IntConsumer.class;
+		return type == SignalHandler.class;
 	}
 
 }

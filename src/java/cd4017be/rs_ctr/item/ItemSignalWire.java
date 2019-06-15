@@ -1,9 +1,8 @@
 package cd4017be.rs_ctr.item;
 
-import java.util.function.IntConsumer;
-
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
+import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
@@ -41,7 +40,7 @@ public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
-		if (port.type != IntConsumer.class && port.type != null) {
+		if (port.type != SignalHandler.class && port.type != null) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
 		}
