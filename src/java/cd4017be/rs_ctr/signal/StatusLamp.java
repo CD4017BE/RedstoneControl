@@ -48,7 +48,7 @@ public class StatusLamp extends Plug implements IntConsumer, ITESRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		if (state > 0) light |= 0xef;
+		if (state > 0) light = light & 0xffff0000 | 0xef;
 		PortRenderer.PORT_RENDER.drawModel(buffer, (float)(x + port.pos.x), (float)(y + port.pos.y), (float)(z + port.pos.z), Orientation.fromFacing(port.face), light, state > 0 ? "_plug.main(4)" : "_plug.main(3)");
 	}
 
