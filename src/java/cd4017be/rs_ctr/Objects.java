@@ -81,6 +81,7 @@ public class Objects {
 
 	public static void initConstants(ConfigConstants c) {
 		ItemSignalWire.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemSignalWire.MAX_LENGTH);
+		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
 	}
 
 	@SubscribeEvent

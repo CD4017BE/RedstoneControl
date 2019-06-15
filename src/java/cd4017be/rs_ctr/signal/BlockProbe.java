@@ -88,7 +88,9 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 
 	@Override
 	public String displayInfo(MountedSignalPort port, int linkID) {
-		return "\n\u00a7b" + port.getWorld().getBlockState(linkPos).getBlock().getLocalizedName() + "\u00a7f " + TooltipUtil.translate("enumfacing." + linkFace.name().toLowerCase());
+		String name = port.getWorld().getBlockState(linkPos).getBlock().getLocalizedName();
+		if (name.endsWith(".name")) name = name.substring(0, name.length() - 5);
+		return "\n\u00a7b" + name + "\u00a7f " + TooltipUtil.translate("enumfacing." + linkFace.name().toLowerCase());
 	}
 
 	@Override
