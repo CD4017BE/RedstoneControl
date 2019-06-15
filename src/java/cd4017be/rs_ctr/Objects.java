@@ -66,6 +66,7 @@ public class Objects {
 	public static final ItemStatusLamp lamp = null;
 	public static final ItemWireTag tag = null;
 	public static final ItemBlockProbe block_wire = null;
+	public static final ItemClock clock = null;
 	public static final BaseItem circuitboard = null;
 
 	public static void init() {
@@ -114,7 +115,8 @@ public class Objects {
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
 				new ItemWireTag("tag").setCreativeTab(tabCircuits),
-				new ItemBlockProbe("block_wire").setCreativeTab(tabCircuits)
+				new ItemBlockProbe("block_wire").setCreativeTab(tabCircuits),
+				new ItemClock("clock").setCreativeTab(tabCircuits)
 		);
 	}
 

@@ -2,6 +2,7 @@ package cd4017be.rs_ctr;
 
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.signal.BlockProbe;
+import cd4017be.rs_ctr.signal.Clock;
 import cd4017be.rs_ctr.signal.Constant;
 import cd4017be.rs_ctr.signal.StatusLamp;
 import cd4017be.rs_ctr.signal.WireConnection;
@@ -19,6 +20,7 @@ public class CommonProxy {
 		IConnector.REGISTRY.put(Constant.ID, Constant.class);
 		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp.class);
 		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe.class);
+		IConnector.REGISTRY.put(Clock.ID, Clock.class);
 	}
 
 }

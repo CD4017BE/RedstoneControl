@@ -54,6 +54,8 @@ item.rs_ctr.tag.name=Wire Tag
 item.rs_ctr.tag.tip=§aUse§7 in air to set name.\n§aUse§7 on connected port to rename its signal connection. It will then show the name instead of an ID.
 item.rs_ctr.block_wire.name=Block Probe Wire
 item.rs_ctr.block_wire.tip=Used to connect block faces to devices like Sensors, etc.
+item.rs_ctr.clock.name=Clock Plug
+item.rs_ctr.clock.tip=Emits a continuous square-wave singal into the port it's attached to. Switching between §e65535§7 and §e0§7.\n§aUse§7 in air configure pulse width and phase.\n§oAll clocks in the world are synchronized.
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -86,6 +88,7 @@ port.rs_ctr.bins4=16bit -> 4x4bit
 port.rs_ctr.bins8=32bit -> 4x8bit
 port.rs_ctr.clk=Clock IN
 port.rs_ctr.bi=Block IN
+port.rs_ctr.clock=⎍ %.2fs
 
 #Circuit gates
 gategroup.rs_ctr.io=Variables & IO
@@ -130,6 +133,7 @@ gui.rs_ctr.constant.name=Set Value
 gui.rs_ctr.tag.name=Label:
 gui.rs_ctr.editor.name=Circuit Editor\:
 gui.rs_ctr.state.name=Variables:
+gui.rs_ctr.clock.name=Clock Settings
 # Gui tooltips
 gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette
@@ -155,6 +159,7 @@ gui.rs_ctr.state.io=Signal IO\:
 gui.rs_ctr.hex0=decimal format
 gui.rs_ctr.hex1=hexadecimal format
 gui.rs_ctr.interval=Interval
+gui.rs_ctr.phase=Phase Offset
 gui.rs_ctr.error1=§4causal loop
 gui.rs_ctr.error2=§4incompatible data type
 gui.rs_ctr.error3=§4missing input signal
