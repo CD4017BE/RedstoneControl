@@ -46,6 +46,8 @@ public class Objects {
 	public static final BlockWireAnchor WIRE_ANCHOR = null;
 	public static final BlockGate COMPARATOR = null;
 	public static final BlockGate ENERGY_READER = null;
+	public static final BlockGate FLUID_READER = null;
+	public static final BlockGate ITEM_READER = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -60,6 +62,8 @@ public class Objects {
 	public static final ItemWireAnchor wire_anchor = null;
 	public static final BaseItemBlock comparator = null;
 	public static final BaseItemBlock energy_reader = null;
+	public static final BaseItemBlock fluid_reader = null;
+	public static final BaseItemBlock item_reader = null;
 
 	//Items
 	public static final ItemSignalWire wire = null;
@@ -94,7 +98,9 @@ public class Objects {
 				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 7, Processor.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				OrientedBlock.create("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits),
 				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Comparator.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("energy_reader", Material.CIRCUITS, SoundType.STONE, 3, EnergyReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("energy_reader", Material.CIRCUITS, SoundType.STONE, 3, EnergyReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("fluid_reader", Material.CIRCUITS, SoundType.STONE, 3, FluidReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("item_reader", Material.CIRCUITS, SoundType.STONE, 3, ItemReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -114,6 +120,8 @@ public class Objects {
 				new BaseItemBlock(EDITOR),
 				new BaseItemBlock(COMPARATOR),
 				new BaseItemBlock(ENERGY_READER),
+				new BaseItemBlock(FLUID_READER),
+				new BaseItemBlock(ITEM_READER),
 				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
