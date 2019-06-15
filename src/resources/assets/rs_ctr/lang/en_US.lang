@@ -26,6 +26,8 @@ tile.rs_ctr.editor.name=Circuit Designer
 tile.rs_ctr.editor.tip=Used to program assembled §6Processor§7s.\n\n§d§oThis feature is still WIP so only available in creative mode by default.
 tile.rs_ctr.comparator.name=Remote Comparator
 tile.rs_ctr.comparator.tip=Whenever the value of §eClock IN§7 changes, §eOUT§7 will be updated to the current comparator value read from §eBlock IN§7.
+tile.rs_ctr.energy_reader.name=Energy Reader
+tile.rs_ctr.energy_reader.tip=Whenever the value of §eClock IN§7 changes, §eOUT§7 will be updated to the current amount of energy stored in §eBlock IN§7.\nSupported energy types\: §3RF/FE/IF§7, §3EU
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -89,6 +91,8 @@ port.rs_ctr.bins8=32bit -> 4x8bit
 port.rs_ctr.clk=Clock IN
 port.rs_ctr.bi=Block IN
 port.rs_ctr.clock=⎍ %.2fs
+port.rs_ctr.energy1=Industrialcraft EU
+port.rs_ctr.energy0=Forge Energy\nRedstone Flux
 
 #Circuit gates
 gategroup.rs_ctr.io=Variables & IO
