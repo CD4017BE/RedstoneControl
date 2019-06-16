@@ -1,3 +1,27 @@
+v0.0.8
+Changes:
+- made sure all signal latency between devices is consistently one tick
+- clamped input signals of binary combiner rather than cutting off the MSBs
+- duplicated the output port of all combiner gates to reduce need for splitters
+- generalized the signal connection API to also include other (non redstone) interactions
+- added Block Probe Wire for connecting "block reference" interactions
+- added Remote Comparator
+- added Energy Reader
+- added Fluid Reader
+- added Item Reader
+- added Clock Plug
+- fixed Signal Status Lamp sometimes becoming transparent when on
+- changed some item textures
+- added Circuit Editor in-GUI documentation
+- added missing IO label warning on circuit compilation
+- added some inter-mod crafting recipes
+- enabled Processor and Circuit Editor recipes
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.4
+
 v0.0.7
 Changes:
 - fixed #4 & #5 the TextureStitch event incompatibility with other mods
