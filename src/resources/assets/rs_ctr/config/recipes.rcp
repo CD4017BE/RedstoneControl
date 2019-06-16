@@ -1,4 +1,4 @@
-VERSION = 15;
+VERSION = 17;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -7,8 +7,8 @@ max_probe_lenght = 8;
 
 INIT() {
 	Loc slab = it("minecraft:stone_slab");
-	!add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf")); !WIP
-	!add("shaped", it("tile.processor"), "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone"); !WIP
+	add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf")); !WIP
+	add("shaped", it("tile.processor"), "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone"); !WIP
 	add("shaped", 2 * it("tile.rs_port"):0, "0/1", "dustRedstone", slab);
 	add("shaped", 2 * it("tile.rs_port"):1, "0/1", it("minecraft:redstone_torch"), slab);
 	add("shaped", 8 * it("tile.wire_anchor"), "0/0", it("minecraft:iron_bars"));
@@ -21,7 +21,6 @@ INIT() {
 	add("shaped", it("tile.comparator"), "231/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1, it("item.block_wire"), it("minecraft:comparator"));
 	add("shaped", it("tile.fluid_reader"), "0/1", it("tile.comparator"), it("minecraft:bucket"));
 	add("shaped", it("tile.item_reader"), "0/1", it("tile.comparator"), it("minecraft:chest"));
-	add("shaped", it("tile.energy_reader"), "0/1", it("tile.comparator"), it("minecraft:compass"));
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
 	add("shaped", it("item.constant"), "0/1", it("item.wire"), "gemLapis");
@@ -29,4 +28,28 @@ INIT() {
 	add("shaped", it("item.tag"), "0/1", it("item.wire"), it("minecraft:name_tag"));
 	add("shaped", 4 * it("item.block_wire"), "10 /020/ 01", it("item.wire"), "gemQuartz", "gemLapis");
 	add("shaped", it("item.clock"), "0/1", it("item.wire"), it("minecraft:clock"));
+	moddedRecipes();
+}
+
+moddedRecipes() {
+	Loc noRcp = true; !energy_reader recipe
+	for (item : [it("ic2:meter"), it("immersiveengineering:tool"):2, it("thermalfoundation:meter"), it("opencomputers:tool")]) {
+		if (item) {
+			add("shaped", it("tile.energy_reader"), "0/1", it("tile.comparator"), item);
+			noRcp = false;
+		}
+	}
+	if (noRcp) {add("shaped", it("tile.energy_reader"), "0/1", it("tile.comparator"), it("minecraft:compass"));}
+	
+	if (hasmod("immersiveengineering")) {
+		add("shaped", it("tile.comparator"), "0/1", it("immersiveengineering:connector"):13, it("minecraft:stone_slab"));
+		add("shapeless", 8 * it("item.wire"), it("immersiveengineering:wirecoil"):5);
+	}
+	if (hasmod("appliedenergistics2")) {
+		add("shapeless", 4 * it("tile.wire_anchor"), it("appliedenergistics2:part"):120);
+		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, it("minecraft:paper"), it("item.wire"));
+	}
+	if (hasmod("opencomputers")) {
+		add("shaped", it("tile.processor"), "0 1/021/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1, it("opencomputers:component"):0);
+	}
 }
