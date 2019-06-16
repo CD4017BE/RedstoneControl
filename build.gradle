@@ -77,6 +77,9 @@ repositories {
 	maven {
 		url = "http://maven.cil.li/"
 	}
+	maven {
+		url = "http://maven.ic2.player.to/"
+	}
 }
 
 dependencies {
@@ -87,6 +90,8 @@ dependencies {
 	compile "li.cil.oc:OpenComputers:${oc_version}:api"
 	//TIS-3D
 	compile "li.cil.tis3d:TIS-3D:${tis3d_version}"
+	// IC2
+	compile "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
 	
 	String libDir = new File(file('./').getParentFile(), "CD4017BE_lib").getAbsolutePath()
 	compile files("${libDir}/build/libs/CD4017BE_lib-${mc_version}-${lib_version}-deobf.jar")

@@ -61,7 +61,7 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	@Override
 	public boolean tick() {
 		if (worldRef == null) return false;
-		int t = (int)(worldRef.totalTime - phase);
+		int t = (int)(worldRef.getWorldTotalTime() - phase);
 		if (t == 0) {
 			callback.accept(65535);
 		} else if (t >= interval) {
@@ -77,8 +77,8 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 		if (worldRef == null) TickRegistry.instance.add(this);
 		worldRef = port.getWorld().getWorldInfo();
 		callback = (IntConsumer)port.owner.getPortCallback(port.pin);
-		long t = Math.floorMod(worldRef.totalTime - phase + interval, interval << 1) - interval;
-		phase = worldRef.totalTime - t;
+		long t = Math.floorMod(worldRef.getWorldTotalTime() - phase + interval, interval << 1) - interval;
+		phase = worldRef.getWorldTotalTime() - t;
 		callback.accept(t >= 0 ? 65535 : 0);
 	}
 
