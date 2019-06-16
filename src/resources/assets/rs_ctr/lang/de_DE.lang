@@ -20,6 +20,17 @@ tile.rs_ctr.bin_split.tip=Funktioniert genau umgekehrt zum §6binären Signalpac
 tile.rs_ctr.wire_anchor.name=Kabelhalter
 tile.rs_ctr.wire_anchor.tip=§6Signalkabel§7 können and diesen angebracht werden um ihren Verlauf anzupassen.\n§oEs können mehrere davon im gleichen Block plaziert werden.
 tile.rs_ctr.editor.name=Schaltplaneditor
+tile.rs_ctr.editor.tip=Wird benutzt um §6Prozessor§7en zu programmieren.\n\n§d§oDieses Feature ist noch in Arbeit, daher ist es standartmäßig nur in Kreativmodus verfügbar.
+tile.rs_ctr.processor.name=Redstone-Prozessor
+tile.rs_ctr.processor.tip=Diese kompakte Schaltung kann im §6Schaltplaneditor§7 programmiert werden.\nBietet bis zu §16 Eingänge§7 und §26 Ausgänge§7 und erlaubt unbegrenzt viele Bauteile.\n\n§d§oDieses Feature ist noch in Arbeit, daher ist es standartmäßig nur in Kreativmodus verfügbar.
+tile.rs_ctr.comparator.name=getakteter Komparator
+tile.rs_ctr.comparator.tip=Immer, wenn der Wert von §eTakt EIN§7 sich ändert, wird der Komparatorwert von §eBlock EIN§7 ausgelesen und §eAUS§7 auf diesen aktualisiert.
+tile.rs_ctr.energy_reader.name=Energiezähler
+tile.rs_ctr.energy_reader.tip=Immer, wenn der Wert von §eTakt EIN§7 sich ändert, wird die in §eBlock EIN§7 gespeicherte Energie ausgelesen und §eAUS§7 auf diesen Wert aktualisiert.\nUnterstützte Energietypen\: §3RF/FE/IF§7, §3EU
+tile.rs_ctr.fluid_reader.name=Flüssigkeitszähler
+tile.rs_ctr.fluid_reader.tip=Immer, wenn der Wert von §eTakt EIN§7 sich ändert, wird die in §eBlock EIN§7 gespeicherte Flüssikeit (in §3mB§7) ausgelesen und §eAUS§7 auf diesen Wert aktualisiert.
+tile.rs_ctr.item_reader.name=Itemzähler
+tile.rs_ctr.item_reader.tip=Immer, wenn der Wert von §eTakt EIN§7 sich ändert, wird die in §eBlock EIN§7 enthaltenen Items gezählt und §eAUS§7 auf diesen Wert aktualisiert.
 
 # Chat Hinweise
 msg.rs_ctr.type=§cInkompatibler Anschlusstyp!
@@ -40,6 +51,10 @@ item.rs_ctr.lamp.name=Signalstatuslampe
 item.rs_ctr.lamp.tip=Zeigt den Signalwert des Signalausgangs an, an den sie ansgeschlossen ist.
 item.rs_ctr.tag.name=Kabelbeschrifter
 item.rs_ctr.tag.tip=§aBenutze§7 in die Luft um den Namen einzustellen.\n§aBenutze§7 auf eine angeschlossenen Buchse um die Signalverbindung umzubenennen. Diese zeigt dann den Namen anstatt einer ID an.
+item.rs_ctr.block_wire.name=Blockreferenzkabel
+item.rs_ctr.block_wire.tip=Wird benutzt um Blockseiten an Geräte wie Sensoren anzuschließen.
+item.rs_ctr.clock.name=Taktgeberstecker
+item.rs_ctr.clock.tip=Gibt ein kontinuierliches Rechtecksignal in den Anschluss aus, in den er gesteckt ist. Signal wechselt zwischen §e65535§7 und §e0§7.\n§aBenutze§7 in die Luft um Pulsbreite und Phase einzustellen.\n§oAlle Taktgeber in einer Welt sind miteinander synchronisiert.
 
 #Signalanschluss namen
 port.rs_ctr.rsR=Lesen
@@ -70,6 +85,9 @@ port.rs_ctr.bins1=4bit -> 4x1bit
 port.rs_ctr.bins2=8bit -> 4x2bit
 port.rs_ctr.bins4=16bit -> 4x4bit
 port.rs_ctr.bins8=32bit -> 4x8bit\n
+port.rs_ctr.clk=Takt EIN
+port.rs_ctr.bi=Block EIN
+port.rs_ctr.energy0=Forge-Energie\nRedstone-Flux
 
 gategroup.rs_ctr.io=Variablen & E/A
 gate.rs_ctr.in=Signaleingang\n§7Empfängt Signale von außen.
@@ -114,10 +132,12 @@ gui.rs_ctr.tag.name=Beschriftung:
 gui.rs_ctr.editor.name=Schaltplaneditor\:
 gui.rs_ctr.debug.name=Debugger
 gui.rs_ctr.state.name=Variablen:
+gui.rs_ctr.clock.name=Einstellungen
 # Gui tooltips
 gui.rs_ctr.palette.open1=Inventar öffen
 gui.rs_ctr.palette.open0=Bauteilpalette öffnen
 gui.rs_ctr.interval=Interval
+gui.rs_ctr.phase=Phasenverschiebung
 gui.rs_ctr.debug.run0=automatische Ausführung
 gui.rs_ctr.debug.run1=manuelle Ausführung
 gui.rs_ctr.debug.step0=Zyklus erzwingen\n§4§ostabiler Zustand
