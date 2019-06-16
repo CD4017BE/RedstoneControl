@@ -188,6 +188,8 @@ public class CircuitEditor extends ModularGui {
 			try {
 				tile.ingreds[6] = InvalidSchematicException.NO_ERROR;
 				CompiledCircuit cc = CircuitCompiler.INSTANCE.compile(tile.schematic.operators);
+				if (cc.compileWarning != null)
+					tile.ingreds[6] = cc.compileWarning.compact();
 				debug = new GuiDebugger((GuiFrame)compGroup, cc);
 				debug.init(width, height, zLevel, fontRenderer);
 				debug.position(8, 8);

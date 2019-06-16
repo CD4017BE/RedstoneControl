@@ -60,6 +60,7 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 			break;
 		case TYPE_MISSMATCH:
 		case INVALID_LABEL:
+		case Editor.MISSING_IO_LABEL:
 			px = 211;
 			py = 177;
 			break;

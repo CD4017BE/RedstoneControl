@@ -115,7 +115,8 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 
 	public static final int
 		NO_CIRCUITBOARD = 32,
-		MISSING_RESOURCE = 33;
+		MISSING_RESOURCE = 33,
+		MISSING_IO_LABEL = 64;
 
 	void compile() throws InvalidSchematicException {
 		ItemStack stack = inventory;
@@ -141,6 +142,7 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		nbt.setIntArray("ingr", ingr);*/
 		nbt.setString("name", name);
 		stack.setTagCompound(nbt);
+		if (cc.compileWarning != null) throw cc.compileWarning;
 	}
 
 	private void putItem(ItemStack stack, int slot) {

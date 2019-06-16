@@ -180,6 +180,7 @@ gui.rs_ctr.error5=§4duplicate variable declaration
 gui.rs_ctr.error6=§4conflicting writes on same variable
 gui.rs_ctr.error7=§4invalid value
 gui.rs_ctr.error32=§4missing Circuit Board
+gui.rs_ctr.error64=§6highly recommended\n§6to label your IO ports
 gui.rs_ctr.save_file=Export
 gui.rs_ctr.load_file=Import
 gui.rs_ctr.processor.run=manually trigger cycle

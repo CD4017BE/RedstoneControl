@@ -15,7 +15,9 @@ import com.google.common.hash.Hashing;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.circuit.gates.Input;
 import cd4017be.rs_ctr.circuit.gates.Output;
+import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.compile.CompiledProgram;
+import cd4017be.rscpl.editor.InvalidSchematicException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,6 +30,7 @@ import net.minecraftforge.common.util.Constants.NBT;
  */
 public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram {
 
+	public InvalidSchematicException compileWarning;
 	public String[] ioLabels;
 	byte[] classCode;
 
@@ -52,9 +55,14 @@ public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram 
 			if (i.interrupt)
 				interruptPins |= 1 << n;
 			ioLabels[n++] = i.label;
+			if (i.label.isEmpty())
+				compileWarning = new InvalidSchematicException(Editor.MISSING_IO_LABEL, i, 0);
 		}
-		for (Output o : outputs)
+		for (Output o : outputs) {
 			ioLabels[n++] = o.label;
+			if (o.label.isEmpty())
+				compileWarning = new InvalidSchematicException(Editor.MISSING_IO_LABEL, o, 0);
+		}
 	}
 
 	@Override
