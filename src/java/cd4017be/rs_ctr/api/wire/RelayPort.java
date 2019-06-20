@@ -60,7 +60,7 @@ public class RelayPort extends MountedSignalPort implements IBlockRenderComp {
 
 	@Override
 	public Pair<Vec3d, EnumFacing> rayTrace(Vec3d start, Vec3d dir) {
-		RayTraceResult rt = new AxisAlignedBB(pos.subtract(SIZE, SIZE, SIZE), pos.addVector(SIZE, SIZE, SIZE)).calculateIntercept(start, start.add(dir));
+		RayTraceResult rt = new AxisAlignedBB(pos.x - SIZE, pos.y - SIZE, pos.z - SIZE, pos.x + SIZE, pos.y + SIZE, pos.z + SIZE).calculateIntercept(start, start.add(dir));
 		return rt == null ? null : Pair.of(rt.hitVec.subtract(start), rt.sideHit);
 	}
 
