@@ -29,6 +29,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	public final Int2ObjectOpenHashMap<PinRef> pins = new Int2ObjectOpenHashMap<>();
 	public BoundingBox2D<Gate<?>> selPart;
 	int originX, originY, moveX, moveY;
+	boolean movingTrace;
 	PinRef selPin;
 	private Gate<?> placing;
 
@@ -142,35 +143,63 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	public boolean mouseIn(int mx, int my, int b, byte d) {
 		mx = (mx - x - 1) / 4;
 		my = (my - y) / 4;
-		if (b == 0) {
-			if (placing != null && d != 1) {
+		switch(b) {
+		case B_LEFT:
+			if (placing != null && d != A_HOLD) {
 				parent.gui.sendPkt(ADD_GATE, (byte)schematic.INS_SET.id(placing.type), (byte)mx, (byte)my);
 				placing = null;
-				return true;
+				break;
 			}
-			if (d == 0) {
+			if (d == A_DOWN) {
 				selPart = findPart(mx, my);
 				update.run();
 				originX = mx;
 				originY = my;
-			} else if (d == 2 && selPart != null) unfocus();
+			} else if (d == A_UP && selPart != null) unfocus();
 			moveX = mx - originX;
 			moveY = my - originY;
-		} else if (b == 1 && d == 0) {
-			PinRef pin = pins.get(mx & 0xffff | my << 16);
-			if (pin != null && pin.trace >= 0) selPin = pin;
-			else if (selPin != null) {
-				parent.gui.sendPkt(CONNECT, (byte)selPin.gate,
-					pin == null ? (byte)-1 : (byte)pin.gate,
-					(byte)(selPin.pin | (pin == null ? 0xf0 : pin.pin << 4)));
-				selPin = null;
+			break;
+		case B_RIGHT:
+			if (d == A_DOWN) {
+				PinRef pin = pins.get(mx & 0xffff | my << 16);
+				if (selPin == null) {
+					if (pin == null || pin.trace < 0) break;
+					selPin = pin;
+				} else if (pin == null) {
+					
+					//TODO pin = new trace(selPin) trace
+					selPin = pin;
+				} else if (pin.trace < 0) {
+					//TODO finish connection to output
+				} else {
+					//TODO finish connection via cloned path
+				}
 			}
-			return true;
-		} else if (b == 2 && d != 0) {
-			BoundingBox2D<Gate<?>> part = findPart(mx, my);
-			if (part != null) placing = part.owner.type.newGate(0);
-			selPart = null;
-			update.run();
+			if (d == A_HOLD) {
+				
+			} else if (d == A_UP) {
+				PinRef pin = pins.get(mx & 0xffff | my << 16);
+				if (pin == null) {
+					
+				}
+				
+				if (pin != null && pin.trace >= 0) selPin = pin;
+				else if (selPin != null) {
+					parent.gui.sendPkt(CONNECT, (byte)selPin.gate,
+						pin == null ? (byte)-1 : (byte)pin.gate,
+						(byte)(selPin.pin | (pin == null ? 0xf0 : pin.pin << 4)));
+					selPin = null;
+				}
+			}
+			break;
+		case B_MID:
+			if (d != A_DOWN) {
+				BoundingBox2D<Gate<?>> part = findPart(mx, my);
+				if (part != null) placing = part.owner.type.newGate(0);
+				selPart = null;
+				update.run();
+			}
+			break;
 		}
 		return true;
 	}
