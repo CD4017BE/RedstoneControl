@@ -76,14 +76,7 @@ public class CircuitEditor extends ModularGui {
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
 		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place)).title("gui.rs_ctr.palette", 0.5F);
 		new Button(comps, 7, 7, 242, 191, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(241, 18).tooltip("gui.rs_ctr.editor.del");
-		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, (s)-> {
-			boolean hide = !palette.enabled();
-			palette.setEnabled(hide);
-			for (Slot slot : inventorySlots.inventorySlots)
-				if (slot instanceof HidableSlot)
-					((HidableSlot)slot).hideSlot(hide);
-			drawInvTitle = !hide;
-		}).texture(178, 0).tooltip("gui.rs_ctr.palette.open#");
+		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, this::togglePalette).texture(178, 0).tooltip("gui.rs_ctr.palette.open#");
 		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> sendCommand(A_NEW)).tooltip("gui.rs_ctr.editor.new");
 		new Button(comps, 16, 16, 214, 210, 0, null, this::load).tooltip("gui.rs_ctr.editor.load");
 		new Button(comps, 16, 16, 196, 210, 0, null, this::save).tooltip("gui.rs_ctr.editor.save");
@@ -102,6 +95,16 @@ public class CircuitEditor extends ModularGui {
 		this.error = new GuiErrorMarker(this);
 		palette.setEnabled(false);
 		changeSelPart();
+		togglePalette(0);
+	}
+
+	void togglePalette(int s) {
+		boolean hide = !palette.enabled();
+		palette.setEnabled(hide);
+		for (Slot slot : inventorySlots.inventorySlots)
+			if (slot instanceof HidableSlot)
+				((HidableSlot)slot).hideSlot(hide);
+		drawInvTitle = !hide;
 	}
 
 	void changeSelPart() {
