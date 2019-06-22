@@ -235,6 +235,7 @@ public class Schematic {
 			Gate<?> op = get(i);
 			if (op == null) return false;
 			op.label = data.toString(Utils.UTF8);
+			data.readerIndex(data.writerIndex());
 			toSync.set(i << 1);
 		}	return true;
 		case SET_VALUE: {
