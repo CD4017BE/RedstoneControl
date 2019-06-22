@@ -177,7 +177,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, pin.trace >= 0 ? (byte)-1 : (byte)pin.gate, (byte)(selPin.pin | (pin.trace >= 0 ? 0xf0 : pin.pin << 4)), (byte)selPin.trace);
 					selPin = null;
 				} else if (pin.trace <= selPin.trace) {
-					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, (byte)-1, (byte)(selPin.pin | 0xf0), selPin.trace);
+					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, (byte)-1, (byte)(selPin.pin | 0xf0), (byte)selPin.trace);
 					selPin = null;
 				} else {
 					parent.gui.sendPkt(REM_TRACE, (byte)selPin.gate, (byte)selPin.pin, (byte)(selPin.trace & 0xf | (pin.trace - 1) << 4));

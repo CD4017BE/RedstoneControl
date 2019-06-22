@@ -82,11 +82,15 @@ public abstract class Gate<T extends GateType<T>> {
 	public void read(ByteBuf data) {
 		setPosition(data.readUnsignedByte(), data.readUnsignedByte());
 		for (int i = 0; i < traces.length; i++) {
+			TraceNode tn = new TraceNode(null, i);
 			int n = data.readUnsignedByte();
-			if (n == 0) continue;
-			TraceNode tn = new TraceNode(null, 0);
-			tn.rasterX = data.readUnsignedByte();
-			tn.rasterY = data.readUnsignedByte();
+			if (n == 0) {
+				tn.rasterX = 256;
+				tn.rasterY = 256;
+			} else {
+				tn.rasterX = data.readUnsignedByte();
+				tn.rasterY = data.readUnsignedByte();
+			}
 			traces[i] = tn;
 			while(--n > 0) {
 				tn = tn.next = new TraceNode(this, i);
@@ -105,14 +109,21 @@ public abstract class Gate<T extends GateType<T>> {
 			Operator op = inputs[i];
 			int p = data.writerIndex(), n = 1;
 			data.writeByte(0);
-			if (op == null) continue;
-			data.writeByte(op.getGate().index);
-			data.writeByte(op.getPin());
+			data.markWriterIndex();
+			if (op == null) {
+				data.writeByte(-1);
+				data.writeByte(-1);
+			} else {
+				data.writeByte(op.getGate().index);
+				data.writeByte(op.getPin());
+			}
 			for (TraceNode tn = traces[i]; tn != null; tn = tn.next, n++) {
 				data.writeByte(tn.rasterX);
 				data.writeByte(tn.rasterY);
 			}
-			data.setByte(p, n);
+			if (op != null || n > 1)
+				data.setByte(p, n);
+			else data.resetWriterIndex();
 		}
 		int i = data.writeByte(0).writeCharSequence(label, Utils.UTF8);
 		data.setByte(data.writerIndex() - i - 1, i);
