@@ -1,3 +1,14 @@
+v0.0.9
+Changes:
+- added abbility to lay circuit traces in editor
+- made the gate palette in circuit editor open by default
+- fixed server side bug that caused disconnect when looking at wire anchors
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.5
+
 v0.0.8
 Changes:
 - made sure all signal latency between devices is consistently one tick
