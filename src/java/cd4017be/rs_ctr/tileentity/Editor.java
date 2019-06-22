@@ -66,7 +66,8 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
-		if (mode == SYNC) schematic.getChanges(nbt);
+		if (mode >= CLIENT)
+			schematic.getChanges(nbt, mode == CLIENT);
 		else {
 			nbt.setString("name", name);
 			nbt.setIntArray("ingred", ingreds);
@@ -82,10 +83,9 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		if (mode == SYNC) {
+		if (mode >= CLIENT)
 			schematic.applyChanges(nbt);
-			computeCost();
-		} else {
+		else {
 			name = nbt.getString("name");
 			{int[] buf = nbt.getIntArray("ingred");
 			System.arraycopy(buf, 0, ingreds, 0, buf.length < 7 ? buf.length : 7);}
@@ -96,6 +96,7 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 				schematic.deserialize(Unpooled.wrappedBuffer(nbt.getByteArray("schematic")));
 			else schematic.clear();
 			schematic.resetSync();
+			computeCost();
 		}
 	}
 

@@ -89,11 +89,13 @@ public class Schematic {
 		data.setByte(i, n);
 	}
 
-	public void getChanges(NBTTagCompound nbt) {
+	public void getChanges(NBTTagCompound nbt, boolean all) {
 		NBTTagList list = new NBTTagList();
-		int j = -1;
 		ByteBuf buf = Unpooled.buffer();
-		while((j = toSync.nextSetBit(j + 1)) >= 0) {
+		int j = -1, l = operators.size();
+		while(l > 0 && operators.get(l - 1) == null) l--;
+		l <<= 1;
+		while(all ? ++j < l : (j = toSync.nextSetBit(j + 1)) >= 0) {
 			NBTTagCompound tag = new NBTTagCompound();
 			int i = j >> 1;
 			tag.setByte("i", (byte)i);
@@ -107,7 +109,7 @@ public class Schematic {
 					tag.setByteArray("d", arr);
 					buf.clear();
 				}
-				if (((j & 1) != 0 || toSync.get(j | 1)) && op instanceof ConfigurableGate) {
+				if ((all || (j & 1) != 0 || toSync.get(j | 1)) && op instanceof ConfigurableGate) {
 					((ConfigurableGate)op).writeCfg(buf);
 					byte[] arr = new byte[buf.writerIndex()];
 					buf.readBytes(arr);
@@ -119,7 +121,7 @@ public class Schematic {
 			list.appendTag(tag);
 		}
 		nbt.setTag("d", list);
-		toSync.clear();
+		if (!all) toSync.clear();
 	}
 
 	public void applyChanges(NBTTagCompound nbt) {
