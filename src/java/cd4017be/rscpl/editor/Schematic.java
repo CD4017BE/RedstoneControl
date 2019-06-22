@@ -179,7 +179,7 @@ public class Schematic {
 	public static final byte
 			ADD_GATE = 0, REM_GATE = 1, MOVE_GATE = 2,
 			CONNECT = 3, SET_LABEL = 4, SET_VALUE = 5,
-			ADD_TRACE = 8, REM_TRACE = 9, MOVE_TRACE = 10;
+			INS_TRACE = 8, REM_TRACE = 9, MOVE_TRACE = 10;
 
 	public boolean handleUserInput(byte actionID, ByteBuf data) {
 		switch(actionID) {
@@ -222,7 +222,12 @@ public class Schematic {
 			if (op == null) return false;
 			int pins = data.readUnsignedByte();
 			if ((pins & 15) >= op.visibleInputs()) return false;
+			int trace = data.readUnsignedByte();
 			op.setInput(pins & 15, op1 != null ? op1.getOutput(pins >> 4) : null);
+			pins &= 15;
+			if (trace == 0) op.traces[pins] = null;
+			else for (TraceNode tn = op.traces[pins]; tn != null; tn = tn.next)
+				if (--trace == 0) tn.next = null;
 			toSync.set(i << 1);
 		}	return true;
 		case SET_LABEL: {
@@ -239,11 +244,57 @@ public class Schematic {
 			((ConfigurableGate)op).readCfg(data);
 			toSync.set(i << 1 | 1);
 		}	return true;
-		case ADD_TRACE: //TODO traces
-		case REM_TRACE: //TODO traces
-		case MOVE_TRACE: //TODO traces
+		case INS_TRACE: {
+			int i = data.readUnsignedByte();
+			Gate<?> op = get(i);
+			if (op == null) return false;
+			int p = data.readUnsignedByte(), t = p >> 4; p &= 15;
+			if (p >= op.visibleInputs()) return false;
+			TraceNode tn = new TraceNode(op, p);
+			tn.rasterX = data.readUnsignedByte();
+			tn.rasterY = data.readUnsignedByte();
+			if (t == 0) {
+				tn.next = op.traces[p];
+				op.traces[p] = tn;
+			} else {
+				TraceNode tn1 = op.getTrace(p, t - 1);
+				if (tn1 == null) return false;
+				tn.next = tn1.next;
+				tn1.next = tn;
+			}
+			toSync.set(i << 1);
+		}	return true;
+		case REM_TRACE: {
+			int i = data.readUnsignedByte();
+			Gate<?> op = get(i);
+			if (op == null) return false;
+			int p = data.readUnsignedByte();
+			if (p >= op.visibleInputs()) return false;
+			int t = data.readUnsignedByte(), t1 = t >> 4; t &= 15;
+			if (t == 0) op.traces[p] = op.getTrace(p, t1);
+			else {
+				TraceNode tn = op.getTrace(p, t - 1);
+				if (tn == null || t1 < t) return false;
+				tn.next = op.getTrace(p, t1);
+			}
+			toSync.set(i << 1);
+		}	return true;
+		case MOVE_TRACE:{
+			int i = data.readUnsignedByte();
+			Gate<?> op = get(i);
+			if (op == null) return false;
+			int p = data.readUnsignedByte(), t = p >> 4; p &= 15;
+			if (p >= op.visibleInputs()) return false;
+			int x = data.readUnsignedByte(), y = data.readUnsignedByte();
+			TraceNode tn = op.getTrace(p, t);
+			if (tn == null) return false;
+			tn.rasterX = x;
+			tn.rasterY = y;
+			toSync.set(i << 1);
+		}	return true;
 		default: return false;
 		}
 	}
+
 
 }

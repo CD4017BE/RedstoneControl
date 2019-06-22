@@ -1,6 +1,7 @@
 package cd4017be.rscpl.gui;
 
 import cd4017be.rscpl.editor.Gate;
+import cd4017be.rscpl.editor.TraceNode;
 import cd4017be.rscpl.graph.Operator;
 
 /**
@@ -30,10 +31,32 @@ public class PinRef {
 		this.trace = 0;
 		this.x = gate.rasterX;
 		this.y = gate.rasterY + gate.getInputHeight(pin);
-		Operator out = gate.getInput(pin);
-		PinRef src = out != null ? new PinRef(out) : null;
-		this.link = src;
-		//TODO traces
+		TraceNode tn = gate.traces[pin];
+		if (tn == null) {
+			Operator out = gate.getInput(pin);
+			this.link = out != null ? new PinRef(out) : null;
+		} else this.link = new PinRef(tn, 1);
+	}
+
+	public PinRef(TraceNode tn, int depth) {
+		this.gate = tn.owner.index;
+		this.pin = tn.pin;
+		this.trace = depth;
+		this.x = tn.rasterX;
+		this.y = tn.rasterY;
+		if (tn.next == null) {
+			Operator out = tn.owner.getInput(pin);
+			this.link = out != null ? new PinRef(out) : null;
+		} else this.link = new PinRef(tn.next, depth + 1);
+	}
+
+	public PinRef(PinRef ref, int x, int y) {
+		this.gate = ref.gate;
+		this.pin = ref.pin;
+		this.trace = ref.trace + 1;
+		this.x = x;
+		this.y = y;
+		this.link = ref.link;
 	}
 
 	@Override
