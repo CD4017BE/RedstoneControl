@@ -163,4 +163,10 @@ public abstract class Gate<T extends GateType<T>> {
 		return sb.toString();
 	}
 
+	public TraceNode getTrace(int pin, int trace) {
+		TraceNode tn = traces[pin];
+		for (; trace > 0 && tn != null; trace--) tn = tn.next;
+		return tn;
+	}
+
 }

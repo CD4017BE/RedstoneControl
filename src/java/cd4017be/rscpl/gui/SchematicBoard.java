@@ -100,14 +100,18 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
 		int r = 0x7f, g = 0, b = 0, a = 0xff;
 		float z = parent.zLevel + 0.5F;
-		for (PinRef pin : pins.values())
-			if (pin.equals(selPin)) {
-				vb.pos(x + pin.x * 4 + 2.5, y + pin.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
-				vb.pos(mx + 0.5F, my + 0.5F, z).color(r, g, b, a).endVertex();
-			} else if (pin.link != null) {
-				vb.pos(x + pin.x * 4 + 2.5, y + pin.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
-				vb.pos(x + pin.link.x * 4 + 2.5, y + pin.link.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
+		for (PinRef pin : pins.values()) {
+			boolean sel = pin.equals(selPin);
+			PinRef link = pin.link;
+			if (link != null || sel && !movingTrace) {
+				if (movingTrace && sel)
+					vb.pos(mx + 0.5, my + 0.5, z).color(r, g, b, a).endVertex();
+				else vb.pos(x + pin.x * 4 + 2.5, y + pin.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
+				if (movingTrace ? link.equals(selPin) : sel)
+					vb.pos(mx + 0.5, my + 0.5, z).color(r, g, b, a).endVertex();
+				else vb.pos(x + link.x * 4 + 2.5, y + link.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
 			}
+		}
 		GlStateManager.glLineWidth((float)parent.gui.mc.displayHeight / (float)parent.gui.height);
 		Tessellator.getInstance().draw();
 		GlStateManager.enableTexture2D();
@@ -166,30 +170,29 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 					if (pin == null || pin.trace < 0) break;
 					selPin = pin;
 				} else if (pin == null) {
-					
-					//TODO pin = new trace(selPin) trace
-					selPin = pin;
-				} else if (pin.trace < 0) {
-					//TODO finish connection to output
+					selPin = pin = new PinRef(selPin, mx, my);
+					parent.gui.sendPkt(INS_TRACE, (byte)pin.gate, (byte)(pin.pin | (pin.trace - 1) << 4), (byte)mx, (byte)my);
+				} else if (pin.gate != selPin.gate || pin.pin != selPin.pin || pin.trace < 0){
+					while(pin.link != null) pin = pin.link;
+					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, pin.trace >= 0 ? (byte)-1 : (byte)pin.gate, (byte)(selPin.pin | (pin.trace >= 0 ? 0xf0 : pin.pin << 4)), (byte)selPin.trace);
+					selPin = null;
+				} else if (pin.trace <= selPin.trace) {
+					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, (byte)-1, (byte)(selPin.pin | 0xf0), selPin.trace);
+					selPin = null;
 				} else {
-					//TODO finish connection via cloned path
-				}
-			}
-			if (d == A_HOLD) {
-				
-			} else if (d == A_UP) {
-				PinRef pin = pins.get(mx & 0xffff | my << 16);
-				if (pin == null) {
-					
-				}
-				
-				if (pin != null && pin.trace >= 0) selPin = pin;
-				else if (selPin != null) {
-					parent.gui.sendPkt(CONNECT, (byte)selPin.gate,
-						pin == null ? (byte)-1 : (byte)pin.gate,
-						(byte)(selPin.pin | (pin == null ? 0xf0 : pin.pin << 4)));
+					parent.gui.sendPkt(REM_TRACE, (byte)selPin.gate, (byte)selPin.pin, (byte)(selPin.trace & 0xf | (pin.trace - 1) << 4));
 					selPin = null;
 				}
+			} else if (d == A_HOLD) {
+				movingTrace = selPin != null && selPin.trace > 0;
+			} else if (d == A_UP && movingTrace) {
+				if (selPin != null && selPin.trace > 0) {
+					PinRef pin = pins.get(mx & 0xffff | my << 16);
+					if (pin == null)
+						parent.gui.sendPkt(MOVE_TRACE, (byte)selPin.gate, (byte)(selPin.pin | (selPin.trace - 1) << 4), (byte)mx, (byte)my);
+					selPin = null;
+				}
+				movingTrace = false;
 			}
 			break;
 		case B_MID:
