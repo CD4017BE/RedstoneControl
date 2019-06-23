@@ -30,16 +30,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class WirelessConnection extends Plug implements ITagableConnector, IBlockRenderComp {
 
-	public static final String ID = "wireless";
-
+	private final WireType type;
 	private DimPos linkPos;
 	private int linkPin;
 	private boolean dropsItem;
 	private String tag;
 
-	public WirelessConnection() {}
+	public WirelessConnection(WireType type) {
+		this.type = type;
+	}
 
-	public WirelessConnection(DimPos linkPos, int linkPin, boolean drop) {
+	public WirelessConnection(DimPos linkPos, int linkPin, boolean drop, WireType type) {
+		this(type);
 		this.linkPos = linkPos;
 		this.linkPin = linkPin;
 		this.dropsItem = drop;
@@ -47,7 +49,7 @@ public class WirelessConnection extends Plug implements ITagableConnector, IBloc
 
 	@Override
 	protected String id() {
-		return ID;
+		return type.wirelessId;
 	}
 
 	@Override

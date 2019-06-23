@@ -2,13 +2,13 @@ package cd4017be.rs_ctr.item;
 
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
-import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
 import cd4017be.rs_ctr.api.wire.RelayPort;
 import cd4017be.rs_ctr.signal.WireConnection;
+import cd4017be.rs_ctr.signal.WireType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,20 +27,20 @@ import net.minecraft.world.World;
  * @author CD4017BE
  *
  */
-public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
+public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 
 	public static int MAX_LENGTH = 16;
 
-	/**
-	 * @param id
-	 */
-	public ItemSignalWire(String id) {
+	public final WireType type;
+
+	public ItemWireCon(String id, WireType type) {
 		super(id);
+		this.type = type;
 	}
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
-		if (port.type != SignalHandler.class && port.type != null) {
+		if (port.type != type.clazz && port.type != null) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
 		}
@@ -86,8 +86,8 @@ public class ItemSignalWire extends BaseItem implements IWiredConnectorItem {
 		Vec3d path = new Vec3d(lpos.subtract(pos)).add(lport.pos.subtract(port.pos));
 		if (!(port instanceof RelayPort)) path = path.subtract(new Vec3d(port.face.getDirectionVec()).scale(0.125));
 		if (!(lport instanceof RelayPort)) path = path.add(new Vec3d(lport.face.getDirectionVec()).scale(0.125));
-		port.setConnector(new WireConnection(lpos, lp, path.scale(0.5), d/2), player);
-		lport.setConnector(new WireConnection(pos, port.pin, path.scale(-0.5), d - d/2), player);
+		port.setConnector(new WireConnection(lpos, lp, path.scale(0.5), d/2, type), player);
+		lport.setConnector(new WireConnection(pos, port.pin, path.scale(-0.5), d - d/2, type), player);
 		if (lport instanceof RelayPort) lport.connect(port);
 		else port.connect(lport);
 		stack.setTagCompound(null);

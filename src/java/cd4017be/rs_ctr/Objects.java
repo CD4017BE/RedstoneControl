@@ -20,6 +20,7 @@ import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
 import cd4017be.rs_ctr.item.*;
+import cd4017be.rs_ctr.signal.WireType;
 import cd4017be.rs_ctr.tileentity.*;
 
 /**
@@ -66,7 +67,7 @@ public class Objects {
 	public static final BaseItemBlock item_reader = null;
 
 	//Items
-	public static final ItemSignalWire wire = null;
+	public static final ItemWireCon wire = null;
 	public static final ItemWirelessCon wireless = null;
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
@@ -80,7 +81,7 @@ public class Objects {
 	}
 
 	public static void initConstants(ConfigConstants c) {
-		ItemSignalWire.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemSignalWire.MAX_LENGTH);
+		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
 	}
 
@@ -123,8 +124,8 @@ public class Objects {
 				new BaseItemBlock(ENERGY_READER),
 				new BaseItemBlock(FLUID_READER),
 				new BaseItemBlock(ITEM_READER),
-				new ItemSignalWire("wire").setCreativeTab(tabCircuits),
-				new ItemWirelessCon("wireless").setCreativeTab(tabCircuits),
+				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
+				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
 				new ItemWireTag("tag").setCreativeTab(tabCircuits),

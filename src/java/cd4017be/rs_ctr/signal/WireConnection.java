@@ -3,7 +3,6 @@ package cd4017be.rs_ctr.signal;
 import java.util.List;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.rs_ctr.api.signal.IConnector;
@@ -36,15 +35,19 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 
 	public static final String ID = "wire";
 
+	private final WireType type;
 	private BlockPos linkPos;
 	private int linkPin;
 	private Vec3d line;
 	private int count;
 	private String tag;
 
-	public WireConnection() {}
+	public WireConnection(WireType type) {
+		this.type = type;
+	}
 
-	public WireConnection(BlockPos linkPos, int linkPin, Vec3d line, int count) {
+	public WireConnection(BlockPos linkPos, int linkPin, Vec3d line, int count, WireType type) {
+		this(type);
 		this.linkPos = linkPos;
 		this.linkPin = linkPin;
 		this.line = line;
@@ -53,7 +56,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 
 	@Override
 	protected String id() {
-		return ID;
+		return type.wiredId;
 	}
 
 	@Override
@@ -148,7 +151,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 
 	@Override
 	public boolean isCompatible(Class<?> type) {
-		return type == SignalHandler.class;
+		return type == this.type.clazz;
 	}
 
 }

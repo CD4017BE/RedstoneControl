@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.api.signal;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -18,7 +19,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 public interface IConnector extends INBTSerializable<NBTTagCompound> {
 
 	/**map of registered Connector types */
-	public static final HashMap<String, Class<?extends IConnector>> REGISTRY = new HashMap<>();
+	public static final HashMap<String, Supplier<IConnector>> REGISTRY = new HashMap<>();
 
 	/**
 	 * @param port the port holding this connector
@@ -60,16 +61,11 @@ public interface IConnector extends INBTSerializable<NBTTagCompound> {
 	 * @return a deserialized connector instance or null if data invalid.
 	 */
 	public static IConnector load(NBTTagCompound nbt) {
-		Class<?extends IConnector> c = REGISTRY.get(nbt.getString("id"));
+		Supplier<IConnector> c = REGISTRY.get(nbt.getString("id"));
 		if (c == null) return null;
-		try {
-			IConnector con = c.newInstance();
-			con.deserializeNBT(nbt);
-			return con;
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		}
+		IConnector con = c.get();
+		con.deserializeNBT(nbt);
+		return con;
 	}
 
 	/**

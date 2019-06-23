@@ -3,8 +3,8 @@ package cd4017be.rs_ctr.item;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.TooltipUtil;
-import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
+import cd4017be.rs_ctr.signal.WireType;
 import cd4017be.rs_ctr.signal.WirelessConnection;
 import cd4017be.rs_ctr.api.signal.ISignalIO;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
@@ -26,16 +26,16 @@ import net.minecraft.world.World;
  */
 public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 
-	/**
-	 * @param id
-	 */
-	public ItemWirelessCon(String id) {
+	public final WireType type;
+
+	public ItemWirelessCon(String id, WireType type) {
 		super(id);
+		this.type = type;
 	}
 
 	@Override
 	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
-		if (port.type != SignalHandler.class) {
+		if (port.type != type.clazz) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
 		}
@@ -65,8 +65,8 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 		}
 		MountedSignalPort lport = (MountedSignalPort)p;
 		
-		port.setConnector(new WirelessConnection(lpos, lp, !player.isCreative()), player);
-		lport.setConnector(new WirelessConnection(pos, port.pin, false), player);
+		port.setConnector(new WirelessConnection(lpos, lp, !player.isCreative(), type), player);
+		lport.setConnector(new WirelessConnection(pos, port.pin, false, type), player);
 		port.connect(lport);
 		stack.setTagCompound(null);
 		if (!player.isCreative()) stack.shrink(1);

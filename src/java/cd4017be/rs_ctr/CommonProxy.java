@@ -5,8 +5,7 @@ import cd4017be.rs_ctr.signal.BlockProbe;
 import cd4017be.rs_ctr.signal.Clock;
 import cd4017be.rs_ctr.signal.Constant;
 import cd4017be.rs_ctr.signal.StatusLamp;
-import cd4017be.rs_ctr.signal.WireConnection;
-import cd4017be.rs_ctr.signal.WirelessConnection;
+import cd4017be.rs_ctr.signal.WireType;
 
 /**
  *
@@ -15,12 +14,11 @@ import cd4017be.rs_ctr.signal.WirelessConnection;
 public class CommonProxy {
 
 	public void init() {
-		IConnector.REGISTRY.put(WireConnection.ID, WireConnection.class);
-		IConnector.REGISTRY.put(WirelessConnection.ID, WirelessConnection.class);
-		IConnector.REGISTRY.put(Constant.ID, Constant.class);
-		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp.class);
-		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe.class);
-		IConnector.REGISTRY.put(Clock.ID, Clock.class);
+		WireType.registerAll();
+		IConnector.REGISTRY.put(Constant.ID, Constant::new);
+		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
+		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
+		IConnector.REGISTRY.put(Clock.ID, Clock::new);
 	}
 
 }
