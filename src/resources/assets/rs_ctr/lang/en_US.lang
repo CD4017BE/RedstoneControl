@@ -64,6 +64,7 @@ item.rs_ctr.clock.name=Clock Plug
 item.rs_ctr.clock.tip=Emits a continuous square-wave singal into the port it's attached to. Switching between §e65535§7 and §e0§7.\n§aUse§7 in air configure pulse width and phase.\n§oAll clocks in the world are synchronized.
 item.rs_ctr.wire_e.name=Energy Wire
 item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 connects signal ports.\n§oConsumes 1 item per block of straight distance between ports.
+item.rs_ctr.processor.stats=Complexity\: §c%d §b%d §e%d §7Size\: §f%d
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -96,7 +97,7 @@ port.rs_ctr.bins4=16bit -> 4x4bit
 port.rs_ctr.bins8=32bit -> 4x8bit
 port.rs_ctr.clk=Clock IN
 port.rs_ctr.bi=Block IN
-port.rs_ctr.clock=⎍ %.2fs
+port.rs_ctr.clock=�? %.2fs
 port.rs_ctr.energy1=Industrialcraft EU
 port.rs_ctr.energy0=Forge Energy\nRedstone Flux
 
@@ -158,7 +159,7 @@ gui.rs_ctr.editor.new=New Schematic\n§4clears the board
 gui.rs_ctr.editor.compile=Compile Circuit\n§aR-C§7\: Debugger
 gui.rs_ctr.editor.load=Import Schematic
 gui.rs_ctr.editor.save=Save Schematic\n§aR-C§7\: export as ...
-gui.rs_ctr.editor.ingreds=Circuit Complexity [WIP]
+gui.rs_ctr.editor.ingreds=Circuit Complexity\:\n§c%d / %d basic\n§b%d / %d advanced\n§e%d / %d memory
 gui.rs_ctr.editor.info=Controls\nBasic Mechanics\nDebugging / Testing
 gui.rs_ctr.editor.info0=§7§nComponent interaction\:§a left-click\n§7To add a component, first click on it in the palette, then on the board where you want to place it.\n§7§oThe palette shows up in place of your inventory when enabled via button.\n§aclick§7 on a component on the board to select it. Configuration options will appear below the bottom left of the boeard.\n§aclick-drag§7 to move a component around [red boxes indicate collision with other components].\n§7Moving a component outside the board area will delete it [bright red box].\n§7§nPin/Trace interaction\:§a right-click\n§7To connect two components with a trace, first §aclick§7 an input pin [left side of a component], then optinally click a few places on the board to lay out its path and finally §aclick§7 another component's output pin [right side].\n§aclick-drag§7 a trace vertex to move it.
 gui.rs_ctr.editor.info1=§7In general a circuit receives signals from external devices through its §6input sockets§7, performs some computations on them and produces one or more results that get send back to external devices through its §6output sockets§7. This is refered to as a §ecycle§7.\n\n§6Variables§7 allow a circuit to remember information across cycles. They consist of a §6write§7 component that receives a value in one cycle and a matching [same label] §6read§7 component that spits it out again one cycle later. The read component also defines the variable's initial value. \n\n§7Normally a new cycle gets evaluated with one tick delay after an input or a variable changed its value. But you can set individual §6variable write§7s or §6input§7s to not trigger a cycle if wanted.\n§7§oNote\: changing variable values manually through the Debugger or the processor's status interface won't trigger a cycle.
@@ -181,7 +182,9 @@ gui.rs_ctr.error4=§4invalid identifier
 gui.rs_ctr.error5=§4duplicate variable declaration
 gui.rs_ctr.error6=§4conflicting writes on same variable
 gui.rs_ctr.error7=§4invalid value
-gui.rs_ctr.error32=§4missing Circuit Board
+gui.rs_ctr.error32=§4missing Processor
+gui.rs_ctr.error33=§4circuit too complex\n§4for given Processor
+gui.rs_ctr.error34=§4Processor doesn't\nsupport enough I/O
 gui.rs_ctr.error64=§6highly recommended\n§6to label your IO ports
 gui.rs_ctr.save_file=Export
 gui.rs_ctr.load_file=Import

@@ -89,7 +89,7 @@ public class CircuitEditor extends ModularGui {
 		new Progressbar(comps, 56, 2, 192, 239, 200, 10, Progressbar.PIXELS, ()-> this.tile.ingreds[4], 0, 112);
 		new Progressbar(comps, 56, 2, 192, 245, 200, 16, Progressbar.PIXELS, ()-> this.tile.ingreds[5], 0, 112);
 		new Tooltip(comps, 56, 16, 192, 232, "gui.rs_ctr.editor.ingreds", ()-> new Object[] {
-			this.tile.ingreds[0], this.tile.ingreds[3], this.tile.ingreds[1], this.tile.ingreds[4], this.tile.ingreds[2], this.tile.ingreds[5]
+			this.tile.ingreds[3], this.tile.ingreds[0], this.tile.ingreds[4], this.tile.ingreds[1], this.tile.ingreds[5], this.tile.ingreds[2]
 		});
 		this.compGroup = comps;
 		this.error = new GuiErrorMarker(this);

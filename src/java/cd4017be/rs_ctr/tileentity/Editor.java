@@ -3,8 +3,6 @@ package cd4017be.rs_ctr.tileentity;
 import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.INS_SET;
 
 import java.io.File;
-import java.util.HashMap;
-
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.GlitchSaveSlot;
@@ -15,12 +13,12 @@ import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
 import cd4017be.lib.tileentity.BaseTileEntity;
-import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.gui.CircuitEditor;
+import cd4017be.rs_ctr.item.ItemProcessor;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.editor.Schematic;
@@ -28,8 +26,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -43,18 +39,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInteractionHandler {
-
-	public static int CAPACITY = 256;
-	public static final HashMap<ItemKey, int[]> RECIPES = new HashMap<>();
-	static {
-		RECIPES.put(new ItemKey(new ItemStack(Items.REDSTONE)), new int[] {2, 0, 0});
-		RECIPES.put(new ItemKey(new ItemStack(Blocks.REDSTONE_BLOCK)), new int[] {18, 0, 0});
-		RECIPES.put(new ItemKey(new ItemStack(Items.GOLD_NUGGET)), new int[] {0, 0 ,2});
-		RECIPES.put(new ItemKey(new ItemStack(Items.GOLD_INGOT)), new int[] {0, 0, 18});
-		RECIPES.put(new ItemKey(new ItemStack(Blocks.GOLD_BLOCK)), new int[] {0, 0, 162});
-		RECIPES.put(new ItemKey(new ItemStack(Items.QUARTZ)), new int[] {0, 4, 0});
-		RECIPES.put(new ItemKey(new ItemStack(Blocks.QUARTZ_BLOCK)), new int[] {0, 16, 0});
-	}
 
 	public File lastFile;
 
@@ -117,65 +101,44 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 	public static final int
 		NO_CIRCUITBOARD = 32,
 		MISSING_RESOURCE = 33,
+		MISSING_IO = 34,
 		MISSING_IO_LABEL = 64;
 
 	void compile() throws InvalidSchematicException {
 		ItemStack stack = inventory;
-		if (stack.getItem() != Objects.processor)
+		if (!(stack.getItem() instanceof ItemProcessor))
 			throw new InvalidSchematicException(NO_CIRCUITBOARD, null, 0);
 		computeCost();
-		/*int[] cost = ingreds.clone(), ingr;
-		int n = stack.getCount();
-		if (stack.hasTagCompound())
-			ingr = Arrays.copyOf(stack.getTagCompound().getIntArray("ingr"), 3);
-		else ingr = new int[3];
+		ItemProcessor item = (ItemProcessor)stack.getItem();
+		NBTTagCompound nbt = stack.getTagCompound();
+		if (nbt == null) stack.setTagCompound(nbt = new NBTTagCompound());
+		int[] cmplx = new int[3];
+		item.loadStats(stack, cmplx);
 		for (int i = 0; i < 3; i++)
-			if (cost[i] < (cost[i+3] -= ingr[i]) * n)
+			if (cmplx[i] < ingreds[i + 3])
 				throw new InvalidSchematicException(MISSING_RESOURCE, null, i);
-		*/
 		CompiledCircuit cc = CircuitCompiler.INSTANCE.compile(schematic.operators);
-		NBTTagCompound nbt = cc.serializeNBT();
-		/*for (int i = 0, c; i < 3; i++)
-			if ((c = cost[i + 3]) > 0) {
-				ingr[i] += c;
-				ingreds[i] -= c * n;
-			}
-		nbt.setIntArray("ingr", ingr);*/
+		if (cc.inputs.length > item.maxInPorts(stack))
+			throw new InvalidSchematicException(MISSING_IO, null, 0);
+		if (cc.outputs.length > item.maxOutPorts(stack))
+			throw new InvalidSchematicException(MISSING_IO, null, 1);
+		nbt.merge(cc.serializeNBT());
 		nbt.setString("name", name);
-		stack.setTagCompound(nbt);
+		markDirty(SAVE);
 		if (cc.compileWarning != null) throw cc.compileWarning;
 	}
 
 	private void putItem(ItemStack stack, int slot) {
 		inventory = stack;
-		int n = stack.getCount();
-		if (world.isRemote || n <= 0) return;
+		if (world.isRemote) return;
 		ingreds[6] = InvalidSchematicException.NO_ERROR;
-		markDirty();
-		if (stack.getItem() == Objects.circuitboard && stack.hasTagCompound()) {
-			NBTTagCompound nbt = stack.getTagCompound();
-			int[] ig = nbt.getIntArray("ingr");
-			boolean empty = false;
-			for (int i = 0; i < 3; i++) {
-				int x = ig[i], d = (CAPACITY - ingreds[i]) / n;
-				if (x > 0 && d > 0) {
-					if (d > x) d = x;
-					ig[i] = x -= d;
-					ingreds[i] += d * n;
-				}
-				empty |= x <= 0;
-			}
-			if (empty) stack.setTagCompound(null);
-			else nbt.getKeySet().removeIf((key)-> !key.equals("ingr"));
-		} else {
-			int[] c = RECIPES.get(new ItemKey(stack));
-			if (c == null) return;
-			for (int i = 0; i < 3; i++)
-				if (CAPACITY - ingreds[i] < c[i] * n) return;
-			for (int i = 0; i < 3; i++)
-				ingreds[i] += c[i] * n;
-			inventory = ItemStack.EMPTY;
+		ingreds[0] = ingreds[1] = ingreds[2] = 0;
+		if (stack.getItem() == Objects.processor && stack.hasTagCompound()) {
+			int[] cmplx = stack.getTagCompound().getIntArray("cmplx");
+			for (int i = Math.min(cmplx.length, 3) - 1; i >= 0; i--)
+				ingreds[i] = cmplx[i];
 		}
+		markDirty(SAVE);
 	}
 
 	@Override

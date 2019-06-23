@@ -50,6 +50,7 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 		Gate<?> node = lastErr.gate;
 		int px, py;
 		switch(lastErr.errcode) {
+		case Editor.MISSING_IO:
 		case Editor.NO_CIRCUITBOARD:
 			px = 182;
 			py = 240;

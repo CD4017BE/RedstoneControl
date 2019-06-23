@@ -118,7 +118,7 @@ public class Objects {
 				new BaseItemBlock(BIN_COMB),
 				new BaseItemBlock(BIN_SPLIT),
 				new ItemWireAnchor(WIRE_ANCHOR),
-				new ItemProcessor(PROCESSOR),
+				new ItemProcessor(PROCESSOR, 6, 6),
 				new BaseItemBlock(EDITOR),
 				new BaseItemBlock(COMPARATOR),
 				new BaseItemBlock(ENERGY_READER),
