@@ -97,9 +97,10 @@ port.rs_ctr.bins4=16bit -> 4x4bit
 port.rs_ctr.bins8=32bit -> 4x8bit
 port.rs_ctr.clk=Clock IN
 port.rs_ctr.bi=Block IN
-port.rs_ctr.clock=�? %.2fs
+port.rs_ctr.clock=⎍ %.2fs
 port.rs_ctr.energy1=Industrialcraft EU
 port.rs_ctr.energy0=Forge Energy\nRedstone Flux
+port.rs_ctr.energy_i=Energy IN
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d
@@ -190,3 +191,4 @@ gui.rs_ctr.error64=§6highly recommended\n§6to label your IO ports
 gui.rs_ctr.save_file=Export
 gui.rs_ctr.load_file=Import
 gui.rs_ctr.processor.run=manually trigger cycle
+gui.rs_ctr.processor.power=Redstone exhaustion\:\n§e%.0f %%

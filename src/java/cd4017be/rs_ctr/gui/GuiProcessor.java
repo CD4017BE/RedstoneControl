@@ -4,6 +4,7 @@ import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.FormatText;
 import cd4017be.lib.Gui.comp.GuiFrame;
+import cd4017be.lib.Gui.comp.Progressbar;
 import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
@@ -28,7 +29,8 @@ public class GuiProcessor extends ModularGui {
 	public GuiProcessor(Processor tile, EntityPlayer player) {
 		super(tile.getContainer(player, 0));
 		GuiFrame comps = new GuiFrame(this, 168, 24, 3).background(TEX, 0, 90).title(tile.getName(), 0.5F);
-		new FormatText(comps, 116, 7, 8, 16, "\\%s", ()-> new Object[] {tile.getError()});
+		new FormatText(comps, 80, 7, 8, 16, "\\%s", ()-> new Object[] {tile.getError()});
+		new Progressbar(comps, 36, 7, 88, 16, 186, 249, Progressbar.H_FILL, ()-> (double)(tile.cap - tile.energy) / (double)tile.cap * 100D, 0, 100).tooltip("gui.rs_ctr.processor.power");
 		new Button(comps, 18, 9, 125, 15, 0, ()-> tile.tick, (i)-> sendPkt((byte)-1)).texture(168, 148).tooltip("gui.rs_ctr.processor.run");
 		this.state = StateEditor.of(comps, tile.circuit, tile.getIOLabels(), 12, this::updateVar, false);
 		state.move(0, 24);

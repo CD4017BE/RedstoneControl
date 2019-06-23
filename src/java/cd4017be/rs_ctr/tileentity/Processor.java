@@ -17,6 +17,7 @@ import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.api.DelayedSignal;
+import cd4017be.rs_ctr.api.com.EnergyHandler;
 import cd4017be.rs_ctr.api.com.SignalHandler;
 import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
@@ -65,7 +66,9 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	}.setSize(0.25F, 0.25F);
 	public Circuit circuit;
 	SignalHandler[] callbacks;
-	private long burnoutTime = -1;
+	EnergyHandler energySup;
+	private long lastTick = 0;
+	public int energy, cap, usage, gain;
 	public byte tick;
 	public String lastError;
 	DelayedSignal delayed;
@@ -77,9 +80,20 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public void process() {
 		tick = 0;
 		if (unloaded) return;
-		if (burnoutTime > 0) {
-			if (burnoutTime > world.getTotalWorldTime()) return;
-			burnoutTime = -1;
+		{
+			long t = world.getTotalWorldTime();
+			if (lastTick > t) return;
+			int e = energy - usage + (int)(t - lastTick) * gain;
+			if (e >= 0) energy = e <= cap ? e : cap;
+			else if (energySup != null && (e -= energySup.changeEnergy(e - cap, false)) >= 0) energy = e;
+			else {
+				doBurnout(false);
+				lastError = "power depleted";
+				energy = e + usage + BURNOUT_INTERVAL * gain;
+				markDirty(SYNC);
+				return;
+			}
+			lastTick = t;
 		}
 		try {
 			int d = circuit.tick();
@@ -119,7 +133,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			double d2 = (double)pos.getZ() + rand.nextDouble() * 0.6D + 0.2D;
 			world.spawnParticle(hard ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL, d0, d1, d2, 0.0D, 0.0D, 0.0D);
 		}
-		burnoutTime = hard ? Long.MAX_VALUE : world.getTotalWorldTime() + BURNOUT_INTERVAL;
+		lastTick = hard ? Long.MAX_VALUE : world.getTotalWorldTime() + BURNOUT_INTERVAL;
 	}
 
 	@Override
@@ -141,11 +155,15 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		SignalHandler scb = callback instanceof SignalHandler ? (SignalHandler)callback : null;
-		pin -= circuit.inputs.length;
-		callbacks[pin] = scb;
-		if (scb != null)
-			scb.updateSignal(circuit.outputs[pin]);
+		if (pin == ports.length - 1)
+			energySup = callback instanceof EnergyHandler ? (EnergyHandler)callback : null;
+		else {
+			SignalHandler scb = callback instanceof SignalHandler ? (SignalHandler)callback : null;
+			pin -= circuit.inputs.length;
+			callbacks[pin] = scb;
+			if (scb != null)
+				scb.updateSignal(circuit.outputs[pin]);
+		}
 	}
 
 	@Override
@@ -166,12 +184,14 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			nbt.setIntArray("stats", stats);
 			if (mode != CLIENT)
 				nbt.setTag("ingr", ItemFluidUtil.saveItems(ingreds));
+			if (mode != ITEM)
+				nbt.setInteger("energy", energy);
 		} else if (mode == SYNC) {
 			if (lastError != null)
 				nbt.setString("err", lastError);
 		}
 		if (mode == SAVE) {
-			nbt.setLong("burnout", burnoutTime);
+			nbt.setLong("burnout", lastTick);
 			nbt.setBoolean("active", tick != 0);
 		}
 	}
@@ -182,10 +202,11 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			circuit = mode == ITEM ? new CompiledCircuit() : new UnloadedCircuit();
 			circuit.deserializeNBT(nbt);
 			NBTTagList names = nbt.getTagList("labels", NBT.TAG_STRING);
-			int in = circuit.inputs.length, out = circuit.outputs.length;
-			ports = new MountedSignalPort[in + out];
-			for (int i = 0; i < ports.length; i++)
+			int in = circuit.inputs.length, out = circuit.outputs.length + in;
+			ports = new MountedSignalPort[out + 1];
+			for (int i = 0; i < out; i++)
 				ports[i] = new MountedSignalPort(this, i, SignalHandler.class, i >= in).setName("\\" + names.getStringTagAt(i));
+			ports[out] = new MountedSignalPort(this, out, EnergyHandler.class, true).setName("port.rs_ctr.energy_i");
 			name = nbt.getString("name");
 			keys = circuit.getState().nbt.getKeySet().toArray(keys);
 			Arrays.sort(keys);
@@ -193,12 +214,16 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			System.arraycopy(arr, 0, stats, 0, Math.min(arr.length, stats.length));}
 			if (mode != CLIENT)
 				ingreds = ItemFluidUtil.loadItems(nbt.getTagList("ingr", NBT.TAG_COMPOUND));
+			energy = nbt.getInteger("energy");
+			usage = stats[4];
+			gain = stats[5];
+			cap = stats[6];
 		} else if (mode == SYNC) {
 			lastError = nbt.hasKey("err", NBT.TAG_STRING) ? nbt.getString("err") : null;
 		}
 		super.loadState(nbt, mode);
 		if (mode == SAVE) {
-			burnoutTime = nbt.getLong("burnout");
+			lastTick = nbt.getLong("burnout");
 			tick = (byte)(nbt.getBoolean("active") ? 1 : 0);
 		}
 	}
@@ -227,12 +252,14 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		coreBtn.setLocation(0.5, 0.5, 0.4375, o);
 		int in = circuit.inputs.length, out = circuit.outputs.length;
 		int oin = (4 - in) >> 1, oout = ((4 - out) >> 1) - in;
-		for (int i = 0; i < ports.length; i++) {
+		out += in;
+		for (int i = 0; i < out; i++) {
 			int j = i + (i < in ? oin : oout);
 			int k = j < 0 ? 0 : j > 3 ? 3 : j;
 			j = k > j ? k - j : j - k;
 			ports[i].setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.875 - k * 0.25, 0.25, EnumFacing.SOUTH, o);
 		}
+		ports[out].setLocation(0.5, 1.0, 0.125, EnumFacing.UP, o);
 	}
 
 	@Override
@@ -241,6 +268,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (nbt == null) return;
 		clearData();
 		loadState(nbt, ITEM);
+		energy = cap;
+		lastTick = world.getTotalWorldTime();
 		tick = 1;
 		setupData();
 	}
@@ -260,7 +289,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	}
 
 	public String[] getIOLabels() {
-		String[] io = new String[ports.length];
+		String[] io = new String[ports.length - 1];
 		for (int i = 0; i < io.length; i++)
 			io[i] = ports[i].name.substring(1);
 		return io;
@@ -269,7 +298,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	@Override
 	public AdvancedContainer getContainer(EntityPlayer player, int id) {
 		return new AdvancedContainer(this, StateSynchronizer.builder()
-				.addFix(1)
+				.addFix(1, 4)
 				.addMulFix(4, circuit.inputs.length + circuit.outputs.length)
 				.addVar(keys.length)
 				.build(world.isRemote), player);
@@ -277,7 +306,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public void writeState(StateSyncServer state, AdvancedContainer cont) {
-		state.writeInt(tick > 0 ? 1 : 0);
+		state.writeInt(tick > 0 ? 1 : 0).writeInt(Math.min(cap, energy + (int)(world.getTotalWorldTime() - lastTick - 1) * gain));
 		state.writeIntArray(circuit.inputs).writeIntArray(circuit.outputs).endFixed();
 		NBTTagCompound nbt = circuit.getState().nbt;
 		for (String key : keys) {
@@ -289,6 +318,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	@Override
 	public void readState(StateSyncClient state, AdvancedContainer cont) {
 		tick = (byte)state.get(tick);
+		energy = state.get(energy);
 		circuit.inputs = state.get(circuit.inputs);
 		circuit.outputs = state.get(circuit.outputs);
 		NBTTagCompound nbt = circuit.getState().nbt;

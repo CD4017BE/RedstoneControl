@@ -90,6 +90,7 @@ port.rs_ctr.bins8=32bit -> 4x8bit\n
 port.rs_ctr.clk=Takt EIN
 port.rs_ctr.bi=Block EIN
 port.rs_ctr.energy0=Forge-Energie\nRedstone-Flux
+port.rs_ctr.energy_i=Energie EIN
 
 gategroup.rs_ctr.io=Variablen & E/A
 gate.rs_ctr.in=Signaleingang\n§7Empfängt Signale von außen.
@@ -168,3 +169,4 @@ gui.rs_ctr.editor.save=Schaltung exportieren
 gui.rs_ctr.editor.new=Neue Schaltung\n§4Löscht das Board
 gui.rs_ctr.palette=Bauteilpalette
 gui.rs_ctr.processor.run=Zyklus manuell triggern
+gui.rs_ctr.processor.power=Redstone-Überlastung\:\n§e%.0f %%
