@@ -162,7 +162,6 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		cont.addItemSlot(new GlitchSaveSlot(inv, 0, 174, 232, false), false);
 		cont.addPlayerInventory(8, 174);
 		if (world.isRemote) schematic.modified = true;
-		else computeCost();
 		return cont;
 	}
 
@@ -214,8 +213,13 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 				ingreds[6] = e.compact();
 			} return;
 		case A_NAME: name = pkt.readString(64); return;
-		default: if (!schematic.handleUserInput(cmd, pkt)) return;
+		default:
+			if (!schematic.handleUserInput(cmd, pkt)) return;
+			if (cmd == Schematic.ADD_GATE || cmd == Schematic.REM_GATE) break;
+			markDirty(SYNC);
+			return;
 		}
+		computeCost();
 		markDirty(SYNC);
 	}
 
