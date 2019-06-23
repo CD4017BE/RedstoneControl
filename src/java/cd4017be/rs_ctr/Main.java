@@ -8,6 +8,7 @@ import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.lib.script.ScriptFiles.Version;
 import cd4017be.rs_ctr.api.signal.Link;
+import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -44,6 +45,7 @@ public class Main {
 	public void preInit(FMLPreInitializationEvent event) {
 		LOG = event.getModLog();
 		MinecraftForge.EVENT_BUS.register(proxy);
+		RecipeScriptContext.instance.modules.get("redstoneControl").assign("gate_cost", CircuitInstructionSet.INS_SET);
 		RecipeScriptContext.instance.run("redstoneControl.PRE_INIT");
 	}
 

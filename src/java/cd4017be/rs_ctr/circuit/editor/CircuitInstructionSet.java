@@ -4,6 +4,10 @@ import static org.objectweb.asm.Type.INT_TYPE;
 
 import org.objectweb.asm.Type;
 
+import cd4017be.lib.script.obj.Error;
+import cd4017be.lib.script.obj.IOperand;
+import cd4017be.lib.script.obj.Vector;
+import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.gates.Combinator;
 import cd4017be.rs_ctr.circuit.gates.ConstNum;
 import cd4017be.rs_ctr.circuit.gates.Input;
@@ -20,7 +24,7 @@ import static org.objectweb.asm.Opcodes.*;
  * @author CD4017BE
  *
  */
-public class CircuitInstructionSet extends InstructionSet {
+public class CircuitInstructionSet extends InstructionSet implements IOperand {
 
 	public static final CircuitInstructionSet INS_SET = new CircuitInstructionSet();
 	public static Category[] TABS;
@@ -83,18 +87,37 @@ public class CircuitInstructionSet extends InstructionSet {
 		return new BasicType(Combinator::new, name, 3, in < 3 ? in + 1 : in, in, out);
 	}
 
-	public final int[] OP_COSTS = new int[256];
+	public final char[] OP_COSTS = new char[256];
 
 	{
-		OP_COSTS[0] = OP_COSTS[1] = 0x01_00_04;
-		OP_COSTS[2] = 0x00_00_01;
-		OP_COSTS[3] = 0x02_00_04;
-		OP_COSTS[4] = 0x01_00_00;
-		for (int i = 5; i < OP_COSTS.length; i++)
-			OP_COSTS[i] = 0x02_00_00;
+		OP_COSTS[0] = OP_COSTS[1] = OP_COSTS[2] = OP_COSTS[4] = 0x00_01;
+		OP_COSTS[3] = 0x00_02;
+		for (int i = 16; i < 32; i++)
+			OP_COSTS[i] = 0x00_02;
+		for (int i = 32; i < 48; i++)
+			OP_COSTS[i] = 0x00_01;
+		for (int i = 48; i < 64; i++)
+			OP_COSTS[i] = 0x02_00;
 	}
 
 	public int getCost(GateType<?> t) {
 		return OP_COSTS[id(t)];
 	}
+
+	@Override
+	public boolean asBool() throws Error {return true;}
+
+	@Override
+	public Object value() {return this;}
+
+	@Override
+	public void put(IOperand idx, IOperand val) {
+		String key = idx.toString();
+		if (key.indexOf(':') < 0) key = Main.ID + ':' + key;
+		Integer id = IDS.get(key);
+		if (id == null || !(val instanceof Vector)) return;
+		double[] v = ((Vector)val).value;
+		OP_COSTS[id] = (char)((int)v[0] & 0xff | (int)v[1] << 8);
+	}
+
 }

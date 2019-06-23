@@ -42,8 +42,12 @@ public class GatePalette extends GuiFrame {
 		else {
 			GateType<?> t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
 			if (t != null)
-				drawTooltip(TooltipUtil.translate("gate." + t.name.replace(':', '.')), mx, my);
+				drawTooltip(getTooltip(t), mx, my);
 		}
+	}
+
+	protected String getTooltip(GateType<?> t) {
+		return TooltipUtil.translate("gate." + t.name.replace(':', '.'));
 	}
 
 	@Override

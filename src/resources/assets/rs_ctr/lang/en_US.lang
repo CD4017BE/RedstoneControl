@@ -102,6 +102,7 @@ port.rs_ctr.energy1=Industrialcraft EU
 port.rs_ctr.energy0=Forge Energy\nRedstone Flux
 
 #Circuit gates
+gate.cost=§8Complexity\: §c%d §b%d
 gategroup.rs_ctr.io=Variables & IO
 gate.rs_ctr.in=Input Socket\n§7receives external sinals
 gate.rs_ctr.out=Output Socket\n§7emits external signals

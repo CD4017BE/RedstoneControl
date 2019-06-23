@@ -18,6 +18,7 @@ import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.editor.Gate;
+import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GatePalette;
 import cd4017be.rscpl.gui.ISpecialCfg;
@@ -74,7 +75,13 @@ public class CircuitEditor extends ModularGui {
 		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.title");
 		(this.cfg = new GuiFrame(comps, 76, 18, 2)).position(173, 173);
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
-		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place)).title("gui.rs_ctr.palette", 0.5F);
+		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place) {
+			@Override
+			protected String getTooltip(GateType<?> t) {
+				int cost = CircuitInstructionSet.INS_SET.getCost(t);
+				return super.getTooltip(t) + "\n" + TooltipUtil.format("gate.cost", cost & 0xff, cost >> 8 & 0xff);
+			}
+		}).title("gui.rs_ctr.palette", 0.5F);
 		new Button(comps, 7, 7, 242, 191, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(241, 18).tooltip("gui.rs_ctr.editor.del");
 		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, this::togglePalette).texture(178, 0).tooltip("gui.rs_ctr.palette.open#");
 		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> sendCommand(A_NEW)).tooltip("gui.rs_ctr.editor.new");

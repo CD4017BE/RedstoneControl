@@ -9,8 +9,8 @@ import java.util.Map;
  */
 public class InstructionSet {
 
-	private final Map<String, Integer> IDS = new HashMap<>();
-	private final GateType<?>[] REGISTRY = new GateType[256];
+	protected final Map<String, Integer> IDS = new HashMap<>();
+	protected final GateType<?>[] REGISTRY = new GateType[256];
 
 	public void add(int id0, GateType<?>... types) {
 		for (GateType<?> t : types) {

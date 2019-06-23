@@ -1,11 +1,53 @@
-VERSION = 21;
+VERSION = 22;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
 max_wire_length = 16;
 max_probe_lenght = 8;
 
+PRE_INIT() {
+	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
+	Loc c = gate_cost;
+	Loc base = [1, 0]#, base2 = [2, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
+	!variables & IO tab:
+	c:"in" = base;
+	c:"out" = base;
+	c:"read" = base;
+	c:"write" = base2;
+	c:"i_cst" = base;
+	!logic tab:
+	c:"not" = base;
+	c:"or" = base2;
+	c:"nor" = base2;
+	c:"and" = base2;
+	c:"nand" = base2;
+	c:"xor" = [3, 0]#;
+	c:"xnor" = [3, 0]#;
+	!comparator tab:
+	c:"not0" = base;
+	c:"is0" = base;
+	c:"psgn" = base;
+	c:"nsgn" = base;
+	c:"eq" = adv;
+	c:"neq" = adv;
+	c:"ls" = adv;
+	c:"geq" = adv;
+	!arithmetic tab:
+	c:"inc" = adv;
+	c:"dec" = adv;
+	c:"neg" = adv;
+	c:"abs" = [1, 1]#;
+	c:"add" = adv2;
+	c:"sub" = adv2;
+	c:"mul" = [0, 3]#;
+	c:"div" = [0, 4]#;
+	c:"mod" = [0, 4]#;
+	c:"max" = [2, 1]#;
+	c:"min" = [2, 1]#;
+}
+
 INIT() {
+	!crafting recipes
 	Loc slab = it("minecraft:stone_slab");
 	add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf")); !WIP
 	add("shaped", it("tile.processor"), "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone"); !WIP
