@@ -3,6 +3,8 @@ package cd4017be.rs_ctr.tileentity;
 import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.INS_SET;
 
 import java.io.File;
+import java.util.HashMap;
+
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.GlitchSaveSlot;
@@ -22,6 +24,7 @@ import cd4017be.rs_ctr.item.ItemProcessor;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.editor.Schematic;
+import cd4017be.rscpl.graph.NamedOp;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
@@ -85,17 +88,21 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 	}
 
 	private void computeCost() {
-		int a = 0, b = 0, c = 0;
+		int a = 0, b = 0;
+		HashMap<String, Integer> vars = new HashMap<>();
 		for (Gate<?> op : schematic.operators)
 			if (op != null) {
 				int i = INS_SET.getCost(op.type);
-				a += i >> 16 & 0xff;
+				a += i & 0xff;
 				b += i >> 8 & 0xff;
-				c += i & 0xff;
+				if (op instanceof NamedOp)
+					vars.merge(((NamedOp)op).name(), ((NamedOp)op).memoryUsage(), (o, n)-> n > o ? n : o);
 			}
 		ingreds[3] = a;
 		ingreds[4] = b;
-		ingreds[5] = c;
+		a = 0;
+		for (int v : vars.values()) a += v;
+		ingreds[5] = a;
 	}
 
 	public static final int

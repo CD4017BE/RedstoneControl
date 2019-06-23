@@ -15,4 +15,9 @@ public interface ArrayVar extends ReadOp {
 		return Array.getLength(getValue());
 	}
 
+	@Override
+	default int memoryUsage() {
+		return NamedOp.memoryUsage(outType().getElementType()) * size();
+	}
+
 }
