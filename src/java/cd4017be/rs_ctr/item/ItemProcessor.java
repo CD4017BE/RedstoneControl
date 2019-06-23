@@ -9,9 +9,11 @@ import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.TooltipUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,6 +32,17 @@ public class ItemProcessor extends BaseItemBlock {
 		super(id);
 		this.maxIn = in;
 		this.maxOut = out;
+	}
+
+	@Override
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+		if (isInCreativeTab(tab)) {
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setIntArray("stats", new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0});
+			ItemStack stack = new ItemStack(this);
+			stack.setTagCompound(nbt);
+			items.add(stack);
+		}
 	}
 
 	@Override

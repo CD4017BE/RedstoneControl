@@ -49,8 +49,7 @@ PRE_INIT() {
 INIT() {
 	!crafting recipes
 	Loc slab = it("minecraft:stone_slab");
-	add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf")); !WIP
-	add("shaped", it("tile.processor"), "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone"); !WIP
+	add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf"));
 	add("shaped", 2 * it("tile.rs_port"):0, "0/1", "dustRedstone", slab);
 	add("shaped", 2 * it("tile.rs_port"):1, "0/1", it("minecraft:redstone_torch"), slab);
 	add("shaped", 8 * it("tile.wire_anchor"), "0/0", it("minecraft:iron_bars"));
@@ -71,6 +70,10 @@ INIT() {
 	add("shaped", it("item.tag"), "0/1", it("item.wire"), it("minecraft:name_tag"));
 	add("shaped", 4 * it("item.block_wire"), "10 /020/ 01", it("item.wire"), "gemQuartz", "gemLapis");
 	add("shaped", it("item.clock"), "0/1", it("item.wire"), it("minecraft:clock"));
+	Loc tag = nbt(); tag:"Istats" = [24, 16, 12, 0]#; !prototype processor
+	add("shaped", it("tile.processor") + tag, "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone");
+	tag = nbt(); tag:"Istats" = [0, 0, 0, 64]#; !empty processor
+	add("shaped", it("tile.processor") + tag, "0 1/0 1/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	moddedRecipes();
 }
 
@@ -93,6 +96,7 @@ moddedRecipes() {
 		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, it("minecraft:paper"), it("item.wire"));
 	}
 	if (hasmod("opencomputers")) {
-		add("shaped", it("tile.processor"), "0 1/021/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1, it("opencomputers:component"):0);
+		Loc tag = nbt(); tag:"Istats" = [32, 32, 24, 0]#; !advanced prototype processor
+		add("shaped", it("tile.processor") + tag, "0 1/021/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1, it("opencomputers:component"):0);
 	}
 }

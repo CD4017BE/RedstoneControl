@@ -140,9 +140,10 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		if (world.isRemote) return;
 		ingreds[6] = InvalidSchematicException.NO_ERROR;
 		ingreds[0] = ingreds[1] = ingreds[2] = 0;
-		if (stack.getItem() == Objects.processor && stack.hasTagCompound()) {
-			int[] cmplx = stack.getTagCompound().getIntArray("cmplx");
-			for (int i = Math.min(cmplx.length, 3) - 1; i >= 0; i--)
+		if (stack.getItem() instanceof ItemProcessor) {
+			int[] cmplx = new int[3];
+			((ItemProcessor)stack.getItem()).loadStats(stack, cmplx);
+			for (int i = 0; i < 3; i++)
 				ingreds[i] = cmplx[i];
 		}
 		markDirty(SAVE);
