@@ -67,7 +67,7 @@ public class Objects {
 	public static final BaseItemBlock item_reader = null;
 
 	//Items
-	public static final ItemWireCon wire = null;
+	public static final ItemWireCon wire = null, wire_e = null;
 	public static final ItemWirelessCon wireless = null;
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
@@ -125,6 +125,7 @@ public class Objects {
 				new BaseItemBlock(FLUID_READER),
 				new BaseItemBlock(ITEM_READER),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
+				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),

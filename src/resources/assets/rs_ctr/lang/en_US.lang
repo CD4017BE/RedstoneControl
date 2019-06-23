@@ -62,6 +62,8 @@ item.rs_ctr.block_wire.name=Block Probe Wire
 item.rs_ctr.block_wire.tip=Used to connect block faces to devices like Sensors, etc.
 item.rs_ctr.clock.name=Clock Plug
 item.rs_ctr.clock.tip=Emits a continuous square-wave singal into the port it's attached to. Switching between §e65535§7 and §e0§7.\n§aUse§7 in air configure pulse width and phase.\n§oAll clocks in the world are synchronized.
+item.rs_ctr.wire_e.name=Energy Wire
+item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 connects signal ports.\n§oConsumes 1 item per block of straight distance between ports.
 
 #Signal port names
 port.rs_ctr.rsR=Read

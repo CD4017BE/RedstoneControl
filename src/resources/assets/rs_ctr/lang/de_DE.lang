@@ -55,6 +55,8 @@ item.rs_ctr.block_wire.name=Blockreferenzkabel
 item.rs_ctr.block_wire.tip=Wird benutzt um Blockseiten an Geräte wie Sensoren anzuschließen.
 item.rs_ctr.clock.name=Taktgeberstecker
 item.rs_ctr.clock.tip=Gibt ein kontinuierliches Rechtecksignal in den Anschluss aus, in den er gesteckt ist. Signal wechselt zwischen §e65535§7 und §e0§7.\n§aBenutze§7 in die Luft um Pulsbreite und Phase einzustellen.\n§oAlle Taktgeber in einer Welt sind miteinander synchronisiert.
+item.rs_ctr.wire_e.name=Energiekabel
+item.rs_ctr.wire_e.tip=Verbindet Energieanschlüsse nach dem gleichen Prinzip, wie das §6Signalkabel§7 Signalanschlüsse verbindet.\n§oVerbraucht 1 Kabel pro Block geradliniger Distanz.
 
 #Signalanschluss namen
 port.rs_ctr.rsR=Lesen
