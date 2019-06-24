@@ -1,0 +1,12 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"particle": "rs_ctr:blocks/assembler_top",
+        "up": "rs_ctr:blocks/assembler_top",
+		"north": "rs_ctr:blocks/assembler_side",
+		"down": "rs_ctr:blocks/assembler_bot",
+		"south": "rs_ctr:blocks/assembler_bot",
+		"west": "rs_ctr:blocks/assembler_bot",
+		"east": "rs_ctr:blocks/assembler_bot"
+    }
+}

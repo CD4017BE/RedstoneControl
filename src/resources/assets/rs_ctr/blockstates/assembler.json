@@ -1,0 +1,9 @@
+{
+    "variants": {
+        "orient=n": { "model": "rs_ctr:assembler" },
+		"orient=e": { "model": "rs_ctr:assembler" , "y": 90 },
+		"orient=s": { "model": "rs_ctr:assembler" , "y": 180 },
+		"orient=w": { "model": "rs_ctr:assembler" , "y": 270 },
+		"inventory": { "model": "rs_ctr:assembler" }
+    }
+}
