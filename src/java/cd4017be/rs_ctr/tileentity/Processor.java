@@ -55,7 +55,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public static int BURNOUT_INTERVAL = 50;
 
 	ItemStack[] ingreds = new ItemStack[0];
-	int[] stats = new int[7];
+	int[] stats = new int[6];
 	String name = "";
 	BlockButton coreBtn = new BlockButton(null, ()-> null, ()-> name + "\n" + getError()) {
 		@Override
@@ -80,9 +80,9 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public void process() {
 		tick = 0;
 		if (unloaded) return;
-		{
-			long t = world.getTotalWorldTime();
-			if (lastTick > t) return;
+		long t = world.getTotalWorldTime();
+		if (lastTick > t) return;
+		if (usage > 0) {
 			int e = energy - usage + (int)(t - lastTick) * gain;
 			if (e >= 0) energy = e <= cap ? e : cap;
 			else if (energySup != null && (e -= energySup.changeEnergy(e - cap, false)) >= 0) energy = e;
@@ -93,8 +93,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 				markDirty(SYNC);
 				return;
 			}
-			lastTick = t;
 		}
+		lastTick = t;
 		try {
 			int d = circuit.tick();
 			for (; delayed != null; delayed = delayed.next, d |= 1)
@@ -215,9 +215,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			if (mode != CLIENT)
 				ingreds = ItemFluidUtil.loadItems(nbt.getTagList("ingr", NBT.TAG_COMPOUND));
 			energy = nbt.getInteger("energy");
-			usage = stats[4];
-			gain = stats[5];
-			cap = stats[6];
+			gain = stats[4];
+			cap = stats[5];
+			if ((usage = stats[0] + stats[1]) < gain)
+				usage = 0;
 		} else if (mode == SYNC) {
 			lastError = nbt.hasKey("err", NBT.TAG_STRING) ? nbt.getString("err") : null;
 		}
