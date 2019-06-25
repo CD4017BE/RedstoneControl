@@ -47,6 +47,20 @@ PRE_INIT() {
 }
 
 INIT() {
+	!add("circuitMat", <item>, baseCmp, advCmp, memory, -size, gain, cap);
+	add("circuitMat", ore("dustRedstone"),   2,  0,  0,  -2,  1,  8); !1.0  cmp/size, 0.5 gain/cmp, 2.0  cmp/it
+	add("circuitMat", ore("blockRedstone"), 16,  0,  0, -24, 16, 64); !0.67 cmp/size, 1.0 gain/cmp, 1.78 cmp/it
+	add("circuitMat", ore("gemQuartz"),      0,  4,  0,  -4,  2,  8); !1.0  cmp/size, 0.5 gain/cmp, 4.0  cmp/it
+	add("circuitMat", ore("blockQuartz"),    0, 12,  0, -16, 12, 24); !0.75 cmp/size, 1.0 gain/cmp, 3.0  cmp/it
+	add("circuitMat", ore("nuggetIron"),     0,  0,  1,  -1,  0,  0); !1.0  mem/size, 9.0  mem/ing
+	add("circuitMat", ore("ingotIron"),      0,  0,  8,  -6,  0,  0); !1.33 mem/size, 8.0  mem/ing
+	add("circuitMat", ore("blockIron"),      0,  0, 48, -30,  0,  0); !1.6  mem/size, 5.33 mem/ing
+	add("circuitMat", ore("dustGlowstone"),  0,  0,  0,  -1,  2,  1); !2.0 gain/size, 2.0  gain/it
+	add("circuitMat", ore("blockGlowstone"), 0,  0,  0,  -2,  5,  2); !2.5 gain/size, 1.25 gain/it
+	add("circuitMat", it("minecraft:redstone_torch"), 3, 0, 0, -2, 1, 4); !1.5 cmp/size, 0.33 gain/cmp, 3.0 cmp/it
+	add("circuitMat", it("minecraft:repeater"), 8, 0, 1, -4,  2,  8); !2.0 cmp/size, 0.25 gain/cmp, 2.67 cmp/it(rs)
+	add("circuitMat", it("minecraft:comparator"), 0, 8, 0, -4, 2, 8); !2.0 cmp/size, 0.25 gain/cmp, 2.0 cmp/it(rs)
+	
 	!crafting recipes
 	Loc slab = it("minecraft:stone_slab");
 	add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf"));
@@ -70,9 +84,9 @@ INIT() {
 	add("shaped", it("item.tag"), "0/1", it("item.wire"), it("minecraft:name_tag"));
 	add("shaped", 4 * it("item.block_wire"), "10 /020/ 01", it("item.wire"), "gemQuartz", "gemLapis");
 	add("shaped", it("item.clock"), "0/1", it("item.wire"), it("minecraft:clock"));
-	Loc tag = nbt(); tag:"Istats" = [24, 16, 12, 0]#; !prototype processor
-	add("shaped", it("tile.processor") + tag, "021/031/021", it("tile.rs_port"):0, it("tile.rs_port"):1, slab:7, "blockRedstone");
-	tag = nbt(); tag:"Istats" = [0, 0, 0, 64]#; !empty processor
+	Loc tag = nbt(); tag:"Istats" = [16, 12, 8, 12, 28, 88]#; !prototype processor (eqivalent to assembly with same materials except less remaining space)
+	add("shaped", it("tile.processor") + tag, "021/041/031", it("tile.rs_port"):0, it("tile.rs_port"):1, "blockQuartz", "blockRedstone", "ingotIron");
+	tag = nbt(); tag:"Istats" = [0, 0, 0, 64, 0, 0]#; !empty processor (64 component space)
 	add("shaped", it("tile.processor") + tag, "0 1/0 1/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	moddedRecipes();
 }

@@ -1,7 +1,6 @@
 package cd4017be.rs_ctr.tileentity;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -20,9 +19,9 @@ import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
 import cd4017be.lib.tileentity.BaseTileEntity;
-import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
+import static cd4017be.rs_ctr.CommonProxy.*;
 import cd4017be.rs_ctr.item.ItemProcessor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,7 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.SlotItemHandler;
 
 
 /**
@@ -41,14 +39,6 @@ import net.minecraftforge.items.SlotItemHandler;
  *
  */
 public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest, Supplier<Object[]> {
-
-	public static final int[] NULL = new int[6];
-	public static final HashMap<ItemKey, int[]> MATERIALS = new HashMap<>();
-
-	public static int[] get(ItemStack stack) {
-		int[] e = MATERIALS.get(new ItemKey(stack));
-		return e == null ? NULL : e;
-	}
 
 	public final Inventory inv = new Inventory();
 	public final BasicInventory buff = new BasicInventory(6);
@@ -78,10 +68,12 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 	public AdvancedContainer getContainer(EntityPlayer player, int id) {
 		AdvancedContainer cont = new AdvancedContainer(this, ssb.build(world.isRemote), player);
 		cont.addItemSlot(new GlitchSaveSlot(inv, 0, 80, 34, false), false);
+		int[] range = new int[] {4, 10};
 		for (int i = 0; i < 3; i++)
-			cont.addItemSlot(new GlitchSaveSlot(inv, i + 1, 53, 16 + i * 18, false), false);
+			cont.addItemSlot(new GlitchSaveSlot(inv, i + 1, 53, 16 + i * 18, false).setTarget(range), false);
+		range = new int[] {1, 3};
 		for (int i = 0; i < 6; i++)
-			cont.addItemSlot(new SlotItemHandler(buff, i, 8 + (i&1) * 18, 16 + (i>>1) * 18), false);
+			cont.addItemSlot(new GlitchSaveSlot(buff, i, 8 + (i&1) * 18, 16 + (i>>1) * 18, true).setTarget(range), false);
 		cont.addPlayerInventory(8, 86);
 		return cont;
 	}
@@ -147,7 +139,7 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 			if (slot > 0) {
 				ingreds[slot - 1] = stack;
 				if (item == null) return;
-				int[] s = get(stack), main = stats[0], old = stats[slot];
+				int[] s = getStats(stack), main = stats[0], old = stats[slot];
 				int n = stack.getCount();
 				for (int i = 0; i < main.length; i++) {
 					int j = s[i] * n;
@@ -166,7 +158,7 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 					item.loadStats(stack, stats[0]);
 					item.loadIngredients(stack, ingreds);
 					for (int i = 0; i < ingreds.length; i++) {
-						int[] s = get(ingreds[i]), old = stats[i + 1];
+						int[] s = getStats(ingreds[i]), old = stats[i + 1];
 						int n = ingreds[i].getCount();
 						for (int j = 0; j < old.length; j++)
 							old[j] = s[j] * n;
@@ -189,7 +181,7 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 		public int insertAm(int slot, ItemStack item) {
 			if (slot == 0) return item.getItem() instanceof ItemProcessor ? 1 : 0;
 			if (item == null) return 0;
-			int[] s = get(item);
+			int[] s = getStats(item);
 			if (s == NULL) return 0;
 			int n = s[3];
 			if (n >= 0) return item.getMaxStackSize();
