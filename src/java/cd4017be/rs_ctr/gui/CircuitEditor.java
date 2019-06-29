@@ -89,9 +89,9 @@ public class CircuitEditor extends ModularGui {
 		new Button(comps, 16, 16, 196, 210, 0, null, this::save).tooltip("gui.rs_ctr.editor.save");
 		new Button(comps, 16, 16, 174, 210, 0, null, this::compile).tooltip("gui.rs_ctr.editor.compile");
 		
-		new Progressbar(comps, 56, 4, 192, 232, 200, 0, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[0], 112), 0, 112);
-		new Progressbar(comps, 56, 4, 192, 238, 200, 6, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[1], 112), 0, 112);
-		new Progressbar(comps, 56, 4, 192, 244, 200, 12, Progressbar.H_SLIDE, ()-> Math.min(this.tile.ingreds[2], 112), 0, 112);
+		new Progressbar(comps, 56, 4, 192, 232, 200, 0, Progressbar.H_FILL_R, ()-> Math.min(this.tile.ingreds[0], 112), 0, 112);
+		new Progressbar(comps, 56, 4, 192, 238, 200, 6, Progressbar.H_FILL_R, ()-> Math.min(this.tile.ingreds[1], 112), 0, 112);
+		new Progressbar(comps, 56, 4, 192, 244, 200, 12, Progressbar.H_FILL_R, ()-> Math.min(this.tile.ingreds[2], 112), 0, 112);
 		new Progressbar(comps, 56, 2, 192, 233, 200, 4, Progressbar.PIXELS, ()-> this.tile.ingreds[3], 0, 112);
 		new Progressbar(comps, 56, 2, 192, 239, 200, 10, Progressbar.PIXELS, ()-> this.tile.ingreds[4], 0, 112);
 		new Progressbar(comps, 56, 2, 192, 245, 200, 16, Progressbar.PIXELS, ()-> this.tile.ingreds[5], 0, 112);
