@@ -4,10 +4,13 @@ import cd4017be.api.recipes.RecipeScriptContext;
 
 import java.util.HashMap;
 
+import cd4017be.api.recipes.ItemOperand;
 import cd4017be.api.recipes.RecipeAPI;
 import cd4017be.api.recipes.RecipeAPI.IRecipeHandler;
 import cd4017be.lib.script.Parameters;
+import cd4017be.lib.script.obj.IOperand;
 import cd4017be.lib.util.ItemKey;
+import cd4017be.lib.util.OreDictStack;
 import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.signal.BlockProbe;
@@ -39,13 +42,17 @@ public class CommonProxy implements IRecipeHandler {
 
 	@Override
 	public void addRecipe(Parameters param) {
-		ItemKey key = new ItemKey(param.get(1, ItemStack.class));
 		double[] arr = param.getVectorOrAll(2);
 		int[] stats = new int[NULL.length];
 		int n = Math.min(arr.length, stats.length);
 		for (int i = 0; i < n; i++)
 			stats[i] = (int)arr[i];
-		MATERIALS.put(key, stats);
+		IOperand op = param.param[1];
+		if (op instanceof ItemOperand)
+			MATERIALS.put(new ItemKey(((ItemOperand)op).stack), stats);
+		else if (op instanceof OreDictStack)
+			for (ItemStack stack : ((OreDictStack)op).getItems())
+				MATERIALS.put(new ItemKey(stack), stats);
 	}
 
 	public void preInit() {

@@ -1,4 +1,4 @@
-VERSION = 22;
+VERSION = 27;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -56,7 +56,7 @@ INIT() {
 	add("circuitMat", ore("ingotIron"),      0,  0,  8,  -6,  0,  0); !1.33 mem/size, 8.0  mem/ing
 	add("circuitMat", ore("blockIron"),      0,  0, 48, -30,  0,  0); !1.6  mem/size, 5.33 mem/ing
 	add("circuitMat", ore("dustGlowstone"),  0,  0,  0,  -1,  2,  1); !2.0 gain/size, 2.0  gain/it
-	add("circuitMat", ore("blockGlowstone"), 0,  0,  0,  -2,  5,  2); !2.5 gain/size, 1.25 gain/it
+	add("circuitMat", it("minecraft:glowstone"), 0, 0, 0, -2, 5,  2); !2.5 gain/size, 1.25 gain/it
 	add("circuitMat", it("minecraft:redstone_torch"), 3, 0, 0, -2, 1, 4); !1.5 cmp/size, 0.33 gain/cmp, 3.0 cmp/it
 	add("circuitMat", it("minecraft:repeater"), 8, 0, 1, -4,  2,  8); !2.0 cmp/size, 0.25 gain/cmp, 2.67 cmp/it(rs)
 	add("circuitMat", it("minecraft:comparator"), 0, 8, 0, -4, 2, 8); !2.0 cmp/size, 0.25 gain/cmp, 2.0 cmp/it(rs)
@@ -64,6 +64,7 @@ INIT() {
 	!crafting recipes
 	Loc slab = it("minecraft:stone_slab");
 	add("shaped", it("tile.editor"), "0/1/2", it("item.wire"), it("minecraft:crafting_table"), it("minecraft:bookshelf"));
+	add("shaped", it("tile.assembler"), "0/1/2", it("item.wire"), it("minecraft:anvil"), it("minecraft:chest"));
 	add("shaped", 2 * it("tile.rs_port"):0, "0/1", "dustRedstone", slab);
 	add("shaped", 2 * it("tile.rs_port"):1, "0/1", it("minecraft:redstone_torch"), slab);
 	add("shaped", 8 * it("tile.wire_anchor"), "0/0", it("minecraft:iron_bars"));
@@ -110,7 +111,14 @@ moddedRecipes() {
 		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, it("minecraft:paper"), it("item.wire"));
 	}
 	if (hasmod("opencomputers")) {
-		Loc tag = nbt(); tag:"Istats" = [32, 32, 24, 0]#; !advanced prototype processor
-		add("shaped", it("tile.processor") + tag, "0 1/021/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1, it("opencomputers:component"):0);
+		add("circuitMat", it("opencomputers:material"):6, 3, 0, 0, -2, 1, 3); !transistor
+		add("circuitMat", it("opencomputers:material"):7, 1, 3, 0, -1, 0, 4); !chip T1
+		add("circuitMat", it("opencomputers:material"):8, 3, 7, 0, -2, 0, 10); !chip T2
+		add("circuitMat", it("opencomputers:material"):9, 12, 16, 0, -4, 0, 28); !chip T3
+		add("circuitMat", it("opencomputers:material"):10, 12, 8, 0, -4, 0, 20); !ALU
+		add("circuitMat", it("opencomputers:storage"):0, 0, 0, 16, -8, -2, 0); !EEPROM
+		add("circuitMat", it("opencomputers:component"):6, 0, 0, 32, -8, -8, 16); !RAM T1
+		add("circuitMat", it("opencomputers:component"):7, 0, 0, 48, -8, -16, 32); !RAM T1.5
+		add("circuitMat", it("opencomputers:capacitor"), 0, 0, 0, -8, 1, 1024); !CAPACITOR
 	}
 }
