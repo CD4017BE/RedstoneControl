@@ -1,9 +1,14 @@
-VERSION = 27;
+VERSION = 32;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
 max_wire_length = 16;
 max_probe_lenght = 8;
+
+!Energy conversions (this mod's energy system operates integer based in quite small scale units):
+energy_unit_FE = 100; !Forge Energy 
+energy_unit_EU = 400; !Industrialcraft
+energy_unit_OC = 1000; !OpenComputers
 
 PRE_INIT() {
 	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
@@ -44,9 +49,16 @@ PRE_INIT() {
 	c:"mod" = [0, 4]#;
 	c:"max" = [2, 1]#;
 	c:"min" = [2, 1]#;
+	
+	add("item", 400, "battery", "rs_ctr:battery");
 }
 
 INIT() {
+	!items that can be used as capacitors in Power Distribution Hub (all Forge Energy compatible items already work without need for registration)
+	add("battery", it("m.battery"), 20000000);
+	add("shaped", it("m.battery"), "010/232/010", "nuggetGold", it("item.wire_e"), "dustRedstone", it("minecraft:coal"):1);
+	
+	!processor assembly materials
 	!add("circuitMat", <item>, baseCmp, advCmp, memory, -size, gain, cap);
 	add("circuitMat", ore("dustRedstone"),   2,  0,  0,  -2,  1,  8); !1.0  cmp/size, 0.5 gain/cmp, 2.0  cmp/it
 	add("circuitMat", ore("blockRedstone"), 16,  0,  0, -24, 16, 64); !0.67 cmp/size, 1.0 gain/cmp, 1.78 cmp/it
@@ -77,6 +89,7 @@ INIT() {
 	add("shaped", it("tile.comparator"), "231/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1, it("item.block_wire"), it("minecraft:comparator"));
 	add("shaped", it("tile.fluid_reader"), "0/1", it("tile.comparator"), it("minecraft:bucket"));
 	add("shaped", it("tile.item_reader"), "0/1", it("tile.comparator"), it("minecraft:chest"));
+	add("shaped", it("tile.power_hub"), "010/020", it("item.wire_e"), "ingotGold", slab);
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", 8 * it("item.wire_e"), "000/010/000", it("item.wire"), "ingotGold");
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
@@ -111,6 +124,7 @@ moddedRecipes() {
 		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, it("minecraft:paper"), it("item.wire"));
 	}
 	if (hasmod("opencomputers")) {
+		add("battery", it("opencomputers:capacitor"), 1600000); !CAPACITOR
 		add("circuitMat", it("opencomputers:material"):6, 3, 0, 0, -2, 1, 3); !transistor
 		add("circuitMat", it("opencomputers:material"):7, 1, 3, 0, -1, 0, 4); !chip T1
 		add("circuitMat", it("opencomputers:material"):8, 3, 7, 0, -2, 0, 10); !chip T2
@@ -119,6 +133,6 @@ moddedRecipes() {
 		add("circuitMat", it("opencomputers:storage"):0, 0, 0, 16, -8, -2, 0); !EEPROM
 		add("circuitMat", it("opencomputers:component"):6, 0, 0, 32, -8, -8, 16); !RAM T1
 		add("circuitMat", it("opencomputers:component"):7, 0, 0, 48, -8, -16, 32); !RAM T1.5
-		add("circuitMat", it("opencomputers:capacitor"), 0, 0, 0, -8, 1, 1024); !CAPACITOR
+		add("circuitMat", it("opencomputers:capacitor"), 0, 0, 0, -8, 1, 160000); !CAPACITOR (only 1/10 cap here)
 	}
 }

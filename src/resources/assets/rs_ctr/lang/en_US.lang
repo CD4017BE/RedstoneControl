@@ -32,8 +32,10 @@ tile.rs_ctr.item_reader.name=Item Reader
 tile.rs_ctr.fluid_reader.tip=Whenever the value of §eClock IN§7 changes, §eOUT§7 will be updated to the current amount of §3mB§7 fluid stored in §eBlock IN§7.
 tile.rs_ctr.fluid_reader.name=Fluid Reader
 tile.rs_ctr.item_reader.tip=Whenever the value of §eClock IN§7 changes, §eOUT§7 will be updated to the current amount of items stored in §eBlock IN§7.
-tile.rs_ctr.assembler.tip=Lets you add materials to a §6Redstone Processor§7 to improve its complexity values.
 tile.rs_ctr.assembler.name=Processor Assembler
+tile.rs_ctr.assembler.tip=Lets you add materials to a §6Redstone Processor§7 to improve its complexity values.
+tile.rs_ctr.power_hub.name=Energy Distributor
+tile.rs_ctr.power_hub.tip=Provides energy for up to 8 attached devices.\nAcceps Forge Energy compatible power through the block's back side.\n§oOnly works with capacitors installed\: §6§oRedstone Batteries§7§o or Forge Energy compatible items can be used for that.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -67,6 +69,7 @@ item.rs_ctr.clock.tip=Emits a continuous square-wave singal into the port it's a
 item.rs_ctr.wire_e.name=Energy Wire
 item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 connects signal ports.\n§oConsumes 1 item per block of straight distance between ports.
 item.rs_ctr.processor.stats=Complexity\: §c%d §b%d §9%d §7Size\: §f%d
+item.cd4017be.m\:battery.name=Redstone Battery
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -103,6 +106,9 @@ port.rs_ctr.clock=⎍ %.2fs
 port.rs_ctr.energy1=Industrialcraft EU
 port.rs_ctr.energy0=Forge Energy\nRedstone Flux
 port.rs_ctr.energy_i=Energy IN
+port.rs_ctr.energy_o=Energy OUT
+port.rs_ctr.battery0=§cno capacitor\n§cinstalled!
+port.rs_ctr.battery=§aCharge\:\n§a%.4u / %.3u
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d
@@ -209,11 +215,3 @@ gui.rs_ctr.mat5=max continuous tickrate
 gui.rs_ctr.mat4=longest tick burst
 
 recipe.rs_ctr.circuit_mat=Processor Components
-#added by ingame editor:
-port.rs_ctr.energy_o=Energy OUT
-#added by ingame editor:
-tile.rs_ctr.power_hub.name=Energy distribution Hub
-#added by ingame editor:
-port.rs_ctr.battery=Charge\:\n%.3u / %.3u
-#added by ingame editor:
-port.rs_ctr.battery0=§cno capacitor\n§cinstalled!

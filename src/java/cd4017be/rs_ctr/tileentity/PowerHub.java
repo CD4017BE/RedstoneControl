@@ -46,7 +46,7 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	public static long FE_UNIT = 100;
 
 	ItemStack battery = ItemStack.EMPTY;
-	public long charge = 500000, cap = 1000000;
+	public long charge, cap;
 
 	{
 		ports = new MountedSignalPort[8];
@@ -134,11 +134,11 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 				onRemove(player);
 				charge += (long)es.extractEnergy(Integer.MAX_VALUE, false) * FE_UNIT;
 				cap = es.receiveEnergy(Integer.MAX_VALUE, true) * FE_UNIT;
-				player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 			} else if ((cap = CommonProxy.getCap(stack)) > 0) {
 				onRemove(player);
-				battery = stack.splitStack(1);
 			} else return false;
+			battery = stack;
+			player.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 			if (charge > cap) charge = cap;
 			markDirty(REDRAW);
 		} else return false;

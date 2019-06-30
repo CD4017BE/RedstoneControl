@@ -46,9 +46,8 @@ public class CommonProxy implements IRecipeHandler {
 	 * @return capacity in %RF
 	 */
 	public static long getCap(ItemStack stack) {
-		return 2000000;/*
 		Long c = BATTERIES.get(new ItemKey(stack));
-		return c == null ? 0 : c;*/
+		return c == null ? 0 : c * (long)stack.getCount();
 	}
 
 	@Override
