@@ -25,6 +25,13 @@ public class BlockReference {
 	}
 
 	/**
+	 * @return whether actions on this block can be performed without potentially force loading chunks.
+	 */
+	public boolean isLoaded() {
+		return world.isBlockLoaded(pos);
+	}
+
+	/**
 	 * @param <C>
 	 * @param cap the capability to obtain
 	 * @return an instance of the given capability or null if not available

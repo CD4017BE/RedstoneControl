@@ -51,7 +51,7 @@ public abstract class Sensor extends WallMountGate implements BlockHandler, Sign
 	public void updateSignal(int val) {
 		if (val == clock) return;
 		clock = val;
-		if (blockRef == null) return;
+		if (blockRef == null || !blockRef.isLoaded()) return;
 		if ((val = readValue(blockRef)) == value) return;
 		value = val;
 		if (out != null) out.updateSignal(val);
