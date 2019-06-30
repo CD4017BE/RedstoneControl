@@ -51,7 +51,7 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_buttons.logic(0)", "_buttons.logic(1)", "_buttons.logic(2)", "_buttons.logic(3)");
 		PORT_RENDER.register("_buttons.bin(0)", "_buttons.bin(1)", "_buttons.bin(2)", "_buttons.bin(3)");
 		PORT_RENDER.register("_buttons.energy(0)", "_buttons.energy(1)");
-		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)");
+		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)", "_plug.main(7)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
 		

@@ -111,7 +111,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
 		if (vertices == null) vertices = WireRenderer.createLine(port, line);
 		if (light1 < 0) light1 = port.getWorld().getCombinedLight(port.getPos().add(line.x + port.pos.x, line.y + port.pos.y, line.z + port.pos.z), 0);
-		WireRenderer.drawLine(buffer, vertices, (float)x, (float)y, (float)z, light, light1, 0xff0000ff);
+		WireRenderer.drawLine(buffer, vertices, (float)x, (float)y, (float)z, light, light1, type == WireType.SIGNAL ? 0xff0000ff : 0xff00ffff);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	public void render(List<BakedQuad> quads) {
 		this.light1 = -1;
 		if (port instanceof RelayPort) return;
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(0)");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(" + (type == WireType.SIGNAL ? 0 : 7) + ")");
 	}
 
 	@Override

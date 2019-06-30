@@ -16,4 +16,7 @@ public interface EnergyHandler {
 	 */
 	int changeEnergy(int dE, boolean sim);
 
+	/**implementation that does nothing, useful to remove the need for null checks. */
+	public static final EnergyHandler NOP = (dE, sim)-> 0;
+
 }

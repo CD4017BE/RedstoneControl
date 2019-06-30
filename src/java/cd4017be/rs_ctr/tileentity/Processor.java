@@ -89,7 +89,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			else {
 				doBurnout(false);
 				lastError = "power depleted";
-				energy = e + usage + BURNOUT_INTERVAL * gain;
+				energy = BURNOUT_INTERVAL * gain;
 				markDirty(SYNC);
 				return;
 			}
