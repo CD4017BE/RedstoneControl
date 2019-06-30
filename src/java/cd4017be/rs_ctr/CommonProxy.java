@@ -27,9 +27,10 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public class CommonProxy implements IRecipeHandler {
 
-	public static final String CIRCUIT_MAT = "circuitMat";
+	public static final String CIRCUIT_MAT = "circuitMat", BATTERY = "battery";
 	public static final int[] NULL = new int[6];
 	public static final HashMap<ItemKey, int[]> MATERIALS = new HashMap<>();
+	public static final HashMap<ItemKey, Long> BATTERIES = new HashMap<>();
 
 	/**
 	 * @param stack processor ingredient
@@ -40,25 +41,47 @@ public class CommonProxy implements IRecipeHandler {
 		return e == null ? NULL : e;
 	}
 
+	/**
+	 * @param stack battery item for power hub
+	 * @return capacity in %RF
+	 */
+	public static long getCap(ItemStack stack) {
+		return 2000000;/*
+		Long c = BATTERIES.get(new ItemKey(stack));
+		return c == null ? 0 : c;*/
+	}
+
 	@Override
 	public void addRecipe(Parameters param) {
-		double[] arr = param.getVectorOrAll(2);
-		int[] stats = new int[NULL.length];
-		int n = Math.min(arr.length, stats.length);
-		for (int i = 0; i < n; i++)
-			stats[i] = (int)arr[i];
-		IOperand op = param.param[1];
-		if (op instanceof ItemOperand)
-			MATERIALS.put(new ItemKey(((ItemOperand)op).stack), stats);
-		else if (op instanceof OreDictStack)
-			for (ItemStack stack : ((OreDictStack)op).getItems())
-				MATERIALS.put(new ItemKey(stack), stats);
+		String key = param.getString(0);
+		if (key.equals(CIRCUIT_MAT)) {
+			double[] arr = param.getVectorOrAll(2);
+			int[] stats = new int[NULL.length];
+			int n = Math.min(arr.length, stats.length);
+			for (int i = 0; i < n; i++)
+				stats[i] = (int)arr[i];
+			IOperand op = param.param[1];
+			if (op instanceof ItemOperand)
+				MATERIALS.put(new ItemKey(((ItemOperand)op).stack), stats);
+			else if (op instanceof OreDictStack)
+				for (ItemStack stack : ((OreDictStack)op).getItems())
+					MATERIALS.put(new ItemKey(stack), stats);
+		} else if (key.equals(BATTERY)) {
+			long cap = (long)param.getNumber(2);
+			IOperand op = param.param[1];
+			if (op instanceof ItemOperand)
+				BATTERIES.put(new ItemKey(((ItemOperand)op).stack), cap);
+			else if (op instanceof OreDictStack)
+				for (ItemStack stack : ((OreDictStack)op).getItems())
+					BATTERIES.put(new ItemKey(stack), cap);
+		}
 	}
 
 	public void preInit() {
 		MinecraftForge.EVENT_BUS.register(this);
 		RecipeScriptContext.instance.modules.get("redstoneControl").assign("gate_cost", CircuitInstructionSet.INS_SET);
 		RecipeAPI.Handlers.put(CIRCUIT_MAT, this);
+		RecipeAPI.Handlers.put(BATTERY, this);
 	}
 
 	public void init() {

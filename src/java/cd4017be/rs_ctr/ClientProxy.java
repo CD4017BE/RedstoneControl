@@ -43,7 +43,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), false, PORT_RENDER));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, PROCESSOR, COMPARATOR, ENERGY_READER, FLUID_READER, ITEM_READER);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, PROCESSOR, COMPARATOR, ENERGY_READER, FLUID_READER, ITEM_READER, POWER_HUB);
 		
 		WIRE_ANCHOR.setBlockLayer(BlockRenderLayer.CUTOUT);
 		
@@ -53,6 +53,7 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_buttons.energy(0)", "_buttons.energy(1)");
 		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
+		PORT_RENDER.register("_battery");
 		
 		registerRenderBS(RS_PORT, 0, 1);
 		registerRender(WIRE_ANCHOR);

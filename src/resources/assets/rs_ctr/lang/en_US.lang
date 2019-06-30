@@ -209,3 +209,11 @@ gui.rs_ctr.mat5=max continuous tickrate
 gui.rs_ctr.mat4=longest tick burst
 
 recipe.rs_ctr.circuit_mat=Processor Components
+#added by ingame editor:
+port.rs_ctr.energy_o=Energy OUT
+#added by ingame editor:
+tile.rs_ctr.power_hub.name=Energy distribution Hub
+#added by ingame editor:
+port.rs_ctr.battery=Charge\:\n%.3u / %.3u
+#added by ingame editor:
+port.rs_ctr.battery0=§cno capacitor\n§cinstalled!

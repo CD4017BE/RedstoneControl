@@ -1,0 +1,14 @@
+{
+	textures = ["rs_ctr:blocks/battery"];
+}
+
+main() {
+	Loc Q = [5,3,8, 11,13,14]#;
+	add(
+		rect(Q, [0,0, 6,6]#, "u-v"),
+		rect(Q, [6,0, 12,6]#, "u+v"),
+		rect(Q, [6,6, 12,16]#, "uV+"),
+		rect(Q, [0,6, 6,16]#, "-Vu"),
+		rect(Q, [0,6, 6,16]#, "+Vu")
+	);
+}

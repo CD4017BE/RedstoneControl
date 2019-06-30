@@ -50,6 +50,7 @@ public class Objects {
 	public static final BlockGate ENERGY_READER = null;
 	public static final BlockGate FLUID_READER = null;
 	public static final BlockGate ITEM_READER = null;
+	public static final BlockGate POWER_HUB = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -67,6 +68,7 @@ public class Objects {
 	public static final BaseItemBlock energy_reader = null;
 	public static final BaseItemBlock fluid_reader = null;
 	public static final BaseItemBlock item_reader = null;
+	public static final BaseItemBlock power_hub = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null;
@@ -105,7 +107,8 @@ public class Objects {
 				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Comparator.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("energy_reader", Material.CIRCUITS, SoundType.STONE, 3, EnergyReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("fluid_reader", Material.CIRCUITS, SoundType.STONE, 3, FluidReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("item_reader", Material.CIRCUITS, SoundType.STONE, 3, ItemReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("item_reader", Material.CIRCUITS, SoundType.STONE, 3, ItemReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -128,6 +131,7 @@ public class Objects {
 				new BaseItemBlock(ENERGY_READER),
 				new BaseItemBlock(FLUID_READER),
 				new BaseItemBlock(ITEM_READER),
+				new BaseItemBlock(POWER_HUB),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
