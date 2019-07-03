@@ -1,4 +1,4 @@
-VERSION = 38;
+VERSION = 39;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -55,7 +55,7 @@ PRE_INIT() {
 
 INIT() {
 	!items that can be used as capacitors in Power Distribution Hub (all Forge Energy compatible items already work without need for registration)
-	add("battery", it("m.battery"), 20000000);
+	add("battery", it("m.battery"), 2000000);
 	add("shaped", it("m.battery"), "010/232/010", "nuggetGold", it("item.wire_e"), "dustRedstone", it("minecraft:coal"):1);
 	
 	!processor assembly materials
