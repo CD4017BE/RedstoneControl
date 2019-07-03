@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class SensorRegistry {
 
 	/**all registered sensors */
-	private static final HashMap<ItemKey, Function<ItemStack, IBlockSensor>> REGISTRY = new HashMap<>();
+	public static final HashMap<ItemKey, Function<ItemStack, IBlockSensor>> REGISTRY = new HashMap<>();
 
 	/**
 	 * register the given sensor with some Items.

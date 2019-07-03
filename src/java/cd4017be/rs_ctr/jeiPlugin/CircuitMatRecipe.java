@@ -45,4 +45,9 @@ public class CircuitMatRecipe implements IRecipeWrapper {
 		}
 	}
 
+	public static int compare(Entry<ItemKey, int[]> a, Entry<ItemKey, int[]> b) {
+		int[] sa = a.getValue(), sb = b.getValue();
+		return sa[0] + sa[1] + sa[2] - sb[0] - sb[1] - sb[2];
+	}
+
 }

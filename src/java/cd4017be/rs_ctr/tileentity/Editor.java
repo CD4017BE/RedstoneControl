@@ -16,7 +16,6 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Utils;
-import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.gui.CircuitEditor;
