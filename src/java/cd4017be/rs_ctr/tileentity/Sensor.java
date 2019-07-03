@@ -83,9 +83,9 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		if (mode == SAVE) {
 			nbt.setInteger("clk", clock);
 			nbt.setInteger("val", value);
-			if (!stack.isEmpty())
-				nbt.setTag("sensor", stack.writeToNBT(new NBTTagCompound()));
 		}
+		if (!stack.isEmpty())
+			nbt.setTag("sensor", stack.writeToNBT(new NBTTagCompound()));
 	}
 
 	@Override
@@ -94,10 +94,10 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		if (mode == SAVE) {
 			clock = nbt.getInteger("clk");
 			value = nbt.getInteger("val");
-			stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;
-			impl = SensorRegistry.get(stack);
 			blockRef = null;
 		}
+		stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;
+		impl = SensorRegistry.get(stack);
 	}
 
 	@Override
@@ -126,6 +126,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		if (hit || player.isSneaking() && stack.isEmpty()) {
 			if (this.stack.isEmpty()) return false;
 			remove(player);
+			markDirty(REDRAW);
 			return true;
 		} else if (!stack.isEmpty()) {
 			IBlockSensor sensor = SensorRegistry.get(stack);
@@ -133,6 +134,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 			if (!this.stack.isEmpty()) remove(player);
 			this.stack = stack.splitStack(1);
 			impl = sensor;
+			markDirty(REDRAW);
 			return true;
 		}
 		return false;

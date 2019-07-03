@@ -1,6 +1,0 @@
-{
-	"parent": "rs_ctr:block/gate",
-    "textures": {
-		"type": "rs_ctr:blocks/item_reader"
-    }
-}

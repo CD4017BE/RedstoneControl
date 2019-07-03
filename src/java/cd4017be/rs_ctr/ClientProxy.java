@@ -1,8 +1,16 @@
 package cd4017be.rs_ctr;
 
+import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.sensor.FluidSensor;
+import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
+import cd4017be.rs_ctr.sensor.IC2EnergySensor;
+import cd4017be.rs_ctr.sensor.ItemSensor;
+
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
+
+import cd4017be.rs_ctr.api.sensor.SensorRegistry;
 import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.Gate;
 import cd4017be.rscpl.gui.Category;
@@ -28,8 +36,14 @@ import static cd4017be.lib.render.SpecialModelLoader.*;
 public class ClientProxy extends CommonProxy {
 
 	@Override
-	public void init() {
-		super.init();
+	public void preInit() {
+		super.preInit();
+		SensorRegistry.RENDERER = PORT_RENDER;
+	}
+
+	@Override
+	public void init(ConfigConstants cc) {
+		super.init(cc);
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
 		
 		for (Category c : CircuitInstructionSet.TABS)
@@ -43,7 +57,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), false, PORT_RENDER));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, PROCESSOR, COMPARATOR, ENERGY_READER, FLUID_READER, ITEM_READER, POWER_HUB);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, PROCESSOR, COMPARATOR, POWER_HUB);
 		
 		WIRE_ANCHOR.setBlockLayer(BlockRenderLayer.CUTOUT);
 		
@@ -54,6 +68,11 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)", "_plug.main(7)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
+		PORT_RENDER.dependencies.add(ItemSensor.MODEL);
+		PORT_RENDER.dependencies.add(FluidSensor.MODEL);
+		PORT_RENDER.dependencies.add(ForgeEnergySensor.MODEL);
+		if (HAS_IC2_API)
+			PORT_RENDER.dependencies.add(IC2EnergySensor.MODEL);
 		
 		registerRenderBS(RS_PORT, 0, 1);
 		registerRender(WIRE_ANCHOR);

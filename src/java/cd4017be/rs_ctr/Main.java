@@ -49,8 +49,7 @@ public class Main {
 	@Mod.EventHandler
 	public void load(FMLInitializationEvent event) {
 		Objects.init();
-		Objects.initConstants(new ConfigConstants(RecipeScriptContext.instance.modules.get("redstoneControl")));
-		proxy.init();
+		proxy.init(new ConfigConstants(RecipeScriptContext.instance.modules.get("redstoneControl")));
 	}
 
 	@Mod.EventHandler

@@ -55,6 +55,8 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 	}
 
 	public void drawModel(List<BakedQuad> quads, float x, float y, float z, Orientation o, String model) {
+		if (model != null && model.startsWith("rs_ctr:block/"))
+			model = model.substring("rs_ctr:block/".length());
 		BakedQuad[] bqs = models.get(model);
 		if (bqs == null) return;
 		ModelRotation r = o.getModelRotation();

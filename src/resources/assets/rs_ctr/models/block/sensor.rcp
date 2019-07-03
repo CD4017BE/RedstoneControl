@@ -1,0 +1,20 @@
+{
+	textures = ["rs_ctr:blocks/sensors"];
+}
+
+main(t) {
+	Loc dx = t % 2 * 8, dy = #(t / 2) * 8;
+	Loc Q = [4,4,8, 12,12,10]#;
+	add(
+		rect(Q, [8,8, 16,10]#, "u-V"),
+		rect(Q, [8,10, 16,12]#, "u+V"),
+		rect(Q, [dx,dy, dx+8,dy+8]#, "uV+"),
+		rect(Q, [8,12, 16,14]#, "-UV"),
+		rect(Q, [8,14, 16,16]#, "+UV")
+	);
+}
+
+item() {main(0);}
+fluid() {main(1);}
+fe() {main(2);}
+eu() {main(2);}

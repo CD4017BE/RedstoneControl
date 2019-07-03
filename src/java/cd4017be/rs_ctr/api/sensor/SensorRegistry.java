@@ -27,7 +27,8 @@ public class SensorRegistry {
 	 */
 	public static void register(Function<ItemStack, IBlockSensor> loader, ItemStack... stacks) {
 		for (ItemStack stack : stacks)
-			REGISTRY.put(new ItemKey(stack), loader);
+			if (!stack.isEmpty())
+				REGISTRY.put(new ItemKey(stack), loader);
 	}
 
 	/**

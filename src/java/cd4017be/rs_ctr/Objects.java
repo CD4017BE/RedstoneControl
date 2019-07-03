@@ -10,7 +10,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
-import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.lib.block.AdvancedBlock;
 import cd4017be.lib.block.OrientedBlock;
 import cd4017be.lib.item.BaseItem;
@@ -47,9 +46,6 @@ public class Objects {
 	public static final AdvancedBlock ASSEMBLER = null;
 	public static final BlockWireAnchor WIRE_ANCHOR = null;
 	public static final BlockGate COMPARATOR = null;
-	public static final BlockGate ENERGY_READER = null;
-	public static final BlockGate FLUID_READER = null;
-	public static final BlockGate ITEM_READER = null;
 	public static final BlockGate POWER_HUB = null;
 	
 	//ItemBlocks
@@ -65,9 +61,6 @@ public class Objects {
 	public static final BaseItemBlock assembler = null;
 	public static final ItemWireAnchor wire_anchor = null;
 	public static final BaseItemBlock comparator = null;
-	public static final BaseItemBlock energy_reader = null;
-	public static final BaseItemBlock fluid_reader = null;
-	public static final BaseItemBlock item_reader = null;
 	public static final BaseItemBlock power_hub = null;
 
 	//Items
@@ -82,12 +75,6 @@ public class Objects {
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(wire);
-	}
-
-	public static void initConstants(ConfigConstants c) {
-		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
-		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
-		PowerHub.FE_UNIT = (long)c.getNumber("energy_unit_FE", PowerHub.FE_UNIT);
 	}
 
 	@SubscribeEvent
@@ -105,10 +92,7 @@ public class Objects {
 				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 7, Processor.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				OrientedBlock.create("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits),
 				OrientedBlock.create("assembler", Material.IRON, SoundType.ANVIL, 0, Assembler.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits),
-				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Comparator.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("energy_reader", Material.CIRCUITS, SoundType.STONE, 3, EnergyReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("fluid_reader", Material.CIRCUITS, SoundType.STONE, 3, FluidReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("item_reader", Material.CIRCUITS, SoundType.STONE, 3, ItemReader.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
@@ -129,9 +113,6 @@ public class Objects {
 				new BaseItemBlock(EDITOR),
 				new BaseItemBlock(ASSEMBLER),
 				new BaseItemBlock(COMPARATOR),
-				new BaseItemBlock(ENERGY_READER),
-				new BaseItemBlock(FLUID_READER),
-				new BaseItemBlock(ITEM_READER),
 				new BaseItemBlock(POWER_HUB),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
