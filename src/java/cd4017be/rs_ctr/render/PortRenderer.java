@@ -19,6 +19,8 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static java.lang.Float.*;
 
@@ -26,6 +28,7 @@ import static java.lang.Float.*;
  * 
  * @author cd4017be
  */
+@SideOnly(Side.CLIENT)
 public class PortRenderer extends InteractiveDeviceRenderer {
 
 	public static final PortRenderer PORT_RENDER = new PortRenderer();
@@ -73,7 +76,10 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 		for (ResourceLocation loc : dependencies) {
 			IModel m = ModelLoaderRegistry.getModelOrLogError(loc, "missing");
 			List<BakedQuad> quads = m.bake(m.getDefaultState(), format, textureGetter).getQuads(null, null, 0);
-			models.put(loc.getResourcePath().substring("block/".length()), quads.toArray(new BakedQuad[quads.size()]));
+			String path = loc.getResourcePath();
+			if (path.startsWith("block/")) path = path.substring("block/".length());
+			if (loc.getResourceDomain() != Main.ID) path = loc.getResourceDomain() + ":" + path;
+			models.put(path, quads.toArray(new BakedQuad[quads.size()]));
 		}
 	}
 

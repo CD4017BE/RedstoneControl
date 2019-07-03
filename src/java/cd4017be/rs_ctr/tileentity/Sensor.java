@@ -1,21 +1,41 @@
 package cd4017be.rs_ctr.tileentity;
 
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.rs_ctr.api.com.BlockReference;
 import cd4017be.rs_ctr.api.com.BlockReference.BlockHandler;
+import cd4017be.rs_ctr.api.sensor.SensorRegistry;
+import cd4017be.rs_ctr.api.sensor.IBlockSensor;
 import cd4017be.rs_ctr.api.com.SignalHandler;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
+import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.render.PortRenderer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @author CD4017BE
  *
  */
-public abstract class Sensor extends WallMountGate implements BlockHandler, SignalHandler {
+public class Sensor extends WallMountGate implements BlockHandler, SignalHandler, IInteractiveComponent, IBlockRenderComp {
 
 	protected SignalHandler out;
 	protected BlockReference blockRef;
 	protected int clock, value;
+	protected IBlockSensor impl;
+	protected ItemStack stack;
 
 	{
 		ports = new MountedSignalPort[] {
@@ -52,12 +72,10 @@ public abstract class Sensor extends WallMountGate implements BlockHandler, Sign
 		if (val == clock) return;
 		clock = val;
 		if (blockRef == null || !blockRef.isLoaded()) return;
-		if ((val = readValue(blockRef)) == value) return;
+		if ((val = impl.readValue(blockRef)) == value) return;
 		value = val;
 		if (out != null) out.updateSignal(val);
 	}
-
-	protected abstract int readValue(BlockReference ref);
 
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
@@ -65,6 +83,8 @@ public abstract class Sensor extends WallMountGate implements BlockHandler, Sign
 		if (mode == SAVE) {
 			nbt.setInteger("clk", clock);
 			nbt.setInteger("val", value);
+			if (!stack.isEmpty())
+				nbt.setTag("sensor", stack.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
@@ -74,6 +94,8 @@ public abstract class Sensor extends WallMountGate implements BlockHandler, Sign
 		if (mode == SAVE) {
 			clock = nbt.getInteger("clk");
 			value = nbt.getInteger("val");
+			stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;
+			impl = SensorRegistry.get(stack);
 			blockRef = null;
 		}
 	}
@@ -83,6 +105,59 @@ public abstract class Sensor extends WallMountGate implements BlockHandler, Sign
 		ports[0].setLocation(0.25F, 0.25F, 0.125F, EnumFacing.WEST, o);
 		ports[1].setLocation(0.25F, 0.75F, 0.125F, EnumFacing.WEST, o);
 		ports[2].setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST, o);
+		mountPos = o.rotate(new Vec3d(0.5, 0.5, 0.25));
+	}
+
+	@Override
+	protected void initGuiComps(List<IInteractiveComponent> list) {
+		list.add(this);
+	}
+
+	Vec3d mountPos = Vec3d.ZERO;
+
+	@Override
+	public Pair<Vec3d, EnumFacing> rayTrace(Vec3d start, Vec3d dir) {
+		return IInteractiveComponent.rayTraceFlat(start, dir, mountPos, o.back, 0.25F, 0.5F);
+	}
+
+	@Override
+	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
+		ItemStack stack = player.getHeldItemMainhand();
+		if (hit || player.isSneaking() && stack.isEmpty()) {
+			if (this.stack.isEmpty()) return false;
+			remove(player);
+			return true;
+		} else if (!stack.isEmpty()) {
+			IBlockSensor sensor = SensorRegistry.get(stack);
+			if (sensor == SensorRegistry.DEFAULT) return false;
+			if (!this.stack.isEmpty()) remove(player);
+			this.stack = stack.splitStack(1);
+			impl = sensor;
+			return true;
+		}
+		return false;
+	}
+
+	private void remove(EntityPlayer player) {
+		if (player != null)
+			ItemFluidUtil.dropStack(stack, player);
+		else ItemFluidUtil.dropStack(stack, world, pos);
+		stack = ItemStack.EMPTY;
+		impl = SensorRegistry.DEFAULT;
+	}
+
+	@Override
+	public Pair<Vec3d, String> getDisplayText(Vec3d aim) {
+		return Pair.of(mountPos, impl.getTooltipString());
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void render(List<BakedQuad> quads) {
+		if (stack.isEmpty()) return;
+		ResourceLocation model = impl.getModel();
+		if (model != null)
+			PortRenderer.PORT_RENDER.drawModel(quads, (float)mountPos.x, (float)mountPos.y, (float)mountPos.z, o, model.toString());
 	}
 
 }

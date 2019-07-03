@@ -2,6 +2,7 @@ package cd4017be.rs_ctr.api.com;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -29,6 +30,20 @@ public class BlockReference {
 	 */
 	public boolean isLoaded() {
 		return world.isBlockLoaded(pos);
+	}
+
+	/**
+	 * @return this block's state
+	 */
+	public IBlockState getState() {
+		return world.getBlockState(pos);
+	}
+
+	/**
+	 * @return the TileEntity of this block
+	 */
+	public TileEntity getTileEntity() {
+		return world.getTileEntity(pos);
 	}
 
 	/**
