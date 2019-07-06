@@ -34,8 +34,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	protected SignalHandler out;
 	protected BlockReference blockRef;
 	protected int clock, value;
-	protected IBlockSensor impl;
-	protected ItemStack stack;
+	protected IBlockSensor impl = SensorRegistry.DEFAULT;
+	protected ItemStack stack = ItemStack.EMPTY;
 
 	{
 		ports = new MountedPort[] {
@@ -105,7 +105,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		ports[0].setLocation(0.25F, 0.25F, 0.125F, EnumFacing.WEST, o);
 		ports[1].setLocation(0.25F, 0.75F, 0.125F, EnumFacing.WEST, o);
 		ports[2].setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST, o);
-		mountPos = o.rotate(new Vec3d(0.5, 0.5, 0.25));
+		mountPos = o.rotate(new Vec3d(0, 0, -0.25)).addVector(0.5, 0.5, 0.5);
 	}
 
 	@Override
@@ -123,17 +123,17 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	@Override
 	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
 		ItemStack stack = player.getHeldItemMainhand();
-		if (hit || player.isSneaking() && stack.isEmpty()) {
-			if (this.stack.isEmpty()) return false;
-			remove(player);
-			markDirty(REDRAW);
-			return true;
-		} else if (!stack.isEmpty()) {
+		if (!stack.isEmpty() && !player.isSneaking()) {
 			IBlockSensor sensor = SensorRegistry.get(stack);
 			if (sensor == SensorRegistry.DEFAULT) return false;
 			if (!this.stack.isEmpty()) remove(player);
 			this.stack = stack.splitStack(1);
 			impl = sensor;
+			markDirty(REDRAW);
+			return true;
+		} else if (hit || player.isSneaking() && stack.isEmpty()) {
+			if (this.stack.isEmpty()) return false;
+			remove(player);
 			markDirty(REDRAW);
 			return true;
 		}
