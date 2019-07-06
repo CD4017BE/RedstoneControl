@@ -1,10 +1,10 @@
 package cd4017be.rs_ctr.block;
 
+import cd4017be.api.rs_ctr.wire.IHookAttachable;
+import cd4017be.api.rs_ctr.wire.RelayPort;
 import cd4017be.lib.block.AdvancedBlock;
 import cd4017be.lib.block.MultipartBlock;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
-import cd4017be.rs_ctr.api.wire.IHookAttachable;
-import cd4017be.rs_ctr.api.wire.RelayPort;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;

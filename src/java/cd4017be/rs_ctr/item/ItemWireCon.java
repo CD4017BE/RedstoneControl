@@ -1,14 +1,14 @@
 package cd4017be.rs_ctr.item;
 
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
+import cd4017be.api.rs_ctr.wire.RelayPort;
+import cd4017be.api.rs_ctr.wire.IWiredConnector.IWiredConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
-import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
-import cd4017be.rs_ctr.api.wire.RelayPort;
-import cd4017be.rs_ctr.signal.WireConnection;
-import cd4017be.rs_ctr.signal.WireType;
+import cd4017be.rs_ctr.port.WireConnection;
+import cd4017be.rs_ctr.port.WireType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,7 +39,7 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 	}
 
 	@Override
-	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+	public void doAttach(ItemStack stack, MountedPort port, EntityPlayer player) {
 		if (port.type != type.clazz && port.type != null) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
@@ -76,13 +76,13 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 		if (creative) d = 0;
 		BlockPos lpos = new BlockPos(lx, ly, lz);
 		int lp = nbt.getInteger("lp");
-		SignalPort p = ISignalIO.getPort(player.world, lpos, lp);
-		if (!(p instanceof MountedSignalPort)) {
+		Port p = IPortProvider.getPort(player.world, lpos, lp);
+		if (!(p instanceof MountedPort)) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire3")));
 			stack.setTagCompound(null);
 			return;
 		}
-		MountedSignalPort lport = (MountedSignalPort)p;
+		MountedPort lport = (MountedPort)p;
 		Vec3d path = new Vec3d(lpos.subtract(pos)).add(lport.pos.subtract(port.pos));
 		if (!(port instanceof RelayPort)) path = path.subtract(new Vec3d(port.face.getDirectionVec()).scale(0.125));
 		if (!(lport instanceof RelayPort)) path = path.add(new Vec3d(lport.face.getDirectionVec()).scale(0.125));

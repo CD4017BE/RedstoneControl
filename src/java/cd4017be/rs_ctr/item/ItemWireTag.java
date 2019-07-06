@@ -4,6 +4,13 @@ import static cd4017be.lib.network.GuiNetworkHandler.openHeldItemGui;
 
 import java.util.function.Supplier;
 
+import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.ITagableConnector;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.wire.IWiredConnector;
+import cd4017be.api.rs_ctr.wire.WireLine;
+import cd4017be.api.rs_ctr.wire.IWiredConnector.IWiredConnectorItem;
+import cd4017be.api.rs_ctr.wire.WireLine.WireLoopException;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.ItemInteractionHandler;
 import cd4017be.lib.Gui.ModularGui;
@@ -14,15 +21,8 @@ import cd4017be.lib.network.IGuiHandlerItem;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
-import cd4017be.rs_ctr.api.signal.ITagableConnector;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.signal.IConnector;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.wire.IWiredConnector;
-import cd4017be.rs_ctr.api.wire.IWiredConnector.IWiredConnectorItem;
-import cd4017be.rs_ctr.api.wire.SignalLine;
-import cd4017be.rs_ctr.api.wire.SignalLine.WireLoopException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -59,7 +59,7 @@ public class ItemWireTag extends BaseItem implements IWiredConnectorItem, IGuiHa
 	}
 
 	@Override
-	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+	public void doAttach(ItemStack stack, MountedPort port, EntityPlayer player) {
 		IConnector c = port.getConnector();
 		if (!(c instanceof ITagableConnector)) return;
 		ITagableConnector tc = (ITagableConnector)c;
@@ -67,7 +67,7 @@ public class ItemWireTag extends BaseItem implements IWiredConnectorItem, IGuiHa
 			String tag = stack.getTagCompound().getString("name");
 			if (!tag.equals(tc.getTag()))
 				if (tc instanceof IWiredConnector) try {
-					new SignalLine(port).forEach(p -> {
+					new WireLine(port).forEach(p -> {
 						IConnector con = p.getConnector();
 						if (con instanceof ITagableConnector)
 							((ITagableConnector)con).setTag(p, tag);

@@ -5,21 +5,21 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Triple;
 
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.interact.IInteractiveDevice;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
+import cd4017be.api.rs_ctr.wire.IHookAttachable;
+import cd4017be.api.rs_ctr.wire.RelayPort;
 import cd4017be.lib.block.AdvancedBlock.IInteractiveTile;
 import cd4017be.lib.block.AdvancedBlock.ISelfAwareTile;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
 import cd4017be.lib.render.HybridFastTESR;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.rs_ctr.api.interact.IInteractiveDevice;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
-import cd4017be.rs_ctr.api.wire.IHookAttachable;
-import cd4017be.rs_ctr.api.wire.RelayPort;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,19 +36,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
- * Template implementation of {@link ISignalIO}
+ * Template implementation of {@link IPortProvider}
  * @author CD4017BE
  */
 public abstract class Gate extends BaseTileEntity implements IHookAttachable, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, IModularTile {
 
-	protected MountedSignalPort[] ports;
+	protected MountedPort[] ports;
 	protected IInteractiveComponent[] gui;
 	protected Int2ObjectOpenHashMap<RelayPort> hooks = new Int2ObjectOpenHashMap<>();
 	protected Orientation o = Orientation.N;
 
 	@Override
-	public SignalPort getSignalPort(int pin) {
-		SignalPort port = hooks.get(pin);
+	public Port getPort(int pin) {
+		Port port = hooks.get(pin);
 		if (port != null)
 			return port;
 		if (pin < ports.length && (port = ports[pin]).pin == pin)
@@ -84,7 +84,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	protected abstract void resetPin(int pin);
 
 	@Override
-	public void onPortModified(SignalPort port, int event) {
+	public void onPortModified(Port port, int event) {
 		if (event == E_DISCONNECT && !port.isMaster && port.pin < 0x8000)
 			resetPin(port.pin);
 		int mode;
@@ -92,7 +92,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			if (unloaded) return;
 			gui = null;
 			mode = REDRAW;
-		} else if ((event & E_CON_REM) == E_CON_REM || (event & E_CON_UPDATE) != 0 && ((MountedSignalPort)port).getConnector() instanceof IBlockRenderComp) {
+		} else if ((event & E_CON_REM) == E_CON_REM || (event & E_CON_UPDATE) != 0 && ((MountedPort)port).getConnector() instanceof IBlockRenderComp) {
 			mode = REDRAW;
 		} else mode = SYNC;
 		markDirty(mode);
@@ -115,7 +115,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		if (mode <= SYNC) {
 			NBTTagList list = new NBTTagList();
-			for (MountedSignalPort port : ports)
+			for (MountedPort port : ports)
 				list.appendTag(port.serializeNBT());
 			if (!list.hasNoTags()) nbt.setTag("ports", list);
 			NBTTagCompound ctag = storeHooks();
@@ -139,27 +139,27 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	@Override
 	protected void setupData() {
 		if (world.isRemote) return;
-		for (MountedSignalPort port : ports)
+		for (MountedPort port : ports)
 			port.onLoad();
-		for (MountedSignalPort port : hooks.values())
+		for (MountedPort port : hooks.values())
 			port.onLoad();
 	}
 
 	@Override
 	protected void clearData() {
 		if (world.isRemote) return;
-		for (MountedSignalPort port : ports)
+		for (MountedPort port : ports)
 			port.onUnload();
-		for (MountedSignalPort port : hooks.values())
+		for (MountedPort port : hooks.values())
 			port.onUnload();
 	}
 
 	@Override
 	public void invalidate() {
 		if (!world.isRemote) {
-			for (MountedSignalPort port : ports)
+			for (MountedPort port : ports)
 				port.disconnect();
-			for (MountedSignalPort port : hooks.values())
+			for (MountedPort port : hooks.values())
 				port.disconnect();
 		}
 		super.invalidate();
@@ -167,7 +167,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 
 	@Override
 	public void breakBlock() {
-		for (MountedSignalPort port : ports)
+		for (MountedPort port : ports)
 			port.setConnector(null, null);
 		unloaded = true;
 		for (int pin : hooks.keySet().toIntArray())
@@ -180,8 +180,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 		for (IInteractiveComponent c : getComponents()) {
 			if (c instanceof IBlockRenderComp)
 				res.add((IBlockRenderComp) c);
-			if (c instanceof MountedSignalPort)
-				((MountedSignalPort)c).addRenderComps(res, IBlockRenderComp.class);
+			if (c instanceof MountedPort)
+				((MountedPort)c).addRenderComps(res, IBlockRenderComp.class);
 		}
 		return res;
 	}
@@ -209,8 +209,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			for (IInteractiveComponent c : getComponents()) {
 				if (c instanceof ITESRenderComp)
 					tesrComps.add((ITESRenderComp) c);
-				if (c instanceof MountedSignalPort)
-					((MountedSignalPort)c).addRenderComps(tesrComps, ITESRenderComp.class);
+				if (c instanceof MountedPort)
+					((MountedPort)c).addRenderComps(tesrComps, ITESRenderComp.class);
 			}
 		}
 		return tesrComps;

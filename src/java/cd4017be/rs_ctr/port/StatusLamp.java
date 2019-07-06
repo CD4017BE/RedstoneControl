@@ -1,11 +1,11 @@
-package cd4017be.rs_ctr.signal;
+package cd4017be.rs_ctr.port;
 
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,7 @@ public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port, int linkID) {
+	public String displayInfo(MountedPort port, int linkID) {
 		return "\n" + state;
 	}
 
@@ -67,7 +67,7 @@ public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void onLoad(MountedPort port) {
 		super.onLoad(port);
 		port.owner.setPortCallback(port.pin, this);
 	}
@@ -82,7 +82,7 @@ public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 	@Override
 	public void updateSignal(int value) {
 		state = value;
-		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
+		port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
 	}
 
 }

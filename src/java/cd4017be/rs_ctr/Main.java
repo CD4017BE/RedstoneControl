@@ -6,8 +6,8 @@ import org.apache.logging.log4j.Logger;
 
 import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.api.rs_ctr.port.Link;
 import cd4017be.lib.script.ScriptFiles.Version;
-import cd4017be.rs_ctr.api.signal.Link;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;

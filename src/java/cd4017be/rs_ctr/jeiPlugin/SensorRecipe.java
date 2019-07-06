@@ -3,7 +3,8 @@ package cd4017be.rs_ctr.jeiPlugin;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-import cd4017be.rs_ctr.api.sensor.IBlockSensor;
+
+import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;

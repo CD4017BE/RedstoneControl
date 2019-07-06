@@ -1,8 +1,8 @@
-package cd4017be.rs_ctr.signal;
+package cd4017be.rs_ctr.port;
 
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.signal.IConnector;
-import cd4017be.rs_ctr.api.com.EnergyHandler;
+import cd4017be.api.rs_ctr.com.EnergyHandler;
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.IConnector;
 
 /**
  * 

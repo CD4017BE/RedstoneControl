@@ -2,6 +2,9 @@ package cd4017be.rs_ctr.item;
 
 import static cd4017be.lib.network.GuiNetworkHandler.openHeldItemGui;
 
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.ItemInteractionHandler;
 import cd4017be.lib.Gui.ModularGui;
@@ -12,12 +15,9 @@ import cd4017be.lib.network.IGuiHandlerItem;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
-import cd4017be.rs_ctr.signal.Clock;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.port.Clock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -47,7 +47,7 @@ public class ItemClock extends BaseItem implements IConnectorItem, IGuiHandlerIt
 	}
 
 	@Override
-	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+	public void doAttach(ItemStack stack, MountedPort port, EntityPlayer player) {
 		if (port.type != SignalHandler.class) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;

@@ -3,6 +3,12 @@ package cd4017be.rs_ctr.tileentity;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import cd4017be.api.rs_ctr.com.DelayedSignal;
+import cd4017be.api.rs_ctr.com.EnergyHandler;
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.Gui.AdvancedContainer;
@@ -16,11 +22,6 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
-import cd4017be.rs_ctr.api.DelayedSignal;
-import cd4017be.rs_ctr.api.com.EnergyHandler;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.UnloadedCircuit;
@@ -74,7 +75,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	DelayedSignal delayed;
 	String[] keys = new String[0];
 
-	{ports = new MountedSignalPort[] {new MountedSignalPort(this, 0, EnergyHandler.class, true)};}
+	{ports = new MountedPort[] {new MountedPort(this, 0, EnergyHandler.class, true)};}
 
 	@Override
 	public void process() {
@@ -177,7 +178,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (mode <= CLIENT || mode == ITEM) {
 			nbt.merge(circuit.serializeNBT());
 			NBTTagList names = new NBTTagList();
-			for (MountedSignalPort port : ports)
+			for (MountedPort port : ports)
 				names.appendTag(new NBTTagString(port.name.substring(1)));
 			nbt.setTag("labels", names);
 			nbt.setString("name", name);
@@ -203,10 +204,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			circuit.deserializeNBT(nbt);
 			NBTTagList names = nbt.getTagList("labels", NBT.TAG_STRING);
 			int in = circuit.inputs.length, out = circuit.outputs.length + in;
-			ports = new MountedSignalPort[out + 1];
+			ports = new MountedPort[out + 1];
 			for (int i = 0; i < out; i++)
-				ports[i] = new MountedSignalPort(this, i, SignalHandler.class, i >= in).setName("\\" + names.getStringTagAt(i));
-			ports[out] = new MountedSignalPort(this, out, EnergyHandler.class, true).setName("port.rs_ctr.energy_i");
+				ports[i] = new MountedPort(this, i, SignalHandler.class, i >= in).setName("\\" + names.getStringTagAt(i));
+			ports[out] = new MountedPort(this, out, EnergyHandler.class, true).setName("port.rs_ctr.energy_i");
 			name = nbt.getString("name");
 			keys = circuit.getState().nbt.getKeySet().toArray(keys);
 			Arrays.sort(keys);

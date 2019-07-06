@@ -1,7 +1,7 @@
 package cd4017be.rs_ctr.tileentity;
 
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
 
 
 /**
@@ -10,7 +10,7 @@ import cd4017be.rs_ctr.api.signal.SignalPort;
  */
 public class WireAnchor extends Gate {
 
-	{ports = new MountedSignalPort[0];}
+	{ports = new MountedPort[0];}
 
 	@Override
 	public Object getPortCallback(int pin) {
@@ -26,7 +26,7 @@ public class WireAnchor extends Gate {
 	}
 
 	@Override
-	public void onPortModified(SignalPort port, int event) {
+	public void onPortModified(Port port, int event) {
 		if (event == E_HOOK_REM && hooks.isEmpty() && !unloaded)
 			world.setBlockToAir(pos);
 		else super.onPortModified(port, event);

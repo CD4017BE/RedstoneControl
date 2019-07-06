@@ -2,6 +2,10 @@ package cd4017be.rs_ctr;
 
 import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.sensor.IBlockSensor;
+import cd4017be.api.rs_ctr.sensor.SensorRegistry;
+import cd4017be.api.rs_ctr.wire.RelayPort;
 
 import java.util.HashMap;
 import java.util.function.Function;
@@ -15,21 +19,19 @@ import cd4017be.lib.script.Parameters;
 import cd4017be.lib.script.obj.IOperand;
 import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.OreDictStack;
-import cd4017be.rs_ctr.api.sensor.IBlockSensor;
-import cd4017be.rs_ctr.api.sensor.SensorRegistry;
-import cd4017be.rs_ctr.api.signal.IConnector;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.item.ItemBlockProbe;
 import cd4017be.rs_ctr.item.ItemWireCon;
+import cd4017be.rs_ctr.port.BlockProbe;
+import cd4017be.rs_ctr.port.Clock;
+import cd4017be.rs_ctr.port.Constant;
+import cd4017be.rs_ctr.port.StatusLamp;
+import cd4017be.rs_ctr.port.WireAnchor;
+import cd4017be.rs_ctr.port.WireType;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
-import cd4017be.rs_ctr.signal.BlockProbe;
-import cd4017be.rs_ctr.signal.Clock;
-import cd4017be.rs_ctr.signal.Constant;
-import cd4017be.rs_ctr.signal.StatusLamp;
-import cd4017be.rs_ctr.signal.WireType;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -92,6 +94,7 @@ public class CommonProxy implements IRecipeHandler {
 	}
 
 	public void preInit() {
+		RelayPort.IMPLEMENTATION = WireAnchor::new;
 		MinecraftForge.EVENT_BUS.register(this);
 		RecipeScriptContext.instance.modules.get("redstoneControl").assign("gate_cost", CircuitInstructionSet.INS_SET);
 		RecipeAPI.Handlers.put(CIRCUIT_MAT, this);

@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;

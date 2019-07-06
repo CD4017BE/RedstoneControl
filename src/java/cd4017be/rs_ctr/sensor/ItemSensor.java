@@ -1,9 +1,9 @@
 package cd4017be.rs_ctr.sensor;
 
+import cd4017be.api.rs_ctr.com.BlockReference;
+import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Main;
-import cd4017be.rs_ctr.api.com.BlockReference;
-import cd4017be.rs_ctr.api.sensor.IBlockSensor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;

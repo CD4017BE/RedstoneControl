@@ -19,7 +19,7 @@ import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
 import cd4017be.rs_ctr.item.*;
-import cd4017be.rs_ctr.signal.WireType;
+import cd4017be.rs_ctr.port.WireType;
 import cd4017be.rs_ctr.tileentity.*;
 
 /**

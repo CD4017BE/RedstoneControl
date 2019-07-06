@@ -2,10 +2,10 @@ package cd4017be.rs_ctr.render;
 
 import static java.lang.Float.floatToIntBits;
 
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.wire.RelayPort;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.wire.RelayPort;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -21,7 +21,7 @@ public class WireRenderer {
 
 	static final float WIDTH = 0.03125F, L_PLUG = 0.125F;
 
-	public static float[] createLine(MountedSignalPort port, Vec3d line) {
+	public static float[] createLine(MountedPort port, Vec3d line) {
 		EnumFacing face = port.face;
 		Vec3d l = new Vec3d(face.getDirectionVec());
 		Vec3d a = line.crossProduct(l), b;

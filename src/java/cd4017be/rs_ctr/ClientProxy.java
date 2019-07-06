@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr;
 
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.sensor.FluidSensor;
@@ -10,7 +11,6 @@ import cd4017be.rs_ctr.sensor.ItemSensor;
 
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
 
-import cd4017be.rs_ctr.api.sensor.SensorRegistry;
 import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.Gate;
 import cd4017be.rscpl.gui.Category;

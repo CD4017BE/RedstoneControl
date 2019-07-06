@@ -1,16 +1,16 @@
-package cd4017be.rs_ctr.signal;
+package cd4017be.rs_ctr.port;
 
 import java.util.List;
 
+import cd4017be.api.rs_ctr.com.BlockReference;
+import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.com.BlockReference;
-import cd4017be.rs_ctr.api.com.BlockReference.BlockHandler;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -69,9 +69,9 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 	}
 
 	@Override
-	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
+	public void onRemoved(MountedPort port, EntityPlayer player) {
 		super.onRemoved(port, player);
-		port.owner.onPortModified(port, ISignalIO.E_DISCONNECT);
+		port.owner.onPortModified(port, IPortProvider.E_DISCONNECT);
 	}
 
 	@Override
@@ -87,14 +87,14 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port, int linkID) {
+	public String displayInfo(MountedPort port, int linkID) {
 		String name = port.getWorld().getBlockState(linkPos).getBlock().getLocalizedName();
 		if (name.endsWith(".name")) name = name.substring(0, name.length() - 5);
 		return "\n\u00a7b" + name + "\u00a7f " + TooltipUtil.translate("enumfacing." + linkFace.name().toLowerCase());
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void onLoad(MountedPort port) {
 		super.onLoad(port);
 		((BlockHandler)port.owner.getPortCallback(port.pin)).updateBlock(new BlockReference(port.getWorld(), linkPos, linkFace));
 	}

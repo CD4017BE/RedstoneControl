@@ -1,16 +1,16 @@
-package cd4017be.rs_ctr.signal;
+package cd4017be.rs_ctr.port;
 
 import java.util.List;
 
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.ITagableConnector;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.signal.IConnector;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.ITagableConnector;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,7 +72,7 @@ public class WirelessConnection extends Plug implements ITagableConnector, IBloc
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port, int linkID) {
+	public String displayInfo(MountedPort port, int linkID) {
 		try {
 			return ITagableConnector.super.displayInfo(port, linkID)
 				+ "\n[" + linkPos.getX() + ", " + linkPos.getY() + ", " + linkPos.getZ() + "]\n"
@@ -89,19 +89,19 @@ public class WirelessConnection extends Plug implements ITagableConnector, IBloc
 	}
 
 	@Override
-	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
+	public void onRemoved(MountedPort port, EntityPlayer player) {
 		World world = port.getWorld();
 		BlockPos pos = port.getPos();
-		SignalPort p = ISignalIO.getPort(linkPos.getWorldServer(), linkPos, linkPin);
-		if (p instanceof MountedSignalPort) {
-			IConnector c = ((MountedSignalPort)p).getConnector();
+		Port p = IPortProvider.getPort(linkPos.getWorldServer(), linkPos, linkPin);
+		if (p instanceof MountedPort) {
+			IConnector c = ((MountedPort)p).getConnector();
 			if (c instanceof WirelessConnection) {
 				WirelessConnection wc = (WirelessConnection)c;
 				if (wc.linkPos.equals(pos) && wc.linkPos.dimId == world.provider.getDimension() && wc.linkPin == port.pin) {
 					if (wc.dropsItem && !this.dropsItem) {
 						this.dropsItem = true; wc.dropsItem = false;
 					}
-					((MountedSignalPort)p).setConnector(null, player);
+					((MountedPort)p).setConnector(null, player);
 				}
 			}
 		}
@@ -115,16 +115,16 @@ public class WirelessConnection extends Plug implements ITagableConnector, IBloc
 	}
 
 	@Override
-	public void setTag(MountedSignalPort port, String tag) {
+	public void setTag(MountedPort port, String tag) {
 		if (this.tag != null ? this.tag.equals(tag) : tag == null) return;
 		this.tag = tag;
-		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
-		SignalPort p = ISignalIO.getPort(linkPos.getWorldServer(), linkPos, linkPin);
-		if (p instanceof MountedSignalPort) {
-			IConnector c = ((MountedSignalPort)p).getConnector();
+		port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
+		Port p = IPortProvider.getPort(linkPos.getWorldServer(), linkPos, linkPin);
+		if (p instanceof MountedPort) {
+			IConnector c = ((MountedPort)p).getConnector();
 			if (c instanceof WirelessConnection) {
 				((WirelessConnection)c).tag = tag;
-				p.owner.onPortModified(p, ISignalIO.E_CON_UPDATE);
+				p.owner.onPortModified(p, IPortProvider.E_CON_UPDATE);
 			}
 		}
 	}

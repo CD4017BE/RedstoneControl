@@ -1,10 +1,15 @@
 package cd4017be.rs_ctr.tileentity;
 
+import static cd4017be.api.rs_ctr.port.MountedPort.SIZE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.block.AdvancedBlock.INeighborAwareTile;
@@ -16,11 +21,6 @@ import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
-
-import static cd4017be.rs_ctr.api.signal.MountedSignalPort.SIZE;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -48,13 +48,13 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	byte strong, dirty;
 	public Cover cover = new Cover();
 
-	{ports = new MountedSignalPort[0];}
+	{ports = new MountedPort[0];}
 
 	@Override
-	public SignalPort getSignalPort(int pin) {
-		SignalPort port = super.getSignalPort(pin);
+	public Port getPort(int pin) {
+		Port port = super.getPort(pin);
 		if (port != null) return port;
-		for (MountedSignalPort p : ports)
+		for (MountedPort p : ports)
 			if (p.pin == pin)
 				return p;
 		return port;
@@ -86,7 +86,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@Override
 	public boolean connectRedstone(EnumFacing side) {
 		int i = side.ordinal();
-		return getSignalPort(i) != null || getSignalPort(i + 6) != null;
+		return getPort(i) != null || getPort(i + 6) != null;
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		NBTTagList list = new NBTTagList();
-		for (MountedSignalPort port : ports) {
+		for (MountedPort port : ports) {
 			NBTTagCompound tag = port.serializeNBT();
 			tag.setByte("pin", (byte)port.pin);
 			list.appendTag(tag);
@@ -153,7 +153,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		strong = nbt.getByte("strong");
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
-		ports = new MountedSignalPort[list.tagCount()];
+		ports = new MountedPort[list.tagCount()];
 		for (int i = 0; i < ports.length; i++) {
 			NBTTagCompound tag = list.getCompoundTagAt(i);
 			int pin = tag.getByte("pin");
@@ -171,9 +171,9 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		gui = null;
 	}
 
-	private MountedSignalPort createPort(int pin) {
+	private MountedPort createPort(int pin) {
 		boolean in = pin < 6;
-		MountedSignalPort port = new MountedSignalPort(this, pin, SignalHandler.class, in);
+		MountedPort port = new MountedPort(this, pin, SignalHandler.class, in);
 		EnumFacing side = EnumFacing.VALUES[pin % 6];
 		Orientation o = Orientation.fromFacing(side);
 		Vec3d p = o.rotate(new Vec3d(in ? -SIZE : SIZE, in ? -SIZE : SIZE, -0.375));
@@ -191,8 +191,8 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		if ((strong >> m & 1) != 0) i = 3;
 		else {
 			i = -1;
-			if (getSignalPort(m) != null) i++;
-			if (getSignalPort(m + 6) != null) i+=2;
+			if (getPort(m) != null) i++;
+			if (getPort(m + 6) != null) i+=2;
 		}
 		return (T)Byte.valueOf((byte)i);
 	}
@@ -201,19 +201,19 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	public boolean isModulePresent(int m) {
 		if (m == 7) return false;
 		if (m == 6) return cover.state != null;
-		return getSignalPort(m) != null || getSignalPort(m + 6) != null;
+		return getPort(m) != null || getPort(m + 6) != null;
 	}
 
 	public boolean addPort(EnumFacing side, int type) {
 		int i = side.ordinal();
-		MountedSignalPort port;
+		MountedPort port;
 		switch(type) {
 		case 0:
-			if (getSignalPort(i) != null || (strong >> i & 1) != 0) return false;
+			if (getPort(i) != null || (strong >> i & 1) != 0) return false;
 			port = createPort(i);
 			break;
 		case 1:
-			if (getSignalPort(side.ordinal() + 6) != null) {
+			if (getPort(side.ordinal() + 6) != null) {
 				if ((strong >> i & 1) != 0) return false;
 				strong |= 1 << i;
 				markDirty(REDRAW);
@@ -242,7 +242,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			else hasRem = true;
 		if (!hasRem) return false;
 		if (out >= 0) {
-			MountedSignalPort port = ports[out];
+			MountedPort port = ports[out];
 			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1 + (strong >> side & 1), 1), world, pos);
 			port.setConnector(null, player);
 			port.onUnload();
@@ -250,7 +250,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			ports = ArrayUtils.remove(ports, out); //index shift doesn't affect in because it's always in < out. 
 		}
 		if (in >= 0) {
-			MountedSignalPort port = ports[in];
+			MountedPort port = ports[in];
 			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 0), world, pos);
 			port.setConnector(null, player);
 			port.onUnload();
@@ -268,7 +268,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@Override
 	public List<ItemStack> dropItem(IBlockState state, int fortune) {
 		int in = 0, out = 0;
-		for (MountedSignalPort port : ports) {
+		for (MountedPort port : ports) {
 			if (port.isMaster) in++;
 			else if ((strong >> (port.pin - 6) & 1) != 0) out+=2;
 			else out++;
@@ -286,7 +286,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		//delay port registration until we have save block access
 		TickRegistry.instance.updates.add(()-> {
 			if (unloaded) return;
-			for (MountedSignalPort port : ports)
+			for (MountedPort port : ports)
 				port.onLoad();
 		});
 	}

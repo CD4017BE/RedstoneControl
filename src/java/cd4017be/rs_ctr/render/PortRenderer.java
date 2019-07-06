@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
+import cd4017be.api.rs_ctr.interact.InteractiveDeviceRenderer;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
-import cd4017be.rs_ctr.api.interact.InteractiveDeviceRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelRotation;

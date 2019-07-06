@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import cd4017be.api.rs_ctr.com.BlockReference;
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.sensor.IBlockSensor;
+import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.util.ItemFluidUtil;
-import cd4017be.rs_ctr.api.com.BlockReference;
-import cd4017be.rs_ctr.api.com.BlockReference.BlockHandler;
-import cd4017be.rs_ctr.api.sensor.SensorRegistry;
-import cd4017be.rs_ctr.api.sensor.IBlockSensor;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,10 +38,10 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	protected ItemStack stack;
 
 	{
-		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, BlockHandler.class, false).setName("port.rs_ctr.bi"),
-			new MountedSignalPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.clk"),
-			new MountedSignalPort(this, 2, SignalHandler.class, true).setName("port.rs_ctr.o")
+		ports = new MountedPort[] {
+			new MountedPort(this, 0, BlockHandler.class, false).setName("port.rs_ctr.bi"),
+			new MountedPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.clk"),
+			new MountedPort(this, 2, SignalHandler.class, true).setName("port.rs_ctr.o")
 		};
 	}
 

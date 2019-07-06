@@ -1,11 +1,11 @@
 package cd4017be.rs_ctr.item;
 
+import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
-import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
-import cd4017be.rs_ctr.signal.BlockProbe;
-import cd4017be.rs_ctr.api.com.BlockReference.BlockHandler;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
+import cd4017be.rs_ctr.port.BlockProbe;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -59,7 +59,7 @@ public class ItemBlockProbe extends BaseItem implements IConnectorItem {
 	}
 
 	@Override
-	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+	public void doAttach(ItemStack stack, MountedPort port, EntityPlayer player) {
 		NBTTagCompound nbt = stack.getTagCompound();
 		if (port.type != BlockHandler.class) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));

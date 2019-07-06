@@ -1,14 +1,14 @@
 package cd4017be.rs_ctr.item;
 
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
+import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.TooltipUtil;
-import cd4017be.rs_ctr.api.signal.IConnector.IConnectorItem;
-import cd4017be.rs_ctr.signal.WireType;
-import cd4017be.rs_ctr.signal.WirelessConnection;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
+import cd4017be.rs_ctr.port.WireType;
+import cd4017be.rs_ctr.port.WirelessConnection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +34,7 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 	}
 
 	@Override
-	public void doAttach(ItemStack stack, MountedSignalPort port, EntityPlayer player) {
+	public void doAttach(ItemStack stack, MountedPort port, EntityPlayer player) {
 		if (port.type != type.clazz) {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
@@ -57,13 +57,13 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 		}
 		DimPos lpos = new DimPos(nbt.getInteger("lx"), nbt.getInteger("ly"), nbt.getInteger("lz"), nbt.getInteger("ld"));
 		int lp = nbt.getInteger("lp");
-		SignalPort p = ISignalIO.getPort(lpos.getWorldServer(), lpos, lp);
-		if (!(p instanceof MountedSignalPort)) {
+		Port p = IPortProvider.getPort(lpos.getWorldServer(), lpos, lp);
+		if (!(p instanceof MountedPort)) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire3")));
 			stack.setTagCompound(null);
 			return;
 		}
-		MountedSignalPort lport = (MountedSignalPort)p;
+		MountedPort lport = (MountedPort)p;
 		
 		port.setConnector(new WirelessConnection(lpos, lp, !player.isCreative(), type), player);
 		lport.setConnector(new WirelessConnection(pos, port.pin, false, type), player);

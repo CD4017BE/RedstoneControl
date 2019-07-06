@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
+import cd4017be.api.rs_ctr.sensor.IBlockSensor;
+import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.util.ItemKey;
 import cd4017be.rs_ctr.CommonProxy;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.sensor.IBlockSensor;
-import cd4017be.rs_ctr.api.sensor.SensorRegistry;
 import cd4017be.rs_ctr.gui.GuiAssembler;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IModPlugin;

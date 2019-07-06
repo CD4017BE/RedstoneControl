@@ -1,17 +1,18 @@
-package cd4017be.rs_ctr.signal;
+package cd4017be.rs_ctr.port;
 
 import java.util.List;
+
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
+import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.ITagableConnector;
+import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.api.rs_ctr.port.Port;
+import cd4017be.api.rs_ctr.wire.IWiredConnector;
+import cd4017be.api.rs_ctr.wire.RelayPort;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.rs_ctr.api.signal.IConnector;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.ITagableConnector;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
-import cd4017be.rs_ctr.api.signal.SignalPort;
-import cd4017be.rs_ctr.api.wire.IWiredConnector;
-import cd4017be.rs_ctr.api.wire.RelayPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -82,17 +83,17 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	}
 
 	@Override
-	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
+	public void onRemoved(MountedPort port, EntityPlayer player) {
 		super.onRemoved(port, player);
 		World world = port.getWorld();
 		BlockPos pos = port.getPos();
-		SignalPort p = ISignalIO.getPort(world, linkPos, linkPin);
-		if (p instanceof MountedSignalPort) {
-			IConnector c = ((MountedSignalPort)p).getConnector();
+		Port p = IPortProvider.getPort(world, linkPos, linkPin);
+		if (p instanceof MountedPort) {
+			IConnector c = ((MountedPort)p).getConnector();
 			if (c instanceof WireConnection) {
 				WireConnection wc = (WireConnection)c;
 				if (wc.linkPos.equals(pos) && wc.linkPin == port.pin)
-					((MountedSignalPort)p).setConnector(null, player);
+					((MountedPort)p).setConnector(null, player);
 			}
 		}
 		port.disconnect();
@@ -129,9 +130,9 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	}
 
 	@Override
-	public void setTag(MountedSignalPort port, String tag) {
+	public void setTag(MountedPort port, String tag) {
 		this.tag = tag;
-		port.owner.onPortModified(port, ISignalIO.E_CON_UPDATE);
+		port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
 	}
 
 	@Override
@@ -140,18 +141,18 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	}
 
 	@Override
-	public BlockPos getLinkPos() {
-		return linkPos;
-	}
-
-	@Override
-	public int getLinkPin() {
-		return linkPin;
-	}
-
-	@Override
 	public boolean isCompatible(Class<?> type) {
 		return type == this.type.clazz;
+	}
+
+	@Override
+	public Port getLinkPort(MountedPort from) {
+		return IPortProvider.getPort(from.getWorld(), linkPos, linkPin);
+	}
+
+	@Override
+	public boolean isLinked(MountedPort to) {
+		return to.pin == linkPin && to.getPos().equals(linkPos);
 	}
 
 }

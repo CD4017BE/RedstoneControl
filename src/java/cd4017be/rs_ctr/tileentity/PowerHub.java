@@ -8,6 +8,10 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import cd4017be.api.rs_ctr.com.EnergyHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.network.IPlayerPacketReceiver;
@@ -16,10 +20,6 @@ import cd4017be.lib.network.SyncNetworkHandler;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.CommonProxy;
-import cd4017be.rs_ctr.api.com.EnergyHandler;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,9 +49,9 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	public long charge, cap;
 
 	{
-		ports = new MountedSignalPort[8];
+		ports = new MountedPort[8];
 		for (int i = 0; i < 8; i++)
-			ports[i] = new MountedSignalPort(this, i, EnergyHandler.class, false).setName("port.rs_ctr.energy_o");
+			ports[i] = new MountedPort(this, i, EnergyHandler.class, false).setName("port.rs_ctr.energy_o");
 		//ports[8] = new MountedSignalPort(this, 8, SignalHandler.class, true).setName("port.rs_ctr.charge_o");
 	}
 

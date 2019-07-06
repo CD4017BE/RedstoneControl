@@ -1,10 +1,10 @@
 package cd4017be.rs_ctr.tileentity;
 
+import cd4017be.api.rs_ctr.com.DelayedSignal;
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
-import cd4017be.rs_ctr.api.DelayedSignal;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
@@ -21,13 +21,13 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	protected DelayedSignal delayed;
 
 	{
-		ports = new MountedSignalPort[] {
-			new MountedSignalPort(this, 0, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 2, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 3, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedSignalPort(this, 4, SignalHandler.class, true).setName("port.rs_ctr.o"),
-			new MountedSignalPort(this, 5, SignalHandler.class, true).setName("port.rs_ctr.o")
+		ports = new MountedPort[] {
+			new MountedPort(this, 0, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedPort(this, 2, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedPort(this, 3, SignalHandler.class, false).setName("port.rs_ctr.i"),
+			new MountedPort(this, 4, SignalHandler.class, true).setName("port.rs_ctr.o"),
+			new MountedPort(this, 5, SignalHandler.class, true).setName("port.rs_ctr.o")
 		};
 	}
 
@@ -83,7 +83,7 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	}
 
 	protected void refreshInput(int pin) {
-		MountedSignalPort port = ports[pin];
+		MountedPort port = ports[pin];
 		if (port.getConnector() != null) {
 			port.onUnload();
 			port.onLoad();

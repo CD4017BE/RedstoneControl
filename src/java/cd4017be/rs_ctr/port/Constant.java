@@ -1,12 +1,13 @@
-package cd4017be.rs_ctr.signal;
+package cd4017be.rs_ctr.port;
 
 import java.util.List;
+
+import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
-import cd4017be.rs_ctr.api.com.SignalHandler;
-import cd4017be.rs_ctr.api.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.rs_ctr.api.signal.ISignalIO;
-import cd4017be.rs_ctr.api.signal.MountedSignalPort;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,9 +50,9 @@ public class Constant extends Plug implements IBlockRenderComp {
 	}
 
 	@Override
-	public void onRemoved(MountedSignalPort port, EntityPlayer player) {
+	public void onRemoved(MountedPort port, EntityPlayer player) {
 		super.onRemoved(port, player);
-		port.owner.onPortModified(port, ISignalIO.E_DISCONNECT);
+		port.owner.onPortModified(port, IPortProvider.E_DISCONNECT);
 	}
 
 	@Override
@@ -62,12 +63,12 @@ public class Constant extends Plug implements IBlockRenderComp {
 	}
 
 	@Override
-	public String displayInfo(MountedSignalPort port, int linkID) {
+	public String displayInfo(MountedPort port, int linkID) {
 		return "\n" + value;
 	}
 
 	@Override
-	public void onLoad(MountedSignalPort port) {
+	public void onLoad(MountedPort port) {
 		super.onLoad(port);
 		((SignalHandler)port.owner.getPortCallback(port.pin)).updateSignal(value);
 	}
