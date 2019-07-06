@@ -1,3 +1,26 @@
+v0.1.0
+Changes:
+- added energy system
+- added circuit complexity balancing system
+- made circuits require external power supply depending on materials used for construction
+- replaced Item, Fluid, Energy Reader with sensor augments
+- fixed recursive chunk loading crash with Sensors
+- added Energy Wires
+- added Energy Distributor
+- added Processor Assembler
+- added config recipe handler (and recipes) for processor ingredients
+- added config recipe handler (and recipes) for Capacitors in Energy Distributor
+- added JEI recipe handler for processor ingredients
+- added JEI recipe handler for Capacitors
+- added JEI recipe handler for sensor augments
+- moved entire mod API over to CD4017BE_lib
+- updated tool-tips and filled missing translations
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.6
+
 v0.0.9
 Changes:
 - added abbility to lay circuit traces in editor
