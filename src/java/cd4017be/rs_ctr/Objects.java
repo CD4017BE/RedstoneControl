@@ -14,13 +14,14 @@ import cd4017be.lib.block.AdvancedBlock;
 import cd4017be.lib.block.OrientedBlock;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.item.BaseItemBlock;
-import cd4017be.lib.property.PropertyOrientation;
 import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
 import cd4017be.rs_ctr.item.*;
 import cd4017be.rs_ctr.port.WireType;
 import cd4017be.rs_ctr.tileentity.*;
+import static cd4017be.rs_ctr.block.PropertyGateOrient.GATE_ORIENT;
+import static cd4017be.lib.property.PropertyOrientation.HOR_AXIS;
 
 /**
  * 
@@ -47,6 +48,7 @@ public class Objects {
 	public static final BlockWireAnchor WIRE_ANCHOR = null;
 	public static final BlockGate COMPARATOR = null;
 	public static final BlockGate POWER_HUB = null;
+	public static final BlockGate ITEM_TRANSLOCATOR = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -62,6 +64,7 @@ public class Objects {
 	public static final ItemWireAnchor wire_anchor = null;
 	public static final BaseItemBlock comparator = null;
 	public static final BaseItemBlock power_hub = null;
+	public static final BaseItemBlock item_translocator = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null;
@@ -82,18 +85,19 @@ public class Objects {
 		TooltipUtil.CURRENT_DOMAIN = Main.ID;
 		ev.getRegistry().registerAll(
 				new BlockRedstonePort("rs_port", Material.ROCK, SoundType.STONE, RedstonePort.class).setCreativeTab(tabCircuits).setLightOpacity(0).setHardness(0.5F),
-				new BlockGate("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("bin_comb", Material.ROCK, SoundType.STONE, 3, BinaryCombiner.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("bin_split", Material.ROCK, SoundType.STONE, 3, BinarySplitter.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("splitter", Material.ROCK, SoundType.STONE, 3, SignalSplitter.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("analog_comb", Material.ROCK, SoundType.STONE, 3, AnalogCombiner.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("logic_comb", Material.ROCK, SoundType.STONE, 3, LogicCombiner.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("num_comb", Material.ROCK, SoundType.STONE, 3, NummericCombiner.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("bin_comb", Material.ROCK, SoundType.STONE, 3, BinaryCombiner.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("bin_split", Material.ROCK, SoundType.STONE, 3, BinarySplitter.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 7, Processor.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				OrientedBlock.create("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits),
-				OrientedBlock.create("assembler", Material.IRON, SoundType.ANVIL, 0, Assembler.class, PropertyOrientation.HOR_AXIS).setCreativeTab(tabCircuits),
-				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 7, Processor.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				OrientedBlock.create("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, HOR_AXIS).setCreativeTab(tabCircuits),
+				OrientedBlock.create("assembler", Material.IRON, SoundType.ANVIL, 0, Assembler.class, HOR_AXIS).setCreativeTab(tabCircuits),
+				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0.25, 0, 0, 0.75, 1, 0.25)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("item_translocator", Material.ROCK, SoundType.STONE, 3, ItemTranslocator.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -114,6 +118,7 @@ public class Objects {
 				new BaseItemBlock(ASSEMBLER),
 				new BaseItemBlock(COMPARATOR),
 				new BaseItemBlock(POWER_HUB),
+				new BaseItemBlock(ITEM_TRANSLOCATOR),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),

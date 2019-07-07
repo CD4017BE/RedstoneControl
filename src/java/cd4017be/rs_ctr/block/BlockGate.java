@@ -3,6 +3,7 @@ package cd4017be.rs_ctr.block;
 import cd4017be.api.rs_ctr.wire.IHookAttachable;
 import cd4017be.lib.block.MultipartBlock;
 import cd4017be.lib.block.OrientedBlock;
+import cd4017be.lib.property.PropertyOrientation;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -26,20 +27,27 @@ import net.minecraftforge.common.property.IUnlistedProperty;
  */
 public class BlockGate extends OrientedBlock {
 
+	static PropertyOrientation TMP_PROP;
+
+	static PropertyOrientation setTmp(PropertyOrientation prop) {
+		return TMP_PROP = prop;
+	}
+
 	/**
 	 * @param id
 	 * @param m
 	 * @param sound
 	 * @param flags
 	 * @param tile
+	 * @param prop
 	 */
-	public BlockGate(String id, Material m, SoundType sound, int flags, Class<? extends TileEntity> tile) {
-		super(id, m, sound, flags, tile, null);
+	public BlockGate(String id, Material m, SoundType sound, int flags, Class<? extends TileEntity> tile, PropertyOrientation prop) {
+		super(id, m, sound, flags, tile, setTmp(prop));
 	}
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		orientProp = PropertyGateOrient.GATE_ORIENT;
+		orientProp = TMP_PROP;
 		return new ExtendedBlockState(this, new IProperty[] {orientProp}, new IUnlistedProperty[] {MultipartBlock.moduleRef});
 	}
 

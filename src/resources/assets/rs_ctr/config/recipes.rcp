@@ -1,4 +1,4 @@
-VERSION = 39;
+VERSION = 42;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -9,6 +9,8 @@ max_probe_lenght = 8;
 energy_unit_FE = 100; !Forge Energy 
 energy_unit_EU = 400; !Industrialcraft
 energy_unit_OC = 1000; !OpenComputers
+
+energy_item_translocator = 50; !energy consumed by the Item Translocator per item & per clock pulse (internal units).
 
 PRE_INIT() {
 	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
@@ -51,6 +53,7 @@ PRE_INIT() {
 	c:"min" = [2, 1]#;
 	
 	add("item", 400, "battery", "rs_ctr:battery");
+	add("item", 401, "actuator");
 }
 
 INIT() {
@@ -88,6 +91,8 @@ INIT() {
 	add("shaped", it("tile.bin_split"), "020/212/020", it("tile.rs_port"):1, it("tile.rs_port"):0, it("item.wire"));
 	add("shaped", it("tile.comparator"), "231/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1, it("item.block_wire"), it("minecraft:comparator"));
 	add("shaped", it("tile.power_hub"), "010/020", it("item.wire_e"), "ingotGold", slab);
+	add("shaped", 2 * it("m.actuator"), "010/232/454", it("item.block_wire"), "enderpearl", slab:7, it("minecraft:piston"), it("item.wire"), it("item.wire_e"));
+	add("shaped", it("tile.item_translocator"), "020/ 3 /001", it("tile.rs_port"):0, it("tile.rs_port"):1, it("minecraft:chest"), it("m.actuator"));
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", 8 * it("item.wire_e"), "000/010/000", it("item.wire"), "ingotGold");
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");

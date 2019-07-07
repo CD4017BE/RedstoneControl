@@ -24,12 +24,14 @@ tile.rs_ctr.processor.tip=Compact circuit that's programmable with the §6Circui
 tile.rs_ctr.processor.name=Redstone Processor
 tile.rs_ctr.editor.name=Circuit Designer
 tile.rs_ctr.editor.tip=Used to program assembled §6Processor§7s.
-tile.rs_ctr.comparator.name=Remote Comparator
+tile.rs_ctr.comparator.name=clocked Comparator
 tile.rs_ctr.comparator.tip=Whenever the value of §eClock IN§7 changes, §eOUT§7 will be updated to the current comparator value read from §eBlock IN§7.\n§oThis device can be tuned to observe different block properties by attaching certain items on it\: See §9§oJEI usage recipes§7.
 tile.rs_ctr.assembler.name=Processor Assembler
 tile.rs_ctr.assembler.tip=Lets you add materials to a §6Redstone Processor§7 to improve its complexity values.
 tile.rs_ctr.power_hub.name=Energy Distributor
 tile.rs_ctr.power_hub.tip=Provides energy for up to 8 attached devices.\nAcceps Forge Energy compatible power through the block's back side.\n§oOnly works with capacitors installed\: See §9§oJEI usage recipes§7.\n§oAlthough not listed, all Forge Energy compatible items can be used as well.
+tile.rs_ctr.item_translocator.name=clocked Item Translocator
+tile.rs_ctr.item_translocator.tip=TODO
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -66,6 +68,7 @@ item.rs_ctr.wire_e.name=Energy Wire
 item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 connects signal ports.\n§oConsumes 1 item per block of straight distance between ports.
 item.rs_ctr.processor.stats=Complexity\: §c%d §b%d §9%d §7Size\: §f%d
 item.cd4017be.m\:battery.name=Redstone Battery
+item.cd4017be.m\:actuator.name=Remote Actuator
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -103,6 +106,12 @@ port.rs_ctr.energy_i=Energy IN
 port.rs_ctr.energy_o=Energy OUT
 port.rs_ctr.battery0=§cno capacitor\n§cinstalled!
 port.rs_ctr.battery=§aCharge\:\n§a%.4u / %.3u
+port.rs_ctr.inv0=source Inventory IN
+port.rs_ctr.inv1=destin. Inventory IN
+port.rs_ctr.slot0=source Slot IN
+port.rs_ctr.slot1=destin. Slot IN
+port.rs_ctr.am_i=Amount IN
+port.rs_ctr.am_o=Amount OUT
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
@@ -217,3 +226,5 @@ recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
 recipe.rs_ctr.sensors=Comparator tuning
 recipe.rs_ctr.capacity=%.4u Charge
+#added by ingame editor:
+#added by ingame editor:

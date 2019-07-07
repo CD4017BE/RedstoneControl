@@ -1,7 +1,6 @@
 package cd4017be.rs_ctr;
 
 import java.io.File;
-
 import org.apache.logging.log4j.Logger;
 
 import cd4017be.api.recipes.RecipeScriptContext;

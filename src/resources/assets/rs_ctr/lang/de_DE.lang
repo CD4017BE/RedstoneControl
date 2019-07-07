@@ -29,6 +29,8 @@ tile.rs_ctr.assembler.name=Prozessor Werkbank
 tile.rs_ctr.assembler.tip=Hiermit können Komponenten zu einem §6Redstone Prozessor§7 hinzugefügt werden um dessen Komplexitätwerte zu erhöhen.
 tile.rs_ctr.power_hub.name=Energieverteiler
 tile.rs_ctr.power_hub.tip=Kann bis zu 8 angeschlossene Geräte mit Energie versorgen.\nAkzeptiert Forge kompatible Energie durch die Blockrückseite.\n§oBetrieb erfordert den Einbau separater Akkumulatoren\: Siehe §9§oAnwendungsrezepte in JEI§7.\n§oObwohl sie nicht gelistet sind, fungieren auch alle Forge-Energie kompatiblen Items als Akkumulator.
+tile.rs_ctr.item_translocator.name=getakteter Itemübermittler
+tile.rs_ctr.item_translocator.tip=§nAnschlüsse\:\n§eQuellinventar / Zielinventar§7\: Blockreferenzen für die am Transfer beteiligten Inventare.\n§eQuellslot / Zielslot§7\: Slotnummer im jeweiligen Inventar aus der Items entnommen bzw. eingefügt werden.\n§eMenge EIN§7\: Anzahl zu übertragender Items (Transfer in Gegenrichtung bei negativem Wert)\n§eTakt EIN§7 löst neuen Itemtransfer aus bei Wertänderung.\n§eMenge AUS§7\: Anzahl tatsächlich übertragener Items.\n§eEnergie EIN§7 verbraucht Energie pro Taktpuls + pro übertragenes Item.
 
 # Chat Hinweise
 msg.rs_ctr.type=§cInkompatibler Anschlusstyp!
@@ -64,6 +66,7 @@ item.rs_ctr.wire_e.name=Energiekabel
 item.rs_ctr.wire_e.tip=Verbindet Energieanschlüsse nach dem gleichen Prinzip, wie das §6Signalkabel§7 Signalanschlüsse verbindet.\n§oVerbraucht 1 Kabel pro Block geradliniger Distanz.
 item.rs_ctr.processor.stats=Komplexität\: §c%d §b%d §9%d §7Größe\: §f%d
 item.cd4017be.m\:battery.name=Redstone Batterie
+item.cd4017be.m\:actuator.name=Ferninteraktionsmodul
 
 #Signalanschluss namen
 port.rs_ctr.rsR=Lesen
@@ -100,6 +103,12 @@ port.rs_ctr.energy_i=Energie EIN
 port.rs_ctr.energy_o=Energie AUS
 port.rs_ctr.battery0=§ckein Akkumulator\n§ceingebaut!
 port.rs_ctr.battery=§aLadung\:\n§a%.4u / %.3u
+port.rs_ctr.inv0=Quellinventar EIN
+port.rs_ctr.inv1=Zielinventar EIN
+port.rs_ctr.slot0=Quellslot EIN
+port.rs_ctr.slot1=Zielslot EIN
+port.rs_ctr.am_i=Menge EIN
+port.rs_ctr.am_o=Menge AUS
 sensor.rs_ctr.none=Komparatorwert
 sensor.rs_ctr.item=enthaltene\nItemanzahl
 sensor.rs_ctr.fluid=enthaltene\nFlüssigkeitsmenge [mB]
