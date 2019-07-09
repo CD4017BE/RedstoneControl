@@ -145,6 +145,7 @@ sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
 sensor.rs_ctr.fe=Stored Energy [RF]
 sensor.rs_ctr.eu=Stored Energy [EU]
+sensor.rs_ctr.dfr=Draconic Fusion Reactor\n[°C, RF/‰, ∑mB/‰] +/-
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d

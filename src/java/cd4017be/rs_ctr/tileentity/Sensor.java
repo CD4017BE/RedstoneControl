@@ -65,7 +65,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 
 	@Override
 	public void updateBlock(BlockReference ref) {
-		blockRef = ref;
+		impl.onRefChange(blockRef = ref);
 	}
 
 	@Override
