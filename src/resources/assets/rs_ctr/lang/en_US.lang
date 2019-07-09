@@ -11,7 +11,9 @@ tile.rs_ctr.splitter.tip=Repeats the incoming signal to four different destinati
 tile.rs_ctr.analog_comb.name=Analog Signal Combiner
 tile.rs_ctr.analog_comb.tip=Combines the 4 incoming signals by outputing the one with highest value.
 tile.rs_ctr.logic_comb.name=Logic Signal Combiner
-tile.rs_ctr.logic_comb.tip=Combines the for incomming signals by logical §eOR§7, where the outputs will emit §e65536§7 for §etrue§7 and §e0§7 for §efalse§7.\nThe output as well as each individual input can be set to inverted which also gives you the other logic-gate types §eAND§7, §eNAND§7 and §eNOR§7. 
+tile.rs_ctr.logic_comb.tip=Combines the four incomming signals by logical §eOR§7, where the outputs will emit §e65536§7 for §etrue§7 and §e0§7 for §efalse§7.\nThe output as well as each individual input can be set to inverted which also gives you the other logic-gate types §eAND§7, §eNAND§7 and §eNOR§7.
+tile.rs_ctr.xor_gate.name=XOR-Gate
+tile.rs_ctr.xor_gate.tip=Combines the four incomming signals by §eExclusive-OR§7, where the outputs will emit §e65536§7 if an §eodd number§7 of inputs is §etrue§7 and §e0§7 otherwise.
 tile.rs_ctr.num_comb.name=Arithmetic Signal Combiner
 tile.rs_ctr.num_comb.tip=Combines the 4 incomming signals by adding their values together.\nInputs can be negated which allows computing subtractions too.
 tile.rs_ctr.bin_comb.name=Binary Signal Packer
@@ -226,5 +228,3 @@ recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
 recipe.rs_ctr.sensors=Comparator tuning
 recipe.rs_ctr.capacity=%.4u Charge
-#added by ingame editor:
-#added by ingame editor:
