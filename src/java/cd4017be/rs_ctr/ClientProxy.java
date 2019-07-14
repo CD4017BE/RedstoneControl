@@ -4,6 +4,7 @@ import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.render.DialRenderer;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
@@ -39,6 +40,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 		SensorRegistry.RENDERER = PORT_RENDER;
+		DialRenderer.register();
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), false, PORT_RENDER));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, PROCESSOR, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, PROCESSOR, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, ANALOG_DSP);
 		
 		WIRE_ANCHOR.setBlockLayer(BlockRenderLayer.CUTOUT);
 		

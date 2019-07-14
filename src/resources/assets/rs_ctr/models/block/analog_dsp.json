@@ -1,0 +1,22 @@
+{
+	"parent": "block/block",
+    "textures": {
+		"side": "rs_ctr:blocks/gate",
+		"back": "rs_ctr:blocks/analog_dsp_b",
+		"main": "rs_ctr:blocks/analog_dsp",
+        "particle": "rs_ctr:blocks/analog_dsp"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 2 ],
+            "faces": {
+				"east":  { "uv": [ 0, 8, 16, 12 ], "rotation": 270, "texture": "#side", "cullface": "east" },
+                "west":    { "uv": [ 0, 8, 16, 12 ], "rotation": 90, "texture": "#side", "cullface": "west" },
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#back", "cullface": "north" },
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#main" },
+                "down":  { "uv": [ 0, 8, 16, 12 ], "texture": "#side", "cullface": "down" },
+                "up":  { "uv": [ 0, 8, 16, 12 ], "texture": "#side", "cullface": "up" }
+            }
+        }
+    ]
+}

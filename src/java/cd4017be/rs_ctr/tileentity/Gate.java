@@ -20,6 +20,7 @@ import cd4017be.lib.block.MultipartBlock.IModularTile;
 import cd4017be.lib.render.HybridFastTESR;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
+import cd4017be.rs_ctr.render.ISpecialRenderComp;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -232,7 +233,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasFastRenderer() {
-		return !HybridFastTESR.isAimedAt(this);
+		return !(this instanceof ISpecialRenderComp) && !HybridFastTESR.isAimedAt(this);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ import cd4017be.rs_ctr.item.*;
 import cd4017be.rs_ctr.port.WireType;
 import cd4017be.rs_ctr.tileentity.*;
 import static cd4017be.rs_ctr.block.PropertyGateOrient.GATE_ORIENT;
-import static cd4017be.lib.property.PropertyOrientation.HOR_AXIS;
+import static cd4017be.lib.property.PropertyOrientation.*;
 
 /**
  * 
@@ -50,6 +50,7 @@ public class Objects {
 	public static final BlockGate COMPARATOR = null;
 	public static final BlockGate POWER_HUB = null;
 	public static final BlockGate ITEM_TRANSLOCATOR = null;
+	public static final BlockGate ANALOG_DSP = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -67,6 +68,7 @@ public class Objects {
 	public static final BaseItemBlock comparator = null;
 	public static final BaseItemBlock power_hub = null;
 	public static final BaseItemBlock item_translocator = null;
+	public static final BaseItemBlock analog_dsp = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null;
@@ -102,7 +104,8 @@ public class Objects {
 				OrientedBlock.create("assembler", Material.IRON, SoundType.ANVIL, 0, Assembler.class, HOR_AXIS).setCreativeTab(tabCircuits),
 				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("item_translocator", Material.ROCK, SoundType.STONE, 3, ItemTranslocator.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("item_translocator", Material.ROCK, SoundType.STONE, 3, ItemTranslocator.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("analog_dsp", Material.CIRCUITS, SoundType.STONE, 7, AnalogDisplay.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.125)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -125,6 +128,7 @@ public class Objects {
 				new BaseItemBlock(COMPARATOR),
 				new BaseItemBlock(POWER_HUB),
 				new BaseItemBlock(ITEM_TRANSLOCATOR),
+				new BaseItemBlock(ANALOG_DSP),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),

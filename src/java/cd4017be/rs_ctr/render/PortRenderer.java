@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -35,6 +36,15 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 
 	private final HashMap<String, IntArrayModel> cache = new HashMap<>();
 	private final HashMap<String, BakedQuad[]> models = new HashMap<>();
+
+	@Override
+	protected void renderSpecialPart(TileEntity te, double x, double y, double z, float t, int destroy, float alpha) {
+		if (te instanceof ISpecialRenderComp) {
+			((ISpecialRenderComp)te).renderSpecial(x, y, z, t, getFontRenderer());
+			if (!isAimedAt(te)) return;
+		}
+		super.renderSpecialPart(te, x, y, z, t, destroy, alpha);
+	}
 
 	public void drawModel(BufferBuilder b, float x, float y, float z, Orientation o, int l, String model) {
 		IntArrayModel m = cache.get(model);
