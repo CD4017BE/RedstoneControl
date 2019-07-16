@@ -87,18 +87,14 @@ public class DialRenderer {
 	}
 
 	/**
-	 * @param d 0x01 - 0x09 -> .1 - .9, 0x10 - 0x19 -> 0 - 9, 0x21 - 0x29 -> 10 - 90, 0x31 - 0x39 -> 100 - 900
+	 * @param d 0x00 - 0x09 -> .0 - .9, 0x10 - 0x19 -> 0 - 9, 0x20 - 0x29 -> 00 - 90, 0x30 - 0x39 -> 000 - 900
 	 */
 	static BakedQuad digit(float x, float y, float z, float h, int d, EnumFacing side, int color) {
 		float f, w;
 		if (d < 0) {
-			f = 11.25F - (float)d * .75F;
-			w = .5F;
-			d = 9;
-		} else if ((d & 15) == 0) {
 			f = 15.25F;
 			w = .75F;
-			d |= 1;
+			d = 0;
 		} else if (d < 16) {
 			f = 12.75F;
 			w = 1.25F;
@@ -108,7 +104,7 @@ public class DialRenderer {
 		}
 		int zi = floatToIntBits(z);
 		int u0 = floatToIntBits(sprite.getInterpolatedU(f)), u1 = floatToIntBits(sprite.getInterpolatedU(f + w));
-		f = (float)(d - 1 & 15) * 1.5F;
+		f = (float)(d & 15) * 1.25F;
 		int v0 = floatToIntBits(sprite.getInterpolatedV(f)), v1 = floatToIntBits(sprite.getInterpolatedV(f + 1.25F));
 		w *= h / 1.25F; h /= 2;
 		int[] data = new int[] {
@@ -135,24 +131,10 @@ public class DialRenderer {
 		if (n < 10) {
 			quads.add(digit(x, y, z, h, n | (exp + 1) << 4, side, color));
 			return (exp < 0 ? .4F : (float)exp * .8F) + .8F;
+		} else {
+			float w = drawNumber(quads, x, y, z, h, n / 10, Math.min(exp + 1, 0), color, side);
+			return w + drawNumber(quads, x + w * h, y, z, h, n % 10, exp < -1 ? 0 : exp, color, side);
 		}
-		if (n % 10 == 0)
-			return drawNumber(quads, x, y, z, h, n / 10, exp + 1, color, side);
-		float w = drawNumber(quads, x, y, z, h, n / 10, Math.min(exp + 1, 0), color, side);
-		if (exp < -1) {
-			if (exp < -2) {
-				quads.add(digit(x + w * h, y, z, h, -2, side, color));
-				w += .4F;
-				do {
-					quads.add(digit(x + w * h, y, z, h, 0, side, color));
-					w += .8F;
-					exp++;
-				} while(exp < -2);
-				exp = 0;
-			} else exp = -1;
-		}
-		quads.add(digit(x + w * h, y, z, h, n % 10 | (exp + 1) << 4, side, color));
-		return w + (exp < 0 ? .4F : (float)exp * .8F) + .8F;
 	}
 
 	@SubscribeEvent
@@ -236,7 +218,7 @@ public class DialRenderer {
 			for (int i = 0; i < data.length;)
 				quads.add(new BakedQuad(Arrays.copyOfRange(data, i, i += 28), -1, side, sprite, true, DefaultVertexFormats.BLOCK));
 			//scale numbers
-			if (Math.abs(f) < 1000) {
+			if (Math.abs(f) <= 1000) {
 				int de = 0;
 				for (float f_ = Math.max(Math.abs(f), Math.abs(f + df)); f_ >= 10; f_ /= 10) de++;
 				exp = Math.floorMod(exp + de, 3) - de;
@@ -258,17 +240,22 @@ public class DialRenderer {
 					i = (int)Math.ceil((f + df) / (float)m) * m;
 					j = (int)Math.floor(f / (float)m) * m;
 				}
-				float w = (Math.max(len(i, exp), len(j, exp)) > 2 ? 0.5F : 0.75F) * (float)(rad1 - rad0);
+				float w = exp < 0 ? 2 : exp * 4;
+				for (int k = Math.max(Math.abs(i), Math.abs(j)); k >= 10; k /= 10) w += 4;
+				w = (w >= 8 ? 0.5F : 0.75F) * (float)(rad1 - rad0);
 				for (; i <= j; i+=m) {
 					double a = angle0 + ((double)i - f) / df * (angle1 - angle0);
 					double sin = Math.sin(a), cos = Math.cos(a);
 					float l = w * len(i, exp); double r = rad0 - (l * Math.abs(sin) + w * Math.abs(cos)) / 2D;
 					float x = (float)(offset.x + r * sin) - l/2F, y = (float)(offset.y + r * cos), z = (float)offset.z;
-					int k = i;
-					if (k < 0) {
+					int k, e;
+					if (i < 0) {
 						quads.add(digit(x, y, z, w, -1, side, color));
-						drawNumber(quads, x + .6F * w, y, z, w, -i, exp, color, side);
-					} else drawNumber(quads, x, y, z, w, i, exp, color, side);
+						x += .6F * w; k = -i;
+					} else k = i;
+					if (k == 0) e = 0;
+					else for(e = exp; k % 10 == 0; k /= 10) e++;
+					drawNumber(quads, x, y, z, w, k, e, color, side);
 				}
 			} {
 				float w = (float)(rad1 - rad0) * 0.25F;
