@@ -16,13 +16,10 @@ public class SignalSplitter extends WallMountGate {
 	protected int state;
 
 	{
-		ports = new MountedPort[] {
-			new MountedPort(this, 0, SignalHandler.class, true).setName("port.rs_ctr.o"),
-			new MountedPort(this, 1, SignalHandler.class, true).setName("port.rs_ctr.o"),
-			new MountedPort(this, 2, SignalHandler.class, true).setName("port.rs_ctr.o"),
-			new MountedPort(this, 3, SignalHandler.class, true).setName("port.rs_ctr.o"),
-			new MountedPort(this, 4, SignalHandler.class, false).setName("port.rs_ctr.i")
-		};
+		ports = new MountedPort[5];
+		for (int i = 0; i < 4; i++)
+			ports[i] = new MountedPort(this, i, SignalHandler.class, true).setLocation(0.75F, 0.125F + i * 0.25F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o");
+		ports[4] = new MountedPort(this, 4, SignalHandler.class, false).setLocation(0.25F, 0.5F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.i");
 	}
 
 	@Override
@@ -58,12 +55,6 @@ public class SignalSplitter extends WallMountGate {
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode == SAVE) state = nbt.getInteger("state");
 		super.loadState(nbt, mode);
-	}
-
-	protected void orient() {
-		for (int i = 0; i < 4; i++)
-			ports[i].setLocation(0.75F, 0.125F + i * 0.25F, 0.125F, EnumFacing.EAST, o);
-		ports[4].setLocation(0.25F, 0.5F, 0.125F, EnumFacing.WEST, o);
 	}
 
 }

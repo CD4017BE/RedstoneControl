@@ -5,6 +5,7 @@ import java.util.List;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.gui.BlockButton;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,10 +65,10 @@ public class NummericCombiner extends SignalCombiner {
 	}
 
 	@Override
-	protected void orient() {
+	protected void orient(Orientation o) {
 		for (int i = 0; i < 4; i++)
 			buttons[i].setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
-		super.orient();
+		super.orient(o);
 	}
 
 }

@@ -239,10 +239,20 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	@Override
 	public void updateContainingBlockInfo() {
 		super.updateContainingBlockInfo();
-		o = super.getOrientation();
+		orient(super.getOrientation());
 		for (RelayPort port : hooks.values())
 			port.orient(o);
 		gui = null;
+	}
+
+	protected void orient(Orientation o) {
+		if (o == this.o) return;
+		for (MountedPort port : ports) {
+			Vec3d pos = o.rotate(this.o.invRotate(port.pos.addVector(-.5, -.5, -.5)));
+			EnumFacing side = o.rotate(this.o.invRotate(port.face));
+			port.setLocation(pos.x + .5, pos.y + .5, pos.z + .5, side);
+		}
+		this.o = o;
 	}
 
 }

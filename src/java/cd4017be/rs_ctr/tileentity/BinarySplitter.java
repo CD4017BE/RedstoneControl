@@ -4,6 +4,7 @@ import java.util.List;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.gui.BlockButton;
 import net.minecraft.nbt.NBTTagCompound;
@@ -67,9 +68,9 @@ public class BinarySplitter extends SignalSplitter {
 	}
 
 	@Override
-	protected void orient() {
+	protected void orient(Orientation o) {
 		button.setLocation(0.375F, 0.5F, 0.25F, o);
-		super.orient();
+		super.orient(o);
 	}
 
 	@Override

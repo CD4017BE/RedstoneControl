@@ -20,6 +20,7 @@ import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.Circuit;
@@ -203,11 +204,17 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			circuit = mode == ITEM ? new CompiledCircuit() : new UnloadedCircuit();
 			circuit.deserializeNBT(nbt);
 			NBTTagList names = nbt.getTagList("labels", NBT.TAG_STRING);
-			int in = circuit.inputs.length, out = circuit.outputs.length + in;
+			int in = circuit.inputs.length, out = circuit.outputs.length;
+			int oin = (4 - in) >> 1, oout = ((4 - out) >> 1) - in;
+			out += in;
 			ports = new MountedPort[out + 1];
-			for (int i = 0; i < out; i++)
-				ports[i] = new MountedPort(this, i, SignalHandler.class, i >= in).setName("\\" + names.getStringTagAt(i));
-			ports[out] = new MountedPort(this, out, EnergyHandler.class, true).setName("port.rs_ctr.energy_i");
+			for (int i = 0; i < out; i++) {
+				int j = i + (i < in ? oin : oout);
+				int k = j < 0 ? 0 : j > 3 ? 3 : j;
+				j = k > j ? k - j : j - k;
+				ports[i] = new MountedPort(this, i, SignalHandler.class, i >= in).setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.875 - k * 0.25, 0.25, EnumFacing.SOUTH, o).setName("\\" + names.getStringTagAt(i));
+			}
+			ports[out] = new MountedPort(this, out, EnergyHandler.class, true).setLocation(0.5, 1.0, 0.125, EnumFacing.UP, o).setName("port.rs_ctr.energy_i");
 			name = nbt.getString("name");
 			keys = circuit.getState().nbt.getKeySet().toArray(keys);
 			Arrays.sort(keys);
@@ -250,18 +257,9 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	}
 
 	@Override
-	protected void orient() {
+	protected void orient(Orientation o) {
 		coreBtn.setLocation(0.5, 0.5, 0.4375, o);
-		int in = circuit.inputs.length, out = circuit.outputs.length;
-		int oin = (4 - in) >> 1, oout = ((4 - out) >> 1) - in;
-		out += in;
-		for (int i = 0; i < out; i++) {
-			int j = i + (i < in ? oin : oout);
-			int k = j < 0 ? 0 : j > 3 ? 3 : j;
-			j = k > j ? k - j : j - k;
-			ports[i].setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.875 - k * 0.25, 0.25, EnumFacing.SOUTH, o);
-		}
-		ports[out].setLocation(0.5, 1.0, 0.125, EnumFacing.UP, o);
+		super.orient(o);
 	}
 
 	@Override

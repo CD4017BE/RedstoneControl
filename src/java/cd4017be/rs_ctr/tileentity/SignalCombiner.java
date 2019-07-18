@@ -21,14 +21,11 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 	protected DelayedSignal delayed;
 
 	{
-		ports = new MountedPort[] {
-			new MountedPort(this, 0, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedPort(this, 2, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedPort(this, 3, SignalHandler.class, false).setName("port.rs_ctr.i"),
-			new MountedPort(this, 4, SignalHandler.class, true).setName("port.rs_ctr.o"),
-			new MountedPort(this, 5, SignalHandler.class, true).setName("port.rs_ctr.o")
-		};
+		ports = new MountedPort[6];
+		for (int i = 0; i < 4; i++)
+			ports[i] = new MountedPort(this, i, SignalHandler.class, false).setLocation(0.25F, 0.125F + i * 0.25F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.i");
+		ports[4] = new MountedPort(this, 4, SignalHandler.class, true).setLocation(0.75F, 0.375F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o");
+		ports[5] = new MountedPort(this, 5, SignalHandler.class, true).setLocation(0.75F, 0.625F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o");
 	}
 
 	@Override
@@ -104,13 +101,6 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 			System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
 			tick = 0;
 		}
-	}
-
-	protected void orient() {
-		for (int i = 0; i < 4; i++)
-			ports[i].setLocation(0.25F, 0.125F + i * 0.25F, 0.125F, EnumFacing.WEST, o);
-		ports[4].setLocation(0.75F, 0.375F, 0.125F, EnumFacing.EAST, o);
-		ports[5].setLocation(0.75F, 0.625F, 0.125F, EnumFacing.EAST, o);
 	}
 
 }

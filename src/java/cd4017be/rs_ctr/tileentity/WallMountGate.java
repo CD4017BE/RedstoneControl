@@ -19,18 +19,9 @@ public abstract class WallMountGate extends Gate {
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode <= CLIENT) {
-			o = Orientation.values()[nbt.getByte("o") & 0xf];
-			orient();
-		} else if (mode == ITEM) orient();
+			orient(Orientation.values()[nbt.getByte("o") & 0xf]);
+		} else if (mode == ITEM) orient(o);
 		super.loadState(nbt, mode);
 	}
-
-	@Override
-	public void updateContainingBlockInfo() {
-		super.updateContainingBlockInfo();
-		orient();
-	}
-
-	protected abstract void orient();
 
 }

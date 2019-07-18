@@ -22,9 +22,10 @@ import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.render.model.IntArrayModel;
+import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Main;
-import cd4017be.rs_ctr.render.DialRenderer.Layout;
+import cd4017be.rs_ctr.render.PanelRenderer.Layout;
 import cd4017be.rs_ctr.render.ISpecialRenderComp;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -53,7 +54,9 @@ public class AnalogDisplay extends WallMountGate implements SignalHandler, ITESR
 	int max = 15, min = 0, exp = 0;
 	String title = "", unit = "";
 	int value;
-	{ports = new MountedPort[] {new MountedPort(this, 0, SignalHandler.class, false).setName("port.rs_ctr.i")};}
+	{
+		ports = new MountedPort[] {new MountedPort(this, 0, SignalHandler.class, false).setLocation(0.5, 0.5, 0, EnumFacing.NORTH).setName("port.rs_ctr.i")};
+	}
 
 	@Override
 	public SignalHandler getPortCallback(int pin) {
@@ -103,10 +106,9 @@ public class AnalogDisplay extends WallMountGate implements SignalHandler, ITESR
 	}
 
 	@Override
-	protected void orient() {
-		if (world != null && world.isRemote)
-			model = null;
-		ports[0].setLocation(0.5, 0.5, 0, EnumFacing.NORTH, o);
+	protected void orient(Orientation o) {
+		super.orient(o);
+		if (world != null && world.isRemote) model = null;
 		btnPos = o.rotate(new Vec3d(0, -0.4375, -0.375)).addVector(0.5, 0.5, 0.5);
 	}
 

@@ -30,13 +30,13 @@ import java.util.List;
  *
  */
 @SideOnly(Side.CLIENT)
-public class DialRenderer {
+public class PanelRenderer {
 
-	static final DialRenderer INSTANCE = new DialRenderer();
+	static final PanelRenderer INSTANCE = new PanelRenderer();
 
 	public static void register() {}
 
-	private DialRenderer() {
+	private PanelRenderer() {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

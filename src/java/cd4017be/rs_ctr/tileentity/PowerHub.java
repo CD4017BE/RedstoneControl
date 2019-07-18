@@ -51,7 +51,7 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	{
 		ports = new MountedPort[8];
 		for (int i = 0; i < 8; i++)
-			ports[i] = new MountedPort(this, i, EnergyHandler.class, false).setName("port.rs_ctr.energy_o");
+			ports[i] = new MountedPort(this, i, EnergyHandler.class, false).setLocation(i < 4 ? 0.125 : 0.875, 0.125 + (i & 3) * 0.25, 0.5, EnumFacing.SOUTH).setName("port.rs_ctr.energy_o");
 		//ports[8] = new MountedSignalPort(this, 8, SignalHandler.class, true).setName("port.rs_ctr.charge_o");
 	}
 
@@ -94,12 +94,6 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing facing) {
 		return cap == CapabilityEnergy.ENERGY && facing == o.front ? (T) this : null;
-	}
-
-	@Override
-	protected void orient() {
-		for (int i = 0; i < 8; i++)
-			ports[i].setLocation(i < 4 ? 0.125 : 0.875, 0.125 + (i & 3) * 0.25, 0.5, EnumFacing.SOUTH, o);
 	}
 
 	@Override

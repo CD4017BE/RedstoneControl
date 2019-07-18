@@ -27,14 +27,14 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 
 	{
 		ports = new MountedPort[] {
-			new MountedPort(this, 0, BlockHandler.class, false).setName("port.rs_ctr.inv0"),
-			new MountedPort(this, 1, BlockHandler.class, false).setName("port.rs_ctr.inv1"),
-			new MountedPort(this, 2, EnergyHandler.class, true).setName("port.rs_ctr.energy_i"),
-			new MountedPort(this, 3, SignalHandler.class, false).setName("port.rs_ctr.slot0"),
-			new MountedPort(this, 4, SignalHandler.class, false).setName("port.rs_ctr.slot1"),
-			new MountedPort(this, 5, SignalHandler.class, false).setName("port.rs_ctr.clk"),
-			new MountedPort(this, 6, SignalHandler.class, false).setName("port.rs_ctr.am_i"),
-			new MountedPort(this, 7, SignalHandler.class, true).setName("port.rs_ctr.am_o"),
+			new MountedPort(this, 0, BlockHandler.class, false).setLocation(0.875, 0.625, 0.25, EnumFacing.NORTH).setName("port.rs_ctr.inv0"),
+			new MountedPort(this, 1, BlockHandler.class, false).setLocation(0.125, 0.625, 0.25, EnumFacing.NORTH).setName("port.rs_ctr.inv1"),
+			new MountedPort(this, 2, EnergyHandler.class, true).setLocation(0.375, 0.25, 0.125, EnumFacing.UP).setName("port.rs_ctr.energy_i"),
+			new MountedPort(this, 3, SignalHandler.class, false).setLocation(0.875, 0.875, 0.25, EnumFacing.NORTH).setName("port.rs_ctr.slot0"),
+			new MountedPort(this, 4, SignalHandler.class, false).setLocation(0.125, 0.875, 0.25, EnumFacing.NORTH).setName("port.rs_ctr.slot1"),
+			new MountedPort(this, 5, SignalHandler.class, false).setLocation(0.625, 0.25, 0.125, EnumFacing.UP).setName("port.rs_ctr.clk"),
+			new MountedPort(this, 6, SignalHandler.class, false).setLocation(0.875, 0.25, 0.125, EnumFacing.UP).setName("port.rs_ctr.am_i"),
+			new MountedPort(this, 7, SignalHandler.class, true).setLocation(0.125, 0.25, 0.125, EnumFacing.UP).setName("port.rs_ctr.am_o"),
 		};
 	}
 
@@ -112,18 +112,6 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 		if ((am = stack.getCount()) > 0 && (am -= toInv.insertItem(toSlot, stack, false).getCount()) > 0)
 			fromInv.extractItem(fromSlot, am, false);
 		return am;
-	}
-
-	@Override
-	protected void orient() {
-		ports[0].setLocation(0.875, 0.625, 0.25, EnumFacing.NORTH, o);
-		ports[1].setLocation(0.125, 0.625, 0.25, EnumFacing.NORTH, o);
-		ports[2].setLocation(0.375, 0.25, 0.125, EnumFacing.UP, o);
-		ports[3].setLocation(0.875, 0.875, 0.25, EnumFacing.NORTH, o);
-		ports[4].setLocation(0.125, 0.875, 0.25, EnumFacing.NORTH, o);
-		ports[5].setLocation(0.625, 0.25, 0.125, EnumFacing.UP, o);
-		ports[6].setLocation(0.875, 0.25, 0.125, EnumFacing.UP, o);
-		ports[7].setLocation(0.125, 0.25, 0.125, EnumFacing.UP, o);
 	}
 
 }

@@ -4,7 +4,7 @@ import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
-import cd4017be.rs_ctr.render.DialRenderer;
+import cd4017be.rs_ctr.render.PanelRenderer;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
@@ -40,7 +40,7 @@ public class ClientProxy extends CommonProxy {
 	public void preInit() {
 		super.preInit();
 		SensorRegistry.RENDERER = PORT_RENDER;
-		DialRenderer.register();
+		PanelRenderer.register();
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,9 +40,9 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 
 	{
 		ports = new MountedPort[] {
-			new MountedPort(this, 0, BlockHandler.class, false).setName("port.rs_ctr.bi"),
-			new MountedPort(this, 1, SignalHandler.class, false).setName("port.rs_ctr.clk"),
-			new MountedPort(this, 2, SignalHandler.class, true).setName("port.rs_ctr.o")
+			new MountedPort(this, 0, BlockHandler.class, false).setLocation(0.25F, 0.25F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.bi"),
+			new MountedPort(this, 1, SignalHandler.class, false).setLocation(0.25F, 0.75F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.clk"),
+			new MountedPort(this, 2, SignalHandler.class, true).setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o")
 		};
 	}
 
@@ -101,10 +102,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	}
 
 	@Override
-	protected void orient() {
-		ports[0].setLocation(0.25F, 0.25F, 0.125F, EnumFacing.WEST, o);
-		ports[1].setLocation(0.25F, 0.75F, 0.125F, EnumFacing.WEST, o);
-		ports[2].setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST, o);
+	protected void orient(Orientation o) {
+		super.orient(o);
 		mountPos = o.rotate(new Vec3d(0, 0, -0.25)).addVector(0.5, 0.5, 0.5);
 	}
 
