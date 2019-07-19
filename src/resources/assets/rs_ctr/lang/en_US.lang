@@ -34,6 +34,8 @@ tile.rs_ctr.power_hub.name=Energy Distributor
 tile.rs_ctr.power_hub.tip=Provides energy for up to 8 attached devices.\nAcceps Forge Energy compatible power through the block's back side.\n§oOnly works with capacitors installed\: See §9§oJEI usage recipes§7.\n§oAlthough not listed, all Forge Energy compatible items can be used as well.
 tile.rs_ctr.item_translocator.name=clocked Item Translocator
 tile.rs_ctr.item_translocator.tip=TODO
+tile.rs_ctr.panel.name=Control Panel
+tile.rs_ctr.panel.tip=The surface is divided into a 4x4 grid where different §6Modules§7 can be attached. Ports for connecting wires to those Modules are on the back side.\nUse a §6Screwdriver§7 to configure or remove modules.\n§oAll installed Modules and configuration is kept when broken.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -69,6 +71,8 @@ item.rs_ctr.clock.tip=Emits a continuous square-wave singal into the port it's a
 item.rs_ctr.wire_e.name=Energy Wire
 item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 connects signal ports.\n§oConsumes 1 item per block of straight distance between ports.
 item.rs_ctr.processor.stats=Complexity\: §c%d §b%d §9%d §7Size\: §f%d
+item.rs_ctr.wrench.name=Screwdriver
+item.rs_ctr.wrench.tip=§aUse§7 on §6Panel§7 to edit a module's configuration.\n§aSneak-use§7 on §6Panel§7 to remove a module.
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Remote Actuator
 

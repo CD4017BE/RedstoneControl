@@ -51,6 +51,7 @@ public class Objects {
 	public static final BlockGate POWER_HUB = null;
 	public static final BlockGate ITEM_TRANSLOCATOR = null;
 	public static final BlockGate ANALOG_DSP = null;
+	public static final BlockGate PANEL = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -69,6 +70,7 @@ public class Objects {
 	public static final BaseItemBlock power_hub = null;
 	public static final BaseItemBlock item_translocator = null;
 	public static final BaseItemBlock analog_dsp = null;
+	public static final BaseItemBlock panel = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null;
@@ -79,6 +81,7 @@ public class Objects {
 	public static final ItemBlockProbe block_wire = null;
 	public static final ItemClock clock = null;
 	public static final BaseItem circuitboard = null;
+	public static final ItemWrench wrench = null;
 
 	public static void init() {
 		tabCircuits.item = new ItemStack(wire);
@@ -105,7 +108,8 @@ public class Objects {
 				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("item_translocator", Material.ROCK, SoundType.STONE, 3, ItemTranslocator.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("analog_dsp", Material.CIRCUITS, SoundType.STONE, 31, AnalogDisplay.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.125)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("analog_dsp", Material.CIRCUITS, SoundType.STONE, 31, AnalogDisplay.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.125)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("panel", Material.CIRCUITS, SoundType.STONE, 31, Panel.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.125)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -129,6 +133,7 @@ public class Objects {
 				new BaseItemBlock(POWER_HUB),
 				new BaseItemBlock(ITEM_TRANSLOCATOR),
 				new BaseItemBlock(ANALOG_DSP),
+				new BaseItemBlock(PANEL),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
@@ -136,7 +141,8 @@ public class Objects {
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
 				new ItemWireTag("tag").setCreativeTab(tabCircuits),
 				new ItemBlockProbe("block_wire").setCreativeTab(tabCircuits),
-				new ItemClock("clock").setCreativeTab(tabCircuits)
+				new ItemClock("clock").setCreativeTab(tabCircuits),
+				new ItemWrench("wrench").setCreativeTab(tabCircuits)
 		);
 	}
 
