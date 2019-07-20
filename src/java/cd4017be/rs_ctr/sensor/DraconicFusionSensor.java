@@ -9,15 +9,20 @@ import cd4017be.lib.jvm_utils.FieldWrapper;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Main;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTPrimitive;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.INBTSerializable;
+
 import static cd4017be.lib.jvm_utils.ClassUtils.*;
 
 /**
  * @author CD4017BE
  *
  */
-public class DraconicFusionSensor implements IBlockSensor {
+public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTBase> {
 
 	private static final Class<?>
 		C_REACTOR_COMP = getClassOrNull("com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorComponent"),
@@ -52,17 +57,27 @@ public class DraconicFusionSensor implements IBlockSensor {
 		}
 	}
 
+	IHost host;
+	/**
+	 * cached references to Reactor Core state fields.
+	 * Conveniently DE wraped them in isolated objects so there is no reference to the TileEntity itself kept im memory.
+	 */
 	FieldWrapper<?> satur, maxSatur, fuel, chaos, temp, shield, maxShield;
 	FieldWrapper<Enum<?>> mode;
 	IBlockState lastBlock;
-	boolean valid;
+	byte lastMode = -2;
 
 	@Override
 	public int readValue(BlockReference block) {
-		if (block.getState() != lastBlock) onRefChange(block);
-		if (!valid) return 0;
-		switch(mode.get().ordinal()) {
-		case 0: //TEMP -> T [°C]
+		if (block.getState() != lastBlock) onRefChange(block, host);
+		if (lastMode < 0) return 0;
+		int m = mode.get().ordinal();
+		if (m != lastMode && host != null) {
+			lastMode = (byte) m;
+			host.syncSensorState();
+		}
+		switch(m) {
+		case 0: //TEMP -> T [Â°C]
 			return (int)temp.getAsDouble();
 		case 1: { //TEMP_INV -> reactor status
 			int t = (int)temp.getAsDouble();
@@ -87,13 +102,17 @@ public class DraconicFusionSensor implements IBlockSensor {
 	}
 
 	@Override
-	public void onRefChange(BlockReference block) {
+	public void onRefChange(BlockReference block, IHost host) {
+		this.host = host;
 		lastBlock = block != null ? block.getState() : null;
-		valid = false;
-		if (INVALID_API || block == null) return;
-		TileEntity te = block.getTileEntity();
+		if (INVALID_API) return;
+		TileEntity te = block == null ? null : block.getTileEntity();
 		if (!C_REACTOR_COMP.isInstance(te)) {
 			fuel = chaos = temp = shield = maxShield = satur = maxSatur = mode = null;
+			if (lastMode != -1) {
+				lastMode = -1;
+				host.syncSensorState();
+			}
 			return;
 		}
 		try {
@@ -107,23 +126,42 @@ public class DraconicFusionSensor implements IBlockSensor {
 				maxShield = new FieldWrapper<>(F_DOUBLE_VALUE, F_MAX_SHIELD.get(core));
 				satur = new FieldWrapper<>(F_INT_VALUE, F_SATURATION.get(core));
 				maxSatur = new FieldWrapper<>(F_INT_VALUE, F_MAX_SATURATION.get(core));
+				if (lastMode < 0) {
+					lastMode = (byte) mode.get().ordinal();
+					host.syncSensorState();
+				}
+				return;
 			} else
 				fuel = chaos = temp = shield = maxShield = satur = maxSatur = null;
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			Main.LOG.error("API to Draconic Fusion Reactor is probably outdated: ", e);
 			INVALID_API = true;
 		}
+		if (lastMode != -1) {
+			lastMode = -1;
+			host.syncSensorState();
+		}
 	}
 
 	@Override
 	public String getTooltipString() {
-		return TooltipUtil.translate("sensor.rs_ctr.dfr");
+		return TooltipUtil.translate("sensor.rs_ctr.dfr" + lastMode);
 	}
 
 	@Override
 	public ResourceLocation getModel() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public NBTBase serializeNBT() {
+		return new NBTTagByte(lastMode);
+	}
+
+	@Override
+	public void deserializeNBT(NBTBase nbt) {
+		lastMode = ((NBTPrimitive)nbt).getByte();
 	}
 
 }

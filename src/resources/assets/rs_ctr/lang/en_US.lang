@@ -145,7 +145,16 @@ sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
 sensor.rs_ctr.fe=Stored Energy [RF]
 sensor.rs_ctr.eu=Stored Energy [EU]
-sensor.rs_ctr.dfr=Draconic Fusion Reactor\n[°C, RF/‰, ∑mB/‰] +/-
+sensor.rs_ctr.dfr-2=Draconic Fusion Reactor\n[°C, RF/‰, ∑mB/‰] +/-
+sensor.rs_ctr.dfr-1=Draconic Fusion Reactor\n§7no Stabilizer or Injector connected!
+sensor.rs_ctr.dfr0=temperature mode:\nTemperature [°C]
+sensor.rs_ctr.dfr1=inverted temperature mode:\nStatus {-1:cold, 0:offline, 1:savety, 2:normal, 3:overheat}
+sensor.rs_ctr.dfr2=containment field mode:\nField Charge [RF]
+sensor.rs_ctr.dfr3=inverted containment field mode:\nField Strenght [0...1000]
+sensor.rs_ctr.dfr4=core saturation mode:\nCore Charge [RF]
+sensor.rs_ctr.dfr5=inverted core saturation mode:\nCore Saturation [0...1000]
+sensor.rs_ctr.dfr6=fuel mode:\nTotal Core Mass [mB]
+sensor.rs_ctr.dfr7=inverted fuel mode:\nFuel Conversion [0...1000]
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d

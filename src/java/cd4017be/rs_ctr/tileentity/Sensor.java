@@ -11,6 +11,7 @@ import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.sensor.IBlockSensor;
+import cd4017be.api.rs_ctr.sensor.IBlockSensor.IHost;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
@@ -18,11 +19,13 @@ import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class Sensor extends WallMountGate implements BlockHandler, SignalHandler, IInteractiveComponent, IBlockRenderComp {
+public class Sensor extends WallMountGate implements BlockHandler, SignalHandler, IInteractiveComponent, IBlockRenderComp, IHost {
 
 	protected SignalHandler out;
 	protected BlockReference blockRef;
@@ -65,7 +68,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 
 	@Override
 	public void updateBlock(BlockReference ref) {
-		impl.onRefChange(blockRef = ref);
+		impl.onRefChange(blockRef = ref, this);
 	}
 
 	@Override
@@ -85,10 +88,14 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 			nbt.setInteger("clk", clock);
 			nbt.setInteger("val", value);
 		}
-		if (!stack.isEmpty())
+		if (!stack.isEmpty()) {
 			nbt.setTag("sensor", stack.writeToNBT(new NBTTagCompound()));
+			if (mode != SAVE && impl instanceof INBTSerializable)
+				nbt.setTag("sync", ((INBTSerializable<?>)impl).serializeNBT());
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		super.loadState(nbt, mode);
@@ -99,6 +106,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		}
 		stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;
 		impl = SensorRegistry.get(stack);
+		if (mode != SAVE && impl instanceof INBTSerializable)
+			((INBTSerializable<NBTBase>)impl).deserializeNBT(nbt.getTag("sync"));
 	}
 
 	@Override
@@ -159,6 +168,11 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		ResourceLocation model = impl.getModel();
 		if (model != null)
 			PortRenderer.PORT_RENDER.drawModel(quads, (float)mountPos.x, (float)mountPos.y, (float)mountPos.z, o, model.toString());
+	}
+
+	@Override
+	public void syncSensorState() {
+		markDirty(SYNC);
 	}
 
 }
