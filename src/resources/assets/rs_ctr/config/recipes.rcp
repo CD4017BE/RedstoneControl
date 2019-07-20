@@ -1,4 +1,4 @@
-VERSION = 44;
+VERSION = 45;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -104,6 +104,8 @@ INIT() {
 	add("shaped", 4 * it("item.block_wire"), "10 /020/ 01", it("item.wire"), "gemQuartz", "gemLapis");
 	add("shaped", it("item.clock"), "0/1", it("item.wire"), it("minecraft:clock"));
 	add("shaped", it("item.wrench"), "0/0/1", "nuggetIron", "plankWood");
+	add("shaped", it("item.pointer_dsp"), "0/1", it("minecraft:compass"), it("item.wire"));
+	add("shaped", it("item.seg7"), "010/212", "dustGlowstone", "gemQuartz", it("item.wire"));
 	Loc tag = nbt(); tag:"Istats" = [16, 12, 8, 12, 28, 88]#; !prototype processor (eqivalent to assembly with same materials except less remaining space)
 	add("shaped", it("tile.processor") + tag, "021/041/031", it("tile.rs_port"):0, it("tile.rs_port"):1, "blockQuartz", "blockRedstone", "ingotIron");
 	tag = nbt(); tag:"Istats" = [0, 0, 0, 64, 0, 0]#; !empty processor (64 component space)

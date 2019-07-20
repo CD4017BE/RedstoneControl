@@ -34,6 +34,9 @@ import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
 import cd4017be.rs_ctr.tileentity.PowerHub;
+import cd4017be.rs_ctr.tileentity.part.Module;
+import cd4017be.rs_ctr.tileentity.part.PointerDisplay;
+import cd4017be.rs_ctr.tileentity.part._7Segment;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
@@ -119,6 +122,9 @@ public class CommonProxy implements IRecipeHandler {
 		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
 		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
 		IConnector.REGISTRY.put(Clock.ID, Clock::new);
+		
+		Module.REGISTRY.put(_7Segment.ID, _7Segment::new);
+		Module.REGISTRY.put(PointerDisplay.ID, PointerDisplay::new);
 	}
 
 	private void registerSensor(IBlockSensor sensor, Object[] items) {

@@ -4,8 +4,6 @@ import cd4017be.lib.render.Util;
 import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -279,19 +277,6 @@ public class PanelRenderer {
 				Util.rotate(data, 7, rot);
 				Util.rotate(data, 14, rot);
 				Util.rotate(data, 21, rot);
-			}
-		}
-
-		public void drawText(FontRenderer fr, String title, String unit) {
-			GlStateManager.translate(0.0625 - 0.5, 0.9375 - 0.5, offset.z - 0.5);
-			GlStateManager.scale(7.8125e-3, -7.8125e-3, -1);
-			int w = 112;
-			if (this == Layout.CIRCLE) {
-				fr.drawString(title, (w - fr.getStringWidth(title)) / 2, 4, 0xff000000);
-				fr.drawString(unit, (w - fr.getStringWidth(unit)) / 2, 76, 0xff000000);
-			} else {
-				fr.drawSplitString(title, 1, 4, 80, 0xff000000);
-				fr.drawString(unit, (w - fr.getStringWidth(unit) + 40) / 2, 76, 0xff000000);
 			}
 		}
 

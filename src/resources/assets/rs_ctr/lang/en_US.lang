@@ -73,6 +73,10 @@ item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 con
 item.rs_ctr.processor.stats=Complexity\: §c%d §b%d §9%d §7Size\: §f%d
 item.rs_ctr.wrench.name=Screwdriver
 item.rs_ctr.wrench.tip=§aUse§7 on §6Panel§7 to edit a module's configuration.\n§aSneak-use§7 on §6Panel§7 to remove a module.
+item.rs_ctr.seg7.name=7-Segment Display Module
+item.rs_ctr.seg7.tip=A 4-digit 7-Segment LED-Display Module to attach on a §6Control Panel§7.\nProvides integrated encoder logic for decimal and hexadecimal. The §eOUT§7 signal can be used to chain multiple modules together to display bigger numbers.\n§eWidth\: §74  §eHeight\:§7 2\n§ePlacements\:§7 Top, Center, Bottom\n
+item.rs_ctr.pointer_dsp.name=Analog Display Module
+item.rs_ctr.pointer_dsp.tip=An analog pointer based display module to attach on a §6Control Panel§7.\nThe scale can be a quarter or full circle and its range is freely adjustable.\n§eWidth\:§7 4  §eHeight\:§7 4\n§ePlacements\:§7 Center
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Remote Actuator
 
@@ -172,7 +176,7 @@ gui.rs_ctr.debug.name=Debugger
 gui.rs_ctr.state.name=Variables:
 gui.rs_ctr.clock.name=Clock Settings
 gui.rs_ctr.assembler.name=Processor Assembler
-gui.rs_ctr.analog_dsp.name=Display Configuration
+gui.rs_ctr.dsp_cfg.name=Display Configuration
 # Gui tooltips
 gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette
@@ -235,6 +239,13 @@ gui.rs_ctr.uscale=Unit scale factor
 gui.rs_ctr.style=Display Style
 gui.rs_ctr.label=Label
 gui.rs_ctr.unit=Unit
+gui.rs_ctr.encoder0=raw segments encoding\:\n§78-bit per digit\n§e1\:§7 center\n§e2\:§7 uper left\n§e4\:§7 top\n§e8\:§7 upper right\n§e16\:§7 lower right\n§e32\:§7 bottom\n§e64\:§7 lower left\n§e128\:§7 decimal point
+gui.rs_ctr.encoder1=signed raw segments encoding\:\n§7last 3 digits like §eraw segments encoding§7 using bits 0-23.\n§72 bits [24, 25] for first digit\:\n§e0\:§7 +\n§e1\:§7 +1\n§e2\:§7 -\n§e3\:§7 -1
+gui.rs_ctr.encoder2=decimal encoding
+gui.rs_ctr.encoder3=signed decimal encoding
+gui.rs_ctr.encoder4=hexadecimal encoding
+gui.rs_ctr.color=Display Color
+gui.rs_ctr.dot=decimal point position
 
 recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
