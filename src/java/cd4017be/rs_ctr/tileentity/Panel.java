@@ -8,11 +8,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
+import cd4017be.api.rs_ctr.com.EnergyHandler;
+import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
+import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.network.IGuiHandlerTile;
 import cd4017be.lib.network.IPlayerPacketReceiver;
 import cd4017be.lib.network.IServerPacketReceiver;
@@ -22,16 +27,23 @@ import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.render.ISpecialRenderComp;
 import cd4017be.rs_ctr.tileentity.part.Module;
 import cd4017be.rs_ctr.tileentity.part.Module.IPanel;
+import static cd4017be.rs_ctr.render.PanelRenderer.sockets;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,7 +53,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author cd4017be
  */
-public class Panel extends WallMountGate implements IUpdatable, IServerPacketReceiver, IPlayerPacketReceiver, IGuiHandlerTile, IPanel, ISpecialRenderComp {
+public class Panel extends WallMountGate implements IUpdatable, IServerPacketReceiver, IPlayerPacketReceiver, IGuiHandlerTile, IPanel, ISpecialRenderComp, IBlockRenderComp, ITilePlaceHarvest {
 
 	public static double UPDATE_RANGE0 = 256, UPDATE_RANGE1 = UPDATE_RANGE0 * 1.2;
 
@@ -89,7 +101,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		NBTTagList list = nbt.getTagList("modules", NBT.TAG_COMPOUND);
 		int n = list.tagCount();
-		if (mode == SAVE)
+		if (mode != SYNC)
 			while(list.getCompoundTagAt(n-1).hasNoTags())
 				n--;
 		if (n != modules.length) modules = new Module[n];
@@ -105,6 +117,8 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			if (m != null) {
 				m.deserializeNBT(tag);
 				m.init(ports, i, this);
+				if (mode == ITEM)
+					m.resetInput();
 			}
 		}
 		n = ports.size();
@@ -117,6 +131,24 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		for (Module m : modules)
 			if (m != null)
 				list.add(m);
+	}
+
+	@Override
+	public ArrayList<IBlockRenderComp> getBMRComponents() {
+		ArrayList<IBlockRenderComp> list = super.getBMRComponents();
+		list.add(this);
+		return list;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void render(List<BakedQuad> quads) {
+		Orientation o = getOrientation();
+		Vec3d dx = o.X.scale(MountedPort.SIZE * -2.), dy = o.Y.scale(MountedPort.SIZE * 2.), p = o.Z.scale(-0.005).subtract(dx.scale(.5)).subtract(dy.scale(.5));
+		for (MountedPort port : ports) {
+			int i = port.isMaster ? 4 : 0, j = port.type == SignalHandler.class ? 0 : port.type == BlockHandler.class ? 4 : port.type == EnergyHandler.class ? 8 : 12;
+			quads.add(new BakedQuad(Util.texturedRect(port.pos.add(p), dx, dy, Util.getUV(sockets, i, j), Util.getUV(sockets, i + 4, j + 4), -1, 0), -1, o.front, sockets, true, DefaultVertexFormats.BLOCK));
+		}
 	}
 
 	//state synchronization
@@ -226,7 +258,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 	}
 
 	@Override
-	public void handlePlayerPacket(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
+	public void handlePlayerPacket(PacketBuffer pkt, EntityPlayerMP sender) {
 		if (sender.isDead || sender.getDistanceSqToCenter(pos) > UPDATE_RANGE1) return;
 		//that player is looking at me, let's make it see state changes.
 		if (watching == null) watching = new HashSet<EntityPlayerMP>(2);
@@ -265,6 +297,26 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			if (m != null)
 				m.drawText(fr);
 		GlStateManager.popMatrix();
+	}
+
+	@Override
+	public void onPlaced(EntityLivingBase entity, ItemStack item) {
+		if (world.isRemote) return;
+		if (item.hasTagCompound()) {
+			loadState(item.getTagCompound(), ITEM);
+			markDirty(REDRAW);
+		}
+		if (entity instanceof EntityPlayerMP)
+			handlePlayerPacket(null, (EntityPlayerMP)entity);
+	}
+
+	@Override
+	public List<ItemStack> dropItem(IBlockState state, int fortune) {
+		if (modules.length != 0)
+			for (Module m : modules)
+				if (m != null)
+					return makeDefaultDrops();
+		return makeDefaultDrops(null);
 	}
 
 }

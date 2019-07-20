@@ -94,6 +94,8 @@ public class _7Segment extends Module implements SignalHandler, ITESRenderComp, 
 	@Override
 	public void setPortCallback(Object callback) {
 		out = callback instanceof SignalHandler ? (SignalHandler)callback : null;
+		if (out != null)
+			out.updateSignal(mode.remainder(value));
 	}
 
 	@Override
@@ -145,6 +147,8 @@ public class _7Segment extends Module implements SignalHandler, ITESRenderComp, 
 		dots = (byte) (i & 7);
 		color = (byte) (i >> 4 & 15);
 		title = nbt.getString("title");
+		if (host != null && host.world().isRemote)
+			renderCache = null;
 	}
 
 	@Override
@@ -185,7 +189,11 @@ public class _7Segment extends Module implements SignalHandler, ITESRenderComp, 
 		switch(pkt.readByte()) {
 		case 0: title = pkt.readString(32); break;
 		case 1: color = pkt.readByte(); break;
-		case 2: mode = Decoding.values()[pkt.readUnsignedByte() % 5]; break;
+		case 2:
+			mode = Decoding.values()[pkt.readUnsignedByte() % 5];
+			if (out != null)
+				out.updateSignal(mode.remainder(value));
+			break;
 		case 3: dots = pkt.readByte(); break;
 		default: return;
 		}

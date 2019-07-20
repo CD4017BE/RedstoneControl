@@ -40,9 +40,10 @@ public class PanelRenderer {
 
 	static final ResourceLocation
 			TEX_DIAL = new ResourceLocation(Main.ID, "blocks/analog_dial"),
-			TEX_7SEG = new ResourceLocation(Main.ID, "blocks/7seg");
+			TEX_7SEG = new ResourceLocation(Main.ID, "blocks/7seg"),
+			TEX_SOCKETS = new ResourceLocation(Main.ID, "blocks/sockets");
 
-	public static TextureAtlasSprite dial, seg7, blank;
+	public static TextureAtlasSprite dial, seg7, blank, sockets;
 
 	static IntArrayModel create(double rad0, double rad1, double angle0, double angle1, int div) {
 		int[] data = new int[28 * div];
@@ -143,6 +144,7 @@ public class PanelRenderer {
 		if (!"textures".equals(map.getBasePath())) return;
 		map.registerSprite(TEX_DIAL);
 		map.registerSprite(TEX_7SEG);
+		map.registerSprite(TEX_SOCKETS);
 	}
 
 	@SubscribeEvent
@@ -151,6 +153,7 @@ public class PanelRenderer {
 		if (!"textures".equals(map.getBasePath())) return;
 		dial = map.getAtlasSprite(TEX_DIAL.toString());
 		seg7 = map.getAtlasSprite(TEX_7SEG.toString());
+		sockets = map.getAtlasSprite(TEX_SOCKETS.toString());
 		blank = map.getAtlasSprite("minecraft:white");
 	}
 
