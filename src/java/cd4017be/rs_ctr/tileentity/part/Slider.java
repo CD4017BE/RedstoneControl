@@ -12,22 +12,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.ModularGui;
-import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.TextField;
-import cd4017be.lib.network.StateSyncClient;
-import cd4017be.lib.network.StateSyncServer;
-import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.Objects;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -38,10 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -49,41 +38,32 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * 
  * @author cd4017be
  */
-public class Slider extends Module implements IStateInteractionHandler, IBlockRenderComp, ITESRenderComp {
+public class Slider extends SignalModule implements IBlockRenderComp {
 
 	public static final String ID = "slider";
 
-	String title = "";
 	SignalHandler out;
-	byte pos;
-	int value, max = 15, min = 0;
+	int max = 15, min = 0;
 
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
-		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, true).setLocation(0.125, 0.125 + (double)pos * 0.25, 0, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.o"));
+		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, true).setLocation(0.125, 0.125 + getY(), 0, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.o"));
 		super.init(ports, idx, panel);
 	}
 
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = super.serializeNBT();
-		nbt.setInteger("val", value);
 		nbt.setInteger("min", min);
 		nbt.setInteger("max", max);
-		nbt.setByte("pos", pos);
-		nbt.setString("title", title);
 		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		value = nbt.getInteger("val");
 		min = nbt.getInteger("min");
 		max = nbt.getInteger("max");
-		pos = nbt.getByte("pos");
-		title = nbt.getString("title");
-		if (host != null && host.world().isRemote)
-			model = null;
+		super.deserializeNBT(nbt);
 	}
 
 	@Override
@@ -100,7 +80,7 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 	public Pair<Vec3d, String> getDisplayText(Vec3d aim) {
 		int val = value(aim);
 		Orientation o = host.getOrientation();
-		aim = aim.add(o.Y.scale(-.375 + pos * .25 - aim.subtract(.5, .5, .5).dotProduct(o.Y)));
+		aim = aim.add(o.Y.scale(-.375 + getY() - aim.subtract(.5, .5, .5).dotProduct(o.Y)));
 		return Pair.of(aim, String.format("%d", val));
 	}
 
@@ -108,7 +88,7 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 		aim = aim.subtract(.5, .5, .5);
 		Orientation o = host.getOrientation();
 		double v = (aim.dotProduct(o.X) + .375) / .75;
-		if (aim.dotProduct(o.Y) >= (double)(pos - 1) * .25) {
+		if (aim.dotProduct(o.Y) + .25 >= getY()) {
 			double f = 1D / (v - .5);
 			v = ((double)value - (double)min) / ((double)max - (double)min);
 			if (f < 0) v -= Math.exp(f);
@@ -121,9 +101,7 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 
 	@Override
 	public void onPlaced(ItemStack stack, float x, float y) {
-		pos = (byte)Math.floor(y * 3.);
-		if (pos < 0) pos = 0;
-		else if (pos > 2) pos = 2;
+		pos = (byte) ((int)Math.floor(y * 3.) << 2 & 12 | 0x70);
 	}
 
 	@Override
@@ -132,18 +110,8 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 	}
 
 	@Override
-	public int getBounds() {
-		return 0xff << (pos * 4);
-	}
-
-	@Override
 	public ItemStack onRemove() {
 		return new ItemStack(Objects.slider);
-	}
-
-	@Override
-	public Object getPortCallback() {
-		return null;
 	}
 
 	@Override
@@ -154,45 +122,8 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 	}
 
 	@Override
-	public void resetInput() {
-	}
-
-	@Override
-	public void writeSync(PacketBuffer buf) {
-		buf.writeInt(value);
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
-	public void readSync(PacketBuffer buf) {
-		int val = buf.readInt();
-		if (val != value) {
-			value = val;
-			model = null;
-		}
-	}
-
-	@Override
-	public AdvancedContainer getCfgContainer(EntityPlayer player) {
-		return new AdvancedContainer(this, StateSynchronizer.builder().build(host.world().isRemote), player);
-	}
-
-	@Override
-	public void writeState(StateSyncServer state, AdvancedContainer cont) {
-	}
-
-	@Override
-	public void readState(StateSyncClient state, AdvancedContainer cont) {
-	}
-
-	@Override
-	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
-		return !player.isDead && player.getDistanceSqToCenter(host.pos()) < 256;
-	}
-
-	@Override
-	public GuiScreen getCfgScreen(EntityPlayer player) {
-		ModularGui gui = new ModularGui(getCfgContainer(player));
+	protected GuiFrame initGuiFrame(ModularGui gui) {
 		GuiFrame frame = new GuiFrame(gui, 128, 53, 3)
 				.title("gui.rs_ctr.dsp_cfg.name", 0.5F)
 				.background(new ResourceLocation(Main.ID, "textures/gui/small.png"), 80, 140);
@@ -205,8 +136,7 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 			try {gui.sendPkt((byte)1, Integer.parseInt(t));}
 			catch(NumberFormatException e) {}
 		}).tooltip("gui.rs_ctr.min");
-		gui.compGroup = frame;
-		return gui;
+		return frame;
 	}
 
 	@Override
@@ -220,38 +150,21 @@ public class Slider extends Module implements IStateInteractionHandler, IBlockRe
 		host.markDirty(BaseTileEntity.REDRAW);
 	}
 
-	@SideOnly(Side.CLIENT)
-	IntArrayModel model;
-
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void drawText(FontRenderer fr) {
-		fr.drawString(title, (128 - fr.getStringWidth(title)) / 2, 72 - 32 * pos, 0xff000000);
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		if (model == null) {
-			Orientation o = host.getOrientation();
-			double f = ((double)value - (double)min) / ((double)max - (double)min);
-			model = new IntArrayModel(texturedRect(o.rotate(new Vec3d(-.421875 + f * .75, (double)(this.pos - 2) * 0.25 + .0625, -.365)).addVector(.5, .5, .5), o.X.scale(.09375), o.Y.scale(.25), getUV(dial, 2, 14), getUV(dial, 2.75F, 12), -1, light), -1, light);
-		}
-		model.setBrightness(light);
-		buffer.addVertexData(model.translated((float)x, (float)y, (float)z).vertexData);
-	}
-
-	@Override
-	public AxisAlignedBB getRenderBB(World world, BlockPos pos) {
-		return null;
+	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
+		double f = ((double)value - (double)min) / ((double)max - (double)min);
+		renderCache = new IntArrayModel(texturedRect(o.rotate(new Vec3d(-.421875 + f * .75, getY() - 0.4375, -.365)).addVector(.5, .5, .5), o.X.scale(.09375), o.Y.scale(.25), getUV(dial, 2, 14), getUV(dial, 2.75F, 12), -1, light), -1, light);
+		return false;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		Orientation o = host.getOrientation();
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, (double)(this.pos - 2) * 0.25 + .125, -.37)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, (double)(this.pos - 2) * 0.25 + .25, -.37)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
+		double y = getY() - 0.5;
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, -.37)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, -.37)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
 	}
 
 }

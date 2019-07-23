@@ -55,7 +55,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class Panel extends WallMountGate implements IUpdatable, IServerPacketReceiver, IPlayerPacketReceiver, IGuiHandlerTile, IPanel, ISpecialRenderComp, IBlockRenderComp, ITilePlaceHarvest {
 
-	public static double UPDATE_RANGE0 = 256, UPDATE_RANGE1 = UPDATE_RANGE0 * 1.2;
+	public static double UPDATE_RANGE0 = 256, UPDATE_RANGE1 = UPDATE_RANGE0 * 1.2, TEXT_RANGE = 100;
 
 	Orientation oldO = Orientation.N;
 	Module[] modules = new Module[0];
@@ -102,7 +102,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		NBTTagList list = nbt.getTagList("modules", NBT.TAG_COMPOUND);
 		int n = list.tagCount();
 		if (mode != SYNC)
-			while(list.getCompoundTagAt(n-1).hasNoTags())
+			while(n > 0 && list.getCompoundTagAt(n-1).hasNoTags())
 				n--;
 		if (n != modules.length) modules = new Module[n];
 		ArrayList<MountedPort> ports = new ArrayList<>(modules.length);
@@ -163,7 +163,6 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 
 	@Override
 	public void remove(int id) {
-		modules[id] = null;
 		int l = ports.length;
 		for (int i = 0; i < l; i++) {
 			MountedPort port = ports[i];
@@ -171,6 +170,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			port.setConnector(null, null);
 			ports[i] = ports[--l];
 		}
+		modules[id] = null;
 		if (l < ports.length)
 			ports = Arrays.copyOf(ports, l);
 		gui = null;
@@ -246,15 +246,14 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasFastRenderer() {
-		if (Minecraft.getMinecraft().player.getDistanceSqToCenter(pos) > UPDATE_RANGE0) {
-			watching = null;
-			return true;
-		} else if (watching == null) {
+		double d = Minecraft.getMinecraft().player.getDistanceSqToCenter(pos);
+		if (d > UPDATE_RANGE0) watching = null;
+		else if (watching == null) {
 			watching = Collections.emptySet();
 			//hey server block, I'm looking at you!
 			SyncNetworkHandler.instance.sendToServer(SyncNetworkHandler.preparePacket(pos));
 		}
-		return super.hasFastRenderer();
+		return d > TEXT_RANGE;
 	}
 
 	@Override
