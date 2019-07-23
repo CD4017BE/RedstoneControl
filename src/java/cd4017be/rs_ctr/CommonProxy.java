@@ -36,6 +36,8 @@ import cd4017be.rs_ctr.tileentity.ItemTranslocator;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import cd4017be.rs_ctr.tileentity.part.Module;
 import cd4017be.rs_ctr.tileentity.part.PointerDisplay;
+import cd4017be.rs_ctr.tileentity.part.Slider;
+import cd4017be.rs_ctr.tileentity.part.Text;
 import cd4017be.rs_ctr.tileentity.part._7Segment;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -125,6 +127,8 @@ public class CommonProxy implements IRecipeHandler {
 		
 		Module.REGISTRY.put(_7Segment.ID, _7Segment::new);
 		Module.REGISTRY.put(PointerDisplay.ID, PointerDisplay::new);
+		Module.REGISTRY.put(Slider.ID, Slider::new);
+		Module.REGISTRY.put(Text.ID, Text::new);
 	}
 
 	private void registerSensor(IBlockSensor sensor, Object[] items) {

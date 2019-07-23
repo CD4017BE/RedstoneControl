@@ -1,4 +1,4 @@
-VERSION = 45;
+VERSION = 47;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -92,7 +92,7 @@ INIT() {
 	add("shaped", it("tile.bin_split"), "020/212/020", it("tile.rs_port"):1, it("tile.rs_port"):0, it("item.wire"));
 	add("shaped", it("tile.comparator"), "231/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1, it("item.block_wire"), it("minecraft:comparator"));
 	add("shaped", it("tile.power_hub"), "010/020", it("item.wire_e"), "ingotGold", slab);
-	add("shaped", it("tile.panel"), "0/1", it("minecraft:paper"), slab);
+	add("shaped", it("tile.panel"), "0/1", "paper", slab);
 	add("shaped", 2 * it("m.actuator"), "010/232/454", it("item.block_wire"), "enderpearl", slab:7, it("minecraft:piston"), it("item.wire"), it("item.wire_e"));
 	add("shaped", it("tile.item_translocator"), "020/ 3 /001", it("tile.rs_port"):0, it("tile.rs_port"):1, it("minecraft:chest"), it("m.actuator"));
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
@@ -106,6 +106,16 @@ INIT() {
 	add("shaped", it("item.wrench"), "0/0/1", "nuggetIron", "plankWood");
 	add("shaped", it("item.pointer_dsp"), "0/1", it("minecraft:compass"), it("item.wire"));
 	add("shaped", it("item.seg7"), "010/212", "dustGlowstone", "gemQuartz", it("item.wire"));
+	add("shaped", it("item.slider"), "1 2/000", it("minecraft:coal"):1, it("minecraft:redstone_torch"), it("item.wire"));
+	Loc t = it("item.text"), t1 = t:1;
+	add("shaped", 4 * t1, "0/1", "paper", it("minecraft:sign"));
+	add("shapeless", t:4, t1, t1, t1, t1);
+	add("shapeless", t:3, t1, t1, t1);
+	add("shapeless", t:2, t1, t1);
+	add("shapeless", 4 * t1, t:4);
+	add("shapeless", 3 * t1, t:3);
+	add("shapeless", 2 * t1, t:2);
+	
 	Loc tag = nbt(); tag:"Istats" = [16, 12, 8, 12, 28, 88]#; !prototype processor (eqivalent to assembly with same materials except less remaining space)
 	add("shaped", it("tile.processor") + tag, "021/041/031", it("tile.rs_port"):0, it("tile.rs_port"):1, "blockQuartz", "blockRedstone", "ingotIron");
 	tag = nbt(); tag:"Istats" = [0, 0, 0, 64, 0, 0]#; !empty processor (64 component space)
@@ -130,7 +140,7 @@ moddedRecipes() {
 	}
 	if (hasmod("appliedenergistics2")) {
 		add("shapeless", 4 * it("tile.wire_anchor"), it("appliedenergistics2:part"):120);
-		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, it("minecraft:paper"), it("item.wire"));
+		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, "paper", it("item.wire"));
 	}
 	if (hasmod("opencomputers")) {
 		add("battery", it("opencomputers:capacitor"), 1600000); !CAPACITOR
