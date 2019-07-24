@@ -70,6 +70,7 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)", "_plug.main(7)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
+		PORT_RENDER.register("_lever.on", "_lever.off", "_lever.btn");
 		PORT_RENDER.dependencies.add(ItemSensor.MODEL);
 		PORT_RENDER.dependencies.add(FluidSensor.MODEL);
 		PORT_RENDER.dependencies.add(ForgeEnergySensor.MODEL);
@@ -93,6 +94,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(pointer_dsp);
 		registerRender(slider);
 		registerRender(text, 1, 4);
+		registerRender(lever, 0, 1);
 	}
 
 	private static void addGates(BlockGate... gates) {

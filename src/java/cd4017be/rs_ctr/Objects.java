@@ -83,6 +83,7 @@ public class Objects {
 	public static final ItemPanelModule pointer_dsp = null;
 	public static final ItemPanelModule slider = null;
 	public static final ItemPanelModule text = null;
+	public static final ItemPanelModule lever = null;
 	public static final ItemWrench wrench = null;
 
 	public static void init() {
@@ -146,6 +147,7 @@ public class Objects {
 				new ItemPanelModule("pointer_dsp", "pointer").setCreativeTab(tabCircuits),
 				new ItemPanelModule("slider", "slider").setCreativeTab(tabCircuits),
 				new ItemPanelModule("text", "text", 1, 2, 3, 4).setCreativeTab(tabCircuits),
+				new ItemPanelModule("lever", "lever", 0, 1).setCreativeTab(tabCircuits),
 				new ItemWrench("wrench").setCreativeTab(tabCircuits)
 		);
 	}

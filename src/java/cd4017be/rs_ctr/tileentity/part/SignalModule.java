@@ -58,6 +58,10 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 		return (15 >> (3 - (pos >> 4 & 3))) * (0x1111 >> (12 - (pos >> 4 & 12))) << (pos & 15);
 	}
 
+	protected double getX() {
+		return (double)(pos & 3) * .25;
+	}
+
 	protected double getY() {
 		return (double)(pos >> 2 & 3) * .25;
 	}
@@ -96,19 +100,25 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	@SideOnly(Side.CLIENT)
 	public void drawText(FontRenderer fr) {
 		int x = (pos & 3) * 32, y = (3 - (pos >> 2 & 3) - (pos >> 6 & 3)) * 32, w = (pos >> 4 & 3) * 32 + 32;
-		fr.drawString(title, x + (w - fr.getStringWidth(title)) / 2, y + 8, 0xff000000);
+		if ((pos >> 6 & 3) != 0) y += 8;
+		fr.drawString(title, x + (w - fr.getStringWidth(title)) / 2, y, 0xff000000);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
 		if (renderCache == null && refreshFTESR(host.getOrientation(), x, y, z, light, buffer)) return;
-		renderCache.setBrightness(light);
+		renderCache.setBrightness(brightness(light));
 		buffer.addVertexData(renderCache.translated((float)x, (float)y, (float)z).vertexData);
 	}
 
 	@SideOnly(Side.CLIENT)
 	protected abstract boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer);
+
+	@SideOnly(Side.CLIENT)
+	protected int brightness(int light) {
+		return light;
+	}
 
 	@Override
 	public AxisAlignedBB getRenderBB(World world, BlockPos pos) {

@@ -46,7 +46,7 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 		super.renderSpecialPart(te, x, y, z, t, destroy, alpha);
 	}
 
-	public void drawModel(BufferBuilder b, float x, float y, float z, Orientation o, int l, String model) {
+	public IntArrayModel getModel(String model) {
 		IntArrayModel m = cache.get(model);
 		if (m == null) {
 			BakedQuad[] bqs = models.get(model);
@@ -59,6 +59,11 @@ public class PortRenderer extends InteractiveDeviceRenderer {
 			}
 			cache.put(model, m);
 		}
+		return m;
+	}
+
+	public void drawModel(BufferBuilder b, float x, float y, float z, Orientation o, int l, String model) {
+		IntArrayModel m = getModel(model);
 		m.setBrightness(l);
 		if (o != Orientation.N) m = m.rotated(o);
 		b.addVertexData(m.translated(x - 0.5F, y - 0.5F, z - 0.5F).vertexData);

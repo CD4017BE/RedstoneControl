@@ -132,7 +132,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	@Override
 	@SideOnly(Side.CLIENT)
 	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
-		light = light & 0xff0000 | 0xf0;
+		light = brightness(light);
 		int vi = buffer.getVertexCount();
 		Vec3d p = o.rotate(new Vec3d(.25, getY() - .5, -.365)).addVector(x + .5, y + .5, z + .5);
 		Vec3d dx = o.X.scale(0.25), dy = o.Y.scale(1./6.);
@@ -154,6 +154,11 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	}
 
 	@Override
+	protected int brightness(int light) {
+		return light & 0xff0000 | 0xf0;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		Orientation o = host.getOrientation();
@@ -169,8 +174,10 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 
 	static final int[] COLORS = {
 			//red      , orange     , yellow     , green      , cyan       , blue       , magenta    , white
-			0xff_0000ff, 0xff_007fff, 0xff_00ffff, 0xff_00ff00, 0xff_bfbf00, 0xff_ff0000, 0xff_bf00bf, 0xff_bfbfbf,
-			0xff_7f7fff, 0xff_7fbfff, 0xff_7fffff, 0xff_7fff7f, 0xff_ffff7f, 0xff_ff7f7f, 0xff_ff7fff, 0xff_ffffff,
+			0xff_0000ff, 0xff_007fff, 0xff_00ffff, 0xff_00ff00, 0xff_bfbf00, 0xff_ff0000, 0xff_bf00bf, 0xff_bfbfbf, //normal
+			0xff_7f7fff, 0xff_7fbfff, 0xff_7fffff, 0xff_7fff7f, 0xff_ffff7f, 0xff_ff7f7f, 0xff_ff7fff, 0xff_ffffff, //bleached
+			0xff_000040, 0xff_002040, 0xff_004040, 0xff_004000, 0xff_303000, 0xff_400000, 0xff_300030, 0xff_303030, //dark
+			0xff_202040, 0xff_203040, 0xff_204040, 0xff_204020, 0xff_404020, 0xff_402020, 0xff_402040, 0xff_404040,
 		};
 
 	enum Decoding {

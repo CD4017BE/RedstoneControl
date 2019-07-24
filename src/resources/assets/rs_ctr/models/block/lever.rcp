@@ -1,0 +1,41 @@
+{
+	textures = ["rs_ctr:blocks/lever"];
+}
+
+on() {
+	base();
+	translate(2, 1.5, 2);
+	rotate(1, 0, 0, -30);
+	stick();
+}
+
+off() {
+	base();
+	translate(2, 1.5, 2);
+	rotate(1, 0, 0, 30);
+	stick();
+}
+
+btn() {
+	Loc Q = [0.25,0.25,2, 3.75,3.75,3]#, T = [4,0, 16,4]#;
+	for(F:["u-v","u+v","-uv","+uv"]) {
+		add(rect(Q, T, F, 0));
+	}
+	add(rect(Q, [4,4, 16,16]#, "uV+", 0));
+}
+
+base() {
+	Loc Q = [1,0.5,2, 3,2.5,2.5]#, T = [0,4, 4,5]#;
+	for(F:["u-v","u+v","-uv","+uv"]) {
+		add(rect(Q, T, F, 0));
+	}
+	add(rect(Q, [0,0, 4,4]#, "uV+", 0));
+}
+
+stick() {
+	Loc Q = [-0.5,-0.5,0, 0.5,0.5,2.5]#, T = [0,11, 2,16]#;
+	for(F:["u-V","u+V","-uV","+uV"]) {
+		add(rect(Q, T, F, 0));
+	}
+	add(rect(Q, [0,8, 2,10]#, "uV+", 0));
+}
