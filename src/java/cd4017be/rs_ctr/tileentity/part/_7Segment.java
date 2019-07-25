@@ -71,7 +71,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	public void setPortCallback(Object callback) {
 		out = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 		if (out != null)
-			out.updateSignal(value / mode.div);
+			out.updateSignal(mode.remainder(value));
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		if (val == value) return;
 		value = val;
 		if (out != null)
-			out.updateSignal(val / mode.div);
+			out.updateSignal(mode.remainder(val));
 		host.updateDisplay();
 	}
 
@@ -121,7 +121,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		case 2:
 			mode = Decoding.values()[pkt.readUnsignedByte() % 5];
 			if (out != null)
-				out.updateSignal(value / mode.div);
+				out.updateSignal(mode.remainder(value));
 			break;
 		case 3: dots = pkt.readByte(); break;
 		default: return;
@@ -181,26 +181,38 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		};
 
 	enum Decoding {
-		RAW(1, false),
-		RAW_S(1, true),
-		DEC(10000, false) {
+		RAW(false),
+		RAW_S(true),
+		DEC(false) {
 			@Override
 			int decode(int val) {
-				if (val < 0) val = val == Integer.MIN_VALUE ? 0 : -val;
-				int code = 0;
-				code |= DIGITS[val % 10]; val /= 10;
-				code |= DIGITS[val % 10] << 8; val /= 10;
-				code |= DIGITS[val % 10] << 16; val /= 10;
+				if (val < 0) {
+					if (val == Integer.MIN_VALUE) return 0;
+					val = -val;
+				} else if (val == Integer.MAX_VALUE) return 0;
+				int code = DIGITS[val % 10];
+				if (val < 10) return code;
+				code |= DIGITS[(val /= 10) % 10] << 8;
+				if (val < 10) return code;
+				code |= DIGITS[(val /= 10) % 10] << 16;
+				if (val < 10) return code;
 				return code | DIGITS[val % 10] << 24;
 			}
-		}, DEC_S(1, true) {
+			@Override
+			int remainder(int val) {
+				return val < 0 ?
+						(val <= -10000 && val != Integer.MIN_VALUE ? val / 10000 : Integer.MIN_VALUE)
+						: (val >= 10000 && val != Integer.MAX_VALUE ? val / 10000 : Integer.MAX_VALUE);
+			}
+		}, DEC_S(true) {
 			@Override
 			int decode(int val) {
 				int code = 0;
 				if (val < 0) {
-					val = val == Integer.MIN_VALUE ? 0 : -val;
 					code = 0x2000000;
-				}
+					if (val == Integer.MIN_VALUE) return code;
+					val = -val;
+				} else if (val == Integer.MAX_VALUE) return code;
 				code |= DIGITS[val % 10];
 				if (val < 10) return code;
 				code |= DIGITS[(val /= 10) % 10] << 8;
@@ -211,7 +223,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 				if (val >= 20) code &= 0x3000000;
 				return code;
 			}
-		}, HEX(65536, false) {
+		}, HEX(false) {
 			@Override
 			int decode(int val) {
 				int code = 0;
@@ -219,17 +231,23 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 					code |= DIGITS[val & 15] << i;
 				return code;
 			}
+			@Override
+			int remainder(int val) {
+				return val >>> 16;
+			}
 		};
 
-		final int div;
 		final boolean sign;
 
-		private Decoding(int div, boolean sign) {
-			this.div = div;
+		private Decoding(boolean sign) {
 			this.sign = sign;
 		}
 
 		int decode(int val) {
+			return val;
+		}
+
+		int remainder(int val) {
 			return val;
 		}
 
