@@ -84,9 +84,11 @@ item.rs_ctr.text\:2.name=1/2 Text Module
 item.rs_ctr.text\:3.name=3/4 Text Module
 item.rs_ctr.text\:4.name=full Text Module
 item.rs_ctr.text\:i.tip=Displays 4 lines of text on a §6Control Panel§7.\n§eWidth\:§7 \\i  §eHeight\:§7 1\n§ePlacements\:§7 anywhere 4x4
-item.rs_ctr.lever\:1.name=Lamp-Switch Module
 item.rs_ctr.lever\:0.name=Lever Module
+item.rs_ctr.lever\:1.name=Lamp-Switch Module
+item.rs_ctr.lever\:2.name=Lamp-Button Module
 item.rs_ctr.lever\:i.tip=Switches between two signal states when §aclicked§7.\nTo be attached on a §6Control Panel§7.\n§eWidth\:§7 1  §eHeight\:§7 1\n§ePlacement\:§7 anywhere 4x4
+item.rs_ctr.lever\:2.tip=Stays ON after being §aclicked§7 for a configurable time interval.\n§aSneak-click§7 to turn off early.\nTo be attached on a §6Control Panel§7.\n§eWidth\:§7 1  §eHeight\:§7 1\n§ePlacements\:§7 anywhere 4x4
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Remote Actuator
 
@@ -186,7 +188,7 @@ gui.rs_ctr.debug.name=Debugger
 gui.rs_ctr.state.name=Variables:
 gui.rs_ctr.clock.name=Clock Settings
 gui.rs_ctr.assembler.name=Processor Assembler
-gui.rs_ctr.dsp_cfg.name=Display Configuration
+gui.rs_ctr.dsp_cfg.name=Configuration
 # Gui tooltips
 gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette

@@ -94,7 +94,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(pointer_dsp);
 		registerRender(slider);
 		registerRender(text, 1, 4);
-		registerRender(lever, 0, 1);
+		registerRender(lever, 0, 2);
 	}
 
 	private static void addGates(BlockGate... gates) {
