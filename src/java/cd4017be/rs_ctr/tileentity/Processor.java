@@ -238,7 +238,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	}
 
 	@Override
-	protected void setupData() {
+	public void onLoad() {
 		if (circuit == null) circuit = new UnloadedCircuit();
 		if (!world.isRemote) {
 			circuit = circuit.load();
@@ -248,7 +248,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 				TickRegistry.schedule(this);
 			}
 		}
-		super.setupData();
+		super.onLoad();
 	}
 
 	@Override
@@ -266,12 +266,11 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public void onPlaced(EntityLivingBase entity, ItemStack item) {
 		NBTTagCompound nbt = item.getTagCompound();
 		if (nbt == null) return;
-		clearData();
 		loadState(nbt, ITEM);
 		energy = cap;
 		lastTick = world.getTotalWorldTime();
 		tick = 1;
-		setupData();
+		onLoad();
 	}
 
 	@Override

@@ -51,7 +51,6 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	 * @param panel to host this module
 	 */
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
-		this.host = panel;
 		this.idx = idx;
 	}
 
@@ -120,6 +119,24 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	 * @return the item to drop
 	 */
 	public abstract ItemStack onRemove();
+
+	/**
+	 * called when host loads
+	 */
+	public void onLoad(IPanel host) {
+		this.host = host;
+	}
+
+	/**
+	 * called when host unloads
+	 */
+	public void onUnload() {
+		this.host = null;
+	}
+
+	public boolean loaded() {
+		return host != null;
+	}
 
 	/**@return the input signal handler for {@link IPortProvider#getPortCallback(int)} */
 	public abstract Object getPortCallback();

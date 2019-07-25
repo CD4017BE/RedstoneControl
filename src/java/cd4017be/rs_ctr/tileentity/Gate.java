@@ -138,7 +138,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	}
 
 	@Override
-	protected void setupData() {
+	public void onLoad() {
+		super.onLoad();
 		if (world.isRemote) return;
 		for (MountedPort port : ports)
 			port.onLoad();
@@ -147,7 +148,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	}
 
 	@Override
-	protected void clearData() {
+	protected void onUnload() {
+		super.onUnload();
 		if (world.isRemote) return;
 		for (MountedPort port : ports)
 			port.onUnload();

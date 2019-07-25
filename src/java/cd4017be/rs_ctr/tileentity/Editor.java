@@ -149,7 +149,8 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 	}
 
 	@Override
-	protected void setupData() {
+	public void onLoad() {
+		super.onLoad();
 		schematic.server = !world.isRemote;
 	}
 

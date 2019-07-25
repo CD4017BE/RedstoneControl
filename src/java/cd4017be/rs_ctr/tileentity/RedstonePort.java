@@ -281,19 +281,8 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	@Override
-	protected void setupData() {
-		if (world.isRemote) return;
-		//delay port registration until we have save block access
-		TickRegistry.instance.updates.add(()-> {
-			if (unloaded) return;
-			for (MountedPort port : ports)
-				port.onLoad();
-		});
-	}
-
-	@Override
-	protected void clearData() {
-		super.clearData();
+	protected void onUnload() {
+		super.onUnload();
 		dirty = 0; //cancel scheduled updates
 	}
 

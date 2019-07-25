@@ -111,19 +111,37 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			String id = tag.getString("id");
 			Module m = modules[i];
 			if (m == null || !m.id().equals(id)) {
+				if (m != null) m.onUnload();
 				m = Module.get(id);
 				modules[i] = m;
 			}
 			if (m != null) {
 				m.deserializeNBT(tag);
 				m.init(ports, i, this);
-				if (mode == ITEM)
-					m.resetInput();
+				if (!unloaded) m.onLoad(this);
+				if (mode == ITEM) m.resetInput();
 			}
 		}
 		n = ports.size();
 		this.ports = ports.toArray(this.ports.length == n ? this.ports : new MountedPort[n]);
 		super.loadState(nbt, mode);
+	}
+
+	@Override
+	public void onLoad() {
+		for (Module m : modules)
+			if (m != null)
+				m.onLoad(this);
+		super.onLoad();
+	}
+
+	@Override
+	protected void onUnload() {
+		super.onUnload();
+		for (Module m : modules)
+			if (m != null)
+				m.onUnload();
+		watching = null;
 	}
 
 	@Override
@@ -156,12 +174,6 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 	boolean update;
 
 	@Override
-	protected void clearData() {
-		super.clearData();
-		watching = null;
-	}
-
-	@Override
 	public void remove(int id) {
 		int l = ports.length;
 		for (int i = 0; i < l; i++) {
@@ -170,7 +182,11 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			port.setConnector(null, null);
 			ports[i] = ports[--l];
 		}
-		modules[id] = null;
+		Module m = modules[id];
+		if (m != null) {
+			m.onUnload();
+			modules[id] = null;
+		}
 		if (l < ports.length)
 			ports = Arrays.copyOf(ports, l);
 		gui = null;
@@ -202,6 +218,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 				ports[i++] = port;
 			Arrays.sort(ports);
 		}
+		m.onLoad(this);
 		markDirty(REDRAW);
 		gui = null;
 		return true;

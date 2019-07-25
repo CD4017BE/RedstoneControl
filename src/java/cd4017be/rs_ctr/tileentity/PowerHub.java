@@ -226,8 +226,8 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	boolean update;
 
 	@Override
-	protected void clearData() {
-		super.clearData();
+	protected void onUnload() {
+		super.onUnload();
 		watching = null;
 	}
 
