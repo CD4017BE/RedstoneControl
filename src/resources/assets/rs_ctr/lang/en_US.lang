@@ -61,7 +61,7 @@ item.rs_ctr.wireless.tip=Like a §6Signal Wire§7 but can connect two signal por
 item.rs_ctr.constant.tip=Can be attached to an input port to supply it with a constant signal value.\n§aUse§7 in air to configure value.
 item.rs_ctr.constant.name=Constant Plug
 item.rs_ctr.lamp.name=Signal Status Lamp
-item.rs_ctr.lamp.tip=Attach on output port to see its signal state.
+item.rs_ctr.lamp.tip=Attach on output port to see its signal state.\n\nCan also be attached on a §6Control Panel§7 as indicator lamp.\n§eWidth\:§7 1  §eHeight\:§7 1\n§ePlacements\:§7 anywhere 4x4
 item.rs_ctr.tag.name=Wire Tag
 item.rs_ctr.tag.tip=§aUse§7 in air to set name.\n§aUse§7 on connected port to rename its wire connection. It will then show the name instead of an ID.
 item.rs_ctr.block_wire.name=Block Probe Wire
@@ -261,6 +261,7 @@ gui.rs_ctr.dot=decimal point position
 gui.rs_ctr.text=Text lines
 gui.rs_ctr.v_off=OFF value
 gui.rs_ctr.v_on=ON value
+gui.rs_ctr.thr=Threshold value\n§oON when above
 
 recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors

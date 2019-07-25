@@ -126,6 +126,7 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Slider.ID, Slider::new);
 		Module.REGISTRY.put(Text.ID, Text::new);
 		Module.REGISTRY.put(Lever.ID, Lever::new);
+		Module.REGISTRY.put(Lamp.ID, Lamp::new);
 	}
 
 	private void registerSensor(IBlockSensor sensor, Object[] items) {
