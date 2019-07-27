@@ -1,82 +1,75 @@
 package cd4017be.rscpl.editor;
 
-import java.util.Iterator;
 import java.util.function.IntFunction;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.objectweb.asm.Type;
 import static cd4017be.rscpl.editor.InvalidSchematicException.*;
 import cd4017be.lib.util.Utils;
-import cd4017be.rscpl.graph.Operator;
-import cd4017be.rscpl.graph.Pin;
 import io.netty.buffer.ByteBuf;
 
 /**
  * @author CD4017BE
  *
  */
-public abstract class Gate<T extends GateType<T>> {
+public class Gate {
 
-	public final T type;
+	public final GateType type;
 	public final int index;
-	protected final Operator[] inputs;
+	protected final Pin[] inputs;
+	public final Pin[] outputs;
 	/** -1: checking, 0: unchecked, 1: approved valid */
 	public byte check = 0;
 	public int rasterX, rasterY;
 	public String label = "";
 	public final TraceNode[] traces;
 
-	public Gate(T type, int index) {
+	public Gate(GateType type, int index, int in, int out) {
 		this.type = type;
 		this.index = index;
-		this.inputs = new Operator[type.inputs];
-		this.traces = new TraceNode[visibleInputs()];
+		this.inputs = new Pin[in];
+		this.outputs = new Pin[out];
+		for (int i = 0; i < outputs.length; i++)
+			outputs[i] = new Pin(this, i);
+		this.traces = new TraceNode[inputs.length];
 	}
 
-	public int visibleInputs() {
+	public int inputCount() {
 		return inputs.length;
 	}
 
-	public Operator getInput(int pin) {
+	public Pin getInput(int pin) {
 		return inputs[pin];
 	}
 
-	public void setInput(int pin, Operator op) {
+	public void setInput(int pin, Pin op) {
+		Pin old = inputs[pin];
+		if (old == op) return;
+		Pair<Gate, Integer> p = Pair.of(this, pin);
+		if (old != null) old.receivers.remove(p);
 		inputs[pin] = op;
+		if (op != null) op.receivers.add(p);
 	}
-
-	protected abstract boolean isInputTypeValid(int pin, Type type);
-
-	public abstract int outputCount();
-
-	public abstract Operator getOutput(int pin);
 
 	public void checkValid() throws InvalidSchematicException {
 		if (check > 0) return;
 		check = -1;
-		Operator[] inputs = this.inputs;
+		for (Pin out : outputs)
+			out.node = null;
+		Pin[] inputs = this.inputs;
 		for (int i = 0, l = inputs.length; i < l; i++) {
-			Operator pin = inputs[i];
+			Pin pin = inputs[i];
 			if (pin != null) {
-				if (!isInputTypeValid(i, pin.outType()))
+				if (!type.isInputTypeValid(i, pin.getOutType()))
 					throw new InvalidSchematicException(TYPE_MISSMATCH, this, i);
-				Gate<?> node = pin.getGate();
-				if (node.check < 0)
+				Gate gate = pin.gate;
+				if (gate.check < 0)
 					throw new InvalidSchematicException(CAUSAL_LOOP, this, i);
-				node.checkValid();
-			} else if (!isInputTypeValid(i, Type.VOID_TYPE))
+				gate.checkValid();
+			} else if (!type.isInputTypeValid(i, Type.VOID_TYPE))
 				throw new InvalidSchematicException(MISSING_INPUT, this, i);
 		}
 		check = 1;
-	}
-
-	public void restoreInputs() {
-		Operator[] inputs = this.inputs;
-		for (int i = 0, l = inputs.length; i < l; i++) {
-			Operator in = inputs[i];
-			if (in == null) continue;
-			Operator in1 = in.getActual();
-			if (in != in1) setInput(i, in1);
-		}
 	}
 
 	public void read(ByteBuf data) {
@@ -102,11 +95,10 @@ public abstract class Gate<T extends GateType<T>> {
 	}
 
 	public void write(ByteBuf data) {
-		restoreInputs();
 		data.writeByte(rasterX);
 		data.writeByte(rasterY);
 		for (int i = 0; i < traces.length; i++) {
-			Operator op = inputs[i];
+			Pin op = inputs[i];
 			int p = data.writerIndex(), n = 1;
 			data.writeByte(0);
 			data.markWriterIndex();
@@ -114,8 +106,8 @@ public abstract class Gate<T extends GateType<T>> {
 				data.writeByte(-1);
 				data.writeByte(-1);
 			} else {
-				data.writeByte(op.getGate().index);
-				data.writeByte(op.getPin());
+				data.writeByte(op.gate.index);
+				data.writeByte(op.idx);
 			}
 			for (TraceNode tn = traces[i]; tn != null; tn = tn.next, n++) {
 				data.writeByte(tn.rasterX);
@@ -129,12 +121,12 @@ public abstract class Gate<T extends GateType<T>> {
 		data.setByte(data.writerIndex() - i - 1, i);
 	}
 
-	public void reconnect(IntFunction<Gate<?>> indexTable) {
+	public void reconnect(IntFunction<Gate> indexTable) {
 		for (int i = 0; i < traces.length; i++) {
 			TraceNode tn = traces[i];
 			if (tn != null && tn.owner == null) {
-				Gate<?> g = indexTable.apply(tn.rasterX);
-				setInput(i, g == null ? null : g.getOutput(tn.rasterY));
+				Gate g = indexTable.apply(tn.rasterX);
+				setInput(i, g == null ? null : g.outputs[tn.rasterY]);
 				traces[i] = tn.next;
 			}
 		}
@@ -143,13 +135,10 @@ public abstract class Gate<T extends GateType<T>> {
 	public void remove() {
 		for (int i = 0; i < inputs.length; i++)
 			setInput(i, null);
-		for (int i = 0; i < outputCount(); i++) {
-			Operator o = getOutput(i);
-			for (Iterator<Pin> it = o.receivers().iterator(); it.hasNext();) {
-				Pin p = it.next();
-				it.remove();//remove the element before setInput does to avoid concurrent modification.
-				p.op.setInput(p.idx, null);
-			}
+		for (Pin o : outputs) {
+			for (Pair<Gate, Integer> p : o.receivers)
+				p.getLeft().inputs[p.getRight()] = null;
+			o.receivers.clear();
 		}
 	}
 
@@ -158,13 +147,9 @@ public abstract class Gate<T extends GateType<T>> {
 		rasterY = y;
 	}
 
-	public BoundingBox2D<Gate<?>> getBounds() {
+	public BoundingBox2D<Gate> getBounds() {
 		return new BoundingBox2D<>(this, rasterX, rasterY, type.width, type.height);
 	}
-
-	public abstract int getInputHeight(int pin);
-
-	public abstract int getOutputHeight(int pin);
 
 	@Override
 	public String toString() {

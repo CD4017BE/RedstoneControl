@@ -39,7 +39,7 @@ public class GateTextureHandler implements ITextureMapPopulator {
 		textureMap.setTextureEntry(new RectangularSprite(TINY_FONT));
 		for (Category ins : ins_sets) {
 			textureMap.registerSprite(new ResourceLocation(ins.getIcon()));
-			for (BoundingBox2D<GateType<?>> t : ins.instructions)
+			for (BoundingBox2D<GateType> t : ins.instructions)
 				textureMap.setTextureEntry(new RectangularSprite(t.owner.getIcon()));
 		}
 	}

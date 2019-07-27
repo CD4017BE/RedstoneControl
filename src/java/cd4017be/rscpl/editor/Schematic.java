@@ -19,8 +19,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class Schematic {
 
 	public final InstructionSet INS_SET;
-	public final BoundingBox2D<Gate<?>> BOARD_AREA;
-	public ArrayList<Gate<?>> operators = new ArrayList<>();
+	public final BoundingBox2D<Gate> BOARD_AREA;
+	public ArrayList<Gate> operators = new ArrayList<>();
 	/** idx<<1 | 0: gate main data modified<br>idx<<1 | 1: gate configuration modified */
 	private BitSet toSync = new BitSet();
 	public boolean modified, server;
@@ -50,11 +50,11 @@ public class Schematic {
 		clear();
 		int n = data.readUnsignedByte();
 		for (int i = 0; i < n; i++) {
-			GateType<?> t = INS_SET.get(data.readUnsignedByte());
+			GateType t = INS_SET.get(data.readUnsignedByte());
 			int l = data.readUnsignedShort();
 			int p = l + data.readerIndex();
 			if (t != null) {
-				Gate<?> g = t.newGate(operators.size());
+				Gate g = t.newGate(operators.size());
 				g.read(data);
 				if (g instanceof ConfigurableGate)
 					((ConfigurableGate)g).readCfg(data);
@@ -65,7 +65,7 @@ public class Schematic {
 				data.readerIndex(p);
 			}
 		}
-		for (Gate<?> g : operators) g.reconnect(this::get);
+		for (Gate g : operators) g.reconnect(this::get);
 		if (server) toSync.set(0, n << 1);
 	}
 
@@ -75,7 +75,7 @@ public class Schematic {
 	public void serialize(ByteBuf data) {
 		int i = data.writerIndex(), n = 0;
 		data.writeByte(0);
-		for (Gate<?> g : operators)
+		for (Gate g : operators)
 			if (g != null) {
 				data.writeByte(INS_SET.id(g.type));
 				int j = data.writerIndex();
@@ -99,7 +99,7 @@ public class Schematic {
 			NBTTagCompound tag = new NBTTagCompound();
 			int i = j >> 1;
 			tag.setByte("i", (byte)i);
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op != null) {
 				tag.setByte("t", (byte)INS_SET.id(op.type));
 				if ((j & 1) == 0) {
@@ -130,8 +130,8 @@ public class Schematic {
 		for (NBTBase bt : list) {
 			NBTTagCompound tag = (NBTTagCompound)bt;
 			int i = tag.getByte("i") & 0xff;
-			Gate<?> op = get(i);
-			GateType<?> t = tag.hasKey("t", NBT.TAG_BYTE) ? INS_SET.get(tag.getByte("t")) : null;
+			Gate op = get(i);
+			GateType t = tag.hasKey("t", NBT.TAG_BYTE) ? INS_SET.get(tag.getByte("t")) : null;
 			if ((op == null ? null : op.type) != t) {
 				if (op != null) op.remove();
 				if (t != null) {
@@ -156,23 +156,23 @@ public class Schematic {
 			}
 		}
 		for (NBTBase tag : list) {
-			Gate<?> op = get(((NBTTagCompound)tag).getByte("i") & 0xff);
+			Gate op = get(((NBTTagCompound)tag).getByte("i") & 0xff);
 			if (op != null)
 				op.reconnect(this::get);
 		}
 		modified = true;
 	}
 
-	public Gate<?> get(int idx) {
+	public Gate get(int idx) {
 		if (idx < operators.size())
 			return operators.get(idx);
 		return null;
 	}
 
-	public BoundingBox2D<Gate<?>> getCollision(BoundingBox2D<Gate<?>> box) {
+	public BoundingBox2D<Gate> getCollision(BoundingBox2D<Gate> box) {
 		if (!box.enclosedBy(BOARD_AREA)) return BOARD_AREA;
-		BoundingBox2D<Gate<?>> box1;
-		for (Gate<?> op1 : operators)
+		BoundingBox2D<Gate> box1;
+		for (Gate op1 : operators)
 			if (op1 != null && (box1 = op1.getBounds()).overlapsWith(box))
 				return box1;
 		return null;
@@ -189,7 +189,7 @@ public class Schematic {
 			int i = operators.indexOf(null);
 			if (i < 0) i = operators.size();
 			if (i >= 256) return false;
-			Gate<?> op = INS_SET.newGate(data.readByte(), i);
+			Gate op = INS_SET.newGate(data.readByte(), i);
 			if (op == null) return false;
 			op.setPosition(data.readUnsignedByte(), data.readUnsignedByte());
 			if (getCollision(op.getBounds()) != null) return false;
@@ -199,7 +199,7 @@ public class Schematic {
 		}	return true;
 		case REM_GATE: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op == null) return false;
 			op.remove();
 			operators.set(i, null);
@@ -207,7 +207,7 @@ public class Schematic {
 		}	return true;
 		case MOVE_GATE: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op == null) return false;
 			int prevX = op.rasterX, prevY = op.rasterY;
 			op.setPosition(data.readUnsignedByte(), data.readUnsignedByte());
@@ -220,12 +220,12 @@ public class Schematic {
 		}	return true;
 		case CONNECT: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i), op1 = get(data.readUnsignedByte());
+			Gate op = get(i), op1 = get(data.readUnsignedByte());
 			if (op == null) return false;
 			int pins = data.readUnsignedByte();
-			if ((pins & 15) >= op.visibleInputs()) return false;
+			if ((pins & 15) >= op.inputCount()) return false;
 			int trace = data.readUnsignedByte();
-			op.setInput(pins & 15, op1 != null ? op1.getOutput(pins >> 4) : null);
+			op.setInput(pins & 15, op1 != null ? op1.outputs[pins >> 4] : null);
 			pins &= 15;
 			if (trace == 0) op.traces[pins] = null;
 			else for (TraceNode tn = op.traces[pins]; tn != null; tn = tn.next)
@@ -234,7 +234,7 @@ public class Schematic {
 		}	return true;
 		case SET_LABEL: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op == null) return false;
 			op.label = data.toString(Utils.UTF8);
 			data.readerIndex(data.writerIndex());
@@ -242,17 +242,17 @@ public class Schematic {
 		}	return true;
 		case SET_VALUE: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (!(op instanceof ConfigurableGate)) return false;
 			((ConfigurableGate)op).readCfg(data);
 			toSync.set(i << 1 | 1);
 		}	return true;
 		case INS_TRACE: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op == null) return false;
 			int p = data.readUnsignedByte(), t = p >> 4; p &= 15;
-			if (p >= op.visibleInputs()) return false;
+			if (p >= op.inputCount()) return false;
 			TraceNode tn = new TraceNode(op, p);
 			tn.rasterX = data.readUnsignedByte();
 			tn.rasterY = data.readUnsignedByte();
@@ -269,10 +269,10 @@ public class Schematic {
 		}	return true;
 		case REM_TRACE: {
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op == null) return false;
 			int p = data.readUnsignedByte();
-			if (p >= op.visibleInputs()) return false;
+			if (p >= op.inputCount()) return false;
 			int t = data.readUnsignedByte(), t1 = t >> 4; t &= 15;
 			if (t == 0) op.traces[p] = op.getTrace(p, t1);
 			else {
@@ -284,10 +284,10 @@ public class Schematic {
 		}	return true;
 		case MOVE_TRACE:{
 			int i = data.readUnsignedByte();
-			Gate<?> op = get(i);
+			Gate op = get(i);
 			if (op == null) return false;
 			int p = data.readUnsignedByte(), t = p >> 4; p &= 15;
-			if (p >= op.visibleInputs()) return false;
+			if (p >= op.inputCount()) return false;
 			int x = data.readUnsignedByte(), y = data.readUnsignedByte();
 			TraceNode tn = op.getTrace(p, t);
 			if (tn == null) return false;

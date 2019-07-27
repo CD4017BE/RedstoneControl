@@ -1,27 +1,39 @@
 package cd4017be.rscpl.editor;
 
+import org.objectweb.asm.Type;
+
+import cd4017be.rscpl.compile.Node;
+
 /**
  * @author CD4017BE
  *
  */
-public abstract class GateType<T extends GateType<T>> {
+public abstract class GateType {
 
 	public final String name;
-	public final int inputs;
 	public final int width, height;
 
-	public GateType(String name, int width, int height, int inputs) {
+	public GateType(String name, int width, int height) {
 		this.name = name;
 		this.width = width;
 		this.height = height;
-		this.inputs = inputs;
 	}
 
-	public abstract Gate<T> newGate(int index);
+	public abstract Gate newGate(int index);
+
+	public abstract int getInputHeight(int i);
+
+	public abstract int getOutputHeight(int o);
+
+	public abstract Type getOutType(int o);
+
+	public abstract boolean isInputTypeValid(int i, Type type);
+
+	public abstract Node createNode(Gate gate, int o);
 
 	@FunctionalInterface
-	public static interface GateConstructor<T extends GateType<T>> {
-		Gate<T> newGate(T type, int index);
+	public static interface GateConstructor {
+		Gate newGate(GateType type, int index, int in, int out);
 	}
 
 	public String getIcon() {

@@ -1,6 +1,5 @@
 package cd4017be.rscpl.compile;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,11 +14,11 @@ import org.objectweb.asm.Type;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import static cd4017be.rscpl.editor.InvalidSchematicException.*;
-import cd4017be.rscpl.graph.ArrayVar;
-import cd4017be.rscpl.graph.NamedOp;
-import cd4017be.rscpl.graph.Operator;
-import cd4017be.rscpl.graph.ReadOp;
-import cd4017be.rscpl.graph.WriteOp;
+import cd4017be.rscpl.graph.IArrayVar;
+import cd4017be.rscpl.graph.IEndpoint;
+import cd4017be.rscpl.graph.IVariable;
+import cd4017be.rscpl.graph.IReadVar;
+import cd4017be.rscpl.graph.IWriteVar;
 import cd4017be.rscpl.util.IStateSerializable;
 import cd4017be.rscpl.util.StateBuffer;
 
@@ -27,7 +26,7 @@ import cd4017be.rscpl.util.StateBuffer;
  * 
  * @author CD4017BE
  */
-public abstract class Compiler<P extends CompiledProgram> {
+public abstract class Compiler<P extends CompiledProgram> implements MethodCompiler {
 
 	public static final String
 			D_STATE_BUFFER = Type.getDescriptor(StateBuffer.class),
@@ -68,23 +67,25 @@ public abstract class Compiler<P extends CompiledProgram> {
 	 * @return the compiled program
 	 * @throws InvalidSchematicException if a compilation error occurs
 	 */
-	public P compile(Collection<Gate<?>> gates) throws InvalidSchematicException {
-		List<Operator> ends = new ArrayList<>();
-		Map<String, NamedOp> variables = new HashMap<>();
+	public P compile(Collection<Gate> gates) throws InvalidSchematicException {
+		List<IEndpoint> ends = new ArrayList<>();
+		Map<String, IVariable> variables = new HashMap<>();
 		checkAndSort(gates, ends, variables);
 		
 		P p = newProgram(gates);
 		ClassWriter cw = getHeader();
 		addVariables(cw, p.getState(), variables.values());
-		addMain(p, cw, packAndArrange(ends));
+		
+		List<Node> nodes = new ArrayList<>(ends.size());
+		for (IEndpoint end : ends) nodes.add(end.getEndNode());
+		MethodCompiler.addMethod(cw, this, nodes);
+		
 		cw.visitEnd();
 		p.setCode(cw.toByteArray());
 		return p;
 	}
 
-	protected abstract P newProgram(Collection<Gate<?>> gatesIn) throws InvalidSchematicException;
-
-	protected abstract void addMain(P program, ClassWriter cw, List<Branch> parts) throws InvalidSchematicException;
+	protected abstract P newProgram(Collection<Gate> gatesIn) throws InvalidSchematicException;
 
 	protected ClassWriter getHeader() {
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -93,10 +94,10 @@ public abstract class Compiler<P extends CompiledProgram> {
 		return cw;
 	}
 
-	protected void addVariables(ClassWriter cw, StateBuffer state, Collection<NamedOp> variables) throws InvalidSchematicException {
+	protected void addVariables(ClassWriter cw, StateBuffer state, Collection<IVariable> variables) throws InvalidSchematicException {
 		//add fields
-		for (NamedOp var : variables)
-			cw.visitField(ACC_PRIVATE | (var instanceof ArrayVar ? ACC_FINAL : 0), var.name(), var.outType().getDescriptor(), null, null);
+		for (IVariable var : variables)
+			cw.visitField(ACC_PRIVATE | (var instanceof IArrayVar ? ACC_FINAL : 0), var.name(), var.type().getDescriptor(), null, null);
 		
 		//implement constructor
 		MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
@@ -104,12 +105,12 @@ public abstract class Compiler<P extends CompiledProgram> {
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitMethodInsn(INVOKESPECIAL, C_SUPER, "<init>", "()V", false);
 		boolean hasArrays = false;
-		for (NamedOp var : variables)
-			if (var instanceof ArrayVar) {
+		for (IVariable var : variables)
+			if (var instanceof IArrayVar) {
 				mv.visitVarInsn(ALOAD, 0);
-				i_const(mv, ((ArrayVar)var).size());
-				mv.visitIntInsn(NEWARRAY, var.outType().getElementType().getSort());
-				mv.visitFieldInsn(PUTFIELD, C_THIS, var.name(), var.outType().getDescriptor());
+				i_const(mv, ((IArrayVar)var).size());
+				mv.visitIntInsn(NEWARRAY, var.type().getElementType().getSort());
+				mv.visitFieldInsn(PUTFIELD, C_THIS, var.name(), var.type().getDescriptor());
 				hasArrays = true;
 			}
 		mv.visitInsn(RETURN);
@@ -117,9 +118,9 @@ public abstract class Compiler<P extends CompiledProgram> {
 		mv.visitEnd();
 		
 		if (!stateSerialize) return;
-		for(NamedOp var : variables)
-			if (var instanceof ReadOp)
-				((ReadOp)var).initState(state);
+		for(IVariable var : variables)
+			if (var instanceof IReadVar)
+				((IReadVar)var).initState(state);
 		
 		//implement getState()
 		mv = cw.visitMethod(ACC_PUBLIC, "getState", "()" + D_STATE_BUFFER, null, null);
@@ -127,8 +128,8 @@ public abstract class Compiler<P extends CompiledProgram> {
 		mv.visitTypeInsn(NEW, C_STATE_BUFFER);
 		mv.visitInsn(DUP);
 		mv.visitMethodInsn(INVOKESPECIAL, C_STATE_BUFFER, "<init>", "()V", false);
-		for (NamedOp var : variables) {
-			String name = var.name(), desc = var.outType().getDescriptor();
+		for (IVariable var : variables) {
+			String name = var.name(), desc = var.type().getDescriptor();
 			mv.visitLdcInsn(name);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, C_THIS, name, desc);
@@ -141,9 +142,9 @@ public abstract class Compiler<P extends CompiledProgram> {
 		//implement setState()
 		mv = cw.visitMethod(ACC_PUBLIC, "setState", "(" + D_STATE_BUFFER + ")V", null, null);
 		mv.visitCode();
-		for (NamedOp var : variables) {
-			String name = var.name(), desc = var.outType().getDescriptor();
-			if (var instanceof ArrayVar) {
+		for (IVariable var : variables) {
+			String name = var.name(), desc = var.type().getDescriptor();
+			if (var instanceof IArrayVar) {
 				mv.visitVarInsn(ALOAD, 1);
 				mv.visitLdcInsn(name);
 				mv.visitVarInsn(ALOAD, 0);
@@ -162,75 +163,40 @@ public abstract class Compiler<P extends CompiledProgram> {
 		mv.visitEnd();
 	}
 
-	protected static void checkAndSort(Collection<Gate<?>> gatesIn, List<Operator> endsOut, Map<String, NamedOp> variablesOut) throws InvalidSchematicException {
-		ArrayList<ReadOp> reads = new ArrayList<>();
-		for (Gate<?> g : gatesIn) {
+	protected static void checkAndSort(Collection<Gate> gatesIn, List<IEndpoint> endsOut, Map<String, IVariable> variablesOut) throws InvalidSchematicException {
+		ArrayList<IReadVar> reads = new ArrayList<>();
+		for (Gate g : gatesIn) {
 			if (g == null) continue;
 			g.check = 0;
-			g.restoreInputs();
-			int i = g.outputCount();
-			do addOperator(g.getOutput(--i), variablesOut, reads, endsOut);
-			while(i > 0); //there is always at least one output pin, even if outputCount() == 0 (invisible pin).
+			addOperator(g, variablesOut, reads, endsOut);
 		}
-		for (ReadOp r : reads) {
-			NamedOp op = variablesOut.put(r.name(), r);
-			if (op instanceof WriteOp) ((WriteOp)op).link(r);
+		for (IReadVar r : reads) {
+			IVariable op = variablesOut.put(r.name(), r);
+			if (op instanceof IWriteVar) ((IWriteVar)op).link(r);
 			else if (op != null)
-				throw new InvalidSchematicException(READ_CONFLICT, r.getGate(), r.getPin());
+				throw new InvalidSchematicException(READ_CONFLICT, (Gate)r, 0);
 		}
-		for (Operator op : endsOut) op.getGate().checkValid();
+		for (IEndpoint op : endsOut) ((Gate)op).checkValid();
 		Collections.sort(endsOut, (a, b)-> {
-			Gate<?> ga = a.getGate(), gb = b.getGate();
-			int i = ga.type.name.compareTo(gb.type.name);
-			if (i != 0) return i;
-			i = a.getPin() - b.getPin();
-			if (i != 0) return i;
-			return ga.label.compareTo(gb.label);
+			Gate ga = (Gate)a, gb = (Gate)b;
+			return ga.type.name.compareTo(gb.type.name);
 		});
 	}
 
-	protected static void addOperator(Operator op, Map<String, NamedOp> writes, List<ReadOp> reads, List<Operator> ends) throws InvalidSchematicException {
+	protected static void addOperator(Gate op, Map<String, IVariable> writes, List<IReadVar> reads, List<IEndpoint> ends) throws InvalidSchematicException {
 		if (op == null) return;
-		if (op instanceof WriteOp) {
-			WriteOp w = (WriteOp)op;
+		if (op instanceof IWriteVar) {
+			IWriteVar w = (IWriteVar)op;
 			checkName(w);
 			if (writes.put(w.name(), w) != null)
-				throw new InvalidSchematicException(WRITE_CONFLICT, w.getGate(), w.getPin());
+				throw new InvalidSchematicException(WRITE_CONFLICT, op, 0);
 		}
-		if (op instanceof ReadOp) {
-			ReadOp r = (ReadOp)op;
+		if (op instanceof IReadVar) {
+			IReadVar r = (IReadVar)op;
 			checkName(r);
 			reads.add(r);
 		}
-		if (op.hasSideEffects() && op.receivers().isEmpty()) ends.add(op);
-	}
-
-	public static List<Branch> packAndArrange(List<Operator> exits) {
-		HashMap<Operator, Branch> provided = new HashMap<>();
-		ArrayDeque<LoadOp> required = new ArrayDeque<>();
-		for (Operator op : exits) {
-			if (!op.receivers().isEmpty()) continue;
-			Branch b = Branch.from(op);
-			provided.put(op, b);
-			for (LoadOp o : b.inputs)
-				required.add(o);
-		}
-		while (!required.isEmpty()) {
-			LoadOp load = required.remove();
-			Operator op = load.getInput(0);
-			Branch b = provided.get(op);
-			if (b == null) {
-				if (op instanceof Branch) b = (Branch)op;
-				else b = Branch.from(op);
-				provided.put(op, b);
-				for (LoadOp o : b.inputs)
-					required.add(o);
-			}
-			load.setInput(0, b);
-		}
-		ArrayList<Branch> list = new ArrayList<>(provided.values());
-		Collections.sort(list);
-		return list;
+		if (op instanceof IEndpoint) ends.add((IEndpoint)op);
 	}
 
 	private static String getter(String desc) {
@@ -256,7 +222,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 			mv.visitLdcInsn(val);
 	}
 
-	public static void checkName(NamedOp op) throws InvalidSchematicException {
+	public static void checkName(IVariable op) throws InvalidSchematicException {
 		valid: {
 			String name = op.name();
 			if (name.isEmpty() || !Character.isJavaIdentifierStart(name.charAt(0)))
@@ -266,7 +232,7 @@ public abstract class Compiler<P extends CompiledProgram> {
 					break valid;
 			return;
 		}
-		throw new InvalidSchematicException(INVALID_LABEL, op.getGate(), op.getPin());
+		throw new InvalidSchematicException(INVALID_LABEL, (Gate)op, 0);
 	}
 
 }

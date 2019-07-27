@@ -18,11 +18,11 @@ import net.minecraft.util.ResourceLocation;
 public class GatePalette extends GuiFrame {
 
 	private static final ResourceLocation TEX = new ResourceLocation(Main.ID, "textures/gui/palette.png");
-	private final Consumer<GateType<?>> pick;
+	private final Consumer<GateType> pick;
 	private final Category[] tabs;
 	private int openTab;
 
-	public GatePalette(GuiFrame parent, Category[] tabs, int x, int y, Consumer<GateType<?>> pick) {
+	public GatePalette(GuiFrame parent, Category[] tabs, int x, int y, Consumer<GateType> pick) {
 		super(parent, 162, 76, tabs.length);
 		this.tabs = tabs;
 		this.pick = pick;
@@ -40,13 +40,13 @@ public class GatePalette extends GuiFrame {
 	public void drawOverlay(int mx, int my) {
 		if (my >= y + 58) super.drawOverlay(mx, my);
 		else {
-			GateType<?> t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
+			GateType t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
 			if (t != null)
 				drawTooltip(getTooltip(t), mx, my);
 		}
 	}
 
-	protected String getTooltip(GateType<?> t) {
+	protected String getTooltip(GateType t) {
 		return TooltipUtil.translate("gate." + t.name.replace(':', '.'));
 	}
 
@@ -59,7 +59,7 @@ public class GatePalette extends GuiFrame {
 		for (int i = 0, x = this.x + 1, y = this.y + 59; i < tabs.length; i++, x += 16)
 			GateTextureHandler.drawIcon(getDraw(), x, y, 16, 16, tabs[i].getIcon(), zLevel);
 		int x = this.x + 3, y = this.y + 1;
-		for (BoundingBox2D<GateType<?>> bb : tabs[openTab].instructions)
+		for (BoundingBox2D<GateType> bb : tabs[openTab].instructions)
 			GateTextureHandler.drawIcon(getDraw(), x + bb.x0*4, y + bb.y0*4, bb.width()*4 - 4, bb.height()*4, bb.owner.getIcon(), zLevel);
 		drawNow();
 	}
@@ -67,7 +67,7 @@ public class GatePalette extends GuiFrame {
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
 		if (my >= y + 56) return super.mouseIn(mx, my, b, d);
-		GateType<?> t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
+		GateType t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
 		if (t != null) pick.accept(t);
 		return true;
 	}

@@ -1,8 +1,8 @@
 package cd4017be.rscpl.gui;
 
 import cd4017be.rscpl.editor.Gate;
+import cd4017be.rscpl.editor.Pin;
 import cd4017be.rscpl.editor.TraceNode;
-import cd4017be.rscpl.graph.Operator;
 
 /**
  * 
@@ -15,25 +15,25 @@ public class PinRef {
 	public final int x, y;
 	public final PinRef link;
 
-	public PinRef(Operator out) {
-		Gate<?> g = out.getGate();
+	public PinRef(Pin out) {
+		Gate g = out.gate;
 		this.gate = g.index;
-		this.pin = out.getPin();
+		this.pin = out.idx;
 		this.trace = -1;
 		this.x = g.rasterX + g.type.width;
-		this.y = g.rasterY + g.getOutputHeight(pin);
+		this.y = g.rasterY + g.type.getOutputHeight(pin);
 		this.link = null;
 	}
 
-	public PinRef(Gate<?> gate, int pin) {
+	public PinRef(Gate gate, int pin) {
 		this.gate = gate.index;
 		this.pin = pin;
 		this.trace = 0;
 		this.x = gate.rasterX;
-		this.y = gate.rasterY + gate.getInputHeight(pin);
+		this.y = gate.rasterY + gate.type.getInputHeight(pin);
 		TraceNode tn = gate.traces[pin];
 		if (tn == null) {
-			Operator out = gate.getInput(pin);
+			Pin out = gate.getInput(pin);
 			this.link = out != null ? new PinRef(out) : null;
 		} else this.link = new PinRef(tn, 1);
 	}
@@ -45,7 +45,7 @@ public class PinRef {
 		this.x = tn.rasterX;
 		this.y = tn.rasterY;
 		if (tn.next == null) {
-			Operator out = tn.owner.getInput(pin);
+			Pin out = tn.owner.getInput(pin);
 			this.link = out != null ? new PinRef(out) : null;
 		} else this.link = new PinRef(tn.next, depth + 1);
 	}

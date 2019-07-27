@@ -6,17 +6,23 @@ import org.objectweb.asm.Type;
  * @author CD4017BE
  *
  */
-public interface NamedOp extends Operator {
+public interface IVariable {
+
 	/**
-	 * @return name of this end point (variable name or pin label)
+	 * @return name of this variable
 	 */
 	String name();
+
+	/**
+	 * @return type of this variable
+	 */
+	Type type();
 
 	/**
 	 * @return number of bytes used for this variable
 	 */
 	default int memoryUsage() {
-		return memoryUsage(outType());
+		return memoryUsage(type());
 	}
 
 	public static int memoryUsage(Type type) {

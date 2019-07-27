@@ -25,13 +25,13 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	private final Schematic schematic;
 	private final Runnable update;
-	public final ArrayList<BoundingBox2D<Gate<?>>> parts = new ArrayList<>();
+	public final ArrayList<BoundingBox2D<Gate>> parts = new ArrayList<>();
 	public final Int2ObjectOpenHashMap<PinRef> pins = new Int2ObjectOpenHashMap<>();
-	public BoundingBox2D<Gate<?>> selPart;
+	public BoundingBox2D<Gate> selPart;
 	int originX, originY, moveX, moveY;
 	boolean movingTrace;
 	PinRef selPin;
-	private Gate<?> placing;
+	private Gate placing;
 
 	public SchematicBoard(GuiFrame parent, int x, int y, Schematic schematic, Runnable update) {
 		super(parent, (schematic.BOARD_AREA.width() + 1) << 2, schematic.BOARD_AREA.height() << 2, x, y);
@@ -43,19 +43,19 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 		if (!schematic.modified) return;
 		parts.clear();
 		pins.clear();
-		for (Gate<?> g : schematic.operators)
+		for (Gate g : schematic.operators)
 			if (g != null) {
 				parts.add(g.getBounds());
-				for (int i = g.outputCount() - 1; i >= 0; i--) {
-					PinRef pin = new PinRef(g.getOutput(i));
+				for (int i = g.outputs.length - 1; i >= 0; i--) {
+					PinRef pin = new PinRef(g.outputs[i]);
 					pins.putIfAbsent(pin.hashCode(), pin);
 				}
-				for (int i = g.visibleInputs() - 1; i >= 0; i--)
+				for (int i = g.inputCount() - 1; i >= 0; i--)
 					for (PinRef pin = new PinRef(g, i); pin != null; pin = pin.link)
 						pins.put(pin.hashCode(), pin);
 			}
 		if (selPart != null) {
-			Gate<?> op = schematic.get(selPart.owner.index);
+			Gate op = schematic.get(selPart.owner.index);
 			selPart = op == null ? null : op.getBounds();
 			update.run();
 		}
@@ -66,26 +66,26 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	public void drawBackground(int mx, int my, float t) {
 		parent.bindTexture(parent.mainTex);
 		parent.gui.mc.renderEngine.bindTexture(GateTextureHandler.GATE_ICONS_LOC);
-		for (BoundingBox2D<Gate<?>> part : parts)
+		for (BoundingBox2D<Gate> part : parts)
 			drawPart(part);
 		if (placing != null) {
 			placing.setPosition((mx - x) / 4, (my - y) / 4);
-			BoundingBox2D<Gate<?>> part = placing.getBounds();
+			BoundingBox2D<Gate> part = placing.getBounds();
 			drawPart(part);
 		}
 		parent.drawNow();
 		parent.bindTexture(null);
 		drawWires(mx, my);
 		if (placing != null) {
-			BoundingBox2D<Gate<?>> part = placing.getBounds();
-			for (BoundingBox2D<Gate<?>> p : parts)
+			BoundingBox2D<Gate> part = placing.getBounds();
+			for (BoundingBox2D<Gate> p : parts)
 				if (part.overlapsWith(p))
 					drawSelection(p, 0x80ff0000);
 		} else if (selPart != null) {
-			BoundingBox2D<Gate<?>> part = selPart;
+			BoundingBox2D<Gate> part = selPart;
 			if (moveX != 0 || moveY != 0) {
 				part = part.offset(moveX, moveY);
-				for (BoundingBox2D<Gate<?>> p : parts)
+				for (BoundingBox2D<Gate> p : parts)
 					if (part.overlapsWith(p))
 						drawSelection(p, 0x80ff0000);
 			}
@@ -117,15 +117,15 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 		GlStateManager.enableTexture2D();
 	}
 
-	private void drawPart(BoundingBox2D<Gate<?>> part) {
-		Gate<?> node = part.owner;
+	private void drawPart(BoundingBox2D<Gate> part) {
+		Gate node = part.owner;
 		int x = this.x + 2 + part.x0*4, y = this.y + part.y0*4;
 		GateTextureHandler.drawIcon(parent.getDraw(), x, y, part.width()*4, part.height()*4, part.owner.type.getIcon(), parent.zLevel + 1);
 		if (node instanceof ISpecialRender)
 			((ISpecialRender)node).draw(this, x, y);
 	}
 
-	private void drawSelection(BoundingBox2D<Gate<?>> part, int c) {
+	private void drawSelection(BoundingBox2D<Gate> part, int c) {
 		int x0 = x + 2 + part.x0 * 4,
 			x1 = x + 2 + part.x1 * 4,
 			y0 = y + part.y0 * 4,
@@ -138,7 +138,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	@Override
 	public void drawOverlay(int mx, int my) {
-		BoundingBox2D<Gate<?>> part = findPart((mx - x - 1) / 4, (my - y) / 4);
+		BoundingBox2D<Gate> part = findPart((mx - x - 1) / 4, (my - y) / 4);
 		if (part != null)
 			parent.drawTooltip(part.owner.label, mx, my);
 	}
@@ -197,7 +197,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			break;
 		case B_MID:
 			if (d != A_DOWN) {
-				BoundingBox2D<Gate<?>> part = findPart(mx, my);
+				BoundingBox2D<Gate> part = findPart(mx, my);
 				if (part != null) placing = part.owner.type.newGate(0);
 				selPart = null;
 				update.run();
@@ -223,15 +223,15 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	@Override
 	public boolean focus() {return true;}
 
-	private BoundingBox2D<Gate<?>> findPart(int x, int y) {
-		for (BoundingBox2D<Gate<?>> part : parts)
+	private BoundingBox2D<Gate> findPart(int x, int y) {
+		for (BoundingBox2D<Gate> part : parts)
 			if (part.isPointInside(x, y)) {
 				return part;
 			}
 		return null;
 	}
 
-	public void place(GateType<?> op) {
+	public void place(GateType op) {
 		this.placing = op.newGate(0);
 	}
 

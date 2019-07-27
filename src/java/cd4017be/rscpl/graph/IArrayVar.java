@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
  * Represents a fixed sized Array variable.
  * @author CD4017BE
  */
-public interface ArrayVar extends ReadOp {
+public interface IArrayVar extends IReadVar {
 
 	/**
 	 * @return element count
@@ -17,7 +17,7 @@ public interface ArrayVar extends ReadOp {
 
 	@Override
 	default int memoryUsage() {
-		return NamedOp.memoryUsage(outType().getElementType()) * size();
+		return IVariable.memoryUsage(type().getElementType()) * size();
 	}
 
 }

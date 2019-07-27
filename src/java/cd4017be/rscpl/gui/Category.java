@@ -15,7 +15,7 @@ import cd4017be.rscpl.editor.GateType;
 public class Category {
 
 	public final String name;
-	public final List<BoundingBox2D<GateType<?>>> instructions = new ArrayList<>();
+	public final List<BoundingBox2D<GateType>> instructions = new ArrayList<>();
 	private int lastWidth = 0;
 
 	public Category(String name) {
@@ -23,8 +23,8 @@ public class Category {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends GateType<T>> T[] add(T... types) {
-		for (GateType<?> t : types)
+	public <T extends GateType> T[] add(T... types) {
+		for (GateType t : types)
 			instructions.add(new BoundingBox2D<>(t, 0, 0, t.width + 1, t.height));
 		return types;
 	}
@@ -65,8 +65,8 @@ public class Category {
 		return null;
 	}
 
-	public GateType<?> get(int x, int y) {
-		for (BoundingBox2D<GateType<?>> bb : instructions)
+	public GateType get(int x, int y) {
+		for (BoundingBox2D<GateType> bb : instructions)
 			if (bb.isPointInside(x, y))
 				return bb.owner;
 		return null;

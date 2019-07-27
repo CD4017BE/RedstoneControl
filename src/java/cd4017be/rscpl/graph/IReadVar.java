@@ -9,11 +9,11 @@ import static org.objectweb.asm.Type.*;
  * Represents the read operator of a variable.
  * @author CD4017BE
  */
-public interface ReadOp extends NamedOp, ValueOp {
+public interface IReadVar extends IVariable, ValueOp {
 
 	default void initState(StateBuffer state) {
 		String name = name();
-		Type t = outType();
+		Type t = type();
 		switch(t.getSort()) {
 		case BYTE: state.set(name, ((Number)getValue()).byteValue()); break;
 		case SHORT: state.set(name, ((Number)getValue()).shortValue()); break;

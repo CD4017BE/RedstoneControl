@@ -10,16 +10,16 @@ public class InvalidSchematicException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public final int errcode;
-	public final Gate<?> gate;
+	public final Gate gate;
 	public final int pin;
 
-	public InvalidSchematicException(int errcode, Gate<?> node, int pin) {
+	public InvalidSchematicException(int errcode, Gate node, int pin) {
 		this.errcode = errcode;
 		this.gate = node;
 		this.pin = pin;
 	}
 
-	public InvalidSchematicException(int compact, IntFunction<Gate<?>> gateGetter) {
+	public InvalidSchematicException(int compact, IntFunction<Gate> gateGetter) {
 		this.errcode = compact & 0xff;
 		if (errcode == NO_ERROR) gate = null;
 		else gate = gateGetter.apply(compact >> 8 & 0xffff);
