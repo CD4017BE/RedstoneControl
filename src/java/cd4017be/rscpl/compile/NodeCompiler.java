@@ -25,10 +25,11 @@ public interface NodeCompiler {
 	/**
 	 * Compile the Node into JVM instructions so that the result is put on top of the operand stack.
 	 * @param inputs use {@link Dep#compile(MethodVisitor, Context)} on these to get the Node's inputs onto the operand stack.
+	 * @param param custom data feed through from {@link Node#Node(NodeCompiler, Object, Node...)}
 	 * @param mv the method being assembled
 	 * @param context handler for local variables
 	 */
-	void compile(Dep[] inputs, MethodVisitor mv, Context context);
+	void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context);
 
 	/**
 	 * For Nodes that support a boolean result in the form of a conditional jump
@@ -38,12 +39,13 @@ public interface NodeCompiler {
 		/**
 		 * Compile the Node into JVM instructions so that the result controls a conditional jump to the given target label.
 		 * @param inputs use {@link Dep#compile(MethodVisitor, Context)} on these to get the Node's inputs onto the operand stack.
+		 * @param param custom data feed through from {@link Node#Node(NodeCompiler, Object, Node...)}
 		 * @param mv the method being assembled
 		 * @param context handler for local variables
 		 * @param target the label to jump to
 		 * @param cond the value to jump on
 		 */
-		void compile(Dep[] inputs, MethodVisitor mv, Context context, Label target, boolean cond);
+		void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context, Label target, boolean cond);
 	}
 
 }

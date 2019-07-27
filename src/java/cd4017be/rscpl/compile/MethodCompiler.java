@@ -34,7 +34,7 @@ public interface MethodCompiler extends NodeCompiler {
 	}
 
 	@Override
-	default void compile(Dep[] inputs, MethodVisitor mv, Context context) {
+	default void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context) {
 		Arrays.sort(inputs);
 		for (Dep d : inputs)
 			d.compile(mv, context);

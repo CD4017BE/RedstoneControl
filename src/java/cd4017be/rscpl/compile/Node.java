@@ -11,6 +11,8 @@ import org.objectweb.asm.Type;
 public class Node {
 
 	final NodeCompiler code;
+	/**custom data feed through to the compiler */
+	final Object param;
 	/**the inputs of this node */
 	final Dep[] deps;
 	/**Nodes that use the result of this Node as input */
@@ -27,7 +29,12 @@ public class Node {
 	Node commonUser;
 
 	public Node(NodeCompiler code, Node... inputs) {
+		this(code, null, inputs);
+	}
+
+	public Node(NodeCompiler code, Object param, Node... inputs) {
 		this.code = code;
+		this.param = param;
 		this.users = new ArrayList<>(1);
 		this.deps = new Dep[inputs.length];
 		int order = -1;

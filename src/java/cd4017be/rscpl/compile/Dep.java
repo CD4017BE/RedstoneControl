@@ -43,7 +43,7 @@ public class Dep implements Comparable<Dep> {
 				if (--src.remUses <= 0)
 					context.releaseLocal(src.localIdx, st);
 			} else {
-				code.compile(src.deps, mv, context);
+				code.compile(src.deps, src.param, mv, context);
 				if (src.getNumOfUsers() > 1) {
 					int i = src.localIdx = context.newLocal(st);
 					mv.visitVarInsn(st.getOpcode(ISTORE), i);
@@ -55,7 +55,7 @@ public class Dep implements Comparable<Dep> {
 			return;
 		}
 		if (src.localIdx >= 0) return;
-		code.compile(src.deps, mv, context);
+		code.compile(src.deps, src.param, mv, context);
 		if (st == Type.VOID_TYPE) {
 			src.localIdx = Integer.MAX_VALUE;
 			return;
@@ -84,7 +84,7 @@ public class Dep implements Comparable<Dep> {
 			if (--src.remUses <= 0)
 				context.releaseLocal(src.localIdx, st);
 		} else if (src.getNumOfUsers() > 1) {
-			code.compile(src.deps, mv, context);
+			code.compile(src.deps, src.param, mv, context);
 			int i = src.localIdx = context.newLocal(st);
 			mv.visitVarInsn(st.getOpcode(ISTORE), i);
 			mv.visitVarInsn(st.getOpcode(ILOAD), i);
@@ -92,10 +92,10 @@ public class Dep implements Comparable<Dep> {
 		} else {
 			src.localIdx = Integer.MAX_VALUE;
 			if (code instanceof NodeCompiler.Bool) {
-				((NodeCompiler.Bool)code).compile(src.deps, mv, context, target, cond);
+				((NodeCompiler.Bool)code).compile(src.deps, src.param, mv, context, target, cond);
 				return;
 			}
-			code.compile(src.deps, mv, context);
+			code.compile(src.deps, src.param, mv, context);
 		}
 		convert(st, type, mv);
 		mv.visitJumpInsn(cond ? IFNE : IFEQ, target);
