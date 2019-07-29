@@ -190,6 +190,7 @@ public abstract class Compiler<P extends CompiledProgram> implements MethodCompi
 			checkName(w);
 			if (writes.put(w.name(), w) != null)
 				throw new InvalidSchematicException(WRITE_CONFLICT, op, 0);
+			w.link(null);
 		}
 		if (op instanceof IReadVar) {
 			IReadVar r = (IReadVar)op;

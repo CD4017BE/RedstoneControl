@@ -5,7 +5,11 @@ import org.objectweb.asm.Type;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.IGuiComp;
 import cd4017be.lib.Gui.comp.TextField;
-import cd4017be.rs_ctr.circuit.editor.BasicType;
+import cd4017be.rs_ctr.circuit.editor.BasicType.ISpecialNodeProvider;
+import cd4017be.rscpl.compile.Node;
+import cd4017be.rscpl.compile.NodeCompiler;
+import cd4017be.rscpl.editor.Gate;
+import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialCfg;
@@ -17,7 +21,7 @@ import cd4017be.rscpl.gui.SchematicBoard;
  * @author CD4017BE
  *
  */
-public class ConstNum extends Combinator implements ISpecialRender, ISpecialCfg {
+public class ConstNum extends Gate implements ISpecialRender, ISpecialCfg, ISpecialNodeProvider {
 
 	public Number value;
 
@@ -25,23 +29,18 @@ public class ConstNum extends Combinator implements ISpecialRender, ISpecialCfg 
 	 * @param type
 	 * @param index
 	 */
-	public ConstNum(BasicType type, int index) {
-		super(type, index);
+	public ConstNum(GateType type, int index, int in, int out) {
+		super(type, index, in, out);
 	}
 
 	@Override
 	public void checkValid() throws InvalidSchematicException {
 		super.checkValid();
 		try {
-			this.value = parse(label, outType());
+			this.value = parse(label, type.getOutType(0));
 		} catch (NumberFormatException e) {
-			throw new InvalidSchematicException(InvalidSchematicException.INVALID_CFG, getGate(), getPin());
+			throw new InvalidSchematicException(InvalidSchematicException.INVALID_CFG, this, 0);
 		}
-	}
-
-	@Override
-	protected Object[] compParams() {
-		return new Object[] {value};
 	}
 
 	@Override
@@ -69,6 +68,11 @@ public class ConstNum extends Combinator implements ISpecialRender, ISpecialCfg 
 		for (IGuiComp c : gui)
 			if (c instanceof TextField)
 				((TextField)c).tooltip("gui.rs_ctr.value");
+	}
+
+	@Override
+	public Node createNode(int o, NodeCompiler code) {
+		return new Node(code, value);
 	}
 
 }

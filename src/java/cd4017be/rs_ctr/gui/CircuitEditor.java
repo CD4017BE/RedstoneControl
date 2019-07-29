@@ -77,7 +77,7 @@ public class CircuitEditor extends ModularGui {
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
 		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place) {
 			@Override
-			protected String getTooltip(GateType<?> t) {
+			protected String getTooltip(GateType t) {
 				int cost = CircuitInstructionSet.INS_SET.getCost(t);
 				return super.getTooltip(t) + "\n" + TooltipUtil.format("gate.cost", cost & 0xff, cost >> 8 & 0xff);
 			}
@@ -117,9 +117,9 @@ public class CircuitEditor extends ModularGui {
 	void changeSelPart() {
 		cfg.clear();
 		cfg.titleY = -11;
-		BoundingBox2D<Gate<?>> part = board.selPart;
+		BoundingBox2D<Gate> part = board.selPart;
 		if (part != null) {
-			Gate<?> g = part.owner;
+			Gate g = part.owner;
 			cfg.background(COMP_TEX, 180, 41).title("gate." + g.type.name.replace(':', '.'), 0.5F);
 			String s = cfg.title;
 			int i = s.indexOf('\n');
@@ -206,8 +206,6 @@ public class CircuitEditor extends ModularGui {
 			} catch (Throwable e) {
 				Main.LOG.error("internal compilation error: ", e);
 			}
-			for (Gate<?> g : tile.schematic.operators)
-				if (g != null) g.restoreInputs();
 		} else if (b == Button.B_LEFT)
 			sendCommand(A_COMPILE);
 	}
@@ -221,7 +219,7 @@ public class CircuitEditor extends ModularGui {
 	}
 
 	public void sendLabel(String label) {
-		BoundingBox2D<Gate<?>> part = board.selPart;
+		BoundingBox2D<Gate> part = board.selPart;
 		PacketBuffer pkt = preparePacket(container);
 		pkt.writeByte(SET_LABEL).writeByte(part.owner.index);
 		pkt.writeCharSequence(label, Utils.UTF8);
@@ -229,7 +227,7 @@ public class CircuitEditor extends ModularGui {
 	}
 
 	public void updateCfg() {
-		BoundingBox2D<Gate<?>> part = board.selPart;
+		BoundingBox2D<Gate> part = board.selPart;
 		if (part == null || !(part.owner instanceof ConfigurableGate)) return;
 		PacketBuffer pkt = preparePacket(container);
 		pkt.writeByte(SET_VALUE).writeByte(part.owner.index);

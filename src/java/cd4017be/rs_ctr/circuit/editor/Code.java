@@ -3,34 +3,27 @@ package cd4017be.rs_ctr.circuit.editor;
 import static org.objectweb.asm.Opcodes.BIPUSH;
 import static org.objectweb.asm.Opcodes.ICONST_0;
 import static org.objectweb.asm.Opcodes.SIPUSH;
-
+import static org.objectweb.asm.Opcodes.IFEQ;
+import java.util.Arrays;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import cd4017be.rscpl.compile.Context;
-import cd4017be.rscpl.graph.Operator;
+import cd4017be.rscpl.compile.Dep;
+import cd4017be.rscpl.compile.NodeCompiler;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 
 /**
  * @author CD4017BE
  */
-public class Code {
+public class Code implements NodeCompiler {
 
 	final String desc;
 	final byte[] bytecode;
-	public final Type result;
-
-	/**
-	 * byte array version of {@link #OpCode(Type, String, int[])}
-	 * @param desc code description
-	 * @param code the {@link Opcodes}
-	 */
-	public Code(Type result, String desc, byte[] bytecode) {
-		this.result = result;
-		this.desc = desc;
-		this.bytecode = bytecode;
-	}
+	final Type result;
+	final Type[] inputs;
+	int sortInputs;
 
 	/**
 	 * <b>default local variables:</b><br>
@@ -44,7 +37,8 @@ public class Code {
 	 * <b>Vv</b> release local variable v<br>
 	 * <b>n+v</b> increment local variable v by n<br>
 	 * <b>%v</b> instruction on local variable v<br>
-	 * <b>n></b> evaluate input n<br>
+	 * <b>n></b> evaluate input n as value on operand stack<br>
+	 * <b>n^l</b> evaluate input n as conditional jump to l: IFNE = on true, IFEQ = on false<br>
 	 * <b>*</b> single basic instruction<br>
 	 * <b>n*</b> n basic instructions<br>
 	 * <b>n#</b> instruction with numeric parameter<br>
@@ -55,30 +49,55 @@ public class Code {
 	 * <b>n?m:dli...</b> table switch starting at number m with default label d and n jump labels li for m+i<br>
 	 * <b>n?di:li...</b> lookup switch with default label d and n jump labels i:li where i is the key value and li is the label name<br>
 	 * <b>=O:N T</b> field instruction with owner O, type T and name N<br>
-	 * <b>;O:ND</b> method instruction with owner O, name N and descriptor D
+	 * <b>;O:ND</b> method instruction with owner O, name N and descriptor D<br>
+	 * @param result the output type
 	 * @param desc code description using above patterns
 	 * @param code the {@link Opcodes}
+	 * @param inTypes the input types (default to int if not defined)
 	 */
-	public Code(Type result, String desc, int... code) {
+	public Code(Type result, String desc, byte[] code, Type... inTypes) {
 		this.result = result;
 		this.desc = desc;
+		this.bytecode = code;
+		this.inputs = inTypes;
+		this.sortInputs = Integer.MAX_VALUE;
+	}
+
+	public static byte[] bytes(int... code) {
 		byte[] bytecode = new byte[code.length];
 		for (int i = bytecode.length - 1; i >= 0; i--)
 			bytecode[i] = (byte)code[i];
-		this.bytecode = bytecode;
+		return bytecode;
 	}
 
 	/**
-	 * compile the gate.
-	 * This typically involves calling {@link #compile()} recursively on the input operands.
-	 * @param mv receives all the instructions needed to add the gate's result on top of the Java operand stack.
-	 * @param context the method context
+	 * sort the inputs in highest to lowest complexity order before compiling.
+	 * @param from inputs to keep in original order
+	 * @return this
 	 */
-	public void compile(MethodVisitor mv, Context context, Operator[] in, Object... param) {
+	public Code sortInputs(int from) {
+		sortInputs = from;
+		return this;
+	}
+
+	@Override
+	public Type getInType(int i) {
+		return i < inputs.length ? inputs[i] : Type.INT_TYPE;
+	}
+
+	@Override
+	public Type getOutType() {
+		return result;
+	}
+
+	@Override
+	public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context) {
 		Char2ObjectArrayMap<Label> labels = new Char2ObjectArrayMap<>();
 		Char2ObjectArrayMap<Local> locals = new Char2ObjectArrayMap<>();
 		locals.put('m', new Local(Type.INT_TYPE, Context.DIRTY_IDX));
 		locals.put('t', new Local(Type.getObjectType(context.compiler.C_THIS), Context.THIS_IDX));
+		if (sortInputs < inputs.length)
+			Arrays.sort(inputs, sortInputs, inputs.length);
 		int bi = 0, v = 0;
 		boolean hex = false;
 		char[] code = desc.toCharArray();
@@ -104,7 +123,10 @@ public class Code {
 				mv.visitVarInsn(bytecode[bi++] & 0xff, locals.get(code[++i]).idx);
 				break;
 			case '>':
-				in[v].compile(mv, context);
+				inputs[v].compile(mv, context);
+				break;
+			case '^':
+				inputs[v].compile(mv, context, label(labels, code[++i]), (bytecode[bi++] & 0xff) != IFEQ);
 				break;
 			case '*':
 				do mv.visitInsn(bytecode[bi++] & 0xff);
@@ -114,7 +136,7 @@ public class Code {
 				mv.visitIntInsn(bytecode[bi++] & 0xff, v);
 				break;
 			case '$': {
-				Object o = param[v];
+				Object o = param instanceof Object[] ? ((Object[])param)[v] : param;
 				if (o instanceof Integer) {
 					v = (Integer)o;
 					if (v >= -1 && v <= 5)
@@ -170,7 +192,7 @@ public class Code {
 				if (owner.isEmpty()) owner = context.compiler.C_THIS;
 				j = parseUntil(code, i = j + 1, field ? ' ' : '(');
 				String name = new String(code, i, j - i);
-				if (name.isEmpty()) name = (String)param[v];
+				if (name.isEmpty()) name = (String)(param instanceof Object[] ? ((Object[])param)[v] : param);
 				i = j; j++;
 				if (!field) {
 					while(code[j] != ')')

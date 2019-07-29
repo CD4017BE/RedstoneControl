@@ -47,7 +47,7 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 	public void drawOverlay(int mx, int my) {
 		InvalidSchematicException lastErr = this.lastErr;
 		if (lastErr == null) return;
-		Gate<?> node = lastErr.gate;
+		Gate node = lastErr.gate;
 		int px, py;
 		switch(lastErr.errcode) {
 		case Editor.MISSING_IO:
@@ -78,9 +78,9 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 		case CAUSAL_LOOP:
 		case MISSING_INPUT:
 			if (node == null) return;
-			if (lastErr.pin < node.visibleInputs()) {
+			if (lastErr.pin < node.inputCount()) {
 				px = (node.rasterX << 2) + 10;
-				py = ((node.rasterY + node.getInputHeight(lastErr.pin)) << 2) + 18;
+				py = ((node.rasterY + node.type.getInputHeight(lastErr.pin)) << 2) + 18;
 			} else {
 				px = (node.rasterX << 2) + 14;
 				py = (node.rasterY << 2) + 19;

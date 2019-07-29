@@ -1,22 +1,19 @@
 package cd4017be.rs_ctr.circuit.gates;
 
-import static org.objectweb.asm.Opcodes.*;
-
-import java.util.Set;
-
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.rs_ctr.circuit.editor.BasicType;
-import cd4017be.rscpl.compile.Context;
+import cd4017be.rs_ctr.circuit.editor.BasicType.ISpecialNodeProvider;
+import cd4017be.rscpl.compile.Node;
+import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.editor.Gate;
-import cd4017be.rscpl.graph.Operator;
-import cd4017be.rscpl.graph.Pin;
-import cd4017be.rscpl.graph.ReadOp;
-import cd4017be.rscpl.graph.WriteOp;
+import cd4017be.rscpl.editor.GateType;
+import cd4017be.rscpl.graph.IEndpoint;
+import cd4017be.rscpl.graph.IReadVar;
+import cd4017be.rscpl.graph.IWriteVar;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
@@ -27,16 +24,13 @@ import io.netty.buffer.ByteBuf;
  * @author CD4017BE
  *
  */
-public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISpecialCfg, ConfigurableGate {
+public class WriteVar extends Gate implements IWriteVar, ISpecialRender, ISpecialCfg, ConfigurableGate, IEndpoint, ISpecialNodeProvider {
 
 	private boolean interrupt = true;
+	IReadVar link;
 
-	/**
-	 * @param type
-	 * @param index
-	 */
-	public WriteVar(BasicType type, int index) {
-		super(type, index);
+	public WriteVar(GateType type, int index, int in, int out) {
+		super(type, index, in, type.getOutType(0) != Type.VOID_TYPE ? 1 : 0);
 	}
 
 	@Override
@@ -50,59 +44,13 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISp
 	}
 
 	@Override
-	public void compile(MethodVisitor mv, Context context) {
-		Operator op = inputs[visibleInputs()];
-		if (interrupt) {
-			if (op == null)
-				inputs[visibleInputs()] = new Read();
-			type.outputs[0].compile(mv, context, inputs, label);
-			if (receivers.isEmpty()) mv.visitInsn(POP);
-		} else {
-			//not actually using the code, just make sure any local variable is freed up
-			if (op != null) op.compile(null, context);
-			
-			mv.visitVarInsn(ALOAD, Context.THIS_IDX);
-			inputs[0].compile(mv, context);
-			if (!receivers().isEmpty()) mv.visitInsn(DUP_X1);
-			mv.visitFieldInsn(PUTFIELD, context.compiler.C_THIS, label, outType().getDescriptor());
-		}
-	}
-
-	@Override
-	public boolean hasSideEffects() {
-		return true;
-	}
-
-	@Override
 	public String name() {
 		return label;
 	}
 
 	@Override
-	public void link(ReadOp read) {
-		this.setInput(visibleInputs(), read);
-	}
-
-	private class Read implements Operator {
-		@Override
-		public Set<Pin> receivers() {return null;}
-		@Override
-		public Type outType() {return WriteVar.this.outType();}
-		@Override
-		public int inputCount() {return 0;}
-		@Override
-		public int getPin() {return 0;}
-		@Override
-		public Operator getInput(int pin) {return null;}
-		@Override
-		public Gate<?> getGate() {return null;}
-		@Override
-		public Operator getActual() {return null;}
-		@Override
-		public void compile(MethodVisitor mv, Context context) {
-			mv.visitVarInsn(ALOAD, Context.THIS_IDX);
-			mv.visitFieldInsn(GETFIELD, context.compiler.C_THIS, label, outType().getDescriptor());
-		}
+	public void link(IReadVar read) {
+		link = read;
 	}
 
 	@Override
@@ -116,6 +64,29 @@ public class WriteVar extends Combinator implements WriteOp, ISpecialRender, ISp
 			interrupt = i != 0;
 			updateCfg.run();
 		}).texture(180, 59).tooltip("gui.rs_ctr.interrupt#");
+	}
+
+	@Override
+	public Type type() {
+		return ((BasicType)type).outputs[0].getInType(0);
+	}
+
+	@Override
+	public Node getEndNode() {
+		if (outputs.length > 0) return outputs[0].getNode();
+		return createNode(0, null);
+	}
+
+	@Override
+	public Node createNode(int o, NodeCompiler code) {
+		Node n = inputs[0].getNode();
+		if (interrupt) {
+			Node ref = link != null ?
+					((Gate)link).outputs[0].getNode() :
+					new Node(new ReadVar.Compiler(type()), label);
+			return new Node(((BasicType)type).outputs[1], label, n, ref, n);
+		}
+		return new Node(((BasicType)type).outputs[0], label, n);
 	}
 
 }
