@@ -179,8 +179,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		if (mode <= CLIENT || mode == ITEM) {
 			nbt.merge(circuit.serializeNBT());
 			NBTTagList names = new NBTTagList();
-			for (MountedPort port : ports)
-				names.appendTag(new NBTTagString(port.name.substring(1)));
+			for (MountedPort port : ports) {
+				String n = port.name;
+				names.appendTag(new NBTTagString(n.isEmpty() ? n : n.substring(1)));
+			}
 			nbt.setTag("labels", names);
 			nbt.setString("name", name);
 			nbt.setIntArray("stats", stats);
@@ -289,8 +291,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	public String[] getIOLabels() {
 		String[] io = new String[ports.length - 1];
-		for (int i = 0; i < io.length; i++)
-			io[i] = ports[i].name.substring(1);
+		for (int i = 0; i < io.length; i++) {
+			String n = ports[i].name;
+			io[i] = n.isEmpty() ? n : n.substring(1);
+		}
 		return io;
 	}
 

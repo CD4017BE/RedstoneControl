@@ -196,7 +196,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 				if (val < 10) return code;
 				code |= DIGITS[(val /= 10) % 10] << 16;
 				if (val < 10) return code;
-				return code | DIGITS[val % 10] << 24;
+				return code | DIGITS[(val / 10) % 10] << 24;
 			}
 			@Override
 			int remainder(int val) {

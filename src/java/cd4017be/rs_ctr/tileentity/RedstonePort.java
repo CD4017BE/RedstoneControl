@@ -262,7 +262,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public void onPlaced(EntityLivingBase entity, ItemStack item) {
-		neighborBlockChange(blockType, pos);
+		neighborBlockChange(getBlockType(), pos);
 	}
 
 	@Override
@@ -302,7 +302,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		public void updateSignal(int value) {
 			if (value != states[id]) {
 				states[id] = value;
-				world.neighborChanged(target, blockType, pos);
+				world.neighborChanged(target, getBlockType(), pos);
 				if ((strong >> (id - 6) & 1) != 0) world.notifyNeighborsOfStateExcept(target, blockType, side);
 			}
 		}
