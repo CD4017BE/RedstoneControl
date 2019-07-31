@@ -65,7 +65,7 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	@Override
 	public Pair<Vec3d, EnumFacing> rayTrace(Vec3d start, Vec3d dir) {
 		Orientation o = host.getOrientation();
-		Pair<Vec3d, EnumFacing> res = IInteractiveComponent.rayTraceFlat(start, dir, o.Z.scale(-.375).addVector(.5, .5, .5), o.back, 0.5F, 0.5F);
+		Pair<Vec3d, EnumFacing> res = IInteractiveComponent.rayTraceFlat(start, dir, o.Z.scale(.5).addVector(.5, .5, .5), o.back, 0.5F, 0.5F);
 		if (res != null) {
 			Vec3d pos = o.invRotate(res.getLeft().add(start).subtract(0.5, 0.5, 0.5));
 			if ((getBounds() >> ((int)Math.floor(pos.x * 4D) + (int)Math.floor(pos.y * 4D) * 4 + 10) & 1) == 0)

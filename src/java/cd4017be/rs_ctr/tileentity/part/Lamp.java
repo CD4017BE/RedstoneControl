@@ -55,7 +55,7 @@ public class Lamp extends SignalModule implements SignalHandler {
 
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
-		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, false).setLocation(getX() + .125, getY() + .125, 0, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.i"));
+		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, false).setLocation(getX() + .125, getY() + .125, .75, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.i"));
 		super.init(ports, idx, panel);
 	}
 
