@@ -1,0 +1,17 @@
+{
+	"lever_flip": {
+		"category": "block",
+		"subtitle": "rs_ctr.subtitle.lever_flip",
+		"sounds": [ "rs_ctr:lever_flip" ]
+	},
+	"button_down": {
+		"category": "block",
+		"subtitle": "rs_ctr.subtitle.button_down",
+		"sounds": [ "rs_ctr:btn_press" ]
+	},
+	"button_up": {
+		"category": "block",
+		"subtitle": "rs_ctr.subtitle.button_up",
+		"sounds": [ "rs_ctr:btn_release" ]
+	}
+}
