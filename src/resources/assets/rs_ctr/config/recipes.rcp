@@ -1,4 +1,4 @@
-VERSION = 49;
+VERSION = 50;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -137,6 +137,7 @@ moddedRecipes() {
 		if (item) {sensors_FE = sensors_FE + item;}
 	}
 	if (#sensors_FE == 0) {sensors_FE = [it("minecraft:piston")];}
+	sensors_draconic = [it("draconicevolution:chaos_shard"):3];
 	
 	if (hasmod("immersiveengineering")) {
 		add("shaped", it("tile.comparator"), "0/1", it("immersiveengineering:connector"):13, it("minecraft:stone_slab"));

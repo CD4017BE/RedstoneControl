@@ -103,7 +103,12 @@ public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTB
 
 	@Override
 	public void onRefChange(BlockReference block, IHost host) {
-		this.host = host;
+		if ((this.host = host) == null) {
+			fuel = chaos = temp = shield = maxShield = satur = maxSatur = mode = null;
+			lastBlock = null;
+			lastMode = -2;
+			return;
+		}
 		lastBlock = block != null ? block.getState() : null;
 		if (INVALID_API) return;
 		TileEntity te = block == null ? null : block.getTileEntity();

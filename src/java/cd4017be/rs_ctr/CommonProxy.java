@@ -28,6 +28,7 @@ import cd4017be.rs_ctr.port.Constant;
 import cd4017be.rs_ctr.port.StatusLamp;
 import cd4017be.rs_ctr.port.WireAnchor;
 import cd4017be.rs_ctr.port.WireType;
+import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
@@ -114,6 +115,8 @@ public class CommonProxy implements IRecipeHandler {
 		registerSensor(new ForgeEnergySensor(), c.get("sensors_FE", Object[].class, null));
 		if (HAS_IC2_API)
 			registerSensor(new IC2EnergySensor(), c.get("sensors_EU", Object[].class, null));
+		if (net.minecraftforge.fml.common.Loader.isModLoaded("draconicevolution"))
+			registerSensor((stack)-> new DraconicFusionSensor(), c.get("sensors_draconic", Object[].class, null));
 		
 		WireType.registerAll();
 		IConnector.REGISTRY.put(Constant.ID, Constant::new);
@@ -130,8 +133,11 @@ public class CommonProxy implements IRecipeHandler {
 	}
 
 	private void registerSensor(IBlockSensor sensor, Object[] items) {
+		registerSensor((stack)-> sensor, items);
+	}
+
+	private void registerSensor(Function<ItemStack, IBlockSensor> loader, Object[] items) {
 		if (items == null) return;
-		Function<ItemStack, IBlockSensor> loader = (stack)-> sensor;
 		for (Object o : items)
 			if (o instanceof ItemStack)
 				SensorRegistry.register(loader, (ItemStack)o);

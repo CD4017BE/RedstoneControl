@@ -28,6 +28,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * @author CD4017BE
@@ -106,7 +107,9 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		}
 		stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;
 		impl = SensorRegistry.get(stack);
-		if (mode != SAVE && impl instanceof INBTSerializable)
+		if (mode == SAVE)
+			impl.onRefChange(blockRef, this);
+		else if (impl instanceof INBTSerializable)
 			((INBTSerializable<NBTBase>)impl).deserializeNBT(nbt.getTag("sync"));
 	}
 
@@ -125,7 +128,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 
 	@Override
 	public Pair<Vec3d, EnumFacing> rayTrace(Vec3d start, Vec3d dir) {
-		return IInteractiveComponent.rayTraceFlat(start, dir, mountPos, o.back, 0.25F, 0.5F);
+		boolean rot = o.ordinal() >= 4 && (o.ordinal() & 1) != 0;
+		return IInteractiveComponent.rayTraceFlat(start, dir, mountPos, o.back, rot ? 0.5F : 0.25F, rot ? 0.25F : 0.5F);
 	}
 
 	@Override
@@ -135,8 +139,9 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 			IBlockSensor sensor = SensorRegistry.get(stack);
 			if (sensor == SensorRegistry.DEFAULT) return false;
 			if (!this.stack.isEmpty()) remove(player);
-			this.stack = stack.splitStack(1);
+			this.stack = player.isCreative() ? ItemHandlerHelper.copyStackWithSize(stack, 1) : stack.splitStack(1);
 			impl = sensor;
+			impl.onRefChange(blockRef, this);
 			markDirty(REDRAW);
 			return true;
 		} else if (hit || player.isSneaking() && stack.isEmpty()) {
@@ -149,9 +154,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	}
 
 	private void remove(EntityPlayer player) {
-		if (player != null)
-			ItemFluidUtil.dropStack(stack, player);
-		else ItemFluidUtil.dropStack(stack, world, pos);
+		if (player == null) ItemFluidUtil.dropStack(stack, world, pos);
+		else if (!player.isCreative()) ItemFluidUtil.dropStack(stack, player);
 		stack = ItemStack.EMPTY;
 		impl = SensorRegistry.DEFAULT;
 	}
@@ -173,6 +177,12 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	@Override
 	public void syncSensorState() {
 		markDirty(SYNC);
+	}
+
+	@Override
+	protected void onUnload() {
+		super.onUnload();
+		impl.onRefChange(null, null);
 	}
 
 }
