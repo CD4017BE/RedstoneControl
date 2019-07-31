@@ -1,3 +1,24 @@
+v0.1.1
+Changes:
+- added Item Translocator
+- added XOR-Gate
+- added Control Panel with modules:
+- added Analog Pointer Display Module
+- added 7 Segment Display Module
+- added Slider Module
+- added Text Modules
+- added Lever Module
+- added Switch Module
+- added Button Module
+- added Lamp Module
+- added Screwdriver for module configuration
+- fixed #11 crash when breaking Processors with missing NBT
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.7
+
 v0.1.0
 Changes:
 - added energy system
