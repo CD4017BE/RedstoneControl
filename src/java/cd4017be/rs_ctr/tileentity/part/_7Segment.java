@@ -57,8 +57,8 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	public void init(List<MountedPort> ports, int id, IPanel panel) {
 		Orientation o = panel.getOrientation();
 		double y = getY() + 0.125;
-		ports.add(new MountedPort(panel, id << 1, SignalHandler.class, false).setLocation(0.875, y, 0, EnumFacing.NORTH, o).setName("port.rs_ctr.i"));
-		ports.add(new MountedPort(panel, id << 1 | 1, SignalHandler.class, true).setLocation(0.125, y, 0, EnumFacing.NORTH, o).setName("port.rs_ctr.o"));
+		ports.add(new MountedPort(panel, id << 1, SignalHandler.class, false).setLocation(0.875, y, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.i"));
+		ports.add(new MountedPort(panel, id << 1 | 1, SignalHandler.class, true).setLocation(0.125, y, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.o"));
 		super.init(ports, id, panel);
 	}
 
@@ -134,7 +134,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
 		light = brightness(light);
 		int vi = buffer.getVertexCount();
-		Vec3d p = o.rotate(new Vec3d(.25, getY() - .5, -.365)).addVector(x + .5, y + .5, z + .5);
+		Vec3d p = o.rotate(new Vec3d(.25, getY() - .5, .51)).addVector(x + .5, y + .5, z + .5);
 		Vec3d dx = o.X.scale(0.25), dy = o.Y.scale(1./6.);
 		int color = COLORS[this.color & 15], code = mode.decode(value);
 		if (dots > 0) code |= 0x80 << (dots - 1) * 8;
@@ -162,7 +162,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		Orientation o = host.getOrientation();
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.5, getY() - .5, -.37)).addVector(.5, .5, .5), o.X, o.Y.scale(1./3.), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.5, getY() - .5, .505)).addVector(.5, .5, .5), o.X, o.Y.scale(1./3.), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
 	}
 
 	static final byte[] DIGITS = {

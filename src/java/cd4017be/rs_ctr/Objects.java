@@ -111,7 +111,7 @@ public class Objects {
 				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("power_hub", Material.ROCK, SoundType.STONE, 3, PowerHub.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("item_translocator", Material.ROCK, SoundType.STONE, 3, ItemTranslocator.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("panel", Material.CIRCUITS, SoundType.STONE, 31, Panel.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.125)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("panel", Material.CIRCUITS, SoundType.STONE, 31, Panel.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0.75, 1, 1, 1)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 

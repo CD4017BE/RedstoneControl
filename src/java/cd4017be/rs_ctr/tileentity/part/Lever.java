@@ -63,7 +63,7 @@ public class Lever extends SignalModule implements ITickReceiver {
 
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
-		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, true).setLocation(getX() + .125, getY() + .125, 0, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.o"));
+		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, true).setLocation(getX() + .125, getY() + .125, .75, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.o"));
 		super.init(ports, idx, panel);
 	}
 

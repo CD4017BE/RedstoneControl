@@ -56,7 +56,7 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
 		Orientation o = panel.getOrientation();
-		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, false).setLocation(0.5, 0.5, 0, EnumFacing.NORTH, o).setName("port.rs_ctr.i"));
+		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, false).setLocation(0.5, 0.5, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.i"));
 		super.init(ports, idx, panel);
 	}
 
@@ -98,7 +98,7 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		Layout.of(type).drawScale(quads, host.getOrientation(), min, max, exp);//0xff000000
+		Layout.of(type).drawScale(quads, host.getOrientation(), min, max, exp, 0xff000000);
 	}
 
 	static final char[] PREFIX = {'p', 'n', '\u03bc', 'm', ' ', 'k', 'M', 'G', 'T', 'P', 'E'};

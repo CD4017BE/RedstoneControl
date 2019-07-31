@@ -158,8 +158,8 @@ public class PanelRenderer {
 	}
 
 	public enum Layout {
-		QUARTER(0.625, 0.75, -90, 0, 10, 10, new Vec3d(0.875, 0.125, 0.128)),
-		CIRCLE(0.3125, 0.375, -150, 150, 20, 32, new Vec3d(0.5, 0.4375, 0.128));
+		QUARTER(0.625, 0.75, -90, 0, 10, 10, new Vec3d(0.875, 0.125, 1.003)),
+		CIRCLE(0.3125, 0.375, -150, 150, 20, 32, new Vec3d(0.5, 0.4375, 1.003));
 		
 		public final double angle0, angle1, rad0, rad1;
 		public final int n_div;
@@ -198,9 +198,9 @@ public class PanelRenderer {
 			}, -1, light);
 		}
 
-		public void drawScale(List<BakedQuad> quads, Orientation o, int min, int max, int exp) {
+		public void drawScale(List<BakedQuad> quads, Orientation o, int min, int max, int exp, int color) {
 			EnumFacing side = o.back;
-			int color = 0xff000000, scale = 1;
+			int scale = 1;
 			float mag = Math.abs((long)max - (long)min);
 			while(mag > precision) {
 				mag /= 10;

@@ -47,7 +47,7 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
-		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, true).setLocation(0.125, 0.125 + getY(), 0, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.o"));
+		ports.add(new MountedPort(panel, idx << 1, SignalHandler.class, true).setLocation(0.125, 0.125 + getY(), .75, EnumFacing.NORTH, panel.getOrientation()).setName("port.rs_ctr.o"));
 		super.init(ports, idx, panel);
 	}
 
@@ -154,7 +154,7 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	@SideOnly(Side.CLIENT)
 	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
 		double f = ((double)value - (double)min) / ((double)max - (double)min);
-		renderCache = new IntArrayModel(texturedRect(o.rotate(new Vec3d(-.421875 + f * .75, getY() - 0.4375, -.365)).addVector(.5, .5, .5), o.X.scale(.09375), o.Y.scale(.25), getUV(dial, 2, 14), getUV(dial, 2.75F, 12), -1, light), -1, light);
+		renderCache = new IntArrayModel(texturedRect(o.rotate(new Vec3d(-.421875 + f * .75, getY() - 0.4375, .51)).addVector(.5, .5, .5), o.X.scale(.09375), o.Y.scale(.25), getUV(dial, 2, 14), getUV(dial, 2.75F, 12), -1, light), -1, light);
 		return false;
 	}
 
@@ -163,8 +163,8 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	public void render(List<BakedQuad> quads) {
 		Orientation o = host.getOrientation();
 		double y = getY() - 0.5;
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, -.37)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, -.37)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, .505)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, -.505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
 	}
 
 }

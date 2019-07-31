@@ -309,7 +309,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 	public void renderSpecial(double x, double y, double z, float t, FontRenderer fr) {
 		GlStateManager.pushMatrix();
 		Util.moveAndOrientToBlock(x, y, z, o);
-		GlStateManager.translate(-.5, .5, -.37);
+		GlStateManager.translate(-.5, .5, .505);
 		GlStateManager.scale(7.8125e-3, -7.8125e-3, -1);
 		for (Module m : modules)
 			if (m != null)
