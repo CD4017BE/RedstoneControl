@@ -27,6 +27,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -83,16 +86,27 @@ public class Lever extends SignalModule implements ITickReceiver {
 			if (out != null)
 				out.updateSignal(value != 0 ? onVal : offVal);
 			host.updateDisplay();
-		} else if (player.isSneaking())
+			sound(color < 0 ? Objects.LEVER_FLIP : value != 0 ? Objects.BUTTON_DOWN : Objects.BUTTON_UP);
+		} else if (player.isSneaking()) {
 			value = 0;
-		else if (offVal > 0) {
-			if (value == 0) TickRegistry.instance.add(this);
+			sound(Objects.BUTTON_UP);
+		} else if (offVal > 0) {
+			if (value == 0) {
+				TickRegistry.instance.add(this);
+				sound(Objects.BUTTON_DOWN);
+			}
 			value = offVal;
 			if (out != null)
 				out.updateSignal(onVal);
 			host.updateDisplay();
 		}
 		return true;
+	}
+
+	private void sound(SoundEvent sound) {
+		BlockPos pos = host.pos();
+		Vec3d p = host.getOrientation().rotate(new Vec3d(getX() - .375, getY() - .375, 0.5));
+		host.world().playSound(null, pos.getX() + p.x + .5, pos.getY() + p.y + .5, pos.getZ() + p.z + .5, sound, SoundCategory.BLOCKS, color < 0 ? 1F : 3F, color < 0 ? .5F : 2F);
 	}
 
 	@Override
@@ -111,6 +125,7 @@ public class Lever extends SignalModule implements ITickReceiver {
 		} else if (out != null)
 			out.updateSignal(0);
 		host.updateDisplay();
+		sound(Objects.BUTTON_UP);
 		return false;
 	}
 

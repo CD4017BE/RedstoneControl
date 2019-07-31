@@ -5,6 +5,8 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -14,6 +16,7 @@ import cd4017be.lib.block.AdvancedBlock;
 import cd4017be.lib.block.OrientedBlock;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.item.BaseItemBlock;
+import cd4017be.lib.templates.BaseSound;
 import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
@@ -86,6 +89,11 @@ public class Objects {
 	public static final ItemPanelModule lever = null;
 	public static final ItemWrench wrench = null;
 
+	//Sounds
+	public static final BaseSound LEVER_FLIP = null;
+	public static final BaseSound BUTTON_DOWN = null;
+	public static final BaseSound BUTTON_UP = null;
+
 	public static void init() {
 		tabCircuits.item = new ItemStack(wire);
 	}
@@ -152,4 +160,12 @@ public class Objects {
 		);
 	}
 
+	@SubscribeEvent
+	public static void registerSounds(RegistryEvent.Register<SoundEvent> ev) {
+		ev.getRegistry().registerAll(
+				new BaseSound(new ResourceLocation(Main.ID, "lever_flip")),
+				new BaseSound(new ResourceLocation(Main.ID, "button_down")),
+				new BaseSound(new ResourceLocation(Main.ID, "button_up"))
+		);
+	}
 }
