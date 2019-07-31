@@ -44,6 +44,11 @@ public class Text extends Module implements IStateInteractionHandler {
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		pos = nbt.getByte("pos");
+		loadCfg(nbt);
+	}
+
+	@Override
+	protected void loadCfg(NBTTagCompound nbt) {
 		for (int i = 0; i < lines.length; i++)
 			lines[i] = nbt.getString("l" + i);
 	}

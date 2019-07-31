@@ -50,7 +50,11 @@ msg.rs_ctr.probe1=§cCan only connect to Block Reference inputs!
 msg.rs_ctr.save_succ=§aCircuit Schematic successfully saved!
 msg.rs_ctr.load_succ=§aCircuit Schematic successfully loaded!
 msg.rs_ctr.invalid_file=§cThe selected file does'nt contain Circuit Schematic data!
-msg.rs_ctr.no_file§cThe selected file does'nt exist!
+msg.rs_ctr.no_file=§cThe selected file does'nt exist!
+msg.rs_ctr.cfg_store=§2Configuration stored
+msg.rs_ctr.cfg_load=§2Configuration loaded
+msg.rs_ctr.copy_clr=§1Configuration cleared
+msg.rs_ctr.cfg_invalid=§4Invalid configuration for component!
 
 # Items
 # names & tooltips
@@ -72,7 +76,8 @@ item.rs_ctr.wire_e.name=Energy Wire
 item.rs_ctr.wire_e.tip=Connects energy ports just like the §6Signal Wire§7 connects signal ports.\n§oConsumes 1 item per block of straight distance between ports.
 item.rs_ctr.processor.stats=Complexity\: §c%d §b%d §9%d §7Size\: §f%d
 item.rs_ctr.wrench.name=Screwdriver
-item.rs_ctr.wrench.tip=§aUse§7 on §6Control Panel§7 to edit a module's configuration.\n§aSneak-use§7 on §6Control Panel§7 to remove a module.
+item.rs_ctr.wrench.name1=Screwdriver §9stored conf.
+item.rs_ctr.wrench.tip=§aUse§7 on §6Control Panel§7 to edit a module's configuration.\n§aHit§7 on §6Control Panel§7 to remove a module (works in creative, too).\n§aSneak-use§7 on §6Control Panel§7 to copy a module's configuration. §nThen\:\n§aUse§7 to apply the copied configuration on a module.\n§aSneak-use§7 in air to clear the copied configuration.
 item.rs_ctr.seg7.name=7-Segment Display Module
 item.rs_ctr.seg7.tip=A 4-digit 7-Segment LED-Display Module to attach on a §6Control Panel§7.\nProvides integrated encoder logic for decimal and hexadecimal. The §eOUT§7 signal can be used to chain multiple modules together to display bigger numbers.\n§eWidth\: §74  §eHeight\:§7 2\n§ePlacements\:§7 Top, Center, Bottom
 item.rs_ctr.pointer_dsp.name=Analog Display Module

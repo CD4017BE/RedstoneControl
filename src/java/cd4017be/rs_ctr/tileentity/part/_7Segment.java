@@ -92,12 +92,12 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	protected void loadCfg(NBTTagCompound nbt) {
 		mode = Decoding.values()[(nbt.getByte("mode") & 0xff) % 5];
 		int i = nbt.getByte("cfg");
 		dots = (byte) (i & 7);
 		color = (byte) (i >> 4 & 15);
-		super.deserializeNBT(nbt);
+		super.loadCfg(nbt);
 	}
 
 	@Override

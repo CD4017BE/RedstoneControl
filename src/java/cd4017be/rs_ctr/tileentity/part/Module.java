@@ -24,6 +24,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
@@ -77,14 +78,27 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
 		ItemStack stack = player.getHeldItemMainhand();
 		if (stack.isEmpty() || !ItemWrench.WRENCHES.contains(stack.getItem().getRegistryName())) return false;
-		if (player.isSneaking() || hit) {
+		if (hit) {
 			stack = onRemove();
 			if (!player.isCreative())
 				ItemFluidUtil.dropStack(stack, player);
 			host.remove(idx);
+		} else if (player.isSneaking()) {
+			stack.setTagCompound(serializeNBT());
+			player.sendStatusMessage(new TextComponentTranslation("msg.rs_ctr.cfg_store"), true);
+		} else if (stack.hasTagCompound()) {
+			NBTTagCompound nbt = stack.getTagCompound();
+			String id = nbt.getString("id");
+			if (id.equals(id())) {
+				loadCfg(nbt);
+				host.markDirty(BaseTileEntity.REDRAW);
+				player.sendStatusMessage(new TextComponentTranslation("msg.rs_ctr.cfg_load"), true);
+			} else player.sendStatusMessage(new TextComponentTranslation("msg.rs_ctr.cfg_invalid"), true);
 		} else GuiNetworkHandler.openBlockGui(player, host.pos(), idx);
 		return true;
 	}
+
+	protected abstract void loadCfg(NBTTagCompound nbt);
 
 	@Override
 	public Pair<Vec3d, String> getDisplayText(Vec3d aim) {

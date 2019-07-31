@@ -79,13 +79,13 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	public void loadCfg(NBTTagCompound nbt) {
 		max = nbt.getInteger("max");
 		min = nbt.getInteger("min");
 		exp = nbt.getByte("exp");
 		type = nbt.getByte("type");
 		unit = nbt.getString("unit");
-		super.deserializeNBT(nbt);
+		super.loadCfg(nbt);
 	}
 
 	@Override

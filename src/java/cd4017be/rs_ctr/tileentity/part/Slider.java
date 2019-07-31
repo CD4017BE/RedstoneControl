@@ -60,10 +60,10 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	public void loadCfg(NBTTagCompound nbt) {
 		min = nbt.getInteger("min");
 		max = nbt.getInteger("max");
-		super.deserializeNBT(nbt);
+		super.loadCfg(nbt);
 	}
 
 	@Override

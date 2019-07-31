@@ -124,11 +124,11 @@ public class Lever extends SignalModule implements ITickReceiver {
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	public void loadCfg(NBTTagCompound nbt) {
 		onVal = nbt.getInteger("on");
 		offVal = nbt.getInteger("off");
 		color = nbt.getByte("color");
-		super.deserializeNBT(nbt);
+		super.loadCfg(nbt);
 	}
 
 	@Override

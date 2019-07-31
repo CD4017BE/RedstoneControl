@@ -48,6 +48,11 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	public void deserializeNBT(NBTTagCompound nbt) {
 		pos = nbt.getByte("pos");
 		value = nbt.getInteger("val");
+		loadCfg(nbt);
+	}
+
+	@Override
+	protected void loadCfg(NBTTagCompound nbt) {
 		title = nbt.getString("title");
 		if (host != null && host.world().isRemote)
 			renderCache = null;

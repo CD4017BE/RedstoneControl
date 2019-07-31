@@ -75,10 +75,10 @@ public class Lamp extends SignalModule implements SignalHandler {
 	}
 
 	@Override
-	public void deserializeNBT(NBTTagCompound nbt) {
+	public void loadCfg(NBTTagCompound nbt) {
 		color = nbt.getByte("color");
 		thr = nbt.getInteger("thr");
-		super.deserializeNBT(nbt);
+		super.loadCfg(nbt);
 	}
 
 	@Override
