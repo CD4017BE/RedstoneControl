@@ -115,6 +115,7 @@ public class Lamp extends SignalModule implements SignalHandler {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected GuiFrame initGuiFrame(ModularGui gui) {
 		GuiFrame frame = new GuiFrame(gui, 80, 53, 3)
 				.title("gui.rs_ctr.dsp_cfg.name", 0.5F)

@@ -92,6 +92,7 @@ public class Text extends Module implements IStateInteractionHandler {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void readSync(PacketBuffer buf) {
 	}
 
@@ -111,6 +112,7 @@ public class Text extends Module implements IStateInteractionHandler {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public ModularGui getCfgScreen(EntityPlayer player) {
 		ModularGui gui = new ModularGui(getCfgContainer(player));
 		GuiFrame frame = new GuiFrame(gui, 144, 58, 4)

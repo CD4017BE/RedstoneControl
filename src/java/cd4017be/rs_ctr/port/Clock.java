@@ -17,6 +17,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
@@ -96,6 +98,7 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(6)");
 	}
