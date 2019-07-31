@@ -157,6 +157,7 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		if (battery.isEmpty()) return;
 		PortRenderer.PORT_RENDER.drawModel(quads, 0.5F, 0.5F, 0.5F, o, "_battery");

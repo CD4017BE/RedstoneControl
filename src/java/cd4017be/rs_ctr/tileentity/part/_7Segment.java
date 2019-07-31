@@ -154,6 +154,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected int brightness(int light) {
 		return light & 0xff0000 | 0xf0;
 	}

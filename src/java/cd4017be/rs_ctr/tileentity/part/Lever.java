@@ -189,6 +189,7 @@ public class Lever extends SignalModule implements ITickReceiver {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected GuiFrame initGuiFrame(ModularGui gui) {
 		boolean btn = color >= 16;
 		int w = btn ? 80 : 128, h = btn ? 62 : 53;

@@ -121,6 +121,7 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	protected GuiFrame initGuiFrame(ModularGui gui) {
 		GuiFrame frame = new GuiFrame(gui, 128, 66, 7)
 				.title("gui.rs_ctr.dsp_cfg.name", 0.5F)
