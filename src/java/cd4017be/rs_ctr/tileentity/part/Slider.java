@@ -164,7 +164,7 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 		Orientation o = host.getOrientation();
 		double y = getY() - 0.5;
 		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, .505)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, -.505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, .505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
 	}
 
 }
