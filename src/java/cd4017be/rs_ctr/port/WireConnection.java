@@ -104,6 +104,21 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 		return new ItemStack(Objects.wire, count);
 	}
 
+	@Override
+	public void onPortMove(MountedPort port) {
+		Port p = getLinkPort(port);
+		if (!(p instanceof MountedPort)) return;
+		MountedPort lp = (MountedPort)p;
+		Vec3d path = getPath(port, lp);
+		line = path.scale(.5);
+		port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
+		IConnector c = lp.getConnector();
+		if (c instanceof WireConnection) {
+			((WireConnection)c).line = path.scale(-.5);
+			lp.owner.onPortModified(p, IPortProvider.E_CON_UPDATE);
+		}
+	}
+
 	private float[] vertices; //render cache
 	private int light1 = -1;
 
@@ -153,6 +168,13 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	@Override
 	public boolean isLinked(MountedPort to) {
 		return to.pin == linkPin && to.getPos().equals(linkPos);
+	}
+
+	public static Vec3d getPath(MountedPort from, MountedPort to) {
+		Vec3d path = new Vec3d(to.getPos().subtract(from.getPos())).add(to.pos.subtract(from.pos));
+		if (!(from instanceof RelayPort)) path = path.subtract(new Vec3d(from.face.getDirectionVec()).scale(0.125));
+		if (!(to instanceof RelayPort)) path = path.add(new Vec3d(to.face.getDirectionVec()).scale(0.125));
+		return path;
 	}
 
 }

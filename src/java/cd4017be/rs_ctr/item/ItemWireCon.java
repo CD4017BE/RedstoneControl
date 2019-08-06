@@ -83,9 +83,7 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 			return;
 		}
 		MountedPort lport = (MountedPort)p;
-		Vec3d path = new Vec3d(lpos.subtract(pos)).add(lport.pos.subtract(port.pos));
-		if (!(port instanceof RelayPort)) path = path.subtract(new Vec3d(port.face.getDirectionVec()).scale(0.125));
-		if (!(lport instanceof RelayPort)) path = path.add(new Vec3d(lport.face.getDirectionVec()).scale(0.125));
+		Vec3d path = WireConnection.getPath(port, lport);
 		port.setConnector(new WireConnection(lpos, lp, path.scale(0.5), d/2, type), player);
 		lport.setConnector(new WireConnection(pos, port.pin, path.scale(-0.5), d - d/2, type), player);
 		if (lport instanceof RelayPort) lport.connect(port);
