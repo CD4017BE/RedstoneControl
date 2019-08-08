@@ -11,6 +11,7 @@ import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.Spinner;
 import cd4017be.lib.Gui.comp.TextField;
+import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
@@ -150,15 +151,17 @@ public class Lever extends SignalModule implements ITickReceiver {
 	@SideOnly(Side.CLIENT)
 	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
 		Vec3d p = o.X.scale(getX()).add(o.Y.scale(getY()));
+		IntArrayModel m;
 		if (color < 0)
-			(renderCache = PORT_RENDER.getModel(value != 0 ? "_lever.on" : "_lever.off").rotated(o)).origin(-(float)p.x, -(float)p.y, -(float)p.z);
+			(m = PORT_RENDER.getModel(value != 0 ? "_lever.on" : "_lever.off").rotated(o)).origin(-(float)p.x, -(float)p.y, -(float)p.z);
 		else {
 			int c = color & 15;
 			if (value != 0) p = p.add(o.Z.scale(-.03125));
 			else c |= 16;
-			(renderCache = PORT_RENDER.getModel("_lever.btn").rotated(o)).origin(-(float)p.x, -(float)p.y, -(float)p.z).setColor(_7Segment.COLORS[c]);
-			renderCache.setBrightness(brightness(light));
+			(m = PORT_RENDER.getModel("_lever.btn").rotated(o)).origin(-(float)p.x, -(float)p.y, -(float)p.z).setColor(_7Segment.COLORS[c]);
+			m.setBrightness(brightness(light));
 		}
+		renderCache = m;
 		return false;
 	}
 

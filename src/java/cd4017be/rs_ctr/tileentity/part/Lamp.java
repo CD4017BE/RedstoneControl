@@ -10,6 +10,7 @@ import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.TextField;
+import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
@@ -87,8 +88,10 @@ public class Lamp extends SignalModule implements SignalHandler {
 		Vec3d p = o.X.scale(getX()).add(o.Y.scale(getY())).add(o.Z.scale(-.046875));
 		int c = color & 15;
 		if (value <= thr) c |= 16;
-		(renderCache = PORT_RENDER.getModel("_lever.btn").rotated(o)).origin(-(float)p.x, -(float)p.y, -(float)p.z).setColor(_7Segment.COLORS[c]);
-		renderCache.setBrightness(brightness(light));
+		IntArrayModel m = PORT_RENDER.getModel("_lever.btn").rotated(o);
+		m.origin(-(float)p.x, -(float)p.y, -(float)p.z).setColor(_7Segment.COLORS[c]);
+		m.setBrightness(brightness(light));
+		renderCache = m;
 		return false;
 	}
 

@@ -32,6 +32,8 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	protected byte pos;
 	protected String title = "";
 	protected int value;
+
+	/**warning: multi-threaded access */
 	@SideOnly(Side.CLIENT)
 	IntArrayModel renderCache;
 
@@ -112,9 +114,10 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		if (renderCache == null && refreshFTESR(host.getOrientation(), x, y, z, light, buffer)) return;
-		renderCache.setBrightness(brightness(light));
-		buffer.addVertexData(renderCache.translated((float)x, (float)y, (float)z).vertexData);
+		IntArrayModel m = renderCache;
+		if (m == null && (refreshFTESR(host.getOrientation(), x, y, z, light, buffer) || (m = renderCache) == null)) return;
+		m.setBrightness(brightness(light));
+		buffer.addVertexData(m.translated((float)x, (float)y, (float)z).vertexData);
 	}
 
 	@SideOnly(Side.CLIENT)

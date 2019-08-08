@@ -148,8 +148,9 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 				buffer.addVertexData(texturedRect(p, dx, dy, getUV(seg7, u, v + 2), getUV(seg7, u + 3, v), color, light));
 				p = p.subtract(dx);
 			}
-		renderCache = new IntArrayModel(extractData(buffer, vi, buffer.getVertexCount()), color, light);
-		renderCache.origin((float)x, (float)y, (float)z);
+		IntArrayModel m = new IntArrayModel(extractData(buffer, vi, buffer.getVertexCount()), color, light);
+		m.origin((float)x, (float)y, (float)z);
+		renderCache = m;
 		return true;
 	}
 
