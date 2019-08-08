@@ -1,3 +1,16 @@
+v0.1.3
+Changes:
+- fixed race condition in panel module rendering leading to potential crashes
+- made all devices coverable (anchors, gates, control panel)
+- added text alignment setting to text module
+- made scale of Analog Pointer Display and Slider Module have same color as unit / title text (based on text formatting codes)
+- other aesthetic tweaks
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.9
+
 v0.1.2
 Changes:
 - fixed server crashes due to missing @SideOnly(Side.CLIENT)
