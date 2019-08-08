@@ -14,11 +14,13 @@ import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.api.rs_ctr.wire.IHookAttachable;
 import cd4017be.api.rs_ctr.wire.RelayPort;
+import cd4017be.lib.block.AdvancedBlock.ICoverableTile;
 import cd4017be.lib.block.AdvancedBlock.IInteractiveTile;
 import cd4017be.lib.block.AdvancedBlock.ISelfAwareTile;
-import cd4017be.lib.block.MultipartBlock.IModularTile;
 import cd4017be.lib.render.HybridFastTESR;
+import cd4017be.lib.templates.Cover;
 import cd4017be.lib.tileentity.BaseTileEntity;
+import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.render.ISpecialRenderComp;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -40,12 +42,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Template implementation of {@link IPortProvider}
  * @author CD4017BE
  */
-public abstract class Gate extends BaseTileEntity implements IHookAttachable, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, IModularTile {
+public abstract class Gate extends BaseTileEntity implements IHookAttachable, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, ICoverableTile {
 
 	protected MountedPort[] ports;
 	protected IInteractiveComponent[] gui;
 	protected Int2ObjectOpenHashMap<RelayPort> hooks = new Int2ObjectOpenHashMap<>();
 	protected Orientation o = Orientation.N;
+	public Cover cover = new Cover();
 
 	@Override
 	public Port getPort(int pin) {
@@ -102,12 +105,13 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	@Override
 	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) {
 		Triple<IInteractiveComponent, Vec3d, EnumFacing> r = rayTrace(player, 1);
-		return r != null && (world.isRemote || r.getLeft().onInteract(player, false, r.getRight(), r.getMiddle()));
+		if (r != null && (world.isRemote || r.getLeft().onInteract(player, false, r.getRight(), r.getMiddle()))) return true;
+		return ICoverableTile.super.onActivated(player, hand, item, s, X, Y, Z);
 	}
 
 	@Override
 	public void onClicked(EntityPlayer player) {
-		if (world.isRemote) return;
+		if (cover.hit(this, player) || world.isRemote) return;
 		Triple<IInteractiveComponent, Vec3d, EnumFacing> r = rayTrace(player, 1);
 		if (r != null) r.getLeft().onInteract(player, true, r.getRight(), r.getMiddle());
 	}
@@ -122,6 +126,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			NBTTagCompound ctag = storeHooks();
 			if (ctag != null) nbt.setTag("hooks", ctag);
 		}
+		cover.writeNBT(nbt, "cover", mode == SYNC);
 	}
 
 	@Override
@@ -132,6 +137,7 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 				ports[i].deserializeNBT(list.getCompoundTagAt(i));
 			loadHooks(nbt.getCompoundTag("hooks"));
 		}
+		cover.readNBT(nbt, "cover", mode == SYNC ? this : null);
 		tesrComps = null;
 		tesrBB = null;
 		gui = null;
@@ -175,6 +181,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 		unloaded = true;
 		for (int pin : hooks.keySet().toIntArray())
 			removeHook(pin, null);
+		if (cover.stack != null)
+			ItemFluidUtil.dropStack(cover.stack, world, pos);
 	}
 
 	@Override
@@ -192,12 +200,17 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getModuleState(int m) {
-		return (T)getBMRComponents();
+		return m == 0 ? (T)getBMRComponents() : cover.module();
 	}
 
 	@Override
 	public boolean isModulePresent(int m) {
-		return false;
+		return m != 0 && ICoverableTile.super.isModulePresent(m);
+	}
+
+	@Override
+	public Cover getCover() {
+		return cover;
 	}
 
 	/** cached tesr render components */

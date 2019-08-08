@@ -16,7 +16,6 @@ import cd4017be.lib.block.AdvancedBlock.INeighborAwareTile;
 import cd4017be.lib.block.AdvancedBlock.IRedstoneTile;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
-import cd4017be.lib.templates.Cover;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
@@ -30,7 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -46,7 +44,6 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	/**0-5: input, 6-11: output */
 	final int[] states = new int[12];
 	byte strong, dirty;
-	public Cover cover = new Cover();
 
 	{ports = new MountedPort[0];}
 
@@ -119,18 +116,6 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			if (c != null) c.updateSignal(states[i]);
 		}
 		dirty = 0;
-	}
-
-	@Override
-	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) {
-		if (super.onActivated(player, hand, item, s, X, Y, Z)) return true;
-		return cover.interact(this, player, hand, item, s, X, Y, Z);
-	}
-
-	@Override
-	public void onClicked(EntityPlayer player) {
-		if (cover.hit(this, player)) return;
-		super.onClicked(player);
 	}
 
 	@Override
@@ -233,7 +218,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	public boolean breakPort(int side, EntityPlayer player, boolean harvest) {
-		if (side == 6) return cover.hit(this, player);
+		if (side <= -2) return cover.hit(this, player);
 		boolean hasRem = false;
 		int in = -1, out = -1;
 		for (int i = 0; i < ports.length; i++)
@@ -276,7 +261,6 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		ArrayList<ItemStack> list = new ArrayList<>();
 		if (in > 0) list.add(new ItemStack(Objects.rs_port, in, 0));
 		if (out > 0) list.add(new ItemStack(Objects.rs_port, out, 1));
-		if (cover.stack != null) list.add(cover.stack);
 		return list;
 	}
 

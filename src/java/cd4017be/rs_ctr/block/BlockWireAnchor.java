@@ -3,12 +3,8 @@ package cd4017be.rs_ctr.block;
 import cd4017be.api.rs_ctr.wire.IHookAttachable;
 import cd4017be.api.rs_ctr.wire.RelayPort;
 import cd4017be.lib.block.AdvancedBlock;
-import cd4017be.lib.block.MultipartBlock;
-import cd4017be.lib.block.MultipartBlock.IModularTile;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -17,9 +13,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -39,20 +32,7 @@ public class BlockWireAnchor extends AdvancedBlock {
 	 */
 	public BlockWireAnchor(String id, Material m, SoundType sound, int flags, Class<? extends TileEntity> tile) {
 		super(id, m, sound, flags, tile);
-		setBlockBounds(new AxisAlignedBB(0.5, 0.5, 0.5, 0.5, 0.5, 0.5));
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[] {MultipartBlock.moduleRef});
-	}
-
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof IModularTile)
-			return ((IExtendedBlockState)state).withProperty(MultipartBlock.moduleRef, ((IModularTile)te));
-		else return state;
+		setBlockBounds(NULL_AABB);
 	}
 
 	@Override
@@ -60,6 +40,13 @@ public class BlockWireAnchor extends AdvancedBlock {
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
 		double x0 = 1, x1 = 0, y0 = 1, y1 = 0, z0 = 1, z1 = 0;
 		TileEntity te = world.getTileEntity(pos);
+		IBlockState cover = te instanceof ICoverableTile ? ((ICoverableTile)te).getCover().state : null;
+		if (cover != null) {
+			AxisAlignedBB box = cover.getBoundingBox(world, pos);
+			x0 = box.minX + 0.03125; x1 = box.maxX - 0.03125;
+			y0 = box.minY + 0.03125; y1 = box.maxY - 0.03125;
+			z0 = box.minZ + 0.03125; z1 = box.maxZ - 0.03125;
+		}
 		if (te instanceof IHookAttachable)
 			for (RelayPort port : ((IHookAttachable)te).getHookPins().values()) {
 				if (!port.isMaster) continue;
@@ -78,12 +65,15 @@ public class BlockWireAnchor extends AdvancedBlock {
 
 	@Override
 	public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end) {
-		return IHookAttachable.addBlockRayTrace(null, world, pos, start, end);
+		RayTraceResult rtr = null;
+		IBlockState cover = getCover(world, pos);
+		if (cover != null) rtr = cover.collisionRayTrace(world, pos, start, end);
+		return IHookAttachable.addBlockRayTrace(rtr, world, pos, start, end);
 	}
 
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return NULL_AABB;
+		return super.getCollisionBoundingBox(blockState, worldIn, pos);
 	}
 
 }

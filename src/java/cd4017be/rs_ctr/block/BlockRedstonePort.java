@@ -47,7 +47,6 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 			new AxisAlignedBB(0.25, 0.25, 0.875, 0.75, 0.75, 1),
 			new AxisAlignedBB(0, 0.25, 0.25, 0.125, 0.75, 0.75),
 			new AxisAlignedBB(0.875, 0.25, 0.25, 1, 0.75, 0.75),
-			FULL_BLOCK_AABB
 		};
 		setSolid(BY_CONNECTION);
 	}
