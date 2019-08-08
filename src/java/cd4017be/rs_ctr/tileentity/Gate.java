@@ -104,9 +104,9 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 
 	@Override
 	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) {
+		if (cover.interact(this, player, hand, item, s, X, Y, Z)) return true;
 		Triple<IInteractiveComponent, Vec3d, EnumFacing> r = rayTrace(player, 1);
-		if (r != null && (world.isRemote || r.getLeft().onInteract(player, false, r.getRight(), r.getMiddle()))) return true;
-		return ICoverableTile.super.onActivated(player, hand, item, s, X, Y, Z);
+		return r != null && (world.isRemote || r.getLeft().onInteract(player, false, r.getRight(), r.getMiddle()));
 	}
 
 	@Override

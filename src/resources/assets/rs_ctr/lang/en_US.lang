@@ -274,6 +274,7 @@ gui.rs_ctr.encoder4=hexadecimal encoding
 gui.rs_ctr.color=Display Color
 gui.rs_ctr.dot=decimal point position
 gui.rs_ctr.text=Text lines
+gui.rs_ctr.align=Text alignment
 gui.rs_ctr.v_off=OFF value
 gui.rs_ctr.v_on=ON value
 gui.rs_ctr.thr=Threshold value\n§oON when above

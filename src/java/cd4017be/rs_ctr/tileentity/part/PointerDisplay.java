@@ -14,6 +14,7 @@ import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.render.PanelRenderer.Layout;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -98,7 +99,13 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		Layout.of(type).drawScale(quads, host.getOrientation(), min, max, exp, 0xff000000);
+		int color = 0xff000000;
+		if (unit.length() >= 2 && unit.charAt(0) == '\u00a7') {
+			int i = Minecraft.getMinecraft().fontRenderer.getColorCode(Character.toLowerCase(unit.charAt(1)));
+			if (i != -1)
+				color |= i & 0xff00 | i >> 16 & 0xff | i << 16 & 0xff0000;
+		}
+		Layout.of(type).drawScale(quads, host.getOrientation(), min, max, exp, color);
 	}
 
 	static final char[] PREFIX = {'p', 'n', '\u03bc', 'm', ' ', 'k', 'M', 'G', 'T', 'P', 'E'};
@@ -109,14 +116,16 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 		int exp = this.exp;
 		for (int mag = Math.max(Math.abs(min), Math.abs(max)); mag >= 10; mag /= 10) exp++;
 		exp = (exp + 12) / 3;
-		String unit = exp != 4 && exp >= 0 && exp < PREFIX.length ? PREFIX[exp] + this.unit : this.unit;
+		String unit = this.unit;
+		if (exp != 4 && exp >= 0 && exp < PREFIX.length)
+			unit = FontRenderer.getFormatFromString(unit) + PREFIX[exp] + unit;
 		int w = 128;
 		if (type == 1) {
-			fr.drawString(title, (w - fr.getStringWidth(title)) / 2, 12, 0xff000000);
-			fr.drawString(unit, (w - fr.getStringWidth(unit)) / 2, 96, 0xff000000);
+			fr.drawString(title, (w - fr.getStringWidth(title)) / 2, 10, 0xff000000);
+			fr.drawString(unit, (w - fr.getStringWidth(unit)) / 2, 88, 0xff000000);
 		} else {
-			fr.drawSplitString(title, 9, 12, 80, 0xff000000);
-			fr.drawString(unit, (w - fr.getStringWidth(unit) + 40) / 2, 96, 0xff000000);
+			fr.drawSplitString(title, 9, 10, 80, 0xff000000);
+			fr.drawString(unit, (w - fr.getStringWidth(unit) + 40) / 2, 88, 0xff000000);
 		}
 	}
 
@@ -127,7 +136,7 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 				.title("gui.rs_ctr.dsp_cfg.name", 0.5F)
 				.background(new ResourceLocation(Main.ID, "textures/gui/small.png"), 80, 31);
 		new TextField(frame, 112, 7, 8, 16, 20, ()-> title, (t)-> gui.sendPkt(A_TITLE, t)).allowFormat().tooltip("gui.rs_ctr.label");
-		new TextField(frame, 75, 7, 45, 29, 12, ()-> unit, (t)-> gui.sendPkt(A_UNIT, t)).tooltip("gui.rs_ctr.unit");
+		new TextField(frame, 75, 7, 45, 29, 12, ()-> unit, (t)-> gui.sendPkt(A_UNIT, t)).allowFormat().tooltip("gui.rs_ctr.unit");
 		new TextField(frame, 64, 7, 56, 42, 12, ()-> Integer.toString(max), (t)-> {
 			try {gui.sendPkt(A_MAX, Integer.parseInt(t));}
 			catch(NumberFormatException e) {}

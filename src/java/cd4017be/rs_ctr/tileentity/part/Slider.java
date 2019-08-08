@@ -20,6 +20,7 @@ import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.Objects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -164,7 +165,13 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 		Orientation o = host.getOrientation();
 		double y = getY() - 0.5;
 		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, .505)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, .505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), 0xff000000, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
+		int color = 0xff000000;
+		if (title.length() >= 2 && title.charAt(0) == '\u00a7') {
+			int i = Minecraft.getMinecraft().fontRenderer.getColorCode(Character.toLowerCase(title.charAt(1)));
+			if (i != -1)
+				color |= i & 0xff00 | i >> 16 & 0xff | i << 16 & 0xff0000;
+		}
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, .505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), color, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
 	}
 
 }

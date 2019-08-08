@@ -108,6 +108,7 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	public void drawText(FontRenderer fr) {
 		int x = (pos & 3) * 32, y = (3 - (pos >> 2 & 3) - (pos >> 6 & 3)) * 32, w = (pos >> 4 & 3) * 32 + 32;
 		if ((pos >> 6 & 3) != 0) y += 8;
+		else y++;
 		fr.drawString(title, x + (w - fr.getStringWidth(title)) / 2, y, 0xff000000);
 	}
 
