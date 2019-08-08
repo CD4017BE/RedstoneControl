@@ -311,10 +311,12 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		Util.moveAndOrientToBlock(x, y, z, o);
 		GlStateManager.translate(-.5, .5, .505);
 		GlStateManager.scale(7.8125e-3, -7.8125e-3, -1);
+		Util.luminate(this, o.back, 0);
 		for (Module m : modules)
 			if (m != null)
 				m.drawText(fr);
 		GlStateManager.popMatrix();
+		cachedLight = -1;
 	}
 
 	@Override
@@ -335,6 +337,16 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 				if (m != null)
 					return makeDefaultDrops();
 		return makeDefaultDrops(null);
+	}
+
+	@SideOnly(Side.CLIENT)
+	int cachedLight = -1;
+
+	@Override
+	public int frontLight() {
+		int l = cachedLight;
+		if (l >= 0) return l;
+		return cachedLight = world.getCombinedLight(pos.offset(o.back), 0);
 	}
 
 }

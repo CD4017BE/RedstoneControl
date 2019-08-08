@@ -114,6 +114,7 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
+		light = host.frontLight();
 		IntArrayModel m = renderCache;
 		if (m == null && (refreshFTESR(host.getOrientation(), x, y, z, light, buffer) || (m = renderCache) == null)) return;
 		m.setBrightness(brightness(light));

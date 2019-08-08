@@ -225,5 +225,11 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 		 * @param mode {@link BaseTileEntity#SAVE}, {@link BaseTileEntity#SYNC} or {@link BaseTileEntity#REDRAW}
 		 */
 		void markDirty(int mode);
+
+		/**
+		 * @return combined light value in front of the panel
+		 */
+		@SideOnly(Side.CLIENT)
+		int frontLight();
 	}
 }
