@@ -20,7 +20,7 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 	public static int TRANSFER_COST = -50;
 
 	BlockReference ref0, ref1;
-	EnergyHandler energy;
+	EnergyHandler energy = EnergyHandler.NOP;
 	SignalHandler out;
 	int slot0, slot1, amIn, amOut, clk;
 	boolean update;
@@ -59,7 +59,7 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 	public void setPortCallback(int pin, Object callback) {
 		switch(pin) {
 		case 2:
-			energy = callback instanceof EnergyHandler ? (EnergyHandler)callback : null;
+			energy = callback instanceof EnergyHandler ? (EnergyHandler)callback : EnergyHandler.NOP;
 			break;
 		case 7:
 			if (callback instanceof SignalHandler) {
