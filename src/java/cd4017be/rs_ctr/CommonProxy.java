@@ -35,6 +35,7 @@ import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
 import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
+import cd4017be.rs_ctr.tileentity.Panel;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import cd4017be.rs_ctr.tileentity.part.*;
 import net.minecraft.item.ItemStack;
@@ -108,6 +109,10 @@ public class CommonProxy implements IRecipeHandler {
 	public void init(ConfigConstants c) {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
+		double d;
+		d = c.getNumber("panel_sync_dst_min", Math.sqrt(Panel.UPDATE_RANGE0)); Panel.UPDATE_RANGE0 = d * d;
+		d = c.getNumber("panel_sync_dst_max", Math.sqrt(Panel.UPDATE_RANGE1)); Panel.UPDATE_RANGE1 = d * d;
+		d = c.getNumber("panel_text_render_dst", Math.sqrt(Panel.TEXT_RANGE)); Panel.TEXT_RANGE = d * d;
 		PowerHub.FE_UNIT = (long)c.getNumber("energy_unit_FE", PowerHub.FE_UNIT);
 		ItemTranslocator.BASE_COST = -(int)c.getNumber("energy_item_translocator_op", -ItemTranslocator.BASE_COST);
 		ItemTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_item_translocator_ps", -ItemTranslocator.TRANSFER_COST);

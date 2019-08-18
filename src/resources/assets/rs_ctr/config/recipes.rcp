@@ -5,6 +5,10 @@ VERSION = 50;
 max_wire_length = 16;
 max_probe_lenght = 8;
 
+panel_text_render_dst = 12.0; !Distance from Control Panel in which text labels are rendered. [Client side]
+panel_sync_dst_min = 16.0; !Distance from Control Panel below which it starts sending state updates to client. [Client side]
+panel_sync_dst_max = 18.0; !Distance from Control Panel above which it stops sending state updates to client, must be greater than dst_min. [Server side]
+
 !Energy conversions (this mod's energy system operates integer based in quite small scale units):
 energy_unit_FE = 100; !Forge Energy 
 energy_unit_EU = 400; !Industrialcraft
