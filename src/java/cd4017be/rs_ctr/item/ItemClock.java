@@ -67,7 +67,14 @@ public class ItemClock extends BaseItem implements IConnectorItem, IGuiHandlerIt
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
 		if (player.isSneaking()) stack.setTagCompound(null);
-		else openHeldItemGui(player, hand, 0, 0, 0);
+		else {
+			if (!stack.hasTagCompound()) {
+				NBTTagCompound nbt = new NBTTagCompound();
+				nbt.setInteger("int", 20);
+				stack.setTagCompound(nbt);
+			}
+			openHeldItemGui(player, hand, 0, 0, 0);
+		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 	}
 
