@@ -10,7 +10,11 @@ energy_unit_FE = 100; !Forge Energy
 energy_unit_EU = 400; !Industrialcraft
 energy_unit_OC = 1000; !OpenComputers
 
-energy_item_translocator = 50; !energy consumed by the Item Translocator per item & per clock pulse (internal units).
+!All energy values in internal units:
+energy_item_translocator_op = 100; !energy consumed by the Item Translocator per clock pulse.
+energy_item_translocator_ps = 400; !energy consumed by the Item Translocator per stack (64 items) transferred.
+energy_fluid_translocator_op = 100; !energy consumed by the Fluid Translocator per clock pulse.
+energy_fluid_translocator_pb = 500; !energy consumed by the Fluid Translocator per bucket (1000 mB) transferred.
 
 PRE_INIT() {
 	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;

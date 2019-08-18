@@ -33,6 +33,7 @@ import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
+import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import cd4017be.rs_ctr.tileentity.part.*;
@@ -108,7 +109,10 @@ public class CommonProxy implements IRecipeHandler {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
 		PowerHub.FE_UNIT = (long)c.getNumber("energy_unit_FE", PowerHub.FE_UNIT);
-		ItemTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_item_translocator", -ItemTranslocator.TRANSFER_COST);
+		ItemTranslocator.BASE_COST = -(int)c.getNumber("energy_item_translocator_op", -ItemTranslocator.BASE_COST);
+		ItemTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_item_translocator_ps", -ItemTranslocator.TRANSFER_COST);
+		FluidTranslocator.BASE_COST = -(int)c.getNumber("energy_fluid_translocator_op", -FluidTranslocator.BASE_COST);
+		FluidTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_fluid_translocator_pb", -FluidTranslocator.TRANSFER_COST);
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));

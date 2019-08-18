@@ -17,7 +17,7 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class ItemTranslocator extends WallMountGate implements ITickableServerOnly {
 
-	public static int TRANSFER_COST = -50;
+	public static int BASE_COST = -100, TRANSFER_COST = -400;
 
 	BlockReference ref0, ref1;
 	EnergyHandler energy = EnergyHandler.NOP;
@@ -96,14 +96,19 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 
 	private int transfer(int am) {
 		if (am == 0 || ref0 == null || ref1 == null) return 0;
-		int e = (Math.abs(am) + 1) * TRANSFER_COST;
+		int e = cost(am);
 		if (energy.changeEnergy(e, true) != e) return 0;
 		IItemHandler inv0 = ref0.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		IItemHandler inv1 = ref1.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		if (am > 0) am = transfer(am, inv0, slot0, inv1, slot1);
 		else am = -transfer(-am, inv1, slot1, inv0, slot0);
-		energy.changeEnergy((Math.abs(am) + 1) * TRANSFER_COST, false);
+		energy.changeEnergy(cost(am), false);
 		return am;
+	}
+
+	private static int cost(int am) {
+		if (am < 0) am = -am;
+		return (int)Math.min((long)am * (long)TRANSFER_COST / 64L + (long)BASE_COST, Integer.MAX_VALUE);
 	}
 
 	private int transfer(int am, IItemHandler fromInv, int fromSlot, IItemHandler toInv, int toSlot) {

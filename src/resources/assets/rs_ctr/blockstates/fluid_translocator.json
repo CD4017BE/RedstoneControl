@@ -1,0 +1,13 @@
+{
+	"forge_marker": 1,
+	"defaults": { "model": "rs_ctr:fluid_translocator" },
+    "variants": {
+		"orient": {
+			"s": {},
+			"w": { "y": 90 },
+			"n": { "y": 180 },
+			"e": { "y": 270 }
+		},
+		"inventory": { "y": 180 }
+    }
+}
