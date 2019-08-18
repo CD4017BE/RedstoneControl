@@ -21,44 +21,7 @@ energy_fluid_translocator_op = 100; !energy consumed by the Fluid Translocator p
 energy_fluid_translocator_pb = 500; !energy consumed by the Fluid Translocator per bucket (1000 mB) transferred.
 
 PRE_INIT() {
-	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
-	Loc c = gate_cost;
-	Loc base = [1, 0]#, base2 = [2, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
-	!variables & IO tab:
-	c:"in" = base;
-	c:"out" = base;
-	c:"read" = base;
-	c:"write" = base2;
-	c:"i_cst" = base;
-	!logic tab:
-	c:"not" = base;
-	c:"or" = base2;
-	c:"nor" = base2;
-	c:"and" = base2;
-	c:"nand" = base2;
-	c:"xor" = [3, 0]#;
-	c:"xnor" = [3, 0]#;
-	!comparator tab:
-	c:"not0" = base;
-	c:"is0" = base;
-	c:"psgn" = base;
-	c:"nsgn" = base;
-	c:"eq" = adv;
-	c:"neq" = adv;
-	c:"ls" = adv;
-	c:"geq" = adv;
-	!arithmetic tab:
-	c:"inc" = adv;
-	c:"dec" = adv;
-	c:"neg" = adv;
-	c:"abs" = [1, 1]#;
-	c:"add" = adv2;
-	c:"sub" = adv2;
-	c:"mul" = [0, 3]#;
-	c:"div" = [0, 4]#;
-	c:"mod" = [0, 4]#;
-	c:"max" = [2, 1]#;
-	c:"min" = [2, 1]#;
+	gateComplexities();
 	
 	add("item", 400, "battery", "rs_ctr:battery");
 	add("item", 401, "actuator");
@@ -167,4 +130,45 @@ moddedRecipes() {
 		add("circuitMat", it("opencomputers:component"):7, 0, 0, 48, -8, -16, 32); !RAM T1.5
 		add("circuitMat", it("opencomputers:capacitor"), 0, 0, 0, -8, 1, 160000); !CAPACITOR (only 1/10 cap here)
 	}
+}
+
+gateComplexities() {
+	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
+	Loc c = gate_cost;
+	Loc base = [1, 0]#, base2 = [2, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
+	!variables & IO tab:
+	c:"in" = base;
+	c:"out" = base;
+	c:"read" = base;
+	c:"write" = base2;
+	c:"i_cst" = base;
+	!logic tab:
+	c:"not" = base;
+	c:"or" = base2;
+	c:"nor" = base2;
+	c:"and" = base2;
+	c:"nand" = base2;
+	c:"xor" = [3, 0]#;
+	c:"xnor" = [3, 0]#;
+	!comparator tab:
+	c:"not0" = base;
+	c:"is0" = base;
+	c:"psgn" = base;
+	c:"nsgn" = base;
+	c:"eq" = adv;
+	c:"neq" = adv;
+	c:"ls" = adv;
+	c:"geq" = adv;
+	!arithmetic tab:
+	c:"inc" = adv;
+	c:"dec" = adv;
+	c:"neg" = adv;
+	c:"abs" = [1, 1]#;
+	c:"add" = adv2;
+	c:"sub" = adv2;
+	c:"mul" = [0, 3]#;
+	c:"div" = [0, 4]#;
+	c:"mod" = [0, 4]#;
+	c:"max" = [2, 1]#;
+	c:"min" = [2, 1]#;
 }
