@@ -1,0 +1,4 @@
+[
+	"rs_ctr:ne0", "rs_ctr:eq0", "rs_ctr:lt0", "rs_ctr:le0", "rs_ctr:gt0", "rs_ctr:ge0",
+	"rs_ctr:eq", "rs_ctr:ne", "rs_ctr:lt", "rs_ctr:ge"
+]

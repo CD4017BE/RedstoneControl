@@ -1,0 +1,17 @@
+{
+	"id": 16,
+	"pins_in": "aI ",
+	"pins_out": " rI",
+	"nodes": [
+		{
+			"typestrict": true,
+			"in": ["aZ"],
+			"out": "rZ",
+			"code": "rs_ctr:not"
+		}, {
+			"in": ["aI"],
+			"out": "rI",
+			"code": "rs_ctr:not"
+		}
+	]
+}

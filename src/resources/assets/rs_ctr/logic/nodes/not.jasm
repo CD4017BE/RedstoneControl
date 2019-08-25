@@ -1,0 +1,9 @@
+in 0
+iconst_m1
+ixor
+
+true:
+jof 0 dst
+
+false:
+jot 0 dst

@@ -1,0 +1,11 @@
+in 0
+in 1
+if_icmpeq end
+aload this
+in 2
+putfield this $0 I
+iload mod
+iconst_1
+ior
+istore mod
+end:

@@ -1,0 +1,5 @@
+in 0
+in 1
+ixor
+iconst_m1
+ixor

@@ -1,0 +1,15 @@
+in 0
+ifge to
+iconst_0
+goto end
+to:
+iconst_m1
+end:
+
+true:
+in 0
+ifge dst
+
+false:
+in 0
+iflt dst

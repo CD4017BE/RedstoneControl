@@ -1,0 +1,12 @@
+{
+	"id": 4,
+	"type": "const",
+	"width": 6,
+	"pins_out": " rI",
+	"nodes": {
+		"out": "rI",
+		"code": ["ldc $0"],
+		"args": ["$0"],
+		"cache": false
+	}
+}

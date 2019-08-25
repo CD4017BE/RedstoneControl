@@ -1,0 +1,10 @@
+{
+	"id": 53,
+	"pins_in": "aI bI",
+	"pins_out": " rI ",
+	"nodes": {
+		"in": ["aI", "bI"],
+		"out": "rI",
+		"code": ["in 0", "in 1", "isub"]
+	}
+}

@@ -1,0 +1,9 @@
+evdep 1
+jot 0 to
+in 1
+iconst_m1
+ixor
+goto end
+to:
+iconst_0
+end:

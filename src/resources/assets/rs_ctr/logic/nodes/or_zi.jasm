@@ -1,0 +1,7 @@
+evdep 1
+jot 0 to
+in 1
+goto end
+to:
+iconst_m1
+end:

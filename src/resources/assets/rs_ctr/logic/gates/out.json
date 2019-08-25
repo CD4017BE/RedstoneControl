@@ -1,0 +1,14 @@
+{
+	"id": 1,
+	"type": "out",
+	"width": 1,
+	"pins_in": "bI ",
+	"end": "rV",
+	"link": "a",
+	"nodes": {
+		"out": "rV",
+		"in": ["a[I", "a[I", "bI", "bI"],
+		"code": "rs_ctr:out",
+		"args": ["$0", "$1"]
+	}
+}

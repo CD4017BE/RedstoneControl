@@ -1,0 +1,17 @@
+{
+	"id": 22,
+	"pins_in": "aI bI",
+	"pins_out": " rI ",
+	"nodes": [
+		{
+			"typestrict": true,
+			"sortin": ["aZ", "bZ"],
+			"out": "rZ",
+			"code": "rs_ctr:xnor"
+		}, {
+			"sortin": ["aI", "bI"],
+			"out": "rI",
+			"code": "rs_ctr:xnor"
+		}
+	]
+}

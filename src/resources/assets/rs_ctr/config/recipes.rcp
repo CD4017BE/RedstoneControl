@@ -1,4 +1,4 @@
-VERSION = 50;
+VERSION = 51;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -21,8 +21,6 @@ energy_fluid_translocator_op = 100; !energy consumed by the Fluid Translocator p
 energy_fluid_translocator_pb = 500; !energy consumed by the Fluid Translocator per bucket (1000 mB) transferred.
 
 PRE_INIT() {
-	gateComplexities();
-	
 	add("item", 400, "battery", "rs_ctr:battery");
 	add("item", 401, "actuator");
 }
@@ -132,7 +130,7 @@ moddedRecipes() {
 	}
 }
 
-gateComplexities() {
+POST_INIT() {
 	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
 	Loc c = gate_cost;
 	Loc base = [1, 0]#, base2 = [2, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
@@ -141,7 +139,7 @@ gateComplexities() {
 	c:"out" = base;
 	c:"read" = base;
 	c:"write" = base2;
-	c:"i_cst" = base;
+	c:"cst" = base;
 	!logic tab:
 	c:"not" = base;
 	c:"or" = base2;
@@ -151,14 +149,16 @@ gateComplexities() {
 	c:"xor" = [3, 0]#;
 	c:"xnor" = [3, 0]#;
 	!comparator tab:
-	c:"not0" = base;
-	c:"is0" = base;
-	c:"psgn" = base;
-	c:"nsgn" = base;
+	c:"ne0" = base;
+	c:"eq0" = base;
+	c:"ge0" = base;
+	c:"lt0" = base;
+	c:"gt0" = base;
+	c:"le0" = base;
 	c:"eq" = adv;
-	c:"neq" = adv;
+	c:"ne" = adv;
 	c:"ls" = adv;
-	c:"geq" = adv;
+	c:"ge" = adv;
 	!arithmetic tab:
 	c:"inc" = adv;
 	c:"dec" = adv;

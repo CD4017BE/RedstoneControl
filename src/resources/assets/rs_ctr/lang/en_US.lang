@@ -167,7 +167,7 @@ gate.rs_ctr.in=Input Socket\n§7receives external sinals
 gate.rs_ctr.out=Output Socket\n§7emits external signals
 gate.rs_ctr.write=Variable Write\n§7Stores input in a variable to\n§7feed into next evaluation cycle
 gate.rs_ctr.read=Variable read\n§7Outputs the variable value set\n§7in previous evaluation cycle.
-gate.rs_ctr.i_cst=Constant Number\n§7out \= #
+gate.rs_ctr.cst=Constant Number\n§7out \= #
 gategroup.rs_ctr.logic=Logic
 gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
 gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
@@ -177,14 +177,16 @@ gate.rs_ctr.not=NOT-Gate\n§7out \= ¬in\n§7bitwise
 gate.rs_ctr.and=AND-Gate\n§7out \= in1 ∧ in2\n§7bitwise
 gate.rs_ctr.xnor=XNOR-Gate\n§7in \= ¬(in1 ⊻ in2)\n§7bitwise
 gategroup.rs_ctr.comp=Comparators
-gate.rs_ctr.nsgn=Is Negative\n§7in < 0 -> out \= -1\n§7else -> out \= 0
-gate.rs_ctr.psgn=Not Negative\n§7in < 0 -> out \= 0\n§7else -> out \= -1
-gate.rs_ctr.is0=Is Zero\n§7in \= 0 -> out \= -1\n§7else -> out \= 0
-gate.rs_ctr.not0=Not Zero\n§7in \= 0 -> out \= 0\n§7else -> out \= -1
-gate.rs_ctr.neq=Not Equal\n§7in1 \= in2 -> out \= 0\n§7else -> out \= -1
-gate.rs_ctr.ls=Less than\n§7in1 < in2 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.lt0=Is Negative\n§7in < 0 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.ge0=Not Negative\n§7in < 0 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.gt0=Is Positive\n§7in > 0 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.le0=Not Positive\n§7in > 0 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.eq0=Is Zero\n§7in \= 0 -> out \= -1\n§7else -> out \= 0
+gate.rs_ctr.ne0=Not Zero\n§7in \= 0 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.ne=Not Equal\n§7in1 \= in2 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.lt=Less than\n§7in1 < in2 -> out \= -1\n§7else -> out \= 0
 gate.rs_ctr.eq=Equal\n§7in1 \= in2 -> out \= -1\n§7else -> out \= 0
-gate.rs_ctr.geq=Greater or Equal\n§7in1 < in2 -> out \= 0\n§7else -> out \= -1
+gate.rs_ctr.ge=Greater or Equal\n§7in1 < in2 -> out \= 0\n§7else -> out \= -1
 gategroup.rs_ctr.num=Arithmetic
 gate.rs_ctr.neg=Negate\n§7out \= -in
 gate.rs_ctr.sub=Subtract\n§7out \= in1 - in2

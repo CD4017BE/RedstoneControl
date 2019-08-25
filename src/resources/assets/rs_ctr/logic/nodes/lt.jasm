@@ -1,0 +1,18 @@
+in 0
+in 1
+if_icmplt to
+iconst_0
+goto end
+to:
+iconst_m1
+end:
+
+true:
+in 0
+in 1
+if_icmplt dst
+
+false:
+in 0
+in 1
+if_icmpge dst

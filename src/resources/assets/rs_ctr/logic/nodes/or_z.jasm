@@ -1,0 +1,20 @@
+evdep 1
+jot 0 to
+jot 1 to
+iconst_0
+goto end
+to:
+iconst_m1
+end:
+
+true:
+evdep 1
+jot 0 dst
+jot 1 dst
+
+false:
+evdep 1
+jot 0 end
+jot 1 end
+goto dst
+end:

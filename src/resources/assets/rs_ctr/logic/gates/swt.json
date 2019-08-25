@@ -1,0 +1,10 @@
+{
+	"id": 5,
+	"pins_in": "sIaIbI",
+	"pins_out": " rI ",
+	"nodes": {
+		"in": ["sZ", "aI", "bI"],
+		"out": "rI",
+		"code": "rs_ctr:swt"
+	}
+}

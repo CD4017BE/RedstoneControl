@@ -1,0 +1,22 @@
+{
+	"id": 3,
+	"type": "write",
+	"width": 6,
+	"pins_in": "aI ",
+	"end": "r",
+	"link": "l",
+	"nodes": [
+		{
+			"if": { "var": 0, "eq": true },
+			"in": ["aI", "lI", "aI"],
+			"out": "rV",
+			"code": "rs_ctr:write",
+			"args": ["$l"]
+		}, {
+			"in": ["aI", "lV"],
+			"out": "rV",
+			"code": ["in 1", "aload this", "in 0", "putfield this $0 I"],
+			"args": ["$l"]
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"id": 0,
+	"type": "in",
+	"width": 1,
+	"pins_out": " rI",
+	"link": "a",
+	"nodes": {
+		"out": "rI",
+		"in": ["a[I"],
+		"code": ["in 0", "ldc $0", "iaload"],
+		"args": ["$0"]
+	}
+}

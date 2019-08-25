@@ -1,0 +1,11 @@
+{
+	"id": 2,
+	"type": "read",
+	"width": 6,
+	"pins_out": " rI",
+	"nodes": {
+		"out": "rI",
+		"code": ["aload this", "getfield this $0 I"],
+		"args": ["$l"]
+	}
+}

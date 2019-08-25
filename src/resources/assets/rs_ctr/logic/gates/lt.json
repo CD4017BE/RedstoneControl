@@ -1,0 +1,10 @@
+{
+	"id": 38,
+	"pins_in": "aI bI",
+	"pins_out": " rI ",
+	"nodes": {
+		"in": ["aI", "bI"],
+		"out": "rZ",
+		"code": "rs_ctr:lt"
+	}
+}
