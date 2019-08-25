@@ -2,12 +2,10 @@ package cd4017be.rs_ctr.circuit.gates;
 
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
-import cd4017be.rs_ctr.circuit.editor.BasicType.ISpecialNodeProvider;
-import cd4017be.rscpl.compile.Node;
-import cd4017be.rscpl.compile.NodeCompiler;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.editor.ConfigurableGate;
-import cd4017be.rscpl.editor.Gate;
-import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
@@ -19,14 +17,13 @@ import io.netty.buffer.ByteBuf;
  * Redstone signal input
  * @author CD4017BE
  */
-public class Input extends Gate implements ConfigurableGate, ISpecialRender, ISpecialCfg, ISpecialNodeProvider {
+public class Input extends GeneratedGate implements ConfigurableGate, ISpecialRender, ISpecialCfg, IParameterizedGate {
 
 	public boolean interrupt = true;
 	public int portID;
-	public Node getArr;
 
-	public Input(GateType type, int index, int in, int out) {
-		super(type, index, in, out);
+	public Input(GeneratedType type, int index) {
+		super(type, index);
 	}
 
 	@Override
@@ -59,8 +56,8 @@ public class Input extends Gate implements ConfigurableGate, ISpecialRender, ISp
 	}
 
 	@Override
-	public Node createNode(int o, NodeCompiler code) {
-		return new Node(code, portID, getArr);
+	public Object getParam(int i) {
+		return portID;
 	}
 
 }

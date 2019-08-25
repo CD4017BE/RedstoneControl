@@ -5,11 +5,9 @@ import org.objectweb.asm.Type;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.IGuiComp;
 import cd4017be.lib.Gui.comp.TextField;
-import cd4017be.rs_ctr.circuit.editor.BasicType.ISpecialNodeProvider;
-import cd4017be.rscpl.compile.Node;
-import cd4017be.rscpl.compile.NodeCompiler;
-import cd4017be.rscpl.editor.Gate;
-import cd4017be.rscpl.editor.GateType;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialCfg;
@@ -21,7 +19,7 @@ import cd4017be.rscpl.gui.SchematicBoard;
  * @author CD4017BE
  *
  */
-public class ConstNum extends Gate implements ISpecialRender, ISpecialCfg, ISpecialNodeProvider {
+public class ConstNum extends GeneratedGate implements ISpecialRender, ISpecialCfg, IParameterizedGate {
 
 	public Number value;
 
@@ -29,8 +27,8 @@ public class ConstNum extends Gate implements ISpecialRender, ISpecialCfg, ISpec
 	 * @param type
 	 * @param index
 	 */
-	public ConstNum(GateType type, int index, int in, int out) {
-		super(type, index, in, out);
+	public ConstNum(GeneratedType type, int index) {
+		super(type, index);
 	}
 
 	@Override
@@ -71,8 +69,8 @@ public class ConstNum extends Gate implements ISpecialRender, ISpecialCfg, ISpec
 	}
 
 	@Override
-	public Node createNode(int o, NodeCompiler code) {
-		return new Node(code, value);
+	public Object getParam(int i) {
+		return value;
 	}
 
 }

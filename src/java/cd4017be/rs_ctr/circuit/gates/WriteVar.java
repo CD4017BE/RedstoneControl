@@ -4,13 +4,11 @@ import org.objectweb.asm.Type;
 
 import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.GuiFrame;
-import cd4017be.rs_ctr.circuit.editor.BasicType;
-import cd4017be.rs_ctr.circuit.editor.BasicType.ISpecialNodeProvider;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.compile.Node;
-import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.ConfigurableGate;
-import cd4017be.rscpl.editor.Gate;
-import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.graph.IEndpoint;
 import cd4017be.rscpl.graph.IReadVar;
 import cd4017be.rscpl.graph.IWriteVar;
@@ -24,13 +22,13 @@ import io.netty.buffer.ByteBuf;
  * @author CD4017BE
  *
  */
-public class WriteVar extends Gate implements IWriteVar, ISpecialRender, ISpecialCfg, ConfigurableGate, IEndpoint, ISpecialNodeProvider {
+public class WriteVar extends GeneratedGate implements IWriteVar, ISpecialRender, ISpecialCfg, ConfigurableGate, IEndpoint, IParameterizedGate {
 
 	private boolean interrupt = true;
 	IReadVar link;
 
-	public WriteVar(GateType type, int index, int in, int out) {
-		super(type, index, in, type.getOutType(0) != Type.VOID_TYPE ? 1 : 0);
+	public WriteVar(GeneratedType type, int index) {
+		super(type, index);
 	}
 
 	@Override
@@ -68,16 +66,15 @@ public class WriteVar extends Gate implements IWriteVar, ISpecialRender, ISpecia
 
 	@Override
 	public Type type() {
-		return ((BasicType)type).outputs[0].getInType(0);
+		return ((GeneratedType)type).outputs[0].type;
 	}
 
 	@Override
-	public Node getEndNode() {
-		if (outputs.length > 0) return outputs[0].getNode();
-		return createNode(0, null);
+	protected Node createLink(int i) {
+		return link.result();
 	}
 
-	@Override
+	/*@Override
 	public Node createNode(int o, NodeCompiler code) {
 		Node n = inputs[0].getNode();
 		if (interrupt) {
@@ -87,6 +84,11 @@ public class WriteVar extends Gate implements IWriteVar, ISpecialRender, ISpecia
 			return new Node(((BasicType)type).outputs[1], label, n, ref, n);
 		}
 		return new Node(((BasicType)type).outputs[0], label, n);
+	}*/
+
+	@Override
+	public Object getParam(int i) {
+		return interrupt;
 	}
 
 }

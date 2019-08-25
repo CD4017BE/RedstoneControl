@@ -20,6 +20,10 @@ import cd4017be.lib.script.obj.IOperand;
 import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.OreDictStack;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.circuit.editor.IGateProvider;
+import cd4017be.rs_ctr.circuit.gates.*;
+
+import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.registerTab;
 import cd4017be.rs_ctr.item.ItemBlockProbe;
 import cd4017be.rs_ctr.item.ItemWireCon;
 import cd4017be.rs_ctr.port.BlockProbe;
@@ -101,6 +105,7 @@ public class CommonProxy implements IRecipeHandler {
 	public void preInit() {
 		RelayPort.IMPLEMENTATION = WireAnchor::new;
 		MinecraftForge.EVENT_BUS.register(this);
+		registerGates();
 		RecipeScriptContext.instance.modules.get("redstoneControl").assign("gate_cost", CircuitInstructionSet.INS_SET);
 		RecipeAPI.Handlers.put(CIRCUIT_MAT, this);
 		RecipeAPI.Handlers.put(BATTERY, this);
@@ -139,6 +144,21 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Text.ID, Text::new);
 		Module.REGISTRY.put(Lever.ID, Lever::new);
 		Module.REGISTRY.put(Lamp.ID, Lamp::new);
+		
+		CircuitInstructionSet.INS_SET.loadTabs();
+	}
+
+	private void registerGates() {
+		IGateProvider.REGISTRY.put("in", Input::new);
+		IGateProvider.REGISTRY.put("out", Output::new);
+		IGateProvider.REGISTRY.put("read", ReadVar::new);
+		IGateProvider.REGISTRY.put("write", WriteVar::new);
+		IGateProvider.REGISTRY.put("const", ConstNum::new);
+		
+		registerTab("rs_ctr:io");
+		registerTab("rs_ctr:logic");
+		registerTab("rs_ctr:comp");
+		registerTab("rs_ctr:num");
 	}
 
 	private void registerSensor(IBlockSensor sensor, Object[] items) {

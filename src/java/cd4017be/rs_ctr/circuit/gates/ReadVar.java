@@ -1,19 +1,13 @@
 package cd4017be.rs_ctr.circuit.gates;
 
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.TextField;
-import cd4017be.rs_ctr.circuit.editor.BasicType.ISpecialNodeProvider;
-import cd4017be.rscpl.compile.Context;
-import cd4017be.rscpl.compile.Dep;
+import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
+import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.compile.Node;
-import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.ConfigurableGate;
-import cd4017be.rscpl.editor.Gate;
-import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.graph.IReadVar;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialCfg;
@@ -26,12 +20,12 @@ import io.netty.buffer.ByteBuf;
  * @author CD4017BE
  *
  */
-public class ReadVar extends Gate implements IReadVar, ConfigurableGate, ISpecialRender, ISpecialCfg, ISpecialNodeProvider {
+public class ReadVar extends GeneratedGate implements IReadVar, ConfigurableGate, ISpecialRender, ISpecialCfg {
 
 	public Number value;
 
-	public ReadVar(GateType type, int index, int in, int out) {
-		super(type, index, in, out);
+	public ReadVar(GeneratedType type, int index) {
+		super(type, index);
 		this.value = 0;
 	}
 
@@ -89,34 +83,8 @@ public class ReadVar extends Gate implements IReadVar, ConfigurableGate, ISpecia
 	}
 
 	@Override
-	public Node createNode(int o, NodeCompiler code) {
-		return new Node(code, label);
-	}
-
-	public static class Compiler implements NodeCompiler {
-
-		public final Type varType;
-
-		public Compiler(Type varType) {
-			this.varType = varType;
-		}
-
-		@Override
-		public Type getInType(int i) {
-			return null;
-		}
-
-		@Override
-		public Type getOutType() {
-			return varType;
-		}
-
-		@Override
-		public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context) {
-			mv.visitVarInsn(Opcodes.ALOAD, Context.THIS_IDX);
-			mv.visitFieldInsn(Opcodes.GETFIELD, context.compiler.C_THIS, (String)param, varType.getDescriptor());
-		}
-
+	public Node result() {
+		return outputs[0].getNode();
 	}
 
 }

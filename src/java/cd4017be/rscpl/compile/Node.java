@@ -10,7 +10,7 @@ import org.objectweb.asm.Type;
  */
 public class Node {
 
-	final NodeCompiler code;
+	public final NodeCompiler code;
 	/**custom data feed through to the compiler */
 	final Object param;
 	/**the inputs of this node */

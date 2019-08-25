@@ -2,6 +2,7 @@ package cd4017be.rscpl.graph;
 
 import org.objectweb.asm.Type;
 
+import cd4017be.rscpl.compile.Node;
 import cd4017be.rscpl.util.StateBuffer;
 import static org.objectweb.asm.Type.*;
 
@@ -29,5 +30,7 @@ public interface IReadVar extends IVariable, ValueOp {
 			} break;
 		}
 	}
+
+	Node result();
 
 }

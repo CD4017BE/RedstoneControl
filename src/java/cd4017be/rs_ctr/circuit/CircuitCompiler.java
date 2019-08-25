@@ -2,6 +2,8 @@ package cd4017be.rs_ctr.circuit;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
+
 import static org.objectweb.asm.Opcodes.*;
 
 import java.util.ArrayList;
@@ -12,12 +14,13 @@ import java.util.List;
 import java.util.UUID;
 
 import cd4017be.rscpl.compile.Compiler;
-import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.circuit.editor.GetFieldNode;
 import cd4017be.rs_ctr.circuit.gates.Input;
 import cd4017be.rs_ctr.circuit.gates.Output;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.compile.Dep;
 import cd4017be.rscpl.compile.Node;
+import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 
@@ -28,6 +31,8 @@ import cd4017be.rscpl.editor.InvalidSchematicException;
 public class CircuitCompiler extends Compiler<CompiledCircuit> {
 
 	public static final CircuitCompiler INSTANCE = new CircuitCompiler();
+	public static final NodeCompiler getIOArr = new GetFieldNode(Type.getType("[I"));
+
 
 	private CircuitCompiler() {
 		super(Circuit.class);
@@ -39,17 +44,17 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		CompiledCircuit cc = new CompiledCircuit();
 		List<Input> inputs = new ArrayList<>();
 		List<Output> outputs = new ArrayList<>();
-		Node in = new Node(CircuitInstructionSet.getInArr),
-			out = new Node(CircuitInstructionSet.getOutArr);
+		Node in = new Node(getIOArr, "inputs"),
+			out = new Node(getIOArr, "outputs");
 		for (Gate g : gatesIn)
 			if (g == null);
-			else if (g.type == CircuitInstructionSet.in) {
+			else if (g instanceof Input) {
 				Input i = (Input)g;
-				i.getArr = in;
+				i.setLink(in, 0);
 				inputs.add(i);
-			} else if (g.type == CircuitInstructionSet.out) {
+			} else if (g instanceof Output) {
 				Output o = (Output)g;
-				o.getArr = out;
+				o.setLink(out, 0);
 				outputs.add(o);
 			}
 		Collections.sort(inputs, BY_VERT_POS);

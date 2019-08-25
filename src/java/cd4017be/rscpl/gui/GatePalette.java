@@ -28,7 +28,10 @@ public class GatePalette extends GuiFrame {
 		this.pick = pick;
 		background(TEX, 0, 0);
 		this.titleY = -11;
+		openTab = -1;
 		for (int i = 0; i < tabs.length; i++) {
+			if (tabs[i] == null) continue;
+			if (openTab < 0) openTab = i;
 			final int j = i;
 			add(new Button(this, 16, 18, 1 + 16 * i, 57, 0, ()-> openTab == j ? 0 : 1, (b)-> openTab = j).texture(162, 0).tooltip("gategroup." + tabs[i].name.replace(':', '.')));
 			tabs[i].arrange((w - 2) / 4, (h - 20) / 4);
@@ -39,7 +42,7 @@ public class GatePalette extends GuiFrame {
 	@Override
 	public void drawOverlay(int mx, int my) {
 		if (my >= y + 58) super.drawOverlay(mx, my);
-		else {
+		else if (openTab >= 0){
 			GateType t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
 			if (t != null)
 				drawTooltip(getTooltip(t), mx, my);
@@ -57,16 +60,19 @@ public class GatePalette extends GuiFrame {
 		bindTexture(GateTextureHandler.GATE_ICONS_LOC);
 		bound = true;
 		for (int i = 0, x = this.x + 1, y = this.y + 59; i < tabs.length; i++, x += 16)
-			GateTextureHandler.drawIcon(getDraw(), x, y, 16, 16, tabs[i].getIcon(), zLevel);
+			if (tabs[i] != null)
+				GateTextureHandler.drawIcon(getDraw(), x, y, 16, 16, tabs[i].getIcon(), zLevel);
 		int x = this.x + 3, y = this.y + 1;
-		for (BoundingBox2D<GateType> bb : tabs[openTab].instructions)
-			GateTextureHandler.drawIcon(getDraw(), x + bb.x0*4, y + bb.y0*4, bb.width()*4 - 4, bb.height()*4, bb.owner.getIcon(), zLevel);
+		if (openTab >= 0)
+			for (BoundingBox2D<GateType> bb : tabs[openTab].instructions)
+				GateTextureHandler.drawIcon(getDraw(), x + bb.x0*4, y + bb.y0*4, bb.width()*4 - 4, bb.height()*4, bb.owner.getIcon(), zLevel);
 		drawNow();
 	}
 
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
 		if (my >= y + 56) return super.mouseIn(mx, my, b, d);
+		if (openTab < 0) return true;
 		GateType t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
 		if (t != null) pick.accept(t);
 		return true;

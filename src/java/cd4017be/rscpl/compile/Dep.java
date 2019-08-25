@@ -76,7 +76,7 @@ public class Dep implements Comparable<Dep> {
 	 * @param cond the value to jump on
 	 */
 	public void compile(MethodVisitor mv, Context context, Label target, boolean cond) {
-		if (type != Type.BOOLEAN_TYPE) throw new IllegalStateException();
+		if (type.getSort() > Type.INT) throw new IllegalStateException();
 		NodeCompiler code = src.code;
 		Type st = code.getOutType();
 		if (src.localIdx >= 0) {
@@ -132,11 +132,12 @@ public class Dep implements Comparable<Dep> {
 		return o.src.order - src.order;
 	}
 
-	public static boolean canConvert(Type from, Type to) {
+	public static boolean canConvert(Type from, Type to, boolean strict) {
 		if (to == Type.VOID_TYPE) return true;
 		if (from == Type.VOID_TYPE) return false;
 		if (from.equals(to)) return true;
 		int st = from.getSort(), dt = to.getSort();
+		if (strict && st > dt) return false;
 		if (st < Type.ARRAY && dt < Type.ARRAY) return true;
 		return false;
 	}
