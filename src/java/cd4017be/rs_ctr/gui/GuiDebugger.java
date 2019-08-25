@@ -69,7 +69,7 @@ public class GuiDebugger extends GuiFrame {
 		try {
 			dirty = circuit.tick();
 			lastErr = "\u00a7ano error";
-		} catch(Exception e) {
+		} catch(Throwable e) {
 			if (!(e instanceof ArithmeticException))
 				Main.LOG.error("circuit crashed!", e);
 			dirty = 0;

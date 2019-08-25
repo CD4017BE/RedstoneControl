@@ -66,7 +66,7 @@ public class WriteVar extends GeneratedGate implements IWriteVar, ISpecialRender
 
 	@Override
 	public Type type() {
-		return ((GeneratedType)type).outputs[0].type;
+		return Type.INT_TYPE;
 	}
 
 	@Override

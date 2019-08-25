@@ -1,9 +1,11 @@
 package cd4017be.rs_ctr.circuit.editor;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
@@ -25,20 +27,21 @@ public class GeneratedNode implements NodeCompiler {
 	public final ASMCode code;
 	public final LinkVar[] inputs;
 	public final Type out;
-	private final int sort;
+	protected final int sort;
 	private final boolean strictTypes;
 	private final Predicate<GeneratedGate> precondition;
 	private final Function<GeneratedGate, Object>[] arguments;
 	public GeneratedNode next;
 
-	public GeneratedNode(Type result, ASMCode code, LinkVar[] inputs, int sort, boolean strict, Predicate<GeneratedGate> precond, Function<GeneratedGate, Object>[] args) {
+	@SuppressWarnings("unchecked")
+	public GeneratedNode(Type result, ASMCode code, List<LinkVar> inputs, int sort, boolean strict, Predicate<GeneratedGate> precond, List<Function<GeneratedGate, Object>> args) {
 		this.out = result;
-		this.inputs = inputs;
+		this.inputs = inputs.toArray(new LinkVar[inputs.size()]);
 		this.code = code;
 		this.sort = sort;
 		this.strictTypes = strict;
 		this.precondition = precond;
-		this.arguments = args;
+		this.arguments = args.toArray(new Function[args.size()]);
 	}
 
 	public void translateVars(CharArrayList names, int nn, int ni) {
@@ -54,6 +57,7 @@ public class GeneratedNode implements NodeCompiler {
 			LinkVar v = inputs[i];
 			Node n = type.getNode(gate, v.name);
 			if (n == null || !Dep.canConvert(n.code.getOutType(), v.type, strictTypes)) return null;
+			ins[i] = n;
 		}
 		Object[] args = new Object[arguments.length];
 		for (int i = 0; i < args.length; i++)
@@ -75,9 +79,28 @@ public class GeneratedNode implements NodeCompiler {
 	public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context) {
 		if (sort < inputs.length)
 			Arrays.sort(inputs, sort, inputs.length);
-		CompCont c = new CompCont(code, inputs, (Object[])param, context);
-		for (Insn ins : code.instructions)
-			ins.visit(mv, c);
+		CompCont c = new CompCont(code, inputs, (Object[])param, context, null);
+		for (Insn i : code.instructions)
+			i.visit(mv, c);
+	}
+
+	public static class Bool extends GeneratedNode implements NodeCompiler.Bool {
+
+		public Bool(Type result, ASMCode code, List<LinkVar> inputs, int sort, boolean strict, Predicate<GeneratedGate> precond, List<Function<GeneratedGate, Object>> args) {
+			super(result, code, inputs, sort, strict, precond, args);
+		}
+
+		@Override
+		public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context, Label target, boolean cond) {
+			if (sort < inputs.length)
+				Arrays.sort(inputs, sort, inputs.length);
+			CompCont c = new CompCont(code, inputs, (Object[])param, context, target);
+			ASMCode code = this.code.extra;
+			if (cond) code = code.extra;
+			for (Insn i : code.instructions)
+				i.visit(mv, c);
+		}
+
 	}
 
 }

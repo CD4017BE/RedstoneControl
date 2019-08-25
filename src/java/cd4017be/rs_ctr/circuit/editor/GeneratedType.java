@@ -6,16 +6,17 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.objectweb.asm.Type;
 
+import com.google.common.base.Predicates;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
-import cd4017be.rs_ctr.circuit.editor.ASMCode.Parser;
 import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
 import cd4017be.rscpl.compile.Dep;
 import cd4017be.rscpl.compile.Node;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.editor.InstructionSet;
+import cd4017be.rscpl.util.IOUtils;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.chars.CharArrayList;
 import net.minecraft.util.ResourceLocation;
@@ -57,7 +58,7 @@ public class GeneratedType extends GateType {
 
 	@Override
 	public int getOutputHeight(int o) {
-		return heights[o - inputs];
+		return heights[o + inputs];
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class GeneratedType extends GateType {
 	public static GeneratedType read(String id, JsonReader jr, InstructionSet inset) throws IOException {
 		try {
 			jr.beginObject();
-			int w = 0;
+			int w = 3;
 			String in = "", out = "", link = "", type = null;
 			char end = 0;
 			int i = -1;
@@ -188,7 +189,7 @@ public class GeneratedType extends GateType {
 				continue;
 			}
 			int j = descrLength(ca, i);
-			vars.add(new LinkVar(c, Type.getType(pins.substring(i, i += j))));
+			vars.add(new LinkVar(c, IOUtils.getValidType(pins.substring(i, i += j))));
 			heights.add((byte) h++);
 		}
 		return h;
@@ -217,7 +218,7 @@ public class GeneratedType extends GateType {
 		int sort = Integer.MAX_VALUE;
 		ASMCode code = null;
 		boolean strict = false;
-		Predicate<GeneratedGate> precond = null;
+		Predicate<GeneratedGate> precond = alwaysTrue;
 		while(jr.hasNext()) {
 			switch(jr.nextName()) {
 			case "typestrict":
@@ -249,11 +250,14 @@ public class GeneratedType extends GateType {
 			case "code":
 				if (jr.peek() == JsonToken.BEGIN_ARRAY) {
 					jr.beginArray();
-					Parser cont = new Parser();
-					while(jr.hasNext())
-						cont.accept(jr.nextString());
+					try {
+						while(jr.hasNext())
+							ASMCode.PARSER.accept(jr.nextString());
+						code = ASMCode.PARSER.build();
+					} finally {
+						ASMCode.PARSER.clear();
+					}
 					jr.endArray();
-					code = cont.build();
 				} else code = ASMCode.get(new ResourceLocation(jr.nextString()));
 				break;
 			case "args":
@@ -283,8 +287,9 @@ public class GeneratedType extends GateType {
 		}
 		jr.endObject();
 		if (code == null) throw new IllegalStateException("missing code definition");
-		@SuppressWarnings("unchecked")
-		GeneratedNode node = new GeneratedNode(out.type, code, in.toArray(new LinkVar[in.size()]), sort, strict, precond, args.toArray(new Function[args.size()]));
+		GeneratedNode node = code.extra == null ? 
+				new GeneratedNode(out.type, code, in, sort, strict, precond, args) :
+				new GeneratedNode.Bool(out.type, code, in, sort, strict, precond, args);
 		int i = names.indexOf(out.name);
 		if (i < 0) {
 			nodes.add(node);
@@ -295,6 +300,8 @@ public class GeneratedType extends GateType {
 			n.next = node;
 		}
 	}
+
+	private static final Predicate<GeneratedGate> alwaysTrue = Predicates.alwaysTrue();
 
 	private static Predicate<GeneratedGate> parsePrecondition(JsonReader jr, Predicate<GeneratedGate> precond) throws IOException {
 		jr.beginObject();
@@ -317,7 +324,7 @@ public class GeneratedType extends GateType {
 				jr.skipValue();
 				continue;
 			}
-			if (precond == null) precond = cond;
+			if (precond == alwaysTrue) precond = cond;
 			else precond = precond.and(cond);
 		}
 		jr.endObject();

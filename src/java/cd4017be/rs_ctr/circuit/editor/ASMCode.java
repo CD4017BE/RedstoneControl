@@ -29,56 +29,58 @@ import scala.actors.threadpool.Arrays;
 public class ASMCode {
 
 	private static final HashMap<ResourceLocation, ASMCode> REGISTRY = new HashMap<>();
+	public static final Parser PARSER = new Parser();
 
 	public static ASMCode get(ResourceLocation loc) {
 		ASMCode code = REGISTRY.get(loc);
 		if (code != null) return code;
-		InputStream is = IOUtils.getClassResource(loc, "/gates/nodes/", ".jasm");
+		InputStream is = IOUtils.getClassResource(loc, "/logic/nodes/", ".jasm");
 		if (is == null) {
 			Main.LOG.error("missing asm code {}", loc);
 			return code;
 		}
 		try(BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-			Parser cont = new Parser();
 			br.lines()
 				.map((l)-> { //remove comments
 					int i = l.indexOf('#');
 					if (i >= 0) l = l.substring(0, i);
 					return l.trim();
 				}).filter((l)-> !l.isEmpty())
-				.forEachOrdered(cont); //remove empty lines
-			REGISTRY.put(loc, code = cont.build());
-		} catch (IOException e) {
-			e.printStackTrace();
+				.forEachOrdered(PARSER); //remove empty lines
+			REGISTRY.put(loc, code = PARSER.build());
+		} catch (IOException | IllegalArgumentException e) {
+			Main.LOG.error("failed loading asm code " + loc, e);
+		} finally {
+			PARSER.clear();
 		}
 		return code;
 	}
 
 	final Insn[] instructions;
-	final int locals, labels, jof, jot;
+	final int locals, labels;
+	public ASMCode extra;
 
-	public ASMCode(Insn[] instructions, int locals, int labels, int jof, int jot) {
+	public ASMCode(Insn[] instructions, int locals, int labels) {
 		this.instructions = instructions;
 		this.locals = locals;
 		this.labels = labels;
-		this.jof = jof;
-		this.jot = jot;
 	}
 
 	static final HashMap<String, Insn> TRANSLATION = new HashMap<>();
 	static {
 		TRANSLATION.put("CLR", new IntInsn(-6, 1));
-		TRANSLATION.put("EVDEPS", new IntInsn(-5, 3));
-		TRANSLATION.put("EVDEP", new IntInsn(-4, 3));
-		TRANSLATION.put("JOF", new IntInsn(-3, 3));
-		TRANSLATION.put("JOT", new IntInsn(-2, 3));
-		TRANSLATION.put("IN", new IntInsn(-1, 3));
+		TRANSLATION.put("JOF", new IntInsn(-5, 3));
+		TRANSLATION.put("JOT", new IntInsn(-4, 3));
+		TRANSLATION.put("IN", new IntInsn(-3, 3));
+		TRANSLATION.put("EVDEPS", new IntInsn(-2, 3));
+		TRANSLATION.put("EVDEP", new IntInsn(-1, 3));
 		put(0, Insn::new,
 			"NOP", "ACONST_NULL", "ICONST_M1", "ICONST_0", "ICONST_1", "ICONST_2", "ICONST_3", "ICONST_4",
 			"ICONST_5", "LCONST_0", "LCONST_1", "FCONST_0", "FCONST_1", "FCONST_2", "DCONST_0", "DCONST_1"
 		);
 		TRANSLATION.put("BIPUSH", new IntInsn(16, 0));
 		TRANSLATION.put("SIPUSH", new IntInsn(17, 0));
+		TRANSLATION.put("LDC", new LdcInsn());
 		put(21, i -> new IntInsn(i, 1), "ILOAD", "LLOAD", "FLOAD", "DLOAD", "ALOAD");
 		put(46, Insn::new,
 			"IALOAD", "LALOAD", "FALOAD", "DALOAD", "AALOAD", "BALOAD", "CALOAD", "SALOAD"
@@ -127,13 +129,18 @@ public class ASMCode {
 			else start++;
 	}
 
-	static class Parser implements Consumer<String> {
+	public static class Parser implements Consumer<String> {
 
-		ArrayList<String> locals = new ArrayList<>(), labels = new ArrayList<>();
-		ArrayList<Insn> list = new ArrayList<>();
-		int jot = Integer.MAX_VALUE, jof = Integer.MAX_VALUE;
+		private ASMCode main, jot, jof;
+		private byte section = 0;
+		private ArrayList<String> locals = new ArrayList<>(), labels = new ArrayList<>();
+		private ArrayList<Insn> list = new ArrayList<>();
+
+		private Parser() {}
 
 		public int getLocal(String name) {
+			if ("this".equals(name)) return -1;
+			if ("mod".equals(name)) return -2;
 			int i = locals.indexOf(name);
 			if (i < 0) {
 				i = locals.size();
@@ -143,10 +150,11 @@ public class ASMCode {
 		}
 
 		public int getLabel(String name) {
+			if (section > 0 && "dst".equals(name)) return -1;
 			int i = labels.indexOf(name);
 			if (i < 0) {
 				i = labels.size();
-				locals.add(name);
+				labels.add(name);
 			}
 			return i;
 		}
@@ -156,34 +164,55 @@ public class ASMCode {
 			String[] tokens = t.split("\\s+");
 			String cmd = tokens[0];
 			Insn ins = TRANSLATION.get(cmd.toUpperCase());
+			int l = cmd.length();
 			if (ins != null)
 				ins = ins.parse(tokens, this);
-			else if (cmd.charAt(cmd.length() - 1) == ':')
-				ins = new IntInsn(0, (byte)2, getLabel(cmd.substring(0, cmd.length() - 1)));
-			else
-				ins = new DefLocal(getLocal(tokens[1]), Type.getType(cmd));
+			else if (l > 0 && cmd.charAt(l - 1) == ':') {
+				cmd = cmd.substring(0, l - 1);
+				if ("true".equals(cmd)) {
+					pushState();
+					section = 1;
+					return;
+				} else if ("false".equals(cmd)) {
+					pushState();
+					section = 2;
+					return;
+				}
+				ins = new IntInsn(0, (byte)2, getLabel(cmd));
+			} else {
+				Insn.assertArgs(tokens, 1);
+				ins = new DefLocal(getLocal(tokens[1]), IOUtils.getValidType(cmd));
+			}
 			list.add(ins);
 		}
 
+		private void pushState() {
+			ASMCode code = new ASMCode(list.toArray(new Insn[list.size()]), locals.size(), labels.size());
+			switch(section) {
+			case 0: main = code; break;
+			case 1: jot = code; break;
+			case 2: jof = code; break;
+			}
+			list.clear();
+			labels.clear();
+			locals.clear();
+		}
+
 		public ASMCode build() {
-			Insn[] ins = new Insn[list.size()];
-			int e = Math.min(Math.min(jot, jof), list.size());
-			int pt, pf;
-			for (pt = 0; pt < e; pt++)
-				ins[pt] = list.get(pt);
-			pf = pt;
-			if (jot < list.size()) {
-				e = list.size();
-				if (jof > jot && jof < e) e = jof;
-				for (int i = jot; i < e; i++, pf++)
-					ins[pf] = list.get(i);
+			pushState();
+			if (jot != null && jof != null) {
+				jof.extra = jot;
+				main.extra = jof;
 			}
-			if (jof < list.size()) {
-				e = ins.length;
-				for (int i = jof, j = pf; j < e; i++, j++)
-					ins[j] = list.get(i);
-			}
-			return new ASMCode(ins, locals.size(), labels.size(), pt, pf);
+			return main;
+		}
+
+		public void clear() {
+			main = jot = jof = null;
+			section = 0;
+			list.clear();
+			labels.clear();
+			locals.clear();
 		}
 
 	}
@@ -196,17 +225,26 @@ public class ASMCode {
 		final int[] locals;
 		final Type[] types;
 		final Label[] labels;
+		final Label target;
 
-		public CompCont(ASMCode code, Dep[] inputs, Object[] args, Context context) {
+		public CompCont(ASMCode code, Dep[] inputs, Object[] args, Context context, Label target) {
 			this.inputs = inputs;
 			this.args = args;
 			this.context = context;
-			this.types = new Type[code.locals];
-			this.locals = new int[code.locals];
-			Arrays.fill(locals, -1);
-			this.labels = new Label[code.labels];
-			for (int i = 0; i < labels.length; i++)
-				labels[i] = new Label();
+			if (code.locals > 0) {
+				this.types = new Type[code.locals];
+				this.locals = new int[code.locals];
+				Arrays.fill(locals, -1);
+			} else {
+				this.types = null;
+				this.locals = null;
+			}
+			if (code.labels > 0) {
+				this.labels = new Label[code.labels];
+				for (int i = 0; i < labels.length; i++)
+					labels[i] = new Label();
+			} else this.labels = null;
+			this.target = target;
 		}
 
 		public void defineLocal(int i, Type type) {
@@ -238,11 +276,22 @@ public class ASMCode {
 		}
 
 		public Insn parse(String[] args, Parser cont) {
+			assertArgs(args, 0);
 			return this;
+		}
+
+		public static void assertArgs(String[] args, int n) {
+			if (args.length != n + 1)
+				throw new IllegalArgumentException("expected opcode with " + n + " arguments but got: " + String.join(" ", args));
 		}
 
 		public void visit(MethodVisitor mv, CompCont cont) {
 			mv.visitInsn(opcode);
+		}
+
+		@Override
+		public String toString() {
+			return "Insn " + opcode;
 		}
 
 	}
@@ -268,18 +317,26 @@ public class ASMCode {
 			int arg;
 			switch(type) {
 			case 0:
+				assertArgs(args, 1);
 				arg = Integer.parseInt(args[1]);
 				break;
 			case 1:
+				assertArgs(args, 1);
 				arg = cont.getLocal(args[1]);
 				break;
 			case 2:
+				assertArgs(args, 1);
 				arg = cont.getLabel(args[1]);
 				break;
 			case 3:
-				arg = Integer.parseInt(args[1]) & 0xffff;
-				if (opcode != -1)
-					arg |= cont.getLabel(args[2]) << 16;
+				if (opcode < -3) {
+					assertArgs(args, 2);
+					arg = cont.getLabel(args[2]) << 16;
+				} else {
+					assertArgs(args, 1);
+					arg = 0;
+				}
+				arg |= Integer.parseInt(args[1]) & 0xffff;
 				break;
 			default: return null;
 			}
@@ -294,19 +351,35 @@ public class ASMCode {
 				break;
 			case 1:
 				if (opcode < 0) cont.clearLocal(arg);
-				else mv.visitVarInsn(opcode, cont.locals[arg]);
+				else {
+					int l;
+					if (arg < 0)
+						l = arg == -1 ? Context.THIS_IDX : Context.DIRTY_IDX;
+					else if (cont.locals == null || (l = cont.locals[arg]) < 0)
+						throw new IllegalStateException("local variable " + arg + " for varInsn " + opcode + " not defined");
+					mv.visitVarInsn(opcode, l);
+				}
 				break;
 			case 2:
 				if (opcode == 0) mv.visitLabel(cont.labels[arg]);
-				else mv.visitJumpInsn(opcode, cont.labels[arg]);
+				else mv.visitJumpInsn(opcode, arg < 0 ? cont.target : cont.labels[arg]);
 				break;
 			case 3:
 				Dep in = cont.inputs[arg & 0xffff];
-				if (opcode == -1) in.compile(mv, cont.context);
-				else if (opcode <= -4) in.ensureDependencyEvaluation(mv, cont.context, opcode < -4);
-				else in.compile(mv, cont.context, cont.labels[arg >> 16], opcode == -2);
+				if (opcode < -3)
+					in.compile(mv, cont.context, arg < 0 ? cont.target : cont.labels[arg >> 16], opcode == -4);
+				else if (opcode == -3)
+					in.compile(mv, cont.context);
+				else
+					in.ensureDependencyEvaluation(mv, cont.context, opcode == -2);
 				break;
 			}
+		}
+
+		private static final String[] TYPES = {"IntInsn ", "VarInsn ", "JumpInsn ", "Input "};
+		@Override
+		public String toString() {
+			return TYPES[type] + opcode + " " + arg;
 		}
 
 	}
@@ -328,17 +401,34 @@ public class ASMCode {
 
 		@Override
 		public Insn parse(String[] args, Parser cont) {
-			return new DescInsn(opcode, args[1], args[2], args[3]);
+			if (opcode < Opcodes.INVOKEDYNAMIC) {
+				assertArgs(args, 3);
+				return new DescInsn(opcode, args[1], args[2], args[3]);
+			} else {
+				assertArgs(args, 1);
+				return new DescInsn(opcode, args[1], null, null);
+			}
 		}
 
 		@Override
 		public void visit(MethodVisitor mv, CompCont cont) {
+			String owner = this.owner, name = this.name, desc = this.desc;
+			if ("this".equals(owner)) owner = cont.context.compiler.C_THIS;
+			else if ("super".equals(owner)) owner = cont.context.compiler.C_SUPER;
+			if (name != null) name = replace(name, cont).toString();
+			if (desc != null) desc = replace(desc, cont).toString();
 			if (opcode < Opcodes.INVOKEVIRTUAL)
 				mv.visitFieldInsn(opcode, owner, name, desc);
 			else if (opcode < Opcodes.INVOKEDYNAMIC)
 				mv.visitMethodInsn(opcode, owner, name, desc, opcode == Opcodes.INVOKEINTERFACE);
 			else
 				mv.visitTypeInsn(opcode, owner);
+		}
+
+		@Override
+		public String toString() {
+			String s = "DescInsn " + opcode + " " + owner;
+			return name != null ? s + "." + name + desc : s;
 		}
 
 	}
@@ -358,6 +448,7 @@ public class ASMCode {
 
 		@Override
 		public Insn parse(String[] args, Parser cont) {
+			assertArgs(args, 1);
 			String arg = args[1];
 			Object val;
 			switch(arg.charAt(0)) {
@@ -400,6 +491,11 @@ public class ASMCode {
 			} else mv.visitLdcInsn(val);
 		}
 
+		@Override
+		public String toString() {
+			return "LdcInsn " + val;
+		}
+
 	}
 
 	static class DefLocal extends Insn {
@@ -418,6 +514,19 @@ public class ASMCode {
 			cont.defineLocal(idx, type);
 		}
 
+		@Override
+		public String toString() {
+			return type + " " + idx;
+		}
+
+	}
+
+	static Object replace(String arg, CompCont cont) {
+		if (arg.isEmpty()) return arg;
+		char c = arg.charAt(0);
+		if (c == '\\') return arg.substring(1);
+		if (c != '$') return arg;
+		return cont.args[Integer.parseInt(arg.substring(1))];
 	}
 
 }

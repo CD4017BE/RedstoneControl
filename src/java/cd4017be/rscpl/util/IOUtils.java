@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.jline.utils.InputStreamReader;
+import org.objectweb.asm.Type;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -33,6 +34,15 @@ public class IOUtils {
 		case NUMBER: return (Integer)jr.nextInt();
 		default: throw new IllegalArgumentException("unsupported value type " + jt);
 		}
+	}
+
+	public static Type getValidType(String s) {
+		try {
+			Type t = Type.getType(s);
+			if (t.getSort() != Type.METHOD)
+				return t;
+		} catch (ArrayIndexOutOfBoundsException e) {}
+		throw new IllegalArgumentException("invalid type descriptor: " + s);
 	}
 
 }

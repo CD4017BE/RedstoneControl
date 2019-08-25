@@ -44,7 +44,7 @@ public class Node {
 			deps[i] = new Dep(n, this, code.getInType(i));
 			if (n.order > order) order = n.order;
 		}
-		this.order = order;
+		this.order = order + 1;
 	}
 
 	int getNumOfUsers() {
