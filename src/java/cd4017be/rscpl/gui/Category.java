@@ -25,7 +25,7 @@ public class Category {
 	@SuppressWarnings("unchecked")
 	public <T extends GateType> T[] add(T... types) {
 		for (GateType t : types)
-			instructions.add(new BoundingBox2D<>(t, 0, 0, t.width + 1, t.height));
+			instructions.add(new BoundingBox2D<>(t, 0, 0, Math.abs(t.width) + 1, t.height));
 		return types;
 	}
 

@@ -148,7 +148,7 @@ public class Gate {
 	}
 
 	public BoundingBox2D<Gate> getBounds() {
-		return new BoundingBox2D<>(this, rasterX, rasterY, type.width, type.height);
+		return new BoundingBox2D<>(this, rasterX, rasterY, Math.abs(type.width), type.height);
 	}
 
 	@Override

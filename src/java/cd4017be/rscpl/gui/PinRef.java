@@ -20,7 +20,7 @@ public class PinRef {
 		this.gate = g.index;
 		this.pin = out.idx;
 		this.trace = -1;
-		this.x = g.rasterX + g.type.width;
+		this.x = g.rasterX + Math.max(0, g.type.width);
 		this.y = g.rasterY + g.type.getOutputHeight(pin);
 		this.link = null;
 	}
@@ -29,7 +29,7 @@ public class PinRef {
 		this.gate = gate.index;
 		this.pin = pin;
 		this.trace = 0;
-		this.x = gate.rasterX;
+		this.x = gate.rasterX + Math.min(0, gate.type.width);
 		this.y = gate.rasterY + gate.type.getInputHeight(pin);
 		TraceNode tn = gate.traces[pin];
 		if (tn == null) {
