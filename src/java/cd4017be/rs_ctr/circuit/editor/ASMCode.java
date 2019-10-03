@@ -262,8 +262,9 @@ public class ASMCode {
 		}
 
 		public void clear() {
-			for (int i = 0; i < locals.length; i++)
-				clearLocal(i);
+			if (locals != null)
+				for (int i = 0; i < locals.length; i++)
+					clearLocal(i);
 		}
 	}
 
@@ -406,7 +407,7 @@ public class ASMCode {
 				return new DescInsn(opcode, args[1], args[2], args[3]);
 			} else {
 				assertArgs(args, 1);
-				return new DescInsn(opcode, args[1], null, null);
+				return new DescInsn(opcode, null, null, args[1]);
 			}
 		}
 
@@ -422,7 +423,7 @@ public class ASMCode {
 			else if (opcode < Opcodes.INVOKEDYNAMIC)
 				mv.visitMethodInsn(opcode, owner, name, desc, opcode == Opcodes.INVOKEINTERFACE);
 			else
-				mv.visitTypeInsn(opcode, owner);
+				mv.visitTypeInsn(opcode, desc);
 		}
 
 		@Override

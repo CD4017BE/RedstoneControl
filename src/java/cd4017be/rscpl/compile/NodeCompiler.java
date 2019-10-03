@@ -48,4 +48,22 @@ public interface NodeCompiler {
 		void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context, Label target, boolean cond);
 	}
 
+	/** has no inputs, does nothing and returns void */
+	public static final NodeCompiler NOP = new NodeCompiler() {
+
+		@Override
+		public Type getInType(int i) {
+			return null;
+		}
+
+		@Override
+		public Type getOutType() {
+			return Type.VOID_TYPE;
+		}
+
+		@Override
+		public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context) {}
+
+	};
+
 }

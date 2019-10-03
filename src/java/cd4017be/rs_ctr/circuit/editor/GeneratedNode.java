@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.circuit.editor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -82,6 +83,7 @@ public class GeneratedNode implements NodeCompiler {
 		CompCont c = new CompCont(code, inputs, (Object[])param, context, null);
 		for (Insn i : code.instructions)
 			i.visit(mv, c);
+		c.clear();
 	}
 
 	public static class Bool extends GeneratedNode implements NodeCompiler.Bool {
@@ -99,6 +101,38 @@ public class GeneratedNode implements NodeCompiler {
 			if (cond) code = code.extra;
 			for (Insn i : code.instructions)
 				i.visit(mv, c);
+			c.clear();
+		}
+
+	}
+
+	public static class Pass extends Bool {
+
+		public Pass(Type result, List<LinkVar> inputs, int sort, boolean strict, Predicate<GeneratedGate> precond) {
+			super(result, null, inputs, sort, strict, precond, Collections.emptyList());
+			int n = result == Type.VOID_TYPE ? 0 : 1;
+			for (LinkVar v : inputs)
+				if (v.type != Type.VOID_TYPE)
+					n--;
+			if (n < 0) throw new IllegalStateException("too many non void inputs in empty node");
+		}
+
+		@Override
+		public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context, Label target, boolean cond) {
+			if (sort < inputs.length)
+				Arrays.sort(inputs, sort, inputs.length);
+			for (Dep i : inputs)
+				if (i.type == Type.VOID_TYPE)
+					i.compile(mv, context);
+				else i.compile(mv, context, target, cond);
+		}
+
+		@Override
+		public void compile(Dep[] inputs, Object param, MethodVisitor mv, Context context) {
+			if (sort < inputs.length)
+				Arrays.sort(inputs, sort, inputs.length);
+			for (Dep i : inputs)
+				i.compile(mv, context);
 		}
 
 	}

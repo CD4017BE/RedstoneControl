@@ -13,9 +13,11 @@ import com.google.gson.stream.JsonToken;
 import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
 import cd4017be.rscpl.compile.Dep;
 import cd4017be.rscpl.compile.Node;
+import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.editor.InstructionSet;
+import cd4017be.rscpl.editor.Pin;
 import cd4017be.rscpl.util.IOUtils;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.chars.CharArrayList;
@@ -81,8 +83,10 @@ public class GeneratedType extends GateType {
 	}
 
 	public Node getNode(GeneratedGate gate, int i) {
-		if (i < inputs) 
-			return gate.getInput(i).getNode();
+		if (i < inputs) {
+			Pin p = gate.getInput(i);
+			return p == null ? new Node(NodeCompiler.NOP) : p.getNode();
+		}
 		i -= inputs;
 		Node node = gate.nodeCache[i];
 		if (node != null) return node;
@@ -286,8 +290,9 @@ public class GeneratedType extends GateType {
 			}
 		}
 		jr.endObject();
-		if (code == null) throw new IllegalStateException("missing code definition");
-		GeneratedNode node = code.extra == null ? 
+		GeneratedNode node = code == null ?
+				new GeneratedNode.Pass(out.type, in, sort, strict, precond) :
+				code.extra == null ? 
 				new GeneratedNode(out.type, code, in, sort, strict, precond, args) :
 				new GeneratedNode.Bool(out.type, code, in, sort, strict, precond, args);
 		int i = names.indexOf(out.name);
