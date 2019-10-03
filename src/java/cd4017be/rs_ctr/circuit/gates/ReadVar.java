@@ -1,54 +1,19 @@
 package cd4017be.rs_ctr.circuit.gates;
 
 import org.objectweb.asm.Type;
-
-import cd4017be.lib.Gui.comp.GuiFrame;
-import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
 import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.compile.Node;
-import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.graph.IReadVar;
 import cd4017be.rscpl.gui.GateTextureHandler;
-import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
 import cd4017be.rscpl.gui.SchematicBoard;
-import io.netty.buffer.ByteBuf;
 
-
-/**
- * @author CD4017BE
- *
- */
-public class ReadVar extends GeneratedGate implements IReadVar, ConfigurableGate, ISpecialRender, ISpecialCfg {
-
-	public Number value;
+/** @author CD4017BE */
+public class ReadVar extends GeneratedGate implements IReadVar, ISpecialRender {
 
 	public ReadVar(GeneratedType type, int index) {
 		super(type, index);
-		this.value = 0;
-	}
-
-	@Override
-	public void writeCfg(ByteBuf data) {
-		switch(type().getSort()) {
-		default:
-		case Type.INT: data.writeInt(value.intValue()); break;
-		case Type.LONG: data.writeLong(value.longValue()); break;
-		case Type.FLOAT: data.writeFloat(value.floatValue()); break;
-		case Type.DOUBLE: data.writeDouble(value.doubleValue()); break;
-		}
-	}
-
-	@Override
-	public void readCfg(ByteBuf data) {
-		switch(type().getSort()) {
-		default:
-		case Type.INT: value = data.readInt(); break;
-		case Type.LONG: value = data.readLong(); break;
-		case Type.FLOAT: value = data.readFloat(); break;
-		case Type.DOUBLE: value = data.readDouble(); break;
-		}
 	}
 
 	@Override
@@ -58,23 +23,15 @@ public class ReadVar extends GeneratedGate implements IReadVar, ConfigurableGate
 
 	@Override
 	public Object getValue() {
-		return value;
+		return getParam(0);
 	}
 
 	@Override
 	public void draw(SchematicBoard board, int x, int y) {
-		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x + 2, y + 2, 5, board.parent.zLevel + 1);
-	}
-
-	@Override
-	public void setupCfgGUI(GuiFrame gui, Runnable updateCfg) {
-		gui.bgY = 32;
-		new TextField(gui, 74, 7, 1, 10, 20, ()-> value.toString(), (s)-> {
-			try {
-				value = ConstNum.parse(s, type());
-				updateCfg.run();
-			} catch (NumberFormatException e) {}
-		}).tooltip("gui.rs_ctr.value");
+		GateTextureHandler.drawTinyText(
+			board.parent.getDraw(), label, x + 2, y + 2, 5,
+			board.parent.zLevel + 1
+		);
 	}
 
 	@Override

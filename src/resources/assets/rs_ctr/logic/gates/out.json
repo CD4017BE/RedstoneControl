@@ -9,6 +9,6 @@
 		"out": "rV",
 		"in": ["a[I", "a[I", "bI", "bI"],
 		"code": "rs_ctr:out",
-		"args": ["$0", "$1"]
+		"args": ["$-1", "$-2"]
 	}
 }

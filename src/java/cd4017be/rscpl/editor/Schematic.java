@@ -56,8 +56,7 @@ public class Schematic {
 			if (t != null) {
 				Gate g = t.newGate(operators.size());
 				g.read(data);
-				if (g instanceof ConfigurableGate)
-					((ConfigurableGate)g).readCfg(data);
+				g.readCfg(data);
 				operators.add(g);
 			}
 			if (data.readerIndex() != p) {
@@ -81,8 +80,7 @@ public class Schematic {
 				int j = data.writerIndex();
 				data.writeShort(0);
 				g.write(data);
-				if (g instanceof ConfigurableGate)
-					((ConfigurableGate)g).writeCfg(data);
+				g.writeCfg(data);
 				data.setShort(j, data.writerIndex() - j - 2);
 				n++;
 			}
@@ -109,8 +107,7 @@ public class Schematic {
 					tag.setByteArray("d", arr);
 					buf.clear();
 				}
-				if ((all || (j & 1) != 0 || toSync.get(j | 1)) && op instanceof ConfigurableGate) {
-					((ConfigurableGate)op).writeCfg(buf);
+				if ((all || (j & 1) != 0 || toSync.get(j | 1)) && op.writeCfg(buf)) {
 					byte[] arr = new byte[buf.writerIndex()];
 					buf.readBytes(arr);
 					tag.setByteArray("c", arr);
@@ -149,9 +146,9 @@ public class Schematic {
 				op.read(buf);
 				buf.clear();
 			}
-			if (op instanceof ConfigurableGate && tag.hasKey("c", NBT.TAG_BYTE_ARRAY)) {
+			if (op != null && tag.hasKey("c", NBT.TAG_BYTE_ARRAY)) {
 				buf.writeBytes(tag.getByteArray("c"));
-				((ConfigurableGate)op).readCfg(buf);
+				op.readCfg(buf);
 				buf.clear();
 			}
 		}
@@ -243,8 +240,7 @@ public class Schematic {
 		case SET_VALUE: {
 			int i = data.readUnsignedByte();
 			Gate op = get(i);
-			if (!(op instanceof ConfigurableGate)) return false;
-			((ConfigurableGate)op).readCfg(data);
+			if (!op.readCfg(data)) return false;
 			toSync.set(i << 1 | 1);
 		}	return true;
 		case INS_TRACE: {

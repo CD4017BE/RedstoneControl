@@ -77,7 +77,7 @@ public class StateEditor extends GuiCompGroup {
 		}
 		y += 12;
 		if (keys.length > n)
-			new Slider(this, 8, 12, n * 9 - 2, 152, y + 1, 194, 20, false, ()-> scroll, (v)-> scroll = (int)Math.round(v), null, 0, keys.length - n);
+			new Slider(this, 8, 12, n * 9 - 2, 152, y + 1, 178, 0, false, ()-> scroll, (v)-> scroll = (int)Math.round(v), null, 0, keys.length - n);
 		for (int i = 0; i < n; i++, y += 9) {
 			final int idx = i;
 			new FormatText(this, 70, 7, 8, y + 1, "\\%s", ()-> new Object[] {keys[idx + scroll]});

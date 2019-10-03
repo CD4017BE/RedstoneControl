@@ -16,7 +16,6 @@ import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.editor.BoundingBox2D;
-import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.GateType;
 import cd4017be.rscpl.editor.InvalidSchematicException;
@@ -73,7 +72,7 @@ public class CircuitEditor extends ModularGui {
 		comps.texture(COMP_TEX, 256, 256);
 		new InfoTab(comps, 7, 8, 7, 6, "gui.rs_ctr.editor.info");
 		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.title");
-		(this.cfg = new GuiFrame(comps, 76, 18, 2)).position(173, 173);
+		(this.cfg = new GuiFrame(comps, 76, 27, 2)).position(173, 173);
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
 		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place) {
 			@Override
@@ -82,8 +81,8 @@ public class CircuitEditor extends ModularGui {
 				return super.getTooltip(t) + "\n" + TooltipUtil.format("gate.cost", cost & 0xff, cost >> 8 & 0xff);
 			}
 		}).title("gui.rs_ctr.palette", 0.5F);
-		new Button(comps, 7, 7, 242, 191, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(241, 18).tooltip("gui.rs_ctr.editor.del");
-		new Button(comps, 16, 16, 174, 192, 2, ()-> palette.enabled() ? 1 : 0, this::togglePalette).texture(178, 0).tooltip("gui.rs_ctr.palette.open#");
+		new Button(comps, 7, 7, 162, 162, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(186, 0).tooltip("gui.rs_ctr.editor.del");
+		new Button(comps, 16, 14, 8, 158, 2, ()-> palette.enabled() ? 1 : 0, this::togglePalette).texture(162, 52).tooltip("gui.rs_ctr.palette.open#");
 		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> sendCommand(A_NEW)).tooltip("gui.rs_ctr.editor.new");
 		new Button(comps, 16, 16, 214, 210, 0, null, this::load).tooltip("gui.rs_ctr.editor.load");
 		new Button(comps, 16, 16, 196, 210, 0, null, this::save).tooltip("gui.rs_ctr.editor.save");
@@ -120,7 +119,7 @@ public class CircuitEditor extends ModularGui {
 		BoundingBox2D<Gate> part = board.selPart;
 		if (part != null) {
 			Gate g = part.owner;
-			cfg.background(COMP_TEX, 180, 41).title("gate." + g.type.name.replace(':', '.'), 0.5F);
+			cfg.background(COMP_TEX, 180, 36).title("gate." + g.type.name.replace(':', '.'), 0.5F);
 			String s = cfg.title;
 			int i = s.indexOf('\n');
 			if (i >= 0) s = s.substring(0, i);
@@ -228,11 +227,11 @@ public class CircuitEditor extends ModularGui {
 
 	public void updateCfg() {
 		BoundingBox2D<Gate> part = board.selPart;
-		if (part == null || !(part.owner instanceof ConfigurableGate)) return;
+		if (part == null) return;
 		PacketBuffer pkt = preparePacket(container);
 		pkt.writeByte(SET_VALUE).writeByte(part.owner.index);
-		((ConfigurableGate)part.owner).writeCfg(pkt);
-		GNH_INSTANCE.sendToServer(pkt);
+		if (part.owner.writeCfg(pkt))
+			GNH_INSTANCE.sendToServer(pkt);
 	}
 
 }

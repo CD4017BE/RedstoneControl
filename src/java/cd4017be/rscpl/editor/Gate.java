@@ -63,6 +63,7 @@ public class Gate {
 				if (!type.isInputTypeValid(i, pin.getOutType()))
 					throw new InvalidSchematicException(TYPE_MISSMATCH, this, i);
 				Gate gate = pin.gate;
+				if(gate.isIndependent(pin.idx)) continue;
 				if (gate.check < 0)
 					throw new InvalidSchematicException(CAUSAL_LOOP, this, i);
 				gate.checkValid();
@@ -70,6 +71,11 @@ public class Gate {
 				throw new InvalidSchematicException(MISSING_INPUT, this, i);
 		}
 		check = 1;
+	}
+
+	/**@return whether the given output does not depend on any of the gate's inputs */
+	protected boolean isIndependent(int out) {
+		return false;
 	}
 
 	public void read(ByteBuf data) {
@@ -120,6 +126,10 @@ public class Gate {
 		int i = data.writeByte(0).writeCharSequence(label, Utils.UTF8);
 		data.setByte(data.writerIndex() - i - 1, i);
 	}
+
+	public boolean writeCfg(ByteBuf data) {return false;}
+
+	public boolean readCfg(ByteBuf data) {return false;}
 
 	public void reconnect(IntFunction<Gate> indexTable) {
 		for (int i = 0; i < traces.length; i++) {

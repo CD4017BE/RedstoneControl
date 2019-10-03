@@ -9,8 +9,7 @@ import org.objectweb.asm.Type;
 import com.google.common.base.Predicates;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-
-import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
+import cd4017be.rs_ctr.circuit.data.GateConfiguration;
 import cd4017be.rscpl.compile.Dep;
 import cd4017be.rscpl.compile.Node;
 import cd4017be.rscpl.compile.NodeCompiler;
@@ -31,13 +30,15 @@ import static cd4017be.rscpl.util.IOUtils.nextValue;
  */
 public class GeneratedType extends GateType {
 
-	public final int inputs, links, end;
+	public final int links, end;
+	public final Type[] inputs;
 	public final LinkVar[] outputs;
 	public final byte[] heights;
 	public final GeneratedNode[] nodes;
 	private final IGateProvider provider;
+	public final GateConfiguration<?>[] cfg;
 
-	public GeneratedType(String name, int width, int height, byte[] heights, int ins, int links, int end, LinkVar[] outs, GeneratedNode[] nodes, IGateProvider provider) {
+	public GeneratedType(String name, int width, int height, byte[] heights, Type[] ins, int links, int end, LinkVar[] outs, GeneratedNode[] nodes, IGateProvider provider, GateConfiguration<?>[] cfg) {
 		super(name, width, height);
 		this.inputs = ins;
 		this.links = links;
@@ -46,6 +47,7 @@ public class GeneratedType extends GateType {
 		this.nodes = nodes;
 		this.end = end;
 		this.provider = provider;
+		this.cfg = cfg;
 	}
 
 	@Override
@@ -60,12 +62,17 @@ public class GeneratedType extends GateType {
 
 	@Override
 	public int getOutputHeight(int o) {
-		return heights[o + inputs];
+		return heights[o + inputs.length];
 	}
 
 	@Override
 	public Type getOutType(int o) {
 		return outputs[o].type;
+	}
+
+	@Override
+	public Type getInType(int o) {
+		return inputs[o];
 	}
 
 	@Override
@@ -83,11 +90,11 @@ public class GeneratedType extends GateType {
 	}
 
 	public Node getNode(GeneratedGate gate, int i) {
-		if (i < inputs) {
+		if (i < inputs.length) {
 			Pin p = gate.getInput(i);
 			return p == null ? new Node(NodeCompiler.NOP) : p.getNode();
 		}
-		i -= inputs;
+		i -= inputs.length;
 		Node node = gate.nodeCache[i];
 		if (node != null) return node;
 		if (i < links) node = gate.createLink(i);
@@ -110,6 +117,7 @@ public class GeneratedType extends GateType {
 			jr.beginObject();
 			int w = 3;
 			String in = "", out = "", link = "", type = null;
+			ArrayList<GateConfiguration<?>> cfg = new ArrayList<>();
 			char end = 0;
 			int i = -1;
 			CharArrayList names = new CharArrayList();
@@ -121,6 +129,16 @@ public class GeneratedType extends GateType {
 					break;
 				case "id":
 					i = jr.nextInt();
+					break;
+				case "cfg":
+					jr.beginArray();
+					while(jr.hasNext()) {
+						String s = jr.nextString();
+						GateConfiguration<?> c = GateConfiguration.REGISTRY.get(s);
+						if (c != null) cfg.add(c);
+						else throw new IllegalArgumentException("invalid configuration type: " + s);
+					}
+					jr.endArray();
 					break;
 				case "width":
 					w = jr.nextInt();
@@ -156,10 +174,14 @@ public class GeneratedType extends GateType {
 			ByteArrayList heights = new ByteArrayList();
 			int h = Math.max(parsePins(ins, in, heights), parsePins(outs, out, heights));
 			int ni = ins.size() + link.length(), nn = nodes.size();
-			for (LinkVar v : ins)
+			Type[] inputs = new Type[ins.size()];
+			int j = 0;
+			for (LinkVar v : ins) {
 				if (!names.contains(v.name))
 					names.add(v.name);
 				else throw new IllegalStateException("duplicate supplier for variable '" + v.name + "' defined in input pins");
+				inputs[j++] = v.type;
+			}
 			for (char c : link.toCharArray())
 				if (!names.contains(c))
 					names.add(c);
@@ -167,8 +189,14 @@ public class GeneratedType extends GateType {
 			for (LinkVar v : outs) v.name = (char) lookup(names, v.name, nn, ni);
 			for (GeneratedNode n : nodes) n.translateVars(names, nn, ni);
 			if (end != 0) end = (char)(lookup(names, end, nn, ni) + 1);
-			IGateProvider provider = IGateProvider.REGISTRY.getOrDefault(type, IGateProvider.DEFAULT);
-			GeneratedType t = new GeneratedType(id, w, h, heights.toByteArray(), ins.size(), link.length(), end - 1, outs.toArray(new LinkVar[outs.size()]), nodes.toArray(new GeneratedNode[nn]), provider);
+			IGateProvider provider = type == null ? IGateProvider.DEFAULT : IGateProvider.REGISTRY.get(type);
+			if (provider == null) throw new IllegalArgumentException("invalid gate type: " + type);
+			GeneratedType t = new GeneratedType(
+				id, w, h, heights.toByteArray(), inputs, link.length(), end - 1,
+				outs.toArray(new LinkVar[outs.size()]),
+				nodes.toArray(new GeneratedNode[nn]), provider,
+				cfg.toArray(new GateConfiguration[cfg.size()])
+			);
 			if (i >= 0) inset.add(i, t);
 			return t;
 		} catch(IllegalStateException | IllegalArgumentException e) {
@@ -274,7 +302,7 @@ public class GeneratedType extends GateType {
 							if (s.length() > 1 && s.charAt(1) == 'l') args.add(g -> g.label);
 							else {
 								int i = Integer.parseInt(s.substring(1));
-								args.add(g -> ((IParameterizedGate)g).getParam(i));
+								args.add(g -> g.getParam(i));
 							}
 							continue;
 						}
@@ -319,11 +347,11 @@ public class GeneratedType extends GateType {
 				continue;
 			case "eq": {
 				Object val = nextValue(jr); int var_ = var;
-				cond = g -> ((IParameterizedGate)g).getParam(var_).equals(val);
+				cond = g -> g.getParam(var_).equals(val);
 			}	break;
 			case "neq": {
 				Object val = nextValue(jr); int var_ = var;
-				cond = g -> !((IParameterizedGate)g).getParam(var_).equals(val);
+				cond = g -> g.getParam(var_).equals(val);
 			}	break;
 			default:
 				jr.skipValue();

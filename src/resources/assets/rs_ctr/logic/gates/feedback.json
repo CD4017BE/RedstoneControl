@@ -1,6 +1,7 @@
 {
 	"id": 7,
-	"type": "feedback",
+	"type": "readwrite",
+	"cfg": ["value", "interrupt"],
 	"width": -4,
 	"pins_in": "aI ",
 	"pins_out": " oI",
@@ -11,7 +12,7 @@
 			"code": ["aload this", "getfield this $0 I"],
 			"args": ["$l"]
 		}, {
-			"if": { "var": 0, "eq": true },
+			"if": { "var": 1, "eq": true },
 			"in": ["aI", "oI", "aI"],
 			"out": "rV",
 			"code": "rs_ctr:write",

@@ -1,6 +1,7 @@
 {
 	"id": 3,
 	"type": "write",
+	"cfg": ["interrupt"],
 	"width": 6,
 	"pins_in": "aI ",
 	"end": "r",

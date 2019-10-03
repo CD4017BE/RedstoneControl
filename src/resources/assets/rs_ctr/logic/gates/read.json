@@ -1,6 +1,7 @@
 {
 	"id": 2,
 	"type": "read",
+	"cfg": ["value"],
 	"width": 6,
 	"pins_out": " rI",
 	"nodes": {

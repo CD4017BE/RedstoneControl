@@ -52,7 +52,7 @@ public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram 
 		this.ioLabels = new String[this.inputs.length + this.outputs.length];
 		int n = 0;
 		for (Input i : inputs) {
-			if (i.interrupt)
+			if (Boolean.TRUE.equals(i.getParam(0)))
 				interruptPins |= 1 << n;
 			ioLabels[n++] = i.label;
 			if (i.label.isEmpty())

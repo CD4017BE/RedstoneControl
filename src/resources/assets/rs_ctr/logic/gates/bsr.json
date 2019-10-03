@@ -1,6 +1,6 @@
 {
 	"id": 65,
-	"type": "signed",
+	"cfg": ["sign"],
 	"pins_in": "aIbI",
 	"pins_out": "rI ",
 	"nodes": [

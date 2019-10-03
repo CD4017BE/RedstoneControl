@@ -27,6 +27,8 @@ public abstract class GateType {
 
 	public abstract Type getOutType(int o);
 
+	public abstract Type getInType(int o);
+
 	public abstract boolean isInputTypeValid(int i, Type type);
 
 	public abstract Node createNode(Gate gate, int o);

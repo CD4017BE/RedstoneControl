@@ -19,6 +19,9 @@ import cd4017be.lib.script.Parameters;
 import cd4017be.lib.script.obj.IOperand;
 import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.OreDictStack;
+import cd4017be.rs_ctr.circuit.data.GateConfiguration;
+import cd4017be.rs_ctr.circuit.data.IntegerValue;
+import cd4017be.rs_ctr.circuit.data.ToggleFlag;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.circuit.editor.IGateProvider;
 import cd4017be.rs_ctr.circuit.gates.*;
@@ -153,7 +156,11 @@ public class CommonProxy implements IRecipeHandler {
 		IGateProvider.REGISTRY.put("out", Output::new);
 		IGateProvider.REGISTRY.put("read", ReadVar::new);
 		IGateProvider.REGISTRY.put("write", WriteVar::new);
+		IGateProvider.REGISTRY.put("readwrite", ReadWriteVar::new);
 		IGateProvider.REGISTRY.put("const", ConstNum::new);
+		GateConfiguration.REGISTRY.put("value", IntegerValue.VALUE);
+		GateConfiguration.REGISTRY.put("interrupt", ToggleFlag.INTERRUPT);
+		GateConfiguration.REGISTRY.put("sign", ToggleFlag.SIGNED);
 		
 		registerTab("rs_ctr:io");
 		registerTab("rs_ctr:logic");

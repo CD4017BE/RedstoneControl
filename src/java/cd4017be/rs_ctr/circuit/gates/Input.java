@@ -1,25 +1,15 @@
 package cd4017be.rs_ctr.circuit.gates;
 
-import cd4017be.lib.Gui.comp.Button;
-import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
-import cd4017be.rs_ctr.circuit.editor.GeneratedGate.IParameterizedGate;
 import cd4017be.rs_ctr.circuit.editor.GeneratedType;
-import cd4017be.rscpl.editor.ConfigurableGate;
 import cd4017be.rscpl.gui.GateTextureHandler;
-import cd4017be.rscpl.gui.ISpecialCfg;
 import cd4017be.rscpl.gui.ISpecialRender;
 import cd4017be.rscpl.gui.SchematicBoard;
-import io.netty.buffer.ByteBuf;
 
+/** Redstone signal input
+ * @author CD4017BE */
+public class Input extends GeneratedGate implements ISpecialRender {
 
-/**
- * Redstone signal input
- * @author CD4017BE
- */
-public class Input extends GeneratedGate implements ConfigurableGate, ISpecialRender, ISpecialCfg, IParameterizedGate {
-
-	public boolean interrupt = true;
 	public int portID;
 
 	public Input(GeneratedType type, int index) {
@@ -27,27 +17,11 @@ public class Input extends GeneratedGate implements ConfigurableGate, ISpecialRe
 	}
 
 	@Override
-	public void writeCfg(ByteBuf data) {
-		data.writeBoolean(interrupt);
-	}
-
-	@Override
-	public void readCfg(ByteBuf data) {
-		interrupt = data.readBoolean();
-	}
-
-	@Override
 	public void draw(SchematicBoard board, int x, int y) {
 		int l = Math.min(label.length(), 5);
-		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x - 1, y - 1, l, board.parent.zLevel);
-	}
-
-	@Override
-	public void setupCfgGUI(GuiFrame gui, Runnable updateCfg) {
-		new Button(gui, 76, 9, 0, 9, 2, ()-> interrupt ? 1 : 0, (i)-> {
-			interrupt = i != 0;
-			updateCfg.run();
-		}).texture(180, 59).tooltip("gui.rs_ctr.interrupt#");
+		GateTextureHandler.drawTinyText(
+			board.parent.getDraw(), label, x - 1, y - 1, l, board.parent.zLevel
+		);
 	}
 
 	@Override
@@ -57,7 +31,7 @@ public class Input extends GeneratedGate implements ConfigurableGate, ISpecialRe
 
 	@Override
 	public Object getParam(int i) {
-		return portID;
+		return i < 0 ? portID : super.getParam(i);
 	}
 
 }
