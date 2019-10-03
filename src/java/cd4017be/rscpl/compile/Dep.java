@@ -116,7 +116,7 @@ public class Dep implements Comparable<Dep> {
 	private void recCompDeps(Node src, MethodVisitor mv, Context context, int order, Set<Node> visited) {
 		if (src.localIdx >= 0) return;
 		if (src.users.size() > 1) {
-			if (src.getCommonUser().order > order) {
+			if (src.getCommonUser().order >= order) {
 				new Dep(src, dst, Type.VOID_TYPE).compile(mv, context);
 				return;
 			}
