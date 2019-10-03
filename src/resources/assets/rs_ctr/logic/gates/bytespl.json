@@ -1,0 +1,25 @@
+{
+	"id": 68,
+	"width": 2,
+	"pins_in": "iI",
+	"pins_out": "0I1I2I3I",
+	"nodes": [
+		{
+			"in": ["iI"],
+			"out": "0I",
+			"code": ["in 0", "ldc 255", "iand"]
+		}, {
+			"in": ["iI"],
+			"out": "1I",
+			"code": ["in 0", "ldc 8", "iushr", "ldc 255", "iand"]
+		}, {
+			"in": ["iI"],
+			"out": "2I",
+			"code": ["in 0", "ldc 16", "iushr", "ldc 255", "iand"]
+		}, {
+			"in": ["iI"],
+			"out": "3I",
+			"code": ["in 0", "ldc 24", "iushr"]
+		}
+	]
+}

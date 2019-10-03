@@ -168,6 +168,7 @@ gate.rs_ctr.out=Output Socket\n§7emits external signals
 gate.rs_ctr.write=Variable Write\n§7Stores input in a variable to\n§7feed into next evaluation cycle
 gate.rs_ctr.read=Variable read\n§7Outputs the variable value set\n§7in previous evaluation cycle.
 gate.rs_ctr.cst=Constant Number\n§7out \= #
+gate.rs_ctr.feedback=Feedback Loop\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
 gategroup.rs_ctr.logic=Logic
 gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
 gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
@@ -176,6 +177,7 @@ gate.rs_ctr.nor=NOR-Gate\n§7in \= ¬(in1 ∨ in2)\n§7bitwise
 gate.rs_ctr.not=NOT-Gate\n§7out \= ¬in\n§7bitwise
 gate.rs_ctr.and=AND-Gate\n§7out \= in1 ∧ in2\n§7bitwise
 gate.rs_ctr.xnor=XNOR-Gate\n§7in \= ¬(in1 ⊻ in2)\n§7bitwise
+gate.rs_ctr.swt=Switch\n§7in1 \= 0 -> out \= in2\n§7else -> out \= in3
 gategroup.rs_ctr.comp=Comparators
 gate.rs_ctr.lt0=Is Negative\n§7in < 0 -> out \= -1\n§7else -> out \= 0
 gate.rs_ctr.ge0=Not Negative\n§7in < 0 -> out \= 0\n§7else -> out \= -1
@@ -199,6 +201,13 @@ gate.rs_ctr.inc=Increment\n§7out \= in + 1
 gate.rs_ctr.mod=Div Remainder\n§7out \= in1 mod in2\n§7sgn(out) \= sgn(in1)\n§4§oDiv/0 causes burnout!
 gate.rs_ctr.min=Minimum\n§7in1 < in2 -> out \= in1\n§7else -> out \= in2
 gate.rs_ctr.max=Maximum\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
+gategroup.rs_ctr.bin=Bits & Bytes
+gate.rs_ctr.bsl=Bit left shift\n§7out \= in1 * 2^in2
+gate.rs_ctr.bsr=Bit right shift\n§7out \= in1 / 2^in2
+gate.rs_ctr.bitspl=Bit Splitter\n§7Splits an 8-bit input value\n§7up into its individual bits.\n§7Ouputs values of §e0§7 or §e-1§7.
+gate.rs_ctr.bitcom=Bit Combiner\n§7Composes an 8-bit output\n§7value from individual bits.\n§7Non zero inputs represent ON bits.
+gate.rs_ctr.bytespl=Byte Splitter\n§7Splits a 32-bit number into four\n§7signed or unsigned 8-bit numbers.
+gate.rs_ctr.bytecom=Byte Combiner\n§7Combines four 8-bit numbers into one 32-bit number.\n§7§oIgnoring any higher order bits of the inputs.
 
 # GUI
 # Inventory names
@@ -218,6 +227,8 @@ gui.rs_ctr.opLabel=Gate Label\n§7(relevant for\n§7variables & IO)
 gui.rs_ctr.value=Value
 gui.rs_ctr.interrupt0=changed value §ndoes not§r trigger next cycle
 gui.rs_ctr.interrupt1=changed value triggers next cycle
+gui.rs_ctr.signed0=Unsigned
+gui.rs_ctr.signed1=Signed
 gui.rs_ctr.editor.title=Name of your circuit
 gui.rs_ctr.editor.del=§4delete Gate
 gui.rs_ctr.editor.new=New Schematic\n§4clears the board
@@ -239,7 +250,7 @@ gui.rs_ctr.hex0=decimal format
 gui.rs_ctr.hex1=hexadecimal format
 gui.rs_ctr.interval=Interval
 gui.rs_ctr.phase=Phase Offset
-gui.rs_ctr.error1=§4causal loop
+gui.rs_ctr.error1=§4Causal Loop\: input value depends on itself!\n§7§oInsert a §6§oFeedback Loop§7§o operator to fix this.
 gui.rs_ctr.error2=§4incompatible data type
 gui.rs_ctr.error3=§4missing input signal
 gui.rs_ctr.error4=§4invalid identifier

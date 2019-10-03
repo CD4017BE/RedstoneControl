@@ -159,6 +159,7 @@ public class CommonProxy implements IRecipeHandler {
 		registerTab("rs_ctr:logic");
 		registerTab("rs_ctr:comp");
 		registerTab("rs_ctr:num");
+		registerTab("rs_ctr:bin");
 	}
 
 	private void registerSensor(IBlockSensor sensor, Object[] items) {

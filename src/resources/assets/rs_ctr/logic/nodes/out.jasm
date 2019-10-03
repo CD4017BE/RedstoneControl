@@ -1,7 +1,7 @@
+in 2
 in 0
 ldc $0
 iaload
-in 2
 if_icmpeq end
 in 1
 ldc $0

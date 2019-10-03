@@ -1,0 +1,7 @@
+in 0
+in 1
+ldc 255
+iand
+ldc $0
+ishl
+ior

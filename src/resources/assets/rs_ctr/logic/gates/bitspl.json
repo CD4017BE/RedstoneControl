@@ -1,0 +1,49 @@
+{
+	"id": 66,
+	"width": 2,
+	"pins_in": "iI",
+	"pins_out": "0I1I2I3I4I5I6I7I",
+	"nodes": [
+		{
+			"in": ["iI"],
+			"out": "0Z",
+			"code": "rs_ctr:bitspl",
+			"args": [1]
+		}, {
+			"in": ["iI"],
+			"out": "1Z",
+			"code": "rs_ctr:bitspl",
+			"args": [2]
+		}, {
+			"in": ["iI"],
+			"out": "2Z",
+			"code": "rs_ctr:bitspl",
+			"args": [4]
+		}, {
+			"in": ["iI"],
+			"out": "3Z",
+			"code": "rs_ctr:bitspl",
+			"args": [8]
+		}, {
+			"in": ["iI"],
+			"out": "4Z",
+			"code": "rs_ctr:bitspl",
+			"args": [16]
+		}, {
+			"in": ["iI"],
+			"out": "5Z",
+			"code": "rs_ctr:bitspl",
+			"args": [32]
+		}, {
+			"in": ["iI"],
+			"out": "6Z",
+			"code": "rs_ctr:bitspl",
+			"args": [64]
+		}, {
+			"in": ["iI"],
+			"out": "7Z",
+			"code": "rs_ctr:bitspl",
+			"args": [128]
+		}
+	]
+}

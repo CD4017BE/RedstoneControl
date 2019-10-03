@@ -1,10 +1,18 @@
 {
 	"id": 65,
-	"pins_in": "aI bI",
-	"pins_out": " rI ",
-	"nodes": {
-		"in": ["aI", "bI"],
-		"out": "rI",
-		"code": ["in 0", "in 1", "ishr"]
-	}
+	"type": "signed",
+	"pins_in": "aIbI",
+	"pins_out": "rI ",
+	"nodes": [
+		{
+			"if": { "var": 0, "eq": true },
+			"in": ["aI", "bI"],
+			"out": "rI",
+			"code": ["in 0", "in 1", "ishr"]
+		}, {
+			"in": ["aI", "bI"],
+			"out": "rI",
+			"code": ["in 0", "in 1", "iushr"]
+		}
+	]
 }

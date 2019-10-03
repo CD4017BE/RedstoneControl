@@ -1,0 +1,26 @@
+{
+	"id": 7,
+	"type": "feedback",
+	"width": -4,
+	"pins_in": "aI ",
+	"pins_out": " oI",
+	"end": "r",
+	"nodes": [
+		{
+			"out": "oI",
+			"code": ["aload this", "getfield this $0 I"],
+			"args": ["$l"]
+		}, {
+			"if": { "var": 0, "eq": true },
+			"in": ["aI", "oI", "aI"],
+			"out": "rV",
+			"code": "rs_ctr:write",
+			"args": ["$l"]
+		}, {
+			"in": ["aI", "oV"],
+			"out": "rV",
+			"code": ["in 1", "aload this", "in 0", "putfield this $0 I"],
+			"args": ["$l"]
+		}
+	]
+}

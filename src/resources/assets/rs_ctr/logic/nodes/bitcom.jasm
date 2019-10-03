@@ -1,0 +1,5 @@
+in 0
+jof 1 end
+ldc $0
+ior
+end:

@@ -1,0 +1,57 @@
+{
+	"id": 67,
+	"width": 2,
+	"pins_in": "0I1I2I3I4I5I6I7I",
+	"pins_out": "iI",
+	"nodes": [
+		{ "code": ["iconst_0"], "out": "aI" },
+		{
+			"in": ["aI", "0Z"],
+			"out": "bI",
+			"code": "rs_ctr:bitcom",
+			"args": [1]
+		}, { "in": ["aI", "0V"], "out": "bI"},
+		{
+			"in": ["bI", "1Z"],
+			"out": "cI",
+			"code": "rs_ctr:bitcom",
+			"args": [2]
+		}, { "in": ["bI", "1V"], "out": "cI"},
+		{
+			"in": ["cI", "2Z"],
+			"out": "dI",
+			"code": "rs_ctr:bitcom",
+			"args": [4]
+		}, { "in": ["cI", "2V"], "out": "dI"},
+		{
+			"in": ["dI", "3Z"],
+			"out": "eI",
+			"code": "rs_ctr:bitcom",
+			"args": [8]
+		}, { "in": ["dI", "3V"], "out": "eI"},
+		{
+			"in": ["eI", "4Z"],
+			"out": "fI",
+			"code": "rs_ctr:bitcom",
+			"args": [16]
+		}, { "in": ["eI", "4V"], "out": "fI"},
+		{
+			"in": ["fI", "5Z"],
+			"out": "gI",
+			"code": "rs_ctr:bitcom",
+			"args": [32]
+		}, { "in": ["fI", "5V"], "out": "gI"},
+		{
+			"in": ["gI", "6Z"],
+			"out": "hI",
+			"code": "rs_ctr:bitcom",
+			"args": [64]
+		}, { "in": ["gI", "6V"], "out": "hI"},
+		{
+			"in": ["hI", "7Z"],
+			"out": "iI",
+			"code": "rs_ctr:bitcom",
+			"args": [128]
+		}, { "in": ["hI", "7V"], "out": "iI"}
+	]
+}
