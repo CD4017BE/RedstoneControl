@@ -74,7 +74,7 @@ public class GatePalette extends GuiFrame {
 		if (my >= y + 56) return super.mouseIn(mx, my, b, d);
 		if (openTab < 0) return true;
 		GateType t = tabs[openTab].get((mx - x - 1) / 4, (my - y - 1) / 4);
-		if (t != null) pick.accept(t);
+		pick.accept(t);
 		return true;
 	}
 

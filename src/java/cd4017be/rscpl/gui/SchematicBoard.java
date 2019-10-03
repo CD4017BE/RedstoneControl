@@ -232,7 +232,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	}
 
 	public void place(GateType op) {
-		this.placing = op.newGate(0);
+		this.placing = op == null ? null : op.newGate(0);
 	}
 
 	public void del(int b) {
