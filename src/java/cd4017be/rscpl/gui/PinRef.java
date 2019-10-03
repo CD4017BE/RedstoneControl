@@ -29,7 +29,7 @@ public class PinRef {
 		this.gate = gate.index;
 		this.pin = pin;
 		this.trace = 0;
-		this.x = gate.rasterX + Math.min(0, gate.type.width);
+		this.x = gate.rasterX - Math.min(0, gate.type.width);
 		this.y = gate.rasterY + gate.type.getInputHeight(pin);
 		TraceNode tn = gate.traces[pin];
 		if (tn == null) {
