@@ -1,7 +1,7 @@
 {
 	"id": 69,
 	"width": 2,
-	"pins_in": "0I1I2I3I",
+	"pins_in": "0B1B2B3B",
 	"pins_out": "eI",
 	"nodes": [
 		{

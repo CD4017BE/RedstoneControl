@@ -1,7 +1,7 @@
 {
 	"id": 36,
 	"pins_in": "aI bI",
-	"pins_out": " rI ",
+	"pins_out": " rZ ",
 	"nodes": {
 		"sortin": ["aI", "bI"],
 		"out": "rZ",

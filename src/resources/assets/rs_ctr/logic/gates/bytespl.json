@@ -3,7 +3,7 @@
 	"cfg": ["sign"],
 	"width": 2,
 	"pins_in": "iI",
-	"pins_out": "0I1I2I3I",
+	"pins_out": "0B1B2B3B",
 	"nodes": [
 		{
 			"if": { "var": 0, "eq": true },

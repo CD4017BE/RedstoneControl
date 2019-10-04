@@ -1,7 +1,7 @@
 {
 	"id": 38,
 	"pins_in": "aI bI",
-	"pins_out": " rI ",
+	"pins_out": " rZ ",
 	"nodes": {
 		"in": ["aI", "bI"],
 		"out": "rZ",

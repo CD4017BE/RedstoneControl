@@ -2,7 +2,6 @@ package cd4017be.rscpl.gui;
 
 import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
-
 import cd4017be.lib.Gui.comp.GuiCompBase;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.rscpl.editor.BoundingBox2D;
@@ -12,8 +11,10 @@ import cd4017be.rscpl.editor.Schematic;
 import static cd4017be.rscpl.editor.Schematic.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
@@ -27,6 +28,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	private final Runnable update;
 	public final ArrayList<BoundingBox2D<Gate>> parts = new ArrayList<>();
 	public final Int2ObjectOpenHashMap<PinRef> pins = new Int2ObjectOpenHashMap<>();
+	public TraceColors colors = TraceColors.DEFAULT;
 	public BoundingBox2D<Gate> selPart;
 	int originX, originY, moveX, moveY;
 	boolean movingTrace;
@@ -66,8 +68,9 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 	public void drawBackground(int mx, int my, float t) {
 		parent.bindTexture(parent.mainTex);
 		parent.gui.mc.renderEngine.bindTexture(GateTextureHandler.GATE_ICONS_LOC);
-		for (BoundingBox2D<Gate> part : parts)
-			drawPart(part);
+		if (!GuiScreen.isAltKeyDown())
+			for (BoundingBox2D<Gate> part : parts)
+				drawPart(part);
 		if (placing != null) {
 			placing.setPosition((mx - x) / 4, (my - y) / 4);
 			BoundingBox2D<Gate> part = placing.getBounds();
@@ -98,12 +101,14 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 		GlStateManager.disableTexture2D();
 		BufferBuilder vb = Tessellator.getInstance().getBuffer();
 		vb.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-		int r = 0x7f, g = 0, b = 0, a = 0xff;
+		int r, g, b, a = 0xff;
 		float z = parent.zLevel + 0.5F;
 		for (PinRef pin : pins.values()) {
 			boolean sel = pin.equals(selPin);
 			PinRef link = pin.link;
 			if (link != null || sel && !movingTrace) {
+				b = colors.color(schematic.get(pin.gate), pin.pin);
+				r = b >> 16 & 0xff; g = b >> 8 & 0xff; b &= 0xff;
 				if (movingTrace && sel)
 					vb.pos(mx + 0.5, my + 0.5, z).color(r, g, b, a).endVertex();
 				else vb.pos(x + pin.x * 4 + 2.5, y + pin.y * 4 + 2.5, z).color(r, g, b, a).endVertex();
@@ -138,17 +143,33 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	@Override
 	public void drawOverlay(int mx, int my) {
-		BoundingBox2D<Gate> part = findPart((mx - x - 1) / 4, (my - y) / 4);
+		int px = (mx - x - 1) / 4, py = (my - y) / 4;
+		BoundingBox2D<Gate> part = findPart((mx - x - 2) / 4, (my - y) / 4);
 		if (part != null)
 			parent.drawTooltip(part.owner.label, mx, my);
+		PinRef pin = pins.get(px & 0xffff | py << 16);
+		if (pin == null) return;
+		Gate g = schematic.get(pin.gate);
+		if (g == null) return;
+		int c;
+		if (pin.trace == 0)
+			c = colors.color(g.type.getInType(pin.pin));
+		else if (pin.trace == -1)
+			c = colors.color(g.type.getOutType(pin.pin));
+		else c = colors.color(g, pin.pin);
+		mx = pin.x * 4 + x + 1;
+		my = pin.y * 4 + y + 1;
+		RenderHelper.disableStandardItemLighting();
+		GlStateManager.disableDepth();
+		Gui.drawRect(mx, my, mx + 3, my + 3, 0xbf000000 | c);
 	}
 
 	@Override
 	public boolean mouseIn(int mx, int my, int b, byte d) {
-		mx = (mx - x - 1) / 4;
 		my = (my - y) / 4;
 		switch(b) {
 		case B_LEFT:
+			mx = (mx - x - 2) / 4;
 			if (placing != null && d != A_HOLD) {
 				parent.gui.sendPkt(ADD_GATE, (byte)schematic.INS_SET.id(placing.type), (byte)mx, (byte)my);
 				placing = null;
@@ -164,6 +185,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			moveY = my - originY;
 			break;
 		case B_RIGHT:
+			mx = (mx - x - 1) / 4;
 			if (d == A_DOWN) {
 				PinRef pin = pins.get(mx & 0xffff | my << 16);
 				if (selPin == null) {
@@ -196,6 +218,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			}
 			break;
 		case B_MID:
+			mx = (mx - x - 2) / 4;
 			if (d != A_DOWN) {
 				BoundingBox2D<Gate> part = findPart(mx, my);
 				if (part != null) placing = part.owner.type.newGate(0);

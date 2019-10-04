@@ -1,8 +1,8 @@
 {
 	"id": 67,
 	"width": 2,
-	"pins_in": "0I1I2I3I4I5I6I7I",
-	"pins_out": "iI",
+	"pins_in": "0Z1Z2Z3Z4Z5Z6Z7Z",
+	"pins_out": "iB",
 	"nodes": [
 		{ "code": ["iconst_0"], "out": "aI" },
 		{

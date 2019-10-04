@@ -1,8 +1,8 @@
 {
 	"id": 66,
 	"width": 2,
-	"pins_in": "iI",
-	"pins_out": "0I1I2I3I4I5I6I7I",
+	"pins_in": "iB",
+	"pins_out": "0Z1Z2Z3Z4Z5Z6Z7Z",
 	"nodes": [
 		{
 			"in": ["iI"],
