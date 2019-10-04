@@ -17,12 +17,14 @@ import cd4017be.rscpl.compile.Compiler;
 import cd4017be.rs_ctr.circuit.editor.GetFieldNode;
 import cd4017be.rs_ctr.circuit.gates.Input;
 import cd4017be.rs_ctr.circuit.gates.Output;
+import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.compile.Context;
 import cd4017be.rscpl.compile.Dep;
 import cd4017be.rscpl.compile.Node;
 import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
+import cd4017be.rscpl.editor.Pin;
 
 /**
  * @author CD4017BE
@@ -46,9 +48,9 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 		List<Output> outputs = new ArrayList<>();
 		Node in = new Node(getIOArr, "inputs"),
 			out = new Node(getIOArr, "outputs");
-		for (Gate g : gatesIn)
-			if (g == null);
-			else if (g instanceof Input) {
+		gates: for (Gate g : gatesIn) {
+			if (g == null) continue;
+			if (g instanceof Input) {
 				Input i = (Input)g;
 				i.setLink(in, 0);
 				inputs.add(i);
@@ -57,6 +59,12 @@ public class CircuitCompiler extends Compiler<CompiledCircuit> {
 				o.setLink(out, 0);
 				outputs.add(o);
 			}
+			if (cc.compileWarning != null || g.outputs.length == 0) continue;
+			for (Pin p : g.outputs)
+				if (!p.receivers.isEmpty())
+					continue gates;
+			cc.compileWarning = new InvalidSchematicException(Editor.UNUSED, g, g.inputCount());
+		}
 		Collections.sort(inputs, BY_VERT_POS);
 		for (int i = 0; i < inputs.size(); i++)
 			inputs.get(i).portID = i;

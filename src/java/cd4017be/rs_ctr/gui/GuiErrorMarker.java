@@ -75,6 +75,11 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 			px = (node.rasterX << 2) + 14;
 			py = (node.rasterY << 2) + 19;
 			break;
+		case Editor.UNUSED:
+			if (node == null) return;
+			px = (node.rasterX + node.type.width << 2) + 10;
+			py = (node.rasterY << 2) + (node.type.height << 1) + 16;
+			break;
 		case CAUSAL_LOOP:
 		case MISSING_INPUT:
 			if (node == null) return;

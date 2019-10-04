@@ -1,6 +1,7 @@
 {
 	"id": 0,
 	"type": "in",
+	"lock": "left",
 	"cfg": ["interrupt"],
 	"width": 1,
 	"pins_out": " rI",

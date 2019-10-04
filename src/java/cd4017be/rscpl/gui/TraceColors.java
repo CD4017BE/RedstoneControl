@@ -3,7 +3,6 @@ package cd4017be.rscpl.gui;
 import org.objectweb.asm.Type;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.Pin;
-import cd4017be.rscpl.compile.Dep;
 
 /** @author CD4017BE */
 public class TraceColors {
@@ -16,20 +15,18 @@ public class TraceColors {
 		this.colorPalette = colors;
 	}
 
-	/** @return 0xRRGGBB color of a trace connecting pins of given types */
+	/** @return 0xRRGGBB color of a trace connecting the given input pin with its source */
 	public int color(Gate gate, int pin) {
 		Type t = Type.VOID_TYPE;
 		eval: {
-			if(gate == null)
+			if(gate == null || pin >= gate.inputCount())
 				break eval;
 			t = gate.type.getInType(pin);
 			Pin p = gate.getInput(pin);
 			if(p == null)
 				break eval;
 			Type src = p.getOutType();
-			if (!Dep.canConvert(src, t, false))
-				t = Type.VOID_TYPE;
-			else if(src.getSort() < t.getSort())
+			if(src.getSort() < t.getSort())
 				t = src;
 		}
 		return color(t);

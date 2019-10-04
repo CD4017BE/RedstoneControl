@@ -4,7 +4,7 @@
 	"cfg": ["interrupt"],
 	"width": 6,
 	"pins_in": "aI ",
-	"end": "r",
+	"pins_out": " rV",
 	"link": "l",
 	"nodes": [
 		{

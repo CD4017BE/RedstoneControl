@@ -44,11 +44,6 @@ public class GeneratedGate extends Gate implements ISpecialCfg {
 		throw new UnsupportedOperationException();
 	}
 
-	public Node getEndNode() {
-		GeneratedType type = (GeneratedType)this.type;
-		return type.getNode(this, type.end);
-	}
-
 	public Object getParam(int i) {
 		return cfg[i];
 	}
@@ -79,6 +74,11 @@ public class GeneratedGate extends Gate implements ISpecialCfg {
 		for (int i = 0; i < cfg.length; i++)
 			cfg[i] = ((GeneratedType)type).cfg[i].read(data);
 		return true;
+	}
+
+	@Override
+	public void setPosition(int x, int y) {
+		super.setPosition(((GeneratedType)type).placementMode.adjustX(x, 58), y);
 	}
 
 }

@@ -1,0 +1,10 @@
+{
+	"id": 24,
+	"pins_in": "sZaVbV",
+	"pins_out": " rV ",
+	"nodes": {
+		"in": ["sZ", "aV", "bV"],
+		"out": "rV",
+		"code": "rs_ctr:swt"
+	}
+}

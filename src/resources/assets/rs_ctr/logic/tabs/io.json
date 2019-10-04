@@ -1,3 +1,3 @@
 [
-	"rs_ctr:in", "rs_ctr:out", "rs_ctr:read", "rs_ctr:write", "rs_ctr:cst", "rs_ctr:feedback"
+	"rs_ctr:in", "rs_ctr:out", "rs_ctr:read", "rs_ctr:write", "rs_ctr:cst", "rs_ctr:feedback", "rs_ctr:return", "rs_ctr:update"
 ]

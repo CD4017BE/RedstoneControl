@@ -1,0 +1,10 @@
+{
+	"id": 25,
+	"width": 2,
+	"pins_in": "aVbV",
+	"pins_out": " rV",
+	"nodes": {
+		"in": ["aV", "bV"],
+		"out": "rV"
+	}
+}

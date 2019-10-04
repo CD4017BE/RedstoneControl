@@ -1,8 +1,8 @@
 evdep 1
 evdep 2
 jot 0 to
-in 1
+in 2
 goto end
 to:
-in 2
+in 1
 end:

@@ -25,11 +25,6 @@ public class Input extends GeneratedGate implements ISpecialRender {
 	}
 
 	@Override
-	public void setPosition(int x, int y) {
-		super.setPosition(0, y);
-	}
-
-	@Override
 	public Object getParam(int i) {
 		return i < 0 ? portID : super.getParam(i);
 	}

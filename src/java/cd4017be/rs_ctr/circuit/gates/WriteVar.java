@@ -5,7 +5,6 @@ import org.objectweb.asm.Type;
 import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
 import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.compile.Node;
-import cd4017be.rscpl.graph.IEndpoint;
 import cd4017be.rscpl.graph.IReadVar;
 import cd4017be.rscpl.graph.IWriteVar;
 import cd4017be.rscpl.gui.GateTextureHandler;
@@ -16,7 +15,7 @@ import cd4017be.rscpl.gui.SchematicBoard;
  * @author CD4017BE
  *
  */
-public class WriteVar extends GeneratedGate implements IWriteVar, ISpecialRender, IEndpoint {
+public class WriteVar extends GeneratedGate implements IWriteVar, ISpecialRender {
 
 	IReadVar link;
 

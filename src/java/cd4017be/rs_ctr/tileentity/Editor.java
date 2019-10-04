@@ -108,7 +108,8 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		NO_CIRCUITBOARD = 32,
 		MISSING_RESOURCE = 33,
 		MISSING_IO = 34,
-		MISSING_IO_LABEL = 64;
+		MISSING_IO_LABEL = 64,
+		UNUSED = 65;
 
 	void compile() throws InvalidSchematicException {
 		ItemStack stack = inventory;

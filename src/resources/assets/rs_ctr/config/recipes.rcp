@@ -1,4 +1,4 @@
-VERSION = 54;
+VERSION = 55;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -135,7 +135,7 @@ moddedRecipes() {
 POST_INIT() {
 	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
 	Loc c = gate_cost;
-	Loc base = [1, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
+	Loc base = [1, 0]#, adv = [0, 1]#;
 	!variables & IO tab:
 	c:"in" = base;
 	c:"out" = base;
@@ -143,6 +143,7 @@ POST_INIT() {
 	c:"write" = 2*base;
 	c:"feedback" = 2*base;
 	c:"cst" = base;
+	c:"update" = adv;
 	!logic tab:
 	c:"not" = base;
 	c:"or" = 2*base;
@@ -151,7 +152,8 @@ POST_INIT() {
 	c:"nand" = 2*base;
 	c:"xor" = 3*base;
 	c:"xnor" = 3*base;
-	c:"swt" = 4*base;
+	c:"swt" = 3*base;
+	c:"branch" = 3*base;
 	!comparator tab:
 	c:"ne0" = base;
 	c:"eq0" = base;

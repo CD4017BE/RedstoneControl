@@ -1,15 +1,13 @@
 package cd4017be.rs_ctr.circuit.gates;
 
-import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
 import cd4017be.rs_ctr.circuit.editor.GeneratedType;
-import cd4017be.rscpl.graph.IEndpoint;
 import cd4017be.rscpl.gui.GateTextureHandler;
 import cd4017be.rscpl.gui.ISpecialRender;
 import cd4017be.rscpl.gui.SchematicBoard;
 
 /** Redstone signal output
  * @author CD4017BE */
-public class Output extends GeneratedGate implements IEndpoint, ISpecialRender {
+public class Output extends End implements ISpecialRender {
 
 	public int portID;
 
@@ -24,11 +22,6 @@ public class Output extends GeneratedGate implements IEndpoint, ISpecialRender {
 			board.parent.getDraw(), label, x - l * 4 + 7, y + 5, l,
 			board.parent.zLevel
 		);
-	}
-
-	@Override
-	public void setPosition(int x, int y) {
-		super.setPosition(58, y);
 	}
 
 	@Override

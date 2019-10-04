@@ -37,8 +37,9 @@ public class GeneratedType extends GateType {
 	public final GeneratedNode[] nodes;
 	private final IGateProvider provider;
 	public final GateConfiguration<?>[] cfg;
+	public final Placement placementMode;
 
-	public GeneratedType(String name, int width, int height, byte[] heights, Type[] ins, int links, int end, LinkVar[] outs, GeneratedNode[] nodes, IGateProvider provider, GateConfiguration<?>[] cfg) {
+	public GeneratedType(String name, int width, int height, byte[] heights, Type[] ins, int links, int end, LinkVar[] outs, GeneratedNode[] nodes, IGateProvider provider, GateConfiguration<?>[] cfg, Placement placement) {
 		super(name, width, height);
 		this.inputs = ins;
 		this.links = links;
@@ -48,6 +49,7 @@ public class GeneratedType extends GateType {
 		this.end = end;
 		this.provider = provider;
 		this.cfg = cfg;
+		this.placementMode = placement;
 	}
 
 	@Override
@@ -77,6 +79,7 @@ public class GeneratedType extends GateType {
 
 	@Override
 	public boolean isInputTypeValid(int i, Type type) {
+		if (i == end) return true;
 		for (GeneratedNode n : nodes)
 			do
 				for (LinkVar v : n.inputs)
@@ -117,6 +120,7 @@ public class GeneratedType extends GateType {
 			jr.beginObject();
 			int w = 3;
 			String in = "", out = "", link = "", type = null;
+			Placement placement = Placement.FREE;
 			ArrayList<GateConfiguration<?>> cfg = new ArrayList<>();
 			char end = 0;
 			int i = -1;
@@ -129,6 +133,9 @@ public class GeneratedType extends GateType {
 					break;
 				case "id":
 					i = jr.nextInt();
+					break;
+				case "lock":
+					placement = Placement.valueOf(jr.nextString().toUpperCase());
 					break;
 				case "cfg":
 					jr.beginArray();
@@ -195,7 +202,7 @@ public class GeneratedType extends GateType {
 				id, w, h, heights.toByteArray(), inputs, link.length(), end - 1,
 				outs.toArray(new LinkVar[outs.size()]),
 				nodes.toArray(new GeneratedNode[nn]), provider,
-				cfg.toArray(new GateConfiguration[cfg.size()])
+				cfg.toArray(new GateConfiguration[cfg.size()]), placement
 			);
 			if (i >= 0) inset.add(i, t);
 			return t;

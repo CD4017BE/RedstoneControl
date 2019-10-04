@@ -1,6 +1,7 @@
 {
 	"id": 1,
 	"type": "out",
+	"lock": "right",
 	"width": 1,
 	"pins_in": "bI ",
 	"end": "rV",

@@ -1,5 +1,5 @@
 {
-	"id": 7,
+	"id": 5,
 	"type": "readwrite",
 	"cfg": ["value", "interrupt"],
 	"width": -4,

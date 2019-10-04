@@ -158,6 +158,7 @@ public class CommonProxy implements IRecipeHandler {
 		IGateProvider.REGISTRY.put("write", WriteVar::new);
 		IGateProvider.REGISTRY.put("readwrite", ReadWriteVar::new);
 		IGateProvider.REGISTRY.put("const", ConstNum::new);
+		IGateProvider.REGISTRY.put("end", End::new);
 		GateConfiguration.REGISTRY.put("value", IntegerValue.VALUE);
 		GateConfiguration.REGISTRY.put("interrupt", ToggleFlag.INTERRUPT);
 		GateConfiguration.REGISTRY.put("sign", ToggleFlag.SIGNED);

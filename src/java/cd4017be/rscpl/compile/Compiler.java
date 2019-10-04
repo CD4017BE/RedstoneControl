@@ -10,7 +10,7 @@ import static org.objectweb.asm.Opcodes.*;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-
+import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import static cd4017be.rscpl.editor.InvalidSchematicException.*;
@@ -68,6 +68,7 @@ public abstract class Compiler<P extends CompiledProgram> implements MethodCompi
 	 * @throws InvalidSchematicException if a compilation error occurs
 	 */
 	public P compile(Collection<Gate> gates) throws InvalidSchematicException {
+		long t = System.nanoTime();
 		List<IEndpoint> ends = new ArrayList<>();
 		Map<String, IVariable> variables = new HashMap<>();
 		checkAndSort(gates, ends, variables);
@@ -81,7 +82,9 @@ public abstract class Compiler<P extends CompiledProgram> implements MethodCompi
 		MethodCompiler.addMethod(cw, this, nodes);
 		
 		cw.visitEnd();
-		p.setCode(cw.toByteArray());
+		byte[] code = cw.toByteArray();
+		p.setCode(code);
+		Main.LOG.info("circuit compiled in {} ms: {} bytes", String.format("%.2f", (float)(System.nanoTime() - t) * 1e-6F), code.length);
 		return p;
 	}
 
@@ -164,17 +167,17 @@ public abstract class Compiler<P extends CompiledProgram> implements MethodCompi
 	}
 
 	protected static void checkAndSort(Collection<Gate> gatesIn, List<IEndpoint> endsOut, Map<String, IVariable> variablesOut) throws InvalidSchematicException {
-		ArrayList<IReadVar> reads = new ArrayList<>();
+		ArrayList<IWriteVar> writes = new ArrayList<>();
 		for (Gate g : gatesIn) {
 			if (g == null) continue;
 			g.check = 0;
-			addOperator(g, variablesOut, reads, endsOut);
+			addOperator(g, variablesOut, writes, endsOut);
 		}
-		for (IReadVar r : reads) {
-			IVariable op = variablesOut.put(r.name(), r);
-			if (op instanceof IWriteVar) ((IWriteVar)op).link(r);
-			else if (op != null)
-				throw new InvalidSchematicException(READ_CONFLICT, (Gate)r, 0);
+		for (IWriteVar r : writes) {
+			IVariable op = variablesOut.get(r.name());
+			if (op instanceof IReadVar) r.link((IReadVar)op);
+			else if (op == null)
+				variablesOut.put(r.name(), r);
 		}
 		for (IEndpoint op : endsOut) ((Gate)op).checkValid();
 		Collections.sort(endsOut, (a, b)-> {
@@ -183,21 +186,22 @@ public abstract class Compiler<P extends CompiledProgram> implements MethodCompi
 		});
 	}
 
-	protected static void addOperator(Gate op, Map<String, IVariable> writes, List<IReadVar> reads, List<IEndpoint> ends) throws InvalidSchematicException {
+	protected static void addOperator(Gate op, Map<String, IVariable> reads, List<IWriteVar> writes, List<IEndpoint> ends) throws InvalidSchematicException {
 		if (op == null) return;
 		if (op instanceof IWriteVar) {
 			IWriteVar w = (IWriteVar)op;
 			checkName(w);
-			if (writes.put(w.name(), w) != null)
-				throw new InvalidSchematicException(WRITE_CONFLICT, op, 0);
+			writes.add(w);
 			w.link(null);
 		}
 		if (op instanceof IReadVar) {
 			IReadVar r = (IReadVar)op;
 			checkName(r);
-			reads.add(r);
+			if (reads.put(r.name(), r) != null)
+				throw new InvalidSchematicException(READ_CONFLICT, op, 0);
 		}
-		if (op instanceof IEndpoint) ends.add((IEndpoint)op);
+		if (op instanceof IEndpoint)
+			ends.add((IEndpoint)op);
 	}
 
 	private static String getter(String desc) {

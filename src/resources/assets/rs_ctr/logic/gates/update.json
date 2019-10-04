@@ -1,0 +1,8 @@
+{
+	"id": 7,
+	"pins_out": " rV ",
+	"nodes": {
+		"out": "rV",
+		"code": ["iload mod", "iconst_1", "ior", "istore mod"]
+	}
+}
