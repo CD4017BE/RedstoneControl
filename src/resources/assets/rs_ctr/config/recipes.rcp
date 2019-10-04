@@ -1,4 +1,4 @@
-VERSION = 51;
+VERSION = 54;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -89,10 +89,12 @@ INIT() {
 	add("shapeless", 3 * t1, t:3);
 	add("shapeless", 2 * t1, t:2);
 	
-	Loc tag = nbt(); tag:"Istats" = [16, 12, 8, 12, 28, 88]#; !prototype processor (eqivalent to assembly with same materials except less remaining space)
-	add("shaped", it("tile.processor") + tag, "021/041/031", it("tile.rs_port"):0, it("tile.rs_port"):1, "blockQuartz", "blockRedstone", "ingotIron");
+	Loc tag = nbt(); tag:"Istats" = [16, 12, 8, 72, 28, 88]#; !prototype processor (eqivalent to assembly with same materials except less remaining space)
+	add("shaped", it("tile.processor2") + tag, "021/041/031", it("tile.rs_port"):0, it("tile.rs_port"):1, "blockQuartz", "blockRedstone", "ingotIron");
+	tag = nbt(); tag:"Istats" = [0, 0, 0, 128, 0, 0]#; !empty processor (128 component space)
+	add("shaped", it("tile.processor2") + tag, "0 1/0 1/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	tag = nbt(); tag:"Istats" = [0, 0, 0, 64, 0, 0]#; !empty processor (64 component space)
-	add("shaped", it("tile.processor") + tag, "0 1/0 1/0 1", it("tile.rs_port"):0, it("tile.rs_port"):1);
+	add("shaped", it("tile.processor") + tag, "001/0 1/011", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	moddedRecipes();
 }
 
@@ -133,21 +135,23 @@ moddedRecipes() {
 POST_INIT() {
 	!gate complexity costs: gate_cost:"gateId" = [basic, advanced]#;
 	Loc c = gate_cost;
-	Loc base = [1, 0]#, base2 = [2, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
+	Loc base = [1, 0]#, adv = [0, 1]#, adv2 = [0, 2]#;
 	!variables & IO tab:
 	c:"in" = base;
 	c:"out" = base;
 	c:"read" = base;
-	c:"write" = base2;
+	c:"write" = 2*base;
+	c:"feedback" = 2*base;
 	c:"cst" = base;
 	!logic tab:
 	c:"not" = base;
-	c:"or" = base2;
-	c:"nor" = base2;
-	c:"and" = base2;
-	c:"nand" = base2;
-	c:"xor" = [3, 0]#;
-	c:"xnor" = [3, 0]#;
+	c:"or" = 2*base;
+	c:"nor" = 2*base;
+	c:"and" = 2*base;
+	c:"nand" = 2*base;
+	c:"xor" = 3*base;
+	c:"xnor" = 3*base;
+	c:"swt" = 4*base;
 	!comparator tab:
 	c:"ne0" = base;
 	c:"eq0" = base;
@@ -157,18 +161,25 @@ POST_INIT() {
 	c:"le0" = base;
 	c:"eq" = adv;
 	c:"ne" = adv;
-	c:"ls" = adv;
+	c:"lt" = adv;
 	c:"ge" = adv;
 	!arithmetic tab:
 	c:"inc" = adv;
 	c:"dec" = adv;
 	c:"neg" = adv;
 	c:"abs" = [1, 1]#;
-	c:"add" = adv2;
-	c:"sub" = adv2;
-	c:"mul" = [0, 3]#;
-	c:"div" = [0, 4]#;
-	c:"mod" = [0, 4]#;
+	c:"add" = 2*adv;
+	c:"sub" = 2*adv;
+	c:"mul" = 4*adv;
+	c:"div" = 6*adv;
+	c:"mod" = 6*adv;
 	c:"max" = [2, 1]#;
 	c:"min" = [2, 1]#;
+	!bits & bytes tab:
+	c:"bsl" = 2*base;
+	c:"bsr" = 2*base;
+	c:"bitspl" = 4*base;
+	c:"bitcom" = 4*base;
+	c:"bytespl" = 4*base;
+	c:"bytecom" = 4*base;
 }

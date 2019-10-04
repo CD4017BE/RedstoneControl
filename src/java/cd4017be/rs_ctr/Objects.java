@@ -47,6 +47,7 @@ public class Objects {
 	public static final BlockGate BIN_SPLIT = null;
 	public static final BlockGate XOR_GATE = null;
 	public static final BlockGate PROCESSOR = null;
+	public static final BlockGate PROCESSOR2 = null;
 	public static final AdvancedBlock EDITOR = null;
 	public static final AdvancedBlock ASSEMBLER = null;
 	public static final BlockWireAnchor WIRE_ANCHOR = null;
@@ -66,6 +67,7 @@ public class Objects {
 	public static final BaseItemBlock bin_split = null;
 	public static final BaseItemBlock xor_gate = null;
 	public static final ItemProcessor processor = null;
+	public static final ItemProcessor processor2 = null;
 	public static final BaseItemBlock editor = null;
 	public static final BaseItemBlock assembler = null;
 	public static final ItemWireAnchor wire_anchor = null;
@@ -116,6 +118,7 @@ public class Objects {
 				new BlockGate("xor_gate", Material.CIRCUITS, SoundType.STONE, 3, XORGate.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 7, Processor.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("processor2", Material.CIRCUITS, SoundType.STONE, 7, Processor.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new OrientedBlock("editor", Material.WOOD, SoundType.WOOD, 0, Editor.class, HOR_AXIS).setCreativeTab(tabCircuits),
 				new OrientedBlock("assembler", Material.IRON, SoundType.ANVIL, 0, Assembler.class, HOR_AXIS).setCreativeTab(tabCircuits),
 				new BlockGate("comparator", Material.CIRCUITS, SoundType.STONE, 3, Sensor.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
@@ -140,6 +143,7 @@ public class Objects {
 				new BaseItemBlock(XOR_GATE),
 				new ItemWireAnchor(WIRE_ANCHOR),
 				new ItemProcessor(PROCESSOR, 6, 6),
+				new ItemProcessor(PROCESSOR2, 4, 4),
 				new BaseItemBlock(EDITOR),
 				new BaseItemBlock(ASSEMBLER),
 				new BaseItemBlock(COMPARATOR),

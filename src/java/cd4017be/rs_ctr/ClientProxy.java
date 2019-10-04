@@ -60,7 +60,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), true, PORT_RENDER, BlockMimicModel.provider));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, PROCESSOR, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, PANEL);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, PANEL);
 		
 		WIRE_ANCHOR.setBlockLayer(null);
 		
