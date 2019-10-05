@@ -22,7 +22,6 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
-import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.UnloadedCircuit;
@@ -113,15 +112,12 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 				lastError = null;
 				markDirty(SYNC);
 			}
-		} catch(ArithmeticException e) {
-			doBurnout(false);
-			lastError = e.getMessage();
-			markDirty(SYNC);
 		} catch(Throwable e) {
-			Main.LOG.error("Critical processor failure!", e);
-			Main.LOG.error("Location: {}\nDevice details:\n{}", pos, circuit);
-			doBurnout(true);
-			lastError = "<critical crash>";
+			lastError = circuit.processError(e, this);
+			if (lastError == null) {
+				lastError = "BUG! see log";
+				doBurnout(true);
+			} else doBurnout(false);
 			markDirty(SYNC);
 		}
 	}

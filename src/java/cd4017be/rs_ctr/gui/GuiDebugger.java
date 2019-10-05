@@ -70,10 +70,9 @@ public class GuiDebugger extends GuiFrame {
 			dirty = circuit.tick();
 			lastErr = "\u00a7ano error";
 		} catch(Throwable e) {
-			if (!(e instanceof ArithmeticException))
-				Main.LOG.error("circuit crashed!", e);
+			String err = circuit.processError(e, null);
+			lastErr = "\u00a7c" + (err != null ? err : "BUG! see log");
 			dirty = 0;
-			lastErr = "\u00a7c" + e.getLocalizedMessage();
 		}
 		cycles++;
 		state.update();

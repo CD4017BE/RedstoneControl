@@ -2,9 +2,11 @@ package cd4017be.rs_ctr.circuit;
 
 import java.util.Arrays;
 import java.util.UUID;
+import cd4017be.rs_ctr.Main;
 import cd4017be.rscpl.util.IStateSerializable;
 import cd4017be.rscpl.util.StateBuffer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**
@@ -76,6 +78,18 @@ public abstract class Circuit implements INBTSerializable<NBTTagCompound>, IStat
 	 */
 	public Circuit load() {
 		return this;
+	}
+
+	/**
+	 * @param host where the circuit was executed
+	 * @return a user friendly error message from the given exception or null if unexpected error.
+	 */
+	public String processError(Throwable e, TileEntity host) {
+		if (e instanceof ArithmeticException) return e.getMessage();
+		if (e instanceof IndexOutOfBoundsException) return "invalid index " + e.getMessage();
+		Main.LOG.error("Critical processor failure!", e);
+		Main.LOG.error("Location: {}\nDevice details:\n{}", host == null ? "debug environment" : host.getPos(), this);
+		return null;
 	}
 
 }
