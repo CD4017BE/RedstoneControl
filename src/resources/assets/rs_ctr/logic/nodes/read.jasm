@@ -1,0 +1,2 @@
+aload this
+getfield this $0 $1

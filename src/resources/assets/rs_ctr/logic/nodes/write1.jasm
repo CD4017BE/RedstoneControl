@@ -1,0 +1,4 @@
+in 1
+aload this
+in 0
+putfield this $0 $1

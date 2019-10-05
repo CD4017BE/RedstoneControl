@@ -1,12 +1,12 @@
 {
-	"id": 2,
+	"id": 81,
 	"type": "read",
 	"cfg": ["value"],
 	"width": 6,
-	"pins_out": " rI",
+	"pins_out": " rB",
 	"nodes": {
-		"out": "rI",
+		"out": "rB",
 		"code": "rs_ctr:read",
-		"args": ["$l", "I"]
+		"args": ["$l", "B"]
 	}
 }

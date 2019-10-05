@@ -1,23 +1,23 @@
 {
-	"id": 3,
+	"id": 82,
 	"type": "write",
 	"cfg": ["interrupt"],
 	"width": 6,
-	"pins_in": "aI ",
+	"pins_in": "aS ",
 	"pins_out": " rV",
 	"link": "l",
 	"nodes": [
 		{
 			"if": { "var": 0, "eq": true },
-			"in": ["aI", "lI", "aI"],
+			"in": ["aS", "lS", "aI"],
 			"out": "rV",
 			"code": "rs_ctr:write",
-			"args": ["$l", "I"]
+			"args": ["$l", "S"]
 		}, {
 			"in": ["aI", "lV"],
 			"out": "rV",
 			"code": "rs_ctr:write1",
-			"args": ["$l", "I"]
+			"args": ["$l", "S"]
 		}
 	]
 }

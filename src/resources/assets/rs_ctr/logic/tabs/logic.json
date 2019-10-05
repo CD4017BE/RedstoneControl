@@ -1,3 +1,4 @@
 [
-	"rs_ctr:not", "rs_ctr:or", "rs_ctr:nor", "rs_ctr:and", "rs_ctr:nand", "rs_ctr:xor", "rs_ctr:xnor", "rs_ctr:swt", "rs_ctr:branch", "rs_ctr:sequence"
+	"rs_ctr:not", "rs_ctr:or", "rs_ctr:nor", "rs_ctr:and", "rs_ctr:nand", "rs_ctr:xor", "rs_ctr:xnor",
+	"rs_ctr:swt", "rs_ctr:branch", "rs_ctr:sequence", "rs_ctr:update"
 ]

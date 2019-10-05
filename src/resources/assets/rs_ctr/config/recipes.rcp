@@ -1,4 +1,4 @@
-VERSION = 55;
+VERSION = 56;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -139,11 +139,20 @@ POST_INIT() {
 	!variables & IO tab:
 	c:"in" = base;
 	c:"out" = base;
+	c:"read_b" = base;
+	c:"read_s" = base;
 	c:"read" = base;
+	c:"write_b" = 2*base;
+	c:"write_s" = 2*base;
 	c:"write" = 2*base;
+	c:"feedback_b" = 2*base;
+	c:"feedback_s" = 2*base;
 	c:"feedback" = 2*base;
-	c:"cst" = base;
-	c:"update" = adv;
+	c:"array_b" = base;
+	c:"array_s" = 2*base;
+	c:"array_i" = 3*base;
+	c:"aget" = base;
+	c:"aset" = 4*base;
 	!logic tab:
 	c:"not" = base;
 	c:"or" = 2*base;
@@ -154,6 +163,7 @@ POST_INIT() {
 	c:"xnor" = 3*base;
 	c:"swt" = 3*base;
 	c:"branch" = 3*base;
+	c:"update" = adv;
 	!comparator tab:
 	c:"ne0" = base;
 	c:"eq0" = base;
@@ -166,6 +176,7 @@ POST_INIT() {
 	c:"lt" = adv;
 	c:"ge" = adv;
 	!arithmetic tab:
+	c:"cst" = base;
 	c:"inc" = adv;
 	c:"dec" = adv;
 	c:"neg" = adv;

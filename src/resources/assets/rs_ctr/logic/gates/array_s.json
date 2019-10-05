@@ -1,0 +1,12 @@
+{
+	"id": 13,
+	"type": "array",
+	"cfg": ["arrayS"],
+	"width": 6,
+	"pins_out": " r[S",
+	"nodes": {
+		"out": "r[S",
+		"code": "rs_ctr:read",
+		"args": ["$l", "[S"]
+	}
+}

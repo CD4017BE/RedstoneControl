@@ -1,3 +1,5 @@
 [
-	"rs_ctr:inc", "rs_ctr:dec", "rs_ctr:neg", "rs_ctr:abs", "rs_ctr:add", "rs_ctr:sub", "rs_ctr:mul", "rs_ctr:div", "rs_ctr:mod", "rs_ctr:max", "rs_ctr:min"
+	"rs_ctr:cst", "rs_ctr:inc", "rs_ctr:dec", "rs_ctr:neg", "rs_ctr:abs",
+	"rs_ctr:add", "rs_ctr:sub", "rs_ctr:mul", "rs_ctr:div", "rs_ctr:mod",
+	"rs_ctr:max", "rs_ctr:min"
 ]

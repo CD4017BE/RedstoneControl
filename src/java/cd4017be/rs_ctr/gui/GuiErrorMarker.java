@@ -70,7 +70,7 @@ public class GuiErrorMarker extends GuiCompBase<GuiCompGroup> {
 			py = 188;
 			break;
 		case READ_CONFLICT:
-		case WRITE_CONFLICT:
+		case VAR_TYPE_CONFLICT:
 			if (node == null) return;
 			px = (node.rasterX << 2) + 14;
 			py = (node.rasterY << 2) + 19;

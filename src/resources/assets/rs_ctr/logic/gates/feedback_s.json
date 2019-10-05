@@ -1,26 +1,26 @@
 {
-	"id": 5,
+	"id": 14,
 	"type": "readwrite",
 	"cfg": ["value", "interrupt"],
 	"width": -4,
-	"pins_in": "aI ",
-	"pins_out": " oI",
+	"pins_in": "aS ",
+	"pins_out": " oS",
 	"end": "r",
 	"nodes": [
 		{
-			"out": "oI",
-			"code": ["aload this", "getfield this $0 I"],
+			"out": "oS",
+			"code": ["aload this", "getfield this $0 S"],
 			"args": ["$l"]
 		}, {
 			"if": { "var": 1, "eq": true },
-			"in": ["aI", "oI", "aI"],
+			"in": ["aS", "oS", "aI"],
 			"out": "rV",
 			"code": "rs_ctr:write",
-			"args": ["$l", "I"]
+			"args": ["$l", "S"]
 		}, {
 			"in": ["aI", "oV"],
 			"out": "rV",
-			"code": ["in 1", "aload this", "in 0", "putfield this $0 I"],
+			"code": ["in 1", "aload this", "in 0", "putfield this $0 S"],
 			"args": ["$l"]
 		}
 	]

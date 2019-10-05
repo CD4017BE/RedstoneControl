@@ -19,7 +19,10 @@ import io.netty.buffer.ByteBuf;
 public class ArrayEditor implements GateConfiguration<Object> {
 
 	public static final int MAX_ARRAY_LENGTH = 256;
+	public static final ArrayEditor BYTE_ARRAY = new ArrayEditor(new byte[0]);
+	public static final ArrayEditor SHORT_ARRAY = new ArrayEditor(new short[0]);
 	public static final ArrayEditor INT_ARRAY = new ArrayEditor(new int[0]);
+	public static final ArrayEditor FLOAT_ARRAY = new ArrayEditor(new float[0]);
 
 	final Object emptyArray;
 	public final Type type;

@@ -164,7 +164,10 @@ public class CommonProxy implements IRecipeHandler {
 		GateConfiguration.REGISTRY.put("value", IntegerValue.VALUE);
 		GateConfiguration.REGISTRY.put("interrupt", ToggleFlag.INTERRUPT);
 		GateConfiguration.REGISTRY.put("sign", ToggleFlag.SIGNED);
+		GateConfiguration.REGISTRY.put("arrayB", ArrayEditor.BYTE_ARRAY);
+		GateConfiguration.REGISTRY.put("arrayS", ArrayEditor.SHORT_ARRAY);
 		GateConfiguration.REGISTRY.put("arrayI", ArrayEditor.INT_ARRAY);
+		GateConfiguration.REGISTRY.put("arrayF", ArrayEditor.FLOAT_ARRAY);
 		
 		registerTab("rs_ctr:io");
 		registerTab("rs_ctr:logic");

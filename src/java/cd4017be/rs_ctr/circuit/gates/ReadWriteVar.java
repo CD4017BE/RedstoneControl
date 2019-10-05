@@ -3,6 +3,7 @@ package cd4017be.rs_ctr.circuit.gates;
 import org.objectweb.asm.Type;
 import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.compile.Node;
+import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.graph.IReadVar;
 import cd4017be.rscpl.graph.IWriteVar;
 
@@ -30,7 +31,9 @@ implements IReadVar, IWriteVar {
 	}
 
 	@Override
-	public void link(IReadVar read) {
+	public void link(IReadVar read) throws InvalidSchematicException {
+		if (read != null && !read.type().equals(this.type()))
+			throw new InvalidSchematicException(InvalidSchematicException.VAR_TYPE_CONFLICT, this, 0);
 	}
 
 	@Override

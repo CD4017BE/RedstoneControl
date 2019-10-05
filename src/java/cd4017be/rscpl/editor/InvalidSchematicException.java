@@ -39,7 +39,7 @@ public class InvalidSchematicException extends Exception {
 		MISSING_INPUT = 3,
 		INVALID_LABEL = 4,
 		READ_CONFLICT = 5,
-		WRITE_CONFLICT = 6,
+		VAR_TYPE_CONFLICT = 6,
 		INVALID_CFG = 7;
 
 }

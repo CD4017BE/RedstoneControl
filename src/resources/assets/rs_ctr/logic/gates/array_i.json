@@ -2,12 +2,11 @@
 	"id": 8,
 	"type": "array",
 	"cfg": ["arrayI"],
-	"lock": "left",
 	"width": 6,
 	"pins_out": " r[I",
 	"nodes": {
 		"out": "r[I",
-		"code": ["aload this", "getfield this $0 [I"],
-		"args": ["$l"]
+		"code": "rs_ctr:read",
+		"args": ["$l", "[I"]
 	}
 }

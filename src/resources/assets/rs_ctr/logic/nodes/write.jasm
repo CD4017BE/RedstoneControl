@@ -3,7 +3,7 @@ in 1
 if_icmpeq end
 aload this
 in 2
-putfield this $0 I
+putfield this $0 $1
 iload mod
 iconst_1
 ior

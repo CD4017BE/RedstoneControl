@@ -164,19 +164,25 @@ sensor.rs_ctr.dfr7=inverted fuel mode:\nFuel Conversion [0...1000]
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d
-gategroup.rs_ctr.io=Variables & IO
+gategroup.rs_ctr.io=Memory & IO
 gate.rs_ctr.in=Input Socket\n§7receives external sinals
 gate.rs_ctr.out=Output Socket\n§7emits external signals
-gate.rs_ctr.write=Variable Write\n§7Stores input in a variable to\n§7feed into next evaluation cycle.\n§3§oOperation is only performed\n§3§owhen connected to End Node!
-gate.rs_ctr.read=Variable read\n§7Outputs the variable value set\n§7in previous evaluation cycle.
-gate.rs_ctr.cst=Constant Number\n§7out \= #
-gate.rs_ctr.feedback=Feedback Loop\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
 gate.rs_ctr.return=Execution End Node\n§7Ensures that the connected\n§7signal is evaluated.
-gate.rs_ctr.update=Update Trigger\n§7Triggers the next cycle when evaluated.
-gate.rs_ctr.array_i=Array 32bit/W
-gate.rs_ctr.aset=Array Write
-gate.rs_ctr.aget=Array Read
-gate.rs_ctr.alen=Array Lenght
+gate.rs_ctr.read_b=Variable Read 8bit\n§7Outputs the variable value set\n§7in previous evaluation cycle.
+gate.rs_ctr.read_s=Variable Read 16bit\n§7Outputs the variable value set\n§7in previous evaluation cycle.
+gate.rs_ctr.read=Variable Read 32bit\n§7Outputs the variable value set\n§7in previous evaluation cycle.
+gate.rs_ctr.write_b=Variable Write 8bit\n§7Stores input in a variable to\n§7feed into next evaluation cycle.\n§3§oOperation is only performed\n§3§owhen connected to End Node!
+gate.rs_ctr.write_s=Variable Write 16bit\n§7Stores input in a variable to\n§7feed into next evaluation cycle.\n§3§oOperation is only performed\n§3§owhen connected to End Node!
+gate.rs_ctr.write=Variable Write 32bit\n§7Stores input in a variable to\n§7feed into next evaluation cycle.\n§3§oOperation is only performed\n§3§owhen connected to End Node!
+gate.rs_ctr.feedback=Feedback Loop 32bit\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
+gate.rs_ctr.feedback_b=Feedback Loop 8bit\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
+gate.rs_ctr.feedback_s=Feedback Loop 16bit\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
+gate.rs_ctr.array_b=Array 8bit\n§7Provides a fixed sized indexable list\n§7of persistent 8bit integer values.
+gate.rs_ctr.array_s=Array 16bit\n§7Provides a fixed sized indexable list\n§7of persistent 16bit integer values.
+gate.rs_ctr.array_i=Array 32bit\n§7Provides a fixed sized indexable list\n§7of persistent 32bit integer values.
+gate.rs_ctr.aset=Array Write\n§7Writes in1 into index in2 in array in3.\n§7Valid indices are §e0 ... N-1§7 for array size N.\n§4§oAccessing an invalid index causes burnout!\n§3§oOperation is only performed\n§3§owhen connected to End Node!
+gate.rs_ctr.aget=Array Read\n§7Reads the value at index in1 in array in2.\n§7Valid indices are §e0 ... N-1§7 for array size N.\n§4§oAccessing an invalid index causes burnout!
+gate.rs_ctr.alen=Array Size\n§7Outputs the element count\n§7of the input array.
 gategroup.rs_ctr.logic=Logic
 gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
 gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
@@ -188,6 +194,7 @@ gate.rs_ctr.xnor=XNOR-Gate\n§7in \= ¬(in1 ⊻ in2)\n§7bitwise
 gate.rs_ctr.swt=Switch\n§7in1 \= true -> out \= in2\n§7else -> out \= in3
 gate.rs_ctr.branch=Execution Switch\n§7in1 \= true -> evaluate in2\n§7else -> evaluate in3
 gate.rs_ctr.sequence=Execution Sequence\n§7first evaluate in1\n§7then evaluate in2
+gate.rs_ctr.update=Update Trigger\n§7Always triggers the next\n§7cycle when evaluated.
 gategroup.rs_ctr.comp=Comparators
 gate.rs_ctr.lt0=Is Negative\n§7in < 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.ge0=Not Negative\n§7in < 0 -> out \= true\n§7else -> out \= false
@@ -200,6 +207,7 @@ gate.rs_ctr.lt=Less than\n§7in1 < in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq=Equal\n§7in1 \= in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.ge=Greater or Equal\n§7in1 < in2 -> out \= false\n§7else -> out \= true
 gategroup.rs_ctr.num=Arithmetic
+gate.rs_ctr.cst=Constant Number\n§7out \= #
 gate.rs_ctr.neg=Negate\n§7out \= -in
 gate.rs_ctr.sub=Subtract\n§7out \= in1 - in2
 gate.rs_ctr.add=Add\n§7out \= in1 + in2
@@ -251,7 +259,7 @@ gui.rs_ctr.editor.ingreds=Circuit Complexity\:\n§c%d / %d basic\n§b%d / %d adv
 gui.rs_ctr.editor.info=Controls\nBasic Mechanics\nSignal Types\nDebugging / Testing
 gui.rs_ctr.editor.info0=§7§nComponent interaction\:§a left-click\n§7To add a component, first click on it in the palette, then on the board where you want to place it.\n§7§oThe palette shows up in place of your inventory when enabled via button.\n§aclick§7 on a component on the board to select it. Configuration options will appear below the bottom left of the boeard.\n§aclick-drag§7 to move a component around [red boxes indicate collision with other components].\n§7Moving a component outside the board area will delete it [bright red box].\n§7§nPin/Trace interaction\:§a right-click\n§7To connect two components with a trace, first §aclick§7 an input pin [left side of a component], then optinally click a few places on the board to lay out its path and finally §aclick§7 another component's output pin [right side].\n§aclick-drag§7 a trace vertex to move it.\n§aHold Alt§7 to display traces only.
 gui.rs_ctr.editor.info1=§7In general a circuit receives signals from external devices through its §6input sockets§7, performs some computations on them and produces one or more results that get send back to external devices through its §6output sockets§7. This is refered to as a §ecycle§7.\n\n§6Variables§7 allow a circuit to remember information across cycles. They consist of a §6write§7 component that receives a value in one cycle and a matching [same label] §6read§7 component that spits it out again one cycle later. The read component also defines the variable's initial value. \n\n§7Normally a new cycle gets evaluated with one tick delay after an input or a variable changed its value. But you can set individual §6variable write§7s or §6input§7s to not trigger a cycle if wanted.\n§7§oNote\: changing variable values manually through the Debugger or the processor's status interface won't trigger a cycle.
-gui.rs_ctr.editor.info2=§7Traces have different colors to indicate the type of signal being propagated which is determined by the component pins being connected\:\n§4§n32-bit integer§7\: standart number type also used by all redstone sockets. Has a valid range of §a-2147483648 ... 2147483647§7.\n§5§n8/16-bit integer§7\: supports a of range §a-128 ... 127§7 (signed) or §a0 ... 255§7 (unsigned) for 8 bit and §a-32768 ... 32767§7 (signed) or §a0 ... 65536§7 (unsigned) for 16 bit.\n§9§nboolean§7\: a logical signal that's either §atrue§7 or §afalse§7. When used for integer inputs, §atrue -> -1§7 and §afalse -> 0§7, conversion in the other direction uses §anon zero§7 comparison.\n§6§nfloating point§7\: represents fractional numbers, conversion rounds to nearest integer.\n§8§ncausal relation§7\: propagates no data, only controls execution flow.\n§e§narray§7\: reference to an integrated §lR§7andom §lA§7ccess §lM§7emory to be used with §eget§7 and §eset§7 operations [WIP].
+gui.rs_ctr.editor.info2=§7Traces have different colors to indicate the type of signal being propagated which is determined by the component pins being connected\:\n§4§n32-bit integer§7\: standart number type also used by all redstone sockets. Has a valid range of §a-2147483648 ... 2147483647§7.\n§5§n8/16-bit integer§7\: supports a of range §a-128 ... 127§7 (signed) or §a0 ... 255§7 (unsigned) for 8 bit and §a-32768 ... 32767§7 (signed) or §a0 ... 65536§7 (unsigned) for 16 bit.\n§9§nboolean§7\: a logical signal that's either §atrue§7 or §afalse§7. When used for integer inputs, §atrue -> -1§7 and §afalse -> 0§7, conversion in the other direction uses §anon zero§7 comparison.\n§6§nfloating point§7\: represents fractional numbers, conversion rounds to nearest integer.\n§8§ncausal relation§7\: propagates no data, only controls execution flow.\n§e§narray§7\: reference to an integrated §lR§7andom §lA§7ccess §lM§7emory to be used with §eget§7 and §eset§7 operations.
 gui.rs_ctr.editor.info3=§7Although you can overwrite the circuit on a §6processor§7 as often as you like, it is usually a good idea to first test your design with the §edebugger§7 before hooking it up to ... let's say, your nuclear reactor control setup.\n§7The §edebugger§7 window is opened by §aright-click§7 on the §ecompile button§7 (instead of left-click). In there you can feed your circuit with different input values and see how its outputs and variable states behave after executing individual cycles.\n§7The debugger's variable editing feature is also available later in the §6processor§7's §estatus interface§7 (which is opened by normal interaction with the placed block).\n§7Therefore also seemingly useless §eread-only§7 and §ewrite-only§7 variables may be used for later adjustment of parameters or getting more details about the circuit's operation.
 gui.rs_ctr.debug.run0=automatic execution
 gui.rs_ctr.debug.run1=manual execution
@@ -268,7 +276,7 @@ gui.rs_ctr.error2=§4incompatible data type
 gui.rs_ctr.error3=§4missing input signal
 gui.rs_ctr.error4=§4invalid identifier
 gui.rs_ctr.error5=§4duplicate variable declaration
-gui.rs_ctr.error6=§4conflicting writes on same variable
+gui.rs_ctr.error6=§4conflicting variable data types!
 gui.rs_ctr.error7=§4invalid value
 gui.rs_ctr.error32=§4missing Processor
 gui.rs_ctr.error33=§4circuit too complex\n§4for given Processor
