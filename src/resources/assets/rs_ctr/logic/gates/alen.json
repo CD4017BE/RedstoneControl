@@ -1,0 +1,20 @@
+{
+	"id": 11,
+	"pins_in": "a[I ",
+	"pins_out": " vI",
+	"nodes": [
+		{
+			"in": ["a[I"],
+			"out": "vI",
+			"code": ["in 0", "arraylength"]
+		}, {
+			"in": ["a[S"],
+			"out": "vI",
+			"code": ["in 0", "arraylength"]
+		}, {
+			"in": ["a[B"],
+			"out": "vI",
+			"code": ["in 0", "arraylength"]
+		}
+	]
+}

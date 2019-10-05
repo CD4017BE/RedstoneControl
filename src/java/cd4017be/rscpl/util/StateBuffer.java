@@ -70,8 +70,8 @@ public class StateBuffer {
 		byte[] arr = new byte[value.length * 2];
 		for (int i = 0, j = 0; i < value.length; i++) {
 			short v = value[i];
-			arr[j++] = (byte)v;
 			arr[j++] = (byte)(v >> 8);
+			arr[j++] = (byte)v;
 		}
 		nbt.setByteArray(key, arr);
 		return this;
@@ -117,7 +117,7 @@ public class StateBuffer {
 		byte[] buf = nbt.getByteArray(key);
 		int n = Math.min(buf.length / 2, arr.length);
 		for (int i = 0, j = 0; i < n; i++)
-			arr[i] = (short)(buf[j++] & 0xff | buf[j++] << 8);
+			arr[i] = (short)(buf[j++] << 8 | buf[j++] & 0xff);
 		Arrays.fill(arr, n, arr.length, (short)0);
 	}
 

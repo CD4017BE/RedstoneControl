@@ -28,6 +28,7 @@ import cd4017be.rscpl.util.StateBuffer;
  */
 public abstract class Compiler<P extends CompiledProgram> implements MethodCompiler {
 
+	public static final int[] TYPE2ARRAY = new int[] {0, 4, 5, 8, 9, 10, 6, 11, 7};
 	public static final String
 			D_STATE_BUFFER = Type.getDescriptor(StateBuffer.class),
 			C_STATE_BUFFER = Type.getInternalName(StateBuffer.class),
@@ -112,7 +113,7 @@ public abstract class Compiler<P extends CompiledProgram> implements MethodCompi
 			if (var instanceof IArrayVar) {
 				mv.visitVarInsn(ALOAD, 0);
 				i_const(mv, ((IArrayVar)var).size());
-				mv.visitIntInsn(NEWARRAY, var.type().getElementType().getSort());
+				mv.visitIntInsn(NEWARRAY, TYPE2ARRAY[var.type().getElementType().getSort()]);
 				mv.visitFieldInsn(PUTFIELD, C_THIS, var.name(), var.type().getDescriptor());
 				hasArrays = true;
 			}

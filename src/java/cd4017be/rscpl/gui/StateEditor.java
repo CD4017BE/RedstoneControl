@@ -12,8 +12,8 @@ import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rscpl.util.StateBuffer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTPrimitive;
-import net.minecraftforge.common.util.Constants.NBT;
-
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagIntArray;
 import static net.minecraftforge.common.util.Constants.NBT.*;
 
 /**
@@ -81,20 +81,40 @@ public class StateEditor extends GuiCompGroup {
 		for (int i = 0; i < n; i++, y += 9) {
 			final int idx = i;
 			new FormatText(this, 70, 7, 8, y + 1, "\\%s", ()-> new Object[] {keys[idx + scroll]});
-			new TextField(this, 70, 7, 80, y + 1, 16, ()-> getValue(idx), (t)-> setValue(idx, t));
+			new TextField(this, 70, 7, 80, y + 1, 1024, ()-> getValue(idx), (t)-> setValue(idx, t));
 		}
 	}
 
 	private String getValue(int i) {
 		NBTBase tag = state.nbt.getTag(keys[i += scroll]);
-		if (hex && tag instanceof NBTPrimitive) {
+		if (tag instanceof NBTPrimitive) {
 			NBTPrimitive ptag = (NBTPrimitive)tag;
 			switch(tag.getId()) {
-			case NBT.TAG_BYTE: return String.format("%02X", ptag.getByte() & 0xff);
-			case NBT.TAG_SHORT: return String.format("%04X", ptag.getShort() & 0xffff);
-			case NBT.TAG_INT: return String.format("%08X", ptag.getInt());
-			case NBT.TAG_LONG: return String.format("%016X", ptag.getInt());
+			case TAG_BYTE: return String.format(hex ? "%02X" : "%d", ptag.getByte());
+			case TAG_SHORT: return String.format(hex ? "%04X" : "%d", ptag.getShort());
+			case TAG_INT: return String.format(hex ? "%08X" : "%d", ptag.getInt());
+			case TAG_LONG: return String.format(hex ? "%016X" : "%d", ptag.getLong());
+			case TAG_FLOAT: return String.format(hex ? "%a" : "%f", ptag.getFloat());
+			case TAG_DOUBLE: return String.format(hex ? "%a" : "%f", ptag.getDouble());
 			}
+		} else if (tag instanceof NBTTagByteArray) {
+			byte[] arr = ((NBTTagByteArray)tag).getByteArray();
+			int l = arr.length, ll = hex ? Integer.toHexString(l - 1).length() : Integer.toString(l - 1).length();
+			String fmt = hex ? "%0" + ll + "x:%02x " : "%d:%d ";
+			StringBuilder sb = new StringBuilder((ll + 3) * l);
+			for (int j = 0; j < arr.length; j++)
+				sb.append(String.format(fmt, j, arr[j] & 0xff));
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
+		} else if (tag instanceof NBTTagIntArray) {
+			int[] arr = ((NBTTagIntArray)tag).getIntArray();
+			int l = arr.length, ll = hex ? Integer.toHexString(l - 1).length() : Integer.toString(l - 1).length();
+			String fmt = hex ? "%0" + ll + "x:%08x " : "%d:%d ";
+			StringBuilder sb = new StringBuilder((ll + (hex ? 8 : 5)) * l);
+			for (int j = 0; j < arr.length; j++)
+				sb.append(String.format(fmt, j, arr[j]));
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
 		}
 		return tag.toString();
 	}
@@ -109,7 +129,27 @@ public class StateEditor extends GuiCompGroup {
 			case TAG_LONG: state.set(key, parseNumber(t, Long.MAX_VALUE)); break;
 			case TAG_FLOAT: state.set(key, Float.parseFloat(t)); break;
 			case TAG_DOUBLE: state.set(key, Double.parseDouble(t)); break;
-			default: return; //TODO arrays
+			case TAG_BYTE_ARRAY: {
+				int rad = hex ? 16 : 10;
+				byte[] arr = state.nbt.getByteArray(key);
+				for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
+					int j = Integer.parseInt(t.substring(q + 1, p), rad);
+					if (j >= arr.length) continue;
+					if ((q = t.indexOf(' ', p)) < 0) q = t.length();
+					arr[j] = (byte)Integer.parseInt(t.substring(p + 1, q), rad);
+				}
+			}	break;
+			case TAG_INT_ARRAY: {
+				int rad = hex ? 16 : 10;
+				int[] arr = state.nbt.getIntArray(key);
+				for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
+					int j = Integer.parseInt(t.substring(q + 1, p), rad);
+					if (j >= arr.length) continue;
+					if ((q = t.indexOf(' ', p)) < 0) q = t.length();
+					arr[j] = Integer.parseInt(t.substring(p + 1, q), rad);
+				}
+			}	break;
+			default: return;
 			}
 			circuit.setState(state);
 			set.accept(i);

@@ -129,6 +129,7 @@ public class CircuitEditor extends ModularGui {
 			new TextField(cfg, 74, 7, 1, 1, 20, ()-> g.label, this::sendLabel).tooltip("gui.rs_ctr.opLabel");
 			if (g instanceof ISpecialCfg)
 				((ISpecialCfg)g).setupCfgGUI(cfg, this::updateCfg);
+			cfg.init(cfg.screenWidth, cfg.screenHeight, cfg.zLevel, fontRenderer);
 		} else {
 			cfg.bgTexture = null;
 			cfg.title = null;

@@ -173,6 +173,10 @@ gate.rs_ctr.cst=Constant Number\n§7out \= #
 gate.rs_ctr.feedback=Feedback Loop\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
 gate.rs_ctr.return=Execution End Node\n§7Ensures that the connected\n§7signal is evaluated.
 gate.rs_ctr.update=Update Trigger\n§7Triggers the next cycle when evaluated.
+gate.rs_ctr.array_i=Array 32bit/W
+gate.rs_ctr.aset=Array Write
+gate.rs_ctr.aget=Array Read
+gate.rs_ctr.alen=Array Lenght
 gategroup.rs_ctr.logic=Logic
 gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
 gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
@@ -235,6 +239,8 @@ gui.rs_ctr.interrupt0=changed value §ndoes not§r trigger next cycle
 gui.rs_ctr.interrupt1=changed value triggers next cycle
 gui.rs_ctr.signed0=Unsigned
 gui.rs_ctr.signed1=Signed
+gui.rs_ctr.array_len=Number of Entries
+gui.rs_ctr.array_idx=index
 gui.rs_ctr.editor.title=Name of your circuit
 gui.rs_ctr.editor.del=§4delete Gate
 gui.rs_ctr.editor.new=New Schematic\n§4clears the board

@@ -1,0 +1,20 @@
+{
+	"id": 10,
+	"pins_in": "vIiIa[I",
+	"pins_out": " xV ",
+	"nodes": [
+		{
+			"in": ["vI", "iI", "a[I"],
+			"out": "xV",
+			"code": ["in 2", "in 1", "in 0", "iastore"]
+		}, {
+			"in": ["vS", "iI", "a[S"],
+			"out": "xV",
+			"code": ["in 2", "in 1", "in 0", "sastore"]
+		}, {
+			"in": ["vB", "iI", "a[B"],
+			"out": "xV",
+			"code": ["in 2", "in 1", "in 0", "bastore"]
+		}
+	]
+}
