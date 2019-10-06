@@ -117,7 +117,7 @@ public class CircuitEditor extends ModularGui {
 		cfg.clear();
 		cfg.titleY = -11;
 		BoundingBox2D<Gate> part = board.selPart;
-		if (part != null) {
+		if (part != null && part.owner != null) {
 			Gate g = part.owner;
 			cfg.background(COMP_TEX, 180, 36).title("gate." + g.type.name.replace(':', '.'), 0.5F);
 			String s = cfg.title;
@@ -228,7 +228,7 @@ public class CircuitEditor extends ModularGui {
 
 	public void updateCfg() {
 		BoundingBox2D<Gate> part = board.selPart;
-		if (part == null) return;
+		if (part == null || part.owner == null) return;
 		PacketBuffer pkt = preparePacket(container);
 		pkt.writeByte(SET_VALUE).writeByte(part.owner.index);
 		if (part.owner.writeCfg(pkt))

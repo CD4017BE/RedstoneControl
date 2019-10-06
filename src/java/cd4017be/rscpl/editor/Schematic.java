@@ -178,7 +178,8 @@ public class Schematic {
 	public static final byte
 			ADD_GATE = 0, REM_GATE = 1, MOVE_GATE = 2,
 			CONNECT = 3, SET_LABEL = 4, SET_VALUE = 5,
-			INS_TRACE = 8, REM_TRACE = 9, MOVE_TRACE = 10, JOIN_TRACE = 11;
+			INS_TRACE = 8, REM_TRACE = 9, MOVE_TRACE = 10, JOIN_TRACE = 11,
+			MOVE_AREA = 12;
 
 	public boolean handleUserInput(byte actionID, ByteBuf data) {
 		switch(actionID) {
@@ -332,6 +333,44 @@ public class Schematic {
 			}
 			op.setInput(pin, op1.getInput(pin1));
 			toSync.set(i << 1);
+		}	return true;
+		case MOVE_AREA:{//moveArea(B:x0, B:y0, B:w, B:h, B:x1, B:x2)
+			BoundingBox2D<?> from = new BoundingBox2D<>(null, data.readUnsignedByte(), data.readUnsignedByte(), data.readUnsignedByte(), data.readUnsignedByte());
+			int dx = data.readByte(), dy = data.readByte();
+			boolean delete = dx == 0 && dy == 0;
+			BoundingBox2D<?> to = from.offset(dx, dy);
+			if (!to.enclosedBy(BOARD_AREA)) return false;
+			ArrayList<Gate> toMove = new ArrayList<>();
+			ArrayList<TraceNode> traces = new ArrayList<>();
+			for (Gate g : operators)
+				if (g != null) {
+					BoundingBox2D<Gate> box = g.getBounds();
+					if (box.overlapsWith(from))
+						toMove.add(g);
+					else if (delete) continue;
+					else if (box.overlapsWith(to)) return false;
+					for (TraceNode n : g.traces)
+						while(n != null) {
+							if (from.isPointInside(n.rasterX, n.rasterY))
+								traces.add(n);
+							n = n.next;
+						}
+				}
+			for (TraceNode tn : traces) {
+				tn.rasterX += dx;
+				tn.rasterY += dy;
+				toSync.set(tn.owner.index << 1);
+			}
+			for (Gate g : toMove) {
+				if (delete) {
+					g.remove();
+					operators.set(g.index, null);
+				} else {
+					g.rasterX += dx;
+					g.rasterY += dy;
+				}
+				toSync.set(g.index << 1);
+			}
 		}	return true;
 		default: return false;
 		}
