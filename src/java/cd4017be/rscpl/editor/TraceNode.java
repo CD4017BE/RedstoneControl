@@ -16,4 +16,13 @@ public class TraceNode {
 		this.pin = pin;
 	}
 
+	public TraceNode copy(Gate owner, int pin) {
+		TraceNode n = new TraceNode(owner, pin);
+		n.rasterX = rasterX;
+		n.rasterY = rasterY;
+		if (next != null)
+			n.next = next.copy(owner, pin);
+		return n;
+	}
+
 }

@@ -13,7 +13,7 @@ public class PinRef {
 
 	public final int gate, pin, trace;
 	public final int x, y;
-	public final PinRef link;
+	public PinRef link;
 
 	public PinRef(Pin out) {
 		Gate g = out.gate;

@@ -7,6 +7,7 @@ import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.Gate;
 import cd4017be.rscpl.editor.GateType;
+import cd4017be.rscpl.editor.Pin;
 import cd4017be.rscpl.editor.Schematic;
 import static cd4017be.rscpl.editor.Schematic.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -54,8 +55,18 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 				}
 				for (int i = g.inputCount() - 1; i >= 0; i--)
 					for (PinRef pin = new PinRef(g, i); pin != null; pin = pin.link)
-						pins.put(pin.hashCode(), pin);
+						pins.merge(pin.hashCode(), pin, (o, n) -> o.trace < 0 || n.trace < o.trace ? n : o);
 			}
+		for (PinRef pin : pins.values()) //fix overlaps
+			if (pin.link != null) {
+				PinRef link = pin.link;
+				while(link.link != null) {
+					PinRef other = pins.get(link.hashCode());
+					if (link == other || commonSource(link, other)) break;
+					pin.link = link = link.link;
+				}
+			}
+		
 		if (selPart != null) {
 			Gate op = schematic.get(selPart.owner.index);
 			selPart = op == null ? null : op.getBounds();
@@ -195,8 +206,11 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 					selPin = pin = new PinRef(selPin, mx, my);
 					parent.gui.sendPkt(INS_TRACE, (byte)pin.gate, (byte)(pin.pin | (pin.trace - 1) << 4), (byte)mx, (byte)my);
 				} else if (pin.gate != selPin.gate || pin.pin != selPin.pin || pin.trace < 0){
-					while(pin.link != null) pin = pin.link;
-					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, pin.trace >= 0 ? (byte)-1 : (byte)pin.gate, (byte)(selPin.pin | (pin.trace >= 0 ? 0xf0 : pin.pin << 4)), (byte)selPin.trace);
+					//while(pin.link != null) pin = pin.link;
+					if (pin.link == null)
+						parent.gui.sendPkt(CONNECT, (byte)selPin.gate, pin.trace >= 0 ? (byte)-1 : (byte)pin.gate, (byte)(selPin.pin | (pin.trace >= 0 ? 0xf0 : pin.pin << 4)), (byte)selPin.trace);
+					else
+						parent.gui.sendPkt(JOIN_TRACE, (byte)selPin.gate, (byte)pin.gate, (byte)(selPin.pin | pin.pin << 4), (byte)(selPin.trace & 15 | pin.trace << 4));
 					selPin = null;
 				} else if (pin.trace <= selPin.trace) {
 					parent.gui.sendPkt(CONNECT, (byte)selPin.gate, (byte)-1, (byte)(selPin.pin | 0xf0), (byte)selPin.trace);
@@ -210,7 +224,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			} else if (d == A_UP && movingTrace) {
 				if (selPin != null && selPin.trace > 0) {
 					PinRef pin = pins.get(mx & 0xffff | my << 16);
-					if (pin == null)
+					if (pin == null || pin.trace >= 0 && commonSource(pin, selPin))
 						parent.gui.sendPkt(MOVE_TRACE, (byte)selPin.gate, (byte)(selPin.pin | (selPin.trace - 1) << 4), (byte)mx, (byte)my);
 					selPin = null;
 				}
@@ -228,6 +242,13 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 			break;
 		}
 		return true;
+	}
+
+	private boolean commonSource(PinRef pin0, PinRef pin1) {
+		Gate g0 = schematic.get(pin0.gate), g1 = schematic.get(pin1.gate);
+		if (g0 == null || g1 == null) return false;//corrupted state
+		Pin p0 = g0.getInput(pin0.pin), p1 = g1.getInput(pin1.pin);
+		return p0 != null && p0.equals(p1);
 	}
 
 	@Override

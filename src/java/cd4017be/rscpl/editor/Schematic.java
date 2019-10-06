@@ -2,7 +2,7 @@ package cd4017be.rscpl.editor;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-
+import org.apache.commons.lang3.tuple.Pair;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Main;
 import io.netty.buffer.ByteBuf;
@@ -178,7 +178,7 @@ public class Schematic {
 	public static final byte
 			ADD_GATE = 0, REM_GATE = 1, MOVE_GATE = 2,
 			CONNECT = 3, SET_LABEL = 4, SET_VALUE = 5,
-			INS_TRACE = 8, REM_TRACE = 9, MOVE_TRACE = 10;
+			INS_TRACE = 8, REM_TRACE = 9, MOVE_TRACE = 10, JOIN_TRACE = 11;
 
 	public boolean handleUserInput(byte actionID, ByteBuf data) {
 		switch(actionID) {
@@ -213,9 +213,22 @@ public class Schematic {
 				op.rasterY = prevY;
 				return false;
 			}
+			int dx = op.rasterX - prevX, dy = op.rasterY - prevY;
+			int x = prevX + Math.max(0, -op.type.width);
+			for (int j = op.inputCount() - 1; j >= 0; j--) {
+				Pin p = op.getInput(j);
+				if (p == null) continue;
+				int y = prevY + op.type.getInputHeight(j);
+				moveAll(p, x, y, x + dx, y + dy, false);
+			}
+			x = prevX + Math.max(0, op.type.width);
+			for (int j = op.outputs.length - 1; j >= 0; j--) {
+				int y = prevY + op.type.getOutputHeight(j);
+				moveAll(op.outputs[j], x, y, x + dx, y + dy, true);
+			}
 			toSync.set(i << 1);
 		}	return true;
-		case CONNECT: {
+		case CONNECT: {//connect(B:gate0, B:gate1, N:pin0, N:pout1, B:trace): gate1(pout1) [<-] (trace) ... (pin0)gate0
 			int i = data.readUnsignedByte();
 			Gate op = get(i), op1 = get(data.readUnsignedByte());
 			if (op == null) return false;
@@ -243,7 +256,7 @@ public class Schematic {
 			if (!op.readCfg(data)) return false;
 			toSync.set(i << 1 | 1);
 		}	return true;
-		case INS_TRACE: {
+		case INS_TRACE: {//insertTrace(B:gate, N:pin, N:t, B:newTraceX, B:newTraceY): (t+1) [<- new] <- (t) ... (pin)gate
 			int i = data.readUnsignedByte();
 			Gate op = get(i);
 			if (op == null) return false;
@@ -263,7 +276,7 @@ public class Schematic {
 			}
 			toSync.set(i << 1);
 		}	return true;
-		case REM_TRACE: {
+		case REM_TRACE: {//removeTraces(B:gate, B:pin, N:t, N:t1): (t1) [<-] (t) ... (pin)gate
 			int i = data.readUnsignedByte();
 			Gate op = get(i);
 			if (op == null) return false;
@@ -278,7 +291,7 @@ public class Schematic {
 			}
 			toSync.set(i << 1);
 		}	return true;
-		case MOVE_TRACE:{
+		case MOVE_TRACE:{//moveTrace(B:gate, N:pin, N:t, B:newPosX, B:newPosY): [(t)] ... (pin)gate
 			int i = data.readUnsignedByte();
 			Gate op = get(i);
 			if (op == null) return false;
@@ -287,13 +300,69 @@ public class Schematic {
 			int x = data.readUnsignedByte(), y = data.readUnsignedByte();
 			TraceNode tn = op.getTrace(p, t);
 			if (tn == null) return false;
-			tn.rasterX = x;
-			tn.rasterY = y;
+			Pin pin = op.getInput(p);
+			if (pin != null) moveAll(pin, tn.rasterX, tn.rasterY, x, y, false);
+			else {
+				tn.rasterX = x;
+				tn.rasterY = y;
+				toSync.set(i << 1);
+			}
+		}	return true;
+		case JOIN_TRACE:{//joinTraces(B:gate0, B:gate1, N:pin0, N:pin1, N:t0, N:t1): ... <- (t1) ... (pin1)gate1 | (t1) [<-] (t0) ... (pin0)gate0
+			int i = data.readUnsignedByte();
+			Gate op = get(i), op1 = get(data.readUnsignedByte());
+			if (op == null || op1 == null) return false;
+			int pin = data.readUnsignedByte(), pin1 = pin >> 4; pin &= 15;
+			if (pin >= op.inputCount() || pin1 >= op1.inputCount()) return false;
+			int t = data.readUnsignedByte(), t1 = t >> 4; t &= 15;
+			TraceNode tn1;
+			if (t1 == 0) {
+				tn1 = new TraceNode(op, pin);
+				tn1.rasterX = op1.rasterX + Math.max(0, -op1.type.width);
+				tn1.rasterY = op1.rasterY + op1.type.getInputHeight(pin1);
+				if ((tn1.next = op1.getTrace(pin1, 0)) != null)
+					tn1.next = tn1.next.copy(op, pin);
+			} else if ((tn1 = op1.getTrace(pin1, t1 - 1)) != null)
+				tn1 = tn1.copy(op, pin);
+			if (t == 0) op.traces[pin] = tn1;
+			else {
+				TraceNode tn = op.getTrace(pin, t - 1);
+				if (tn == null || t1 < t) return false;
+				tn.next = tn1;
+			}
+			op.setInput(pin, op1.getInput(pin1));
 			toSync.set(i << 1);
 		}	return true;
 		default: return false;
 		}
 	}
 
+	private void moveAll(Pin signal, int x0, int y0, int x1, int y1, boolean output) {
+		if (x1 == x0 && y1 == y0) return;
+		for (Pair<Gate, Integer> r : signal.receivers) {
+			Gate g = r.getLeft();
+			TraceNode first = null, prev = null;
+			for (TraceNode tn = g.traces[r.getRight()]; tn != null; prev = tn, tn = tn.next) 
+				if (tn.rasterX == x0 && tn.rasterY == y0 || tn.rasterX == x1 && tn.rasterY == y1) {
+					if (first == null) first = tn;
+					else {//clean up tangled loops
+						first.next = tn.next;
+						continue;
+					}
+					if (!output) {
+						tn.rasterX = x1;
+						tn.rasterY = y1;
+					} else if (prev != null) {
+						prev.next = null;
+						break;
+					} else {
+						g.traces[r.getRight()] = null;
+						break;
+					}
+				}
+			if (first != null)
+				toSync.set(g.index << 1);
+		}
+	}
 
 }
