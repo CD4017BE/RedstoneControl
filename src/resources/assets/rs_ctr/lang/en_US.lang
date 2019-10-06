@@ -40,6 +40,8 @@ tile.rs_ctr.fluid_translocator.name=clocked Fluid Translocator
 tile.rs_ctr.fluid_translocator.tip=§esource/destin. Tank IN§7\: the tank to drain from / fill in.\n§EAmount IN§7\: the fluid volume in mB to transfer. §oNegative value will transfer destin. -> source instead.\n§eClock IN§7 triggers the transfer on value change.\n§eAmount OUT§7 returns volume actually transfered.\n§eEnergy IN§7 supplies the energy required for operation.
 tile.rs_ctr.panel.name=Control Panel
 tile.rs_ctr.panel.tip=The surface is divided into a 4x4 grid where different §6Modules§7 can be attached. Ports for connecting wires to those Modules are on the back side.\nUse a §6Screwdriver§7 to configure or remove modules.\n§oAll installed Modules and configuration is kept when broken.
+tile.rs_ctr.solar_cell.name=Solar Cell
+tile.rs_ctr.solar_cell.tip=Generates energy from sunlight\nto power your pocket calculator.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -133,6 +135,7 @@ port.rs_ctr.bins8=32bit -> 4x8bit
 port.rs_ctr.clk=Clock IN
 port.rs_ctr.bi=Block IN
 port.rs_ctr.clock=⎍ %.2fs
+port.rs_ctr.energy_io=Energy I/O
 port.rs_ctr.energy_i=Energy IN
 port.rs_ctr.energy_o=Energy OUT
 port.rs_ctr.battery0=§cno capacitor\n§cinstalled!

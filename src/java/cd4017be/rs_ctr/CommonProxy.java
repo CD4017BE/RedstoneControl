@@ -45,6 +45,7 @@ import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
 import cd4017be.rs_ctr.tileentity.Panel;
 import cd4017be.rs_ctr.tileentity.PowerHub;
+import cd4017be.rs_ctr.tileentity.SolarCell;
 import cd4017be.rs_ctr.tileentity.part.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -127,6 +128,7 @@ public class CommonProxy implements IRecipeHandler {
 		ItemTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_item_translocator_ps", -ItemTranslocator.TRANSFER_COST);
 		FluidTranslocator.BASE_COST = -(int)c.getNumber("energy_fluid_translocator_op", -FluidTranslocator.BASE_COST);
 		FluidTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_fluid_translocator_pb", -FluidTranslocator.TRANSFER_COST);
+		SolarCell.POWER = (int)c.getNumber("energy_solar", SolarCell.POWER);
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));
