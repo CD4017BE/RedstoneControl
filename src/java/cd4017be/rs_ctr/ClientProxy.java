@@ -58,7 +58,7 @@ public class ClientProxy extends CommonProxy {
 	public void registerModels(ModelRegistryEvent ev) {
 		setMod(Main.ID);
 		
-		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(4).setProvider(7, PORT_RENDER));
+		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(1).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), true, PORT_RENDER, BlockMimicModel.provider));
 		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL);
 		
@@ -78,7 +78,7 @@ public class ClientProxy extends CommonProxy {
 		if (HAS_IC2_API)
 			PORT_RENDER.dependencies.add(IC2EnergySensor.MODEL);
 		
-		registerRenderBS(RS_PORT, 0, 1);
+		registerRender(RS_PORT, 0, 3);
 		registerRender(WIRE_ANCHOR);
 		registerRender(EDITOR);
 		registerRender(ASSEMBLER);

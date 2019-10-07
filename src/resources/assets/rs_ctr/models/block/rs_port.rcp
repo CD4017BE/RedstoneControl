@@ -1,17 +1,15 @@
 {
 	textures = [
-		"rs_ctr:blocks/rs_port0",
-		"rs_ctr:blocks/rs_port1"
+		"rs_ctr:blocks/rs_port1",
+		"rs_ctr:blocks/rs_port0"
 	];
 }
 
 core() {}
 
-con(t) {
+con() {
 	Loc Q = [4,4,-0.01, 12,12,2]#, T = [0,8, 8,10]#;
-	for(F:["-uv","+Uv","u-v","U+v"]) {add(rect(Q, T, F, 0));}
-	T = [0,0, 8,8]#;
-	add(rect(Q, T, "uV-N", 0));
-	offsetUV([t % 2 * 8, #(t / 2) * 8]#);
-	add(rect(Q, T, "uV+", 1));
+	for(F:["-uv","+Uv","u-v","U+v"]) {add(rect(Q, T, F));}
+	add(rect(Q, [0,0, 8,8]#, "uV-N"));
+	add(rect(Q, [8,0, 16,8]#, "uV+"));
 }

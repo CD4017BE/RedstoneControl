@@ -1,13 +1,15 @@
 package cd4017be.rs_ctr.tileentity;
 
 import static cd4017be.api.rs_ctr.port.MountedPort.SIZE;
-
+import static cd4017be.rs_ctr.render.PanelRenderer.sockets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
-
+import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.TickRegistry;
@@ -16,12 +18,15 @@ import cd4017be.lib.block.AdvancedBlock.INeighborAwareTile;
 import cd4017be.lib.block.AdvancedBlock.IRedstoneTile;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
+import cd4017be.lib.render.Util;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
 import cd4017be.rs_ctr.Objects;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,13 +37,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareTile, IUpdatable, IModularTile, ITilePlaceHarvest {
+public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareTile, IUpdatable, IModularTile, ITilePlaceHarvest, IBlockRenderComp {
 
 	SignalHandler[] callbacks = new SignalHandler[6];
 	/**0-5: input, 6-11: output */
@@ -167,19 +174,36 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		return port;
 	}
 
+	@Override
+	public ArrayList<IBlockRenderComp> getBMRComponents() {
+		ArrayList<IBlockRenderComp> list = super.getBMRComponents();
+		list.add(this);
+		return list;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void render(List<BakedQuad> quads) {
+		for (MountedPort port : ports) {
+			Orientation o = Orientation.fromFacing(port.face);
+			Vec3d dx = o.X.scale(MountedPort.SIZE * -2.), dy = o.Y.scale(MountedPort.SIZE * 2.), p = o.rotate(new Vec3d(MountedPort.SIZE, -MountedPort.SIZE, -0.005));
+			int i = port.isMaster ? 4 : 0, j = port.type == SignalHandler.class ? 0 : port.type == BlockHandler.class ? 4 : port.type == EnergyHandler.class ? 8 : 12;
+			quads.add(new BakedQuad(Util.texturedRect(port.pos.add(p), dx, dy, Util.getUV(sockets, i, j), Util.getUV(sockets, i + 4, j + 4), -1, 0), -1, o.front, sockets, true, DefaultVertexFormats.BLOCK));
+		}
+		for (int i = 0; i < 6; i++)
+			if ((strong >> i & 1) != 0) {
+				Orientation o = Orientation.fromFacing(EnumFacing.VALUES[i]);
+				Vec3d dx = o.X.scale(MountedPort.SIZE * 2.), dy = o.Y.scale(MountedPort.SIZE * 2.), p = o.rotate(new Vec3d(-.125 - MountedPort.SIZE , -.125 - MountedPort.SIZE , -.37));
+				quads.add(new BakedQuad(Util.texturedRect(p.addVector(.5, .5, .5), dx, dy, Util.getUV(sockets, 0, 12), Util.getUV(sockets, 4, 16), -1, 0), -1, o.back, sockets, true, DefaultVertexFormats.BLOCK));
+			}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getModuleState(int m) {
 		if (m == 7) return (T)getBMRComponents();
 		if (m == 6) return cover.module();
-		int i;
-		if ((strong >> m & 1) != 0) i = 3;
-		else {
-			i = -1;
-			if (getPort(m) != null) i++;
-			if (getPort(m + 6) != null) i+=2;
-		}
-		return (T)Byte.valueOf((byte)i);
+		return (T)Byte.valueOf(getPort(m) != null || getPort(m + 6) != null ? (byte)0 : (byte)-1);
 	}
 
 	@Override
