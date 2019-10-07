@@ -1,7 +1,6 @@
 package cd4017be.rs_ctr.block;
 
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
-import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.wire.IHookAttachable;
 import cd4017be.lib.block.BlockCoveredPipe;
 import cd4017be.lib.block.BlockPipe;
@@ -81,11 +80,10 @@ public class BlockRedstonePort extends BlockCoveredPipe {
 		int i = target.subHit - 1;
 		//if (i == 6 && target.hitVec.squareDistanceTo(0.5, 0.5, 0.5) < 0.7) i = target.sideHit.ordinal();
 		if (i == -2) return new ItemStack(Objects.wire_anchor);
-		if (i >= 0 && i < 6) {
-			MountedPort p = (MountedPort)port.getPort(i);
-			if (p == null) p = (MountedPort)port.getPort(i + 6);
-			if (p != null) return new ItemStack(Objects.rs_port, 1, p.isMaster ? 0 : 1);
-		}
+		if (i >= 0 && i < 6)
+			for (int t = 0; t < 4; t++)
+				if (port.getPort(i + t*6) != null)
+					return new ItemStack(Objects.rs_port, 1, t);
 		state = port.cover.state;
 		if (state == null) return ItemStack.EMPTY;
 		ItemStack stack = port.cover.stack;

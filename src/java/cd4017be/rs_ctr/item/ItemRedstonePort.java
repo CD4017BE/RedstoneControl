@@ -140,6 +140,8 @@ public class ItemRedstonePort extends BaseItemBlock {
 		if (!isInCreativeTab(tab)) return;
 		items.add(new ItemStack(this, 1, 0));
 		items.add(new ItemStack(this, 1, 1));
+		items.add(new ItemStack(this, 1, 2));
+		items.add(new ItemStack(this, 1, 3));
 	}
 
 }

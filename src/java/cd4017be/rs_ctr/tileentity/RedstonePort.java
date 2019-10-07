@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.com.BlockReference;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.port.MountedPort;
@@ -36,10 +37,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
+import net.minecraftforge.items.wrapper.EmptyHandler;
+import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 /**
  * @author CD4017BE
@@ -47,38 +52,47 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareTile, IUpdatable, IModularTile, ITilePlaceHarvest, IBlockRenderComp {
 
-	SignalHandler[] callbacks = new SignalHandler[6];
+	private static boolean RECURSION;
+
+	final SignalHandler[] callbacks = new SignalHandler[6];
+	final BlockReference[] mirrors = new BlockReference[6];
 	/**0-5: input, 6-11: output */
 	final int[] states = new int[12];
 	byte strong, dirty;
 
-	{ports = new MountedPort[0];}
+	{ports = new MountedPort[0];} //keep array sorted!
 
 	@Override
 	public Port getPort(int pin) {
 		Port port = super.getPort(pin);
 		if (port != null) return port;
-		for (MountedPort p : ports)
-			if (p.pin == pin)
-				return p;
-		return port;
+		int i = Arrays.binarySearch(ports, pin);
+		return i >= 0 ? ports[i] : null;
 	}
 
 	@Override
-	public SignalHandler getPortCallback(int pin) {
-		return new RSOut(pin);
+	public Object getPortCallback(int pin) {
+		if (pin < 12) return new RSOut(pin);
+		int i = pin - 18;
+		return (BlockHandler)(block) -> mirrors[i] = block;
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
-		SignalHandler c = callback instanceof SignalHandler ? (SignalHandler)callback : null;
-		callbacks[pin] = c;
-		if (c != null) c.updateSignal(states[pin]);
+		if (pin < 6) {
+			SignalHandler c = callback instanceof SignalHandler ? (SignalHandler)callback : null;
+			callbacks[pin] = c;
+			if (c != null) c.updateSignal(states[pin]);
+		} else if (callback instanceof BlockHandler) {
+			EnumFacing side = EnumFacing.VALUES[(pin - 12)^1];
+			((BlockHandler)callback).updateBlock(new BlockReference(world, pos.offset(side, -1), side));
+		}
 	}
 
 	@Override
 	protected void resetPin(int pin) {
-		getPortCallback(pin).updateSignal(0);
+		if (pin < 12) new RSOut(pin).updateSignal(0);
+		else mirrors[pin - 18] = null;
 	}
 
 	@Override
@@ -126,6 +140,31 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	@Override
+	public boolean hasCapability(Capability<?> cap, EnumFacing facing) {
+		if (cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return false;
+		int i = facing.ordinal();
+		return mirrors[i] != null || Arrays.binarySearch(ports, i + 18) >= 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getCapability(Capability<T> cap, EnumFacing facing) {
+		if (cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return null;
+		int i = facing.ordinal();
+		BlockReference block = mirrors[i];
+		if (block != null && !RECURSION) {
+			try {
+				RECURSION = true;
+				if (block.isLoaded()) {
+					T obj = block.getCapability(cap);
+					if (obj != null) return obj;
+				}
+			} finally { RECURSION = false; }
+		} else if (Arrays.binarySearch(ports, i + 18) < 0) return null;
+		return (T)(cap == ITEM_HANDLER_CAPABILITY ? EmptyHandler.INSTANCE : EmptyFluidHandler.INSTANCE);
+	}
+
+	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		NBTTagList list = new NBTTagList();
 		for (MountedPort port : ports) {
@@ -151,6 +190,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			int pin = tag.getByte("pin");
 			(ports[i] = createPort(pin)).deserializeNBT(tag);
 		}
+		Arrays.sort(ports);
 		cover.readNBT(nbt, "cover", mode == SYNC ? this : null);
 		if (mode < SYNC) {
 			int[] arr = nbt.getIntArray("states");
@@ -164,13 +204,14 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	}
 
 	private MountedPort createPort(int pin) {
-		boolean in = pin < 6;
-		MountedPort port = new MountedPort(this, pin, SignalHandler.class, in);
+		boolean br = pin >= 12;
+		boolean in = pin % 12 < 6;
+		MountedPort port = new MountedPort(this, pin, br ? BlockHandler.class : SignalHandler.class, in);
 		EnumFacing side = EnumFacing.VALUES[pin % 6];
 		Orientation o = Orientation.fromFacing(side);
-		Vec3d p = o.rotate(new Vec3d(in ? -SIZE : SIZE, in ? -SIZE : SIZE, -0.375));
+		Vec3d p = o.rotate(new Vec3d(in ? -SIZE : SIZE, in^br ? -SIZE : SIZE, -0.375));
 		port.setLocation((float)p.x + 0.5F, (float)p.y + 0.5F, (float)p.z + 0.5F, o.back);
-		port.setName(port.isMaster ? "port.rs_ctr.rsR" : "port.rs_ctr.rsW");
+		port.setName(br ? in ? "port.rs_ctr.brR" : "port.rs_ctr.brW" : in ? "port.rs_ctr.rsR" : "port.rs_ctr.rsW");
 		return port;
 	}
 
@@ -203,37 +244,41 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	public <T> T getModuleState(int m) {
 		if (m == 7) return (T)getBMRComponents();
 		if (m == 6) return cover.module();
-		return (T)Byte.valueOf(getPort(m) != null || getPort(m + 6) != null ? (byte)0 : (byte)-1);
+		return (T)Byte.valueOf(isModulePresent(m) ? (byte)0 : (byte)-1);
 	}
 
 	@Override
 	public boolean isModulePresent(int m) {
 		if (m == 7) return false;
 		if (m == 6) return cover.state != null;
-		return getPort(m) != null || getPort(m + 6) != null;
+		return Arrays.binarySearch(ports, m) >= 0 ||
+		Arrays.binarySearch(ports, m + 6) >= 0 ||
+		Arrays.binarySearch(ports, m + 12) >= 0 ||
+		Arrays.binarySearch(ports, m + 18) >= 0;
 	}
 
 	public boolean addPort(EnumFacing side, int type) {
-		int i = side.ordinal();
-		MountedPort port;
+		int i = side.ordinal(), k = i + 6 * type;
+		int j = Arrays.binarySearch(ports, k);
 		switch(type) {
 		case 0:
-			if (getPort(i) != null || (strong >> i & 1) != 0) return false;
-			port = createPort(i);
+			if (j >= 0 || (strong >> i & 1) != 0) return false;
 			break;
 		case 1:
-			if (getPort(side.ordinal() + 6) != null) {
+			if (j >= 0) {
 				if ((strong >> i & 1) != 0) return false;
 				strong |= 1 << i;
 				markDirty(REDRAW);
 				return true;
 			}
-			port = createPort(i + 6);
 			break;
+		case 2:
+		case 3:
+			if (j < 0) break;
 		default: return false;
 		}
-		ports = Arrays.copyOf(ports, ports.length + 1);
-		ports[ports.length - 1] = port;
+		MountedPort port = createPort(k);
+		ports = ArrayUtils.add(ports, -1 - j, port);
 		if (!unloaded && !world.isRemote) {
 			port.onLoad();
 			onPortModified(port, E_HOOK_ADD);
@@ -243,30 +288,33 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	public boolean breakPort(int side, EntityPlayer player, boolean harvest) {
 		if (side <= -2) return cover.hit(this, player);
-		boolean hasRem = false;
-		int in = -1, out = -1;
-		for (int i = 0; i < ports.length; i++)
-			if (ports[i].pin == side) in = i;
-			else if (ports[i].pin == side + 6) out = i;
-			else hasRem = true;
-		if (!hasRem) return false;
-		if (out >= 0) {
-			MountedPort port = ports[out];
-			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1 + (strong >> side & 1), 1), world, pos);
-			port.setConnector(null, player);
-			port.onUnload();
-			strong &= ~(1 << side);
-			ports = ArrayUtils.remove(ports, out); //index shift doesn't affect in because it's always in < out. 
+		int i;
+		if ((i = Arrays.binarySearch(ports, side + 18)) >= 0) {
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 3), world, pos);
+			remPort(i, player);
 		}
-		if (in >= 0) {
-			MountedPort port = ports[in];
+		if ((i = Arrays.binarySearch(ports, side + 12)) >= 0) {
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 2), world, pos);
+			remPort(i, player);
+		}
+		if ((i = Arrays.binarySearch(ports, side + 6)) >= 0) {
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1 + (strong >> side & 1), 1), world, pos);
+			remPort(i, player);
+			strong &= ~(1 << side);
+		}
+		if ((i = Arrays.binarySearch(ports, side)) >= 0) {
 			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 0), world, pos);
-			port.setConnector(null, player);
-			port.onUnload();
-			ports = ArrayUtils.remove(ports, in);
+			remPort(i, player);
 		}
 		onPortModified(null, E_HOOK_REM);
-		return true;
+		return ports.length > 0;
+	}
+
+	private void remPort(int i, EntityPlayer player) {
+		MountedPort port = ports[i];
+		port.setConnector(null, player);
+		port.onUnload();
+		ports = ArrayUtils.remove(ports, i);
 	}
 
 	@Override
@@ -276,15 +324,19 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public List<ItemStack> dropItem(IBlockState state, int fortune) {
-		int in = 0, out = 0;
-		for (MountedPort port : ports) {
-			if (port.isMaster) in++;
+		int in = 0, out = 0, br = 0, mirr = 0;
+		for (MountedPort port : ports)
+			if (port.type == BlockHandler.class)
+				if (port.isMaster) br++;
+				else mirr++;
+			else if (port.isMaster) in++;
 			else if ((strong >> (port.pin - 6) & 1) != 0) out+=2;
 			else out++;
-		}
 		ArrayList<ItemStack> list = new ArrayList<>();
 		if (in > 0) list.add(new ItemStack(Objects.rs_port, in, 0));
 		if (out > 0) list.add(new ItemStack(Objects.rs_port, out, 1));
+		if (br > 0) list.add(new ItemStack(Objects.rs_port, br, 2));
+		if (mirr > 0) list.add(new ItemStack(Objects.rs_port, mirr, 2));
 		return list;
 	}
 
