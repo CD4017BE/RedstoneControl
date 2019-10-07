@@ -1,4 +1,4 @@
-VERSION = 58;
+VERSION = 59;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -66,6 +66,8 @@ INIT() {
 	add("shaped", it("tile.panel"), "0/1", "paper", slab);
 	add("shaped", 2 * it("m.actuator"), "010/232/454", it("item.block_wire"), "enderpearl", slab:7, it("minecraft:piston"), it("item.wire"), it("item.wire_e"));
 	add("shaped", it("tile.item_translocator"), "020/ 3 /001", it("tile.rs_port"):0, it("tile.rs_port"):1, it("minecraft:chest"), it("m.actuator"));
+	add("shaped", it("tile.fluid_translocator"), " 2 /031/ 0 ", it("tile.rs_port"):0, it("tile.rs_port"):1, it("minecraft:bucket"), it("m.actuator"));
+	add("shaped", it("tile.energy_valve"), "202/304/212", it("tile.rs_port"):0, it("tile.rs_port"):1, "ingotGold", "dustRedstone", "gemQuartz");
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", 8 * it("item.wire_e"), "000/010/000", it("item.wire"), "ingotGold");
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");

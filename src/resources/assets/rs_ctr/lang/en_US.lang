@@ -42,6 +42,8 @@ tile.rs_ctr.panel.name=Control Panel
 tile.rs_ctr.panel.tip=The surface is divided into a 4x4 grid where different §6Modules§7 can be attached. Ports for connecting wires to those Modules are on the back side.\nUse a §6Screwdriver§7 to configure or remove modules.\n§oAll installed Modules and configuration is kept when broken.
 tile.rs_ctr.solar_cell.name=Solar Cell
 tile.rs_ctr.solar_cell.tip=Generates energy from sunlight\nto power your pocket calculator.
+tile.rs_ctr.energy_valve.name=Power Regulator
+tile.rs_ctr.energy_valve.tip=Controls and measures the amount of §9Forge Energy§7 transfered through the device\:\nChanging the value of §eClock IN§7 starts a new Energy Packet of size §eRF Limit IN§7 and §eRF flow OUT§7 returns the amount that was transfered from the previous Packet.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -149,6 +151,8 @@ port.rs_ctr.am_o=Amount OUT
 port.rs_ctr.cfg=Configuration
 port.rs_ctr.tank0=source Tank IN
 port.rs_ctr.tank1=destin. Tank IN
+port.rs_ctr.rf_i=RF Limit IN
+port.rs_ctr.rf_o=RF Flow OUT
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
