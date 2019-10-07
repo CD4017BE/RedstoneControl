@@ -26,7 +26,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 
 	SignalHandler flowOut;
 	IEnergyStorage out;
-	int amIn = Integer.MAX_VALUE, flow, limit, amOut, clk;
+	int amIn, flow, limit, amOut, clk;
 	boolean update = true;
 	{
 		ports = new MountedPort[] {
@@ -49,7 +49,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 
 	@Override
 	protected void resetPin(int pin) {
-		if (pin == 1) amIn = Integer.MAX_VALUE;
+		if (pin == 1) amIn = 0;
 	}
 
 	@Override
@@ -59,6 +59,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 		update = true;
 		if (flow != amOut)
 			flowOut.updateSignal(amOut = flow);
+		flow = 0;
 		markDirty(SAVE);
 	}
 
@@ -67,7 +68,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 		super.storeState(nbt, mode);
 		if (mode == SAVE) {
 			nbt.setInteger("amIn", amIn);
-			nbt.setInteger("flow", limit - flow);
+			nbt.setInteger("flow", flow);
 			nbt.setInteger("amOut", amOut);
 			nbt.setInteger("clk", clk);
 			nbt.setBoolean("update", update);
@@ -79,7 +80,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 		super.loadState(nbt, mode);
 		if (mode == SAVE) {
 			limit = amIn = nbt.getInteger("amIn");
-			flow = limit - nbt.getInteger("flow");
+			flow = nbt.getInteger("flow");
 			amOut = nbt.getInteger("amOut");
 			clk = nbt.getInteger("clk");
 			update = nbt.getBoolean("update");
@@ -109,14 +110,13 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 	public int receiveEnergy(int am, boolean sim) {
 		if (update) {
 			update = false;
-			flow = amIn;
 			limit = amIn;
 			markDirty(SAVE);
 		}
-		if (am > flow) am = flow;
+		if (am + flow > limit) am = limit - flow;
 		if (am > 0 && out != null) {
 			am = out.receiveEnergy(am, sim);
-			if (!sim) flow -= am;
+			if (!sim) flow += am;
 			return am;
 		}
 		return 0;
@@ -129,7 +129,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 
 	@Override
 	public int getEnergyStored() {
-		return limit - flow;
+		return flow;
 	}
 
 	@Override
