@@ -95,7 +95,7 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 	}
 
 	private int transfer(int am) {
-		if (am == 0 || ref0 == null || ref1 == null) return 0;
+		if (am == 0 || ref0 == null || ref1 == null || !ref0.isLoaded() || !ref1.isLoaded()) return 0;
 		int e = cost(am);
 		if (energy.changeEnergy(e, true) != e) return 0;
 		IItemHandler inv0 = ref0.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);

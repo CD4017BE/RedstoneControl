@@ -48,6 +48,8 @@ tile.rs_ctr.solar_cell.name=Solar Cell
 tile.rs_ctr.solar_cell.tip=Generates energy from sunlight\nto power your pocket calculator.
 tile.rs_ctr.energy_valve.name=Power Regulator
 tile.rs_ctr.energy_valve.tip=Controls and measures the amount of §9Forge Energy§7 transfered through the device\:\nChanging the value of §eClock IN§7 starts a new Energy Packet of size §eRF Limit IN§7 and §eRF flow OUT§7 returns the amount that was transfered from the previous Packet.
+tile.rs_ctr.splitter_b.name=Block Ref 4x Splitter
+tile.rs_ctr.splitter_b.tip=Repeats the incoming Block Reference to four different destinations (no delay).
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
