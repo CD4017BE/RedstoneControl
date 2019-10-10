@@ -1,3 +1,29 @@
+v0.2.0
+Changes:
+- fixed Item Tranlocator crash when no energy connected
+- fixed Item Translocators not saving their state
+- added Fluid Translocator
+- added Power Regulator
+- added new Socket types for Block References
+- replaced Block Probe Wire with Block Reference Wire
+- added Block Reference 4x Splitter
+- added Block Reference Multiplexer
+- fixed Clock Plug GUI to initialize with 1s interval
+- added config settings for control panel render & sync
+- optimized the circuit schematic -> JVM bytecode compiler
+- introduced different data types in circuit editor
+- added new gates in circuit editor: valiables of different types, array storage, execution flow control
+- circuit editor gui improvements:
+    - ability to cancel gate placements
+    - pin highlighting
+    - better trace laying
+    - moving & deleting multiple gates at once
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.11
+
 v0.1.3
 Changes:
 - fixed race condition in panel module rendering leading to potential crashes
