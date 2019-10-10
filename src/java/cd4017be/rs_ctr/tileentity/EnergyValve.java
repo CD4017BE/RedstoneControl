@@ -113,7 +113,7 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 			limit = amIn;
 			markDirty(SAVE);
 		}
-		if (am + flow > limit) am = limit - flow;
+		am = Math.min(am, limit - flow);
 		if (am > 0 && out != null) {
 			am = out.receiveEnergy(am, sim);
 			if (!sim) flow += am;
