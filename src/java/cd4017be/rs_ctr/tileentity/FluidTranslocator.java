@@ -6,7 +6,9 @@ import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -112,6 +114,36 @@ public class FluidTranslocator extends WallMountGate implements ITickableServerO
 		else if ((am = toInv.fill(stack, true)) > 0)
 			fromInv.drain(new FluidStack(stack, am), true);
 		return am;
+	}
+
+	@Override
+	protected void storeState(NBTTagCompound nbt, int mode) {
+		if (mode == SAVE) {
+			nbt.setBoolean("update", update);
+			nbt.setInteger("in", amIn);
+			nbt.setInteger("out", amOut);
+			nbt.setInteger("clk", clk);
+			if (ref0 != null) nbt.setTag("inv0", ref0.serializeNBT());
+			else nbt.removeTag("inv0");
+			if (ref1 != null) nbt.setTag("inv1", ref1.serializeNBT());
+			else nbt.removeTag("inv1");
+		}
+		super.storeState(nbt, mode);
+	}
+
+	@Override
+	protected void loadState(NBTTagCompound nbt, int mode) {
+		if (mode == SAVE) {
+			update = nbt.getBoolean("update");
+			amIn = nbt.getInteger("in");
+			amOut = nbt.getInteger("out");
+			clk = nbt.getInteger("clk");
+			ref0 = nbt.hasKey("inv0", NBT.TAG_COMPOUND) ?
+				new BlockReference(nbt.getCompoundTag("inv0")) : null;
+			ref1 = nbt.hasKey("inv1", NBT.TAG_COMPOUND) ?
+				new BlockReference(nbt.getCompoundTag("inv1")) : null;
+		}
+		super.loadState(nbt, mode);
 	}
 
 }

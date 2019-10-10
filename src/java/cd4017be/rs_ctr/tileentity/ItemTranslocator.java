@@ -7,7 +7,9 @@ import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -117,6 +119,40 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 		if ((am = stack.getCount()) > 0 && (am -= toInv.insertItem(toSlot, stack, false).getCount()) > 0)
 			fromInv.extractItem(fromSlot, am, false);
 		return am;
+	}
+
+	@Override
+	protected void storeState(NBTTagCompound nbt, int mode) {
+		if (mode == SAVE) {
+			nbt.setBoolean("update", update);
+			nbt.setInteger("in", amIn);
+			nbt.setInteger("out", amOut);
+			nbt.setInteger("clk", clk);
+			nbt.setInteger("slot0", slot0);
+			nbt.setInteger("slot1", slot1);
+			if (ref0 != null) nbt.setTag("inv0", ref0.serializeNBT());
+			else nbt.removeTag("inv0");
+			if (ref1 != null) nbt.setTag("inv1", ref1.serializeNBT());
+			else nbt.removeTag("inv1");
+		}
+		super.storeState(nbt, mode);
+	}
+
+	@Override
+	protected void loadState(NBTTagCompound nbt, int mode) {
+		if (mode == SAVE) {
+			update = nbt.getBoolean("update");
+			amIn = nbt.getInteger("in");
+			amOut = nbt.getInteger("out");
+			clk = nbt.getInteger("clk");
+			slot0 = nbt.getInteger("slot0");
+			slot1 = nbt.getInteger("slot1");
+			ref0 = nbt.hasKey("inv0", NBT.TAG_COMPOUND) ?
+				new BlockReference(nbt.getCompoundTag("inv0")) : null;
+			ref1 = nbt.hasKey("inv1", NBT.TAG_COMPOUND) ?
+				new BlockReference(nbt.getCompoundTag("inv1")) : null;
+		}
+		super.loadState(nbt, mode);
 	}
 
 }
