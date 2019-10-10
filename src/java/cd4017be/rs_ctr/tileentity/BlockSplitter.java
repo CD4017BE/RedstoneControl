@@ -19,8 +19,8 @@ public class BlockSplitter extends WallMountGate implements BlockHandler {
 	{
 		ports = new MountedPort[5];
 		for (int i = 0; i < 4; i++)
-			ports[i] = new MountedPort(this, i, BlockHandler.class, true).setLocation(0.75F, 0.125F + i * 0.25F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o");
-		ports[4] = new MountedPort(this, 4, BlockHandler.class, false).setLocation(0.25F, 0.5F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.i");
+			ports[i] = new MountedPort(this, i, BlockHandler.class, true).setLocation(0.75F, 0.125F + i * 0.25F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.bo");
+		ports[4] = new MountedPort(this, 4, BlockHandler.class, false).setLocation(0.25F, 0.5F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.bi");
 	}
 
 	@Override
