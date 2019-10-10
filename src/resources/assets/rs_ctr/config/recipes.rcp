@@ -59,6 +59,7 @@ INIT() {
 	add("shaped", 8 * it("tile.wire_anchor"), "0/0", it("minecraft:iron_bars"));
 	add("shaped", it("tile.splitter"), " 0/10/ 0", it("tile.rs_port"):0, it("tile.rs_port"):1);
 	add("shaped", it("tile.splitter_b"), " 0/10/ 0", it("tile.rs_port"):2, it("item.block_wire"));
+	add("shaped", it("tile.multiplex_b"), "12/13/10", it("tile.rs_port"):2, it("item.block_wire"), it("tile.rs_port"):1, it("minecraft:sticky_piston"));
 	add("shaped", it("tile.analog_comb"), "02/01/02", it("tile.rs_port"):1, it("tile.rs_port"):0, "dustRedstone");
 	add("shaped", it("tile.logic_comb"), "023/021/023", it("tile.rs_port"):1, it("tile.rs_port"):0, it("minecraft:redstone_torch"), "dustRedstone");
 	add("shaped", it("tile.xor_gate"), "01/ 0/01", it("tile.logic_comb"), it("item.wire"));

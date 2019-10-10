@@ -47,6 +47,7 @@ public class Objects {
 	public static final BlockGate BIN_SPLIT = null;
 	public static final BlockGate XOR_GATE = null;
 	public static final BlockGate SPLITTER_B = null;
+	public static final BlockGate MULTIPLEX_B = null;
 	public static final BlockGate PROCESSOR = null;
 	public static final BlockGate PROCESSOR2 = null;
 	public static final AdvancedBlock EDITOR = null;
@@ -70,6 +71,7 @@ public class Objects {
 	public static final BaseItemBlock bin_split = null;
 	public static final BaseItemBlock xor_gate = null;
 	public static final BaseItemBlock splitter_b = null;
+	public static final BaseItemBlock multiplex_b = null;
 	public static final ItemProcessor processor = null;
 	public static final ItemProcessor processor2 = null;
 	public static final BaseItemBlock editor = null;
@@ -122,6 +124,7 @@ public class Objects {
 				new BlockGate("bin_split", Material.CIRCUITS, SoundType.STONE, 3, BinarySplitter.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("xor_gate", Material.CIRCUITS, SoundType.STONE, 3, XORGate.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("splitter_b", Material.CIRCUITS, SoundType.STONE, 3, BlockSplitter.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("multiplex_b", Material.CIRCUITS, SoundType.STONE, 3, BlockMultiplexer.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockWireAnchor("wire_anchor", Material.IRON, SoundType.METAL, 3, WireAnchor.class).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("processor", Material.CIRCUITS, SoundType.STONE, 7, Processor.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("processor2", Material.CIRCUITS, SoundType.STONE, 7, Processor.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
@@ -150,6 +153,7 @@ public class Objects {
 				new BaseItemBlock(BIN_SPLIT),
 				new BaseItemBlock(XOR_GATE),
 				new BaseItemBlock(SPLITTER_B),
+				new BaseItemBlock(MULTIPLEX_B),
 				new ItemWireAnchor(WIRE_ANCHOR),
 				new ItemProcessor(PROCESSOR, 6, 6),
 				new ItemProcessor(PROCESSOR2, 4, 4),

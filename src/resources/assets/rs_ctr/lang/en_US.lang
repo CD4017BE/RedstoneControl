@@ -50,6 +50,8 @@ tile.rs_ctr.energy_valve.name=Power Regulator
 tile.rs_ctr.energy_valve.tip=Controls and measures the amount of §9Forge Energy§7 transfered through the device\:\nChanging the value of §eClock IN§7 starts a new Energy Packet of size §eRF Limit IN§7 and §eRF flow OUT§7 returns the amount that was transfered from the previous Packet.
 tile.rs_ctr.splitter_b.name=Block Ref 4x Splitter
 tile.rs_ctr.splitter_b.tip=Repeats the incoming Block Reference to four different destinations (no delay).
+tile.rs_ctr.multiplex_b.name=Block Ref Multiplexer
+tile.rs_ctr.multiplex_b.tip=Selects one of the four block reference inputs to pass on as output depending on the value of §eSelect IN§7 if it's in range §e0 ... 3§7. Otherwise outputs no block reference.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -162,6 +164,12 @@ port.rs_ctr.rf_i=RF Limit IN
 port.rs_ctr.rf_o=RF Flow OUT
 port.rs_ctr.brR=Get Block OUT
 port.rs_ctr.brW=Mirror Block IN
+port.rs_ctr.bi0=Block IN 0
+port.rs_ctr.bi1=Block IN 1
+port.rs_ctr.bi2=Block IN 2
+port.rs_ctr.bi3=Block IN 3
+port.rs_ctr.bo=Block OUT
+port.rs_ctr.sel=Select IN
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
