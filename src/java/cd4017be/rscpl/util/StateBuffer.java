@@ -87,7 +87,7 @@ public class StateBuffer {
 	}
 
 	public short getShort(String key) {
-		return nbt.getByte(key);
+		return nbt.getShort(key);
 	}
 
 	public int getInt(String key) {
