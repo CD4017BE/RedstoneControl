@@ -129,6 +129,10 @@ public class Dep implements Comparable<Dep> {
 
 	@Override
 	public int compareTo(Dep o) {
+		if (type == Type.BOOLEAN_TYPE)
+			if (o.type != Type.BOOLEAN_TYPE) return -1;
+			else return src.order - o.src.order;
+		if (o.type == Type.BOOLEAN_TYPE) return 1;
 		return o.src.order - src.order;
 	}
 
