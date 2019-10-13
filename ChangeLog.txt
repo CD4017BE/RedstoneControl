@@ -1,3 +1,13 @@
+v0.2.1
+Changes:
+- fixed 16bit variables in circuits being deserialized as 8bit
+- fixed mixed bitwise/boolean logic gates in circuits sometimes producing wrong results
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.11
+
 v0.2.0
 Changes:
 - fixed Item Tranlocator crash when no energy connected
