@@ -60,6 +60,8 @@ public class Objects {
 	public static final BlockGate ENERGY_VALVE = null;
 	public static final BlockGate PANEL = null;
 	public static final BlockGate SOLAR_CELL = null;
+	public static final BlockGate BLOCK_BREAKER = null;
+	public static final BlockGate ITEM_PLACER = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -84,6 +86,8 @@ public class Objects {
 	public static final BaseItemBlock energy_valve = null;
 	public static final BaseItemBlock panel = null;
 	public static final BaseItemBlock solar_cell = null;
+	public static final BaseItemBlock block_breaker = null;
+	public static final BaseItemBlock item_placer = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
@@ -136,7 +140,9 @@ public class Objects {
 				new BlockGate("fluid_translocator", Material.ROCK, SoundType.STONE, 3, FluidTranslocator.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("energy_valve", Material.ROCK, SoundType.STONE, 3, EnergyValve.class, GATE_ORIENT).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("panel", Material.CIRCUITS, SoundType.STONE, 31, Panel.class, XY_12_ROT).setBlockBounds(new AxisAlignedBB(0, 0, 0.75, 1, 1, 1)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("solar_cell", Material.CIRCUITS, SoundType.GLASS, 3, SolarCell.class, HOR_AXIS).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, .25, 1)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("solar_cell", Material.CIRCUITS, SoundType.GLASS, 3, SolarCell.class, HOR_AXIS).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, .25, 1)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("block_breaker", Material.ROCK, SoundType.STONE, 3, BlockBreaker.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("item_placer", Material.ROCK, SoundType.STONE, 3, ItemPlacer.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -166,6 +172,8 @@ public class Objects {
 				new BaseItemBlock(ENERGY_VALVE),
 				new BaseItemBlock(PANEL),
 				new BaseItemBlock(SOLAR_CELL),
+				new BaseItemBlock(BLOCK_BREAKER),
+				new BaseItemBlock(ITEM_PLACER),
 				new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),

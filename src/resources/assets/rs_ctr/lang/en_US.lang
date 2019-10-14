@@ -346,3 +346,5 @@ recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
 recipe.rs_ctr.sensors=Comparator tuning
 recipe.rs_ctr.capacity=%.4u Charge
+#added by ingame editor:
+port.rs_ctr.status=Status OUT
