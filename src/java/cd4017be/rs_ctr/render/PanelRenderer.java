@@ -3,19 +3,14 @@ package cd4017be.rs_ctr.render;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.Main;
+import static cd4017be.rs_ctr.ClientProxy.t_dial;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import static java.lang.Float.floatToIntBits;
@@ -29,21 +24,6 @@ import java.util.List;
  */
 @SideOnly(Side.CLIENT)
 public class PanelRenderer {
-
-	static final PanelRenderer INSTANCE = new PanelRenderer();
-
-	public static void register() {}
-
-	private PanelRenderer() {
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	static final ResourceLocation
-			TEX_DIAL = new ResourceLocation(Main.ID, "blocks/analog_dial"),
-			TEX_7SEG = new ResourceLocation(Main.ID, "blocks/7seg"),
-			TEX_SOCKETS = new ResourceLocation(Main.ID, "blocks/sockets");
-
-	public static TextureAtlasSprite dial, seg7, blank, sockets;
 
 	static IntArrayModel create(double rad0, double rad1, double angle0, double angle1, int div) {
 		int[] data = new int[28 * div];
@@ -70,21 +50,21 @@ public class PanelRenderer {
 	}
 
 	static void drawPin(List<BakedQuad> quads, float x, float y, float z, float d, EnumFacing side) {
-		int u0 = floatToIntBits(dial.getInterpolatedU(0)), u1 = floatToIntBits(dial.getInterpolatedU(.5)), u2 = floatToIntBits(dial.getInterpolatedU(1)),
-			v0 = floatToIntBits(dial.getInterpolatedV(13)), v1 = floatToIntBits(dial.getInterpolatedV(13.5)), v2 = floatToIntBits(dial.getInterpolatedV(14));
+		int u0 = floatToIntBits(t_dial.getInterpolatedU(0)), u1 = floatToIntBits(t_dial.getInterpolatedU(.5)), u2 = floatToIntBits(t_dial.getInterpolatedU(1)),
+			v0 = floatToIntBits(t_dial.getInterpolatedV(13)), v1 = floatToIntBits(t_dial.getInterpolatedV(13.5)), v2 = floatToIntBits(t_dial.getInterpolatedV(14));
 		int z0 = floatToIntBits(z), z1 = floatToIntBits(z + 0.0625F);
 		quads.add(new BakedQuad(new int[] {
 				floatToIntBits(x - d), floatToIntBits(y + d), z0, -1, u0, v0, 0,
 				floatToIntBits(x - d), floatToIntBits(y - d), z0, -1, u0, v2, 0,
 				floatToIntBits(x    ), floatToIntBits(y    ), z1, -1, u1, v1, 0,
 				floatToIntBits(x + d), floatToIntBits(y + d), z0, -1, u2, v0, 0
-			}, -1, side, dial, true, DefaultVertexFormats.BLOCK));
+			}, -1, side, t_dial, true, DefaultVertexFormats.BLOCK));
 		quads.add(new BakedQuad(new int[] {
 				floatToIntBits(x    ), floatToIntBits(y    ), z1, -1, u1, v1, 0,
 				floatToIntBits(x - d), floatToIntBits(y - d), z0, -1, u0, v2, 0,
 				floatToIntBits(x + d), floatToIntBits(y - d), z0, -1, u2, v2, 0,
 				floatToIntBits(x + d), floatToIntBits(y + d), z0, -1, u2, v0, 0
-			}, -1, side, dial, true, DefaultVertexFormats.BLOCK));
+			}, -1, side, t_dial, true, DefaultVertexFormats.BLOCK));
 	}
 
 	/**
@@ -104,9 +84,9 @@ public class PanelRenderer {
 			w = (float)(d >> 4) - .25F;
 		}
 		int zi = floatToIntBits(z);
-		int u0 = floatToIntBits(dial.getInterpolatedU(f)), u1 = floatToIntBits(dial.getInterpolatedU(f + w));
+		int u0 = floatToIntBits(t_dial.getInterpolatedU(f)), u1 = floatToIntBits(t_dial.getInterpolatedU(f + w));
 		f = (float)(d & 15) * 1.25F;
-		int v0 = floatToIntBits(dial.getInterpolatedV(f)), v1 = floatToIntBits(dial.getInterpolatedV(f + 1.25F));
+		int v0 = floatToIntBits(t_dial.getInterpolatedV(f)), v1 = floatToIntBits(t_dial.getInterpolatedV(f + 1.25F));
 		w *= h / 1.25F; h /= 2;
 		int[] data = new int[] {
 			floatToIntBits(x), floatToIntBits(y + h), zi, color, u0, v0, 0,
@@ -114,7 +94,7 @@ public class PanelRenderer {
 			floatToIntBits(x + w), floatToIntBits(y - h), zi, color, u1, v1, 0,
 			floatToIntBits(x + w), floatToIntBits(y + h), zi, color, u1, v0, 0
 		};
-		return new BakedQuad(data, -1, side, dial, true, DefaultVertexFormats.BLOCK);
+		return new BakedQuad(data, -1, side, t_dial, true, DefaultVertexFormats.BLOCK);
 	}
 
 	static float len(int i, int exp) {
@@ -136,25 +116,6 @@ public class PanelRenderer {
 			float w = drawNumber(quads, x, y, z, h, n / 10, Math.min(exp + 1, 0), color, side);
 			return w + drawNumber(quads, x + w * h, y, z, h, n % 10, exp < -1 ? 0 : exp, color, side);
 		}
-	}
-
-	@SubscribeEvent
-	public void registerTexture(TextureStitchEvent.Pre event) {
-		TextureMap map = event.getMap();
-		if (!"textures".equals(map.getBasePath())) return;
-		map.registerSprite(TEX_DIAL);
-		map.registerSprite(TEX_7SEG);
-		map.registerSprite(TEX_SOCKETS);
-	}
-
-	@SubscribeEvent
-	public void initModel(TextureStitchEvent.Post event) {
-		TextureMap map = event.getMap();
-		if (!"textures".equals(map.getBasePath())) return;
-		dial = map.getAtlasSprite(TEX_DIAL.toString());
-		seg7 = map.getAtlasSprite(TEX_7SEG.toString());
-		sockets = map.getAtlasSprite(TEX_SOCKETS.toString());
-		blank = map.getAtlasSprite("minecraft:white");
 	}
 
 	public enum Layout {
@@ -187,7 +148,7 @@ public class PanelRenderer {
 			float fy = (float)(Math.cos(f) * rad1), fx = (float)(Math.sin(f) * rad1);
 			float px = (float)offset.x, py = (float)offset.y;
 			int pz = floatToIntBits((float)offset.z + 0.03125F);
-			TextureAtlasSprite tex = dial;
+			TextureAtlasSprite tex = t_dial;
 			int u0 = floatToIntBits(tex.getMinU()), u1 = floatToIntBits(tex.getInterpolatedU(4)), u2 = floatToIntBits(tex.getInterpolatedU(12)),
 				v0 = floatToIntBits(tex.getMinV()), v1 = floatToIntBits(tex.getInterpolatedV(4)), v2 = floatToIntBits(tex.getInterpolatedV(12));
 			return new IntArrayModel(new int[] {
@@ -219,10 +180,10 @@ public class PanelRenderer {
 				data[i += 7] = data[i += 7] = floatToIntBits((u + df1) * 7.5F + 0.125F);
 			}
 			model.setColor(color);
-			data = model.withTexture(dial).vertexData;
+			data = model.withTexture(t_dial).vertexData;
 			int q = quads.size();
 			for (int i = 0; i < data.length;)
-				quads.add(new BakedQuad(Arrays.copyOfRange(data, i, i += 28), -1, side, dial, true, DefaultVertexFormats.BLOCK));
+				quads.add(new BakedQuad(Arrays.copyOfRange(data, i, i += 28), -1, side, t_dial, true, DefaultVertexFormats.BLOCK));
 			//scale numbers
 			if (Math.abs(f) <= 1000) {
 				int de = 0;

@@ -5,7 +5,6 @@ import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
-import cd4017be.rs_ctr.render.PanelRenderer;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
@@ -20,7 +19,11 @@ import cd4017be.rscpl.gui.GateTextureHandler;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import static net.minecraftforge.fml.client.registry.ClientRegistry.*;
 
 import java.util.Collections;
@@ -36,11 +39,17 @@ import static cd4017be.lib.render.SpecialModelLoader.*;
  */
 public class ClientProxy extends CommonProxy {
 
+	public static final ResourceLocation 
+	T_BLANK = new ResourceLocation("white"),
+	T_DIAL = new ResourceLocation(Main.ID, "blocks/analog_dial"),
+	T_7SEG = new ResourceLocation(Main.ID, "blocks/7seg"),
+	T_SOCKETS = new ResourceLocation(Main.ID, "blocks/sockets");
+	public static TextureAtlasSprite t_blank, t_dial, t_7seg, t_sockets;
+
 	@Override
 	public void preInit() {
 		super.preInit();
 		SensorRegistry.RENDERER = PORT_RENDER;
-		PanelRenderer.register();
 	}
 
 	@Override
@@ -52,6 +61,25 @@ public class ClientProxy extends CommonProxy {
 			if (c != null)
 				GateTextureHandler.ins_sets.add(c);
 		GateTextureHandler.register();
+	}
+
+	@SubscribeEvent
+	public void registerTextures(TextureStitchEvent.Pre event) {
+		TextureMap map = event.getMap();
+		if (!"textures".equals(map.getBasePath())) return;
+		map.registerSprite(T_DIAL);
+		map.registerSprite(T_7SEG);
+		map.registerSprite(T_SOCKETS);
+	}
+
+	@SubscribeEvent
+	public void getTextures(TextureStitchEvent.Post event) {
+		TextureMap map = event.getMap();
+		if (!"textures".equals(map.getBasePath())) return;
+		t_blank = map.getAtlasSprite(T_BLANK.toString());
+		t_dial = map.getAtlasSprite(T_DIAL.toString());
+		t_7seg = map.getAtlasSprite(T_7SEG.toString());
+		t_sockets = map.getAtlasSprite(T_SOCKETS.toString());
 	}
 
 	@SubscribeEvent
