@@ -1,0 +1,10 @@
+{
+	textures = ["rs_ctr:blocks/area"];
+}
+
+main() {
+	Loc Q = [-1,-1,-1, 17,17,17]#, T = [0,0, 16,16]#;
+	for (F:["u-v", "u+v", "uv+", "uv-", "-vu", "+vu"]) {
+		add(rect(Q, T, F));
+	}
+}

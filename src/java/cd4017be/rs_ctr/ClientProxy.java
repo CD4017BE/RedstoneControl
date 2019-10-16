@@ -5,6 +5,7 @@ import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.render.FrameRenderer;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
@@ -13,6 +14,7 @@ import cd4017be.rs_ctr.sensor.ItemSensor;
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
 
 import cd4017be.rs_ctr.block.BlockGate;
+import cd4017be.rs_ctr.tileentity.BlockFrame;
 import cd4017be.rs_ctr.tileentity.Gate;
 import cd4017be.rscpl.gui.Category;
 import cd4017be.rscpl.gui.GateTextureHandler;
@@ -43,8 +45,10 @@ public class ClientProxy extends CommonProxy {
 	T_BLANK = new ResourceLocation("white"),
 	T_DIAL = new ResourceLocation(Main.ID, "blocks/analog_dial"),
 	T_7SEG = new ResourceLocation(Main.ID, "blocks/7seg"),
-	T_SOCKETS = new ResourceLocation(Main.ID, "blocks/sockets");
-	public static TextureAtlasSprite t_blank, t_dial, t_7seg, t_sockets;
+	T_SOCKETS = new ResourceLocation(Main.ID, "blocks/sockets"),
+	T_FRAME = new ResourceLocation(Main.ID, "blocks/area"),
+	T_BEAM = new ResourceLocation(Main.ID, "blocks/beam");
+	public static TextureAtlasSprite t_blank, t_dial, t_7seg, t_sockets, t_frame, t_beam;
 
 	@Override
 	public void preInit() {
@@ -56,6 +60,7 @@ public class ClientProxy extends CommonProxy {
 	public void init(ConfigConstants cc) {
 		super.init(cc);
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
+		bindTileEntitySpecialRenderer(BlockFrame.class, FrameRenderer.FRAME_RENDER);
 		
 		for (Category c : CircuitInstructionSet.TABS)
 			if (c != null)
@@ -70,6 +75,8 @@ public class ClientProxy extends CommonProxy {
 		map.registerSprite(T_DIAL);
 		map.registerSprite(T_7SEG);
 		map.registerSprite(T_SOCKETS);
+		map.registerSprite(T_FRAME);
+		map.registerSprite(T_BEAM);
 	}
 
 	@SubscribeEvent
@@ -80,6 +87,8 @@ public class ClientProxy extends CommonProxy {
 		t_dial = map.getAtlasSprite(T_DIAL.toString());
 		t_7seg = map.getAtlasSprite(T_7SEG.toString());
 		t_sockets = map.getAtlasSprite(T_SOCKETS.toString());
+		t_frame = map.getAtlasSprite(T_FRAME.toString());
+		t_beam = map.getAtlasSprite(T_BEAM.toString());
 	}
 
 	@SubscribeEvent
@@ -88,7 +97,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(1).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), true, PORT_RENDER, BlockMimicModel.provider));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, SPLITTER_B, MULTIPLEX_B, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, SPLITTER_B, MULTIPLEX_B, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL, BLOCK_SELECTOR);
 		
 		WIRE_ANCHOR.setBlockLayer(null);
 		
@@ -100,6 +109,7 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
 		PORT_RENDER.register("_lever.on", "_lever.off", "_lever.btn");
+		PORT_RENDER.register("_selection");
 		PORT_RENDER.dependencies.add(ItemSensor.MODEL);
 		PORT_RENDER.dependencies.add(FluidSensor.MODEL);
 		PORT_RENDER.dependencies.add(ForgeEnergySensor.MODEL);
@@ -110,6 +120,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(WIRE_ANCHOR);
 		registerRender(EDITOR);
 		registerRender(ASSEMBLER);
+		registerRender(FRAME);
 		registerRender(wire);
 		registerRender(wire_e);
 		registerRender(wireless);

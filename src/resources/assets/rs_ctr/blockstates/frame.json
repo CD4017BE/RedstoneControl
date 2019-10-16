@@ -1,0 +1,6 @@
+{
+	"variants": {
+		"inventory": { "model": "rs_ctr:frame" },
+		"normal": { "model": "rs_ctr:frame" }
+	}
+}

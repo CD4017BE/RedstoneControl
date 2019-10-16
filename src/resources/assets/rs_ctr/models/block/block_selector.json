@@ -1,0 +1,8 @@
+{
+	"parent": "block/orientable",
+	"textures": {
+		"top": "rs_ctr:blocks/block_sel_b",
+		"side": "rs_ctr:blocks/block_sel_b",
+		"front": "rs_ctr:blocks/block_sel_f"
+	}
+}
