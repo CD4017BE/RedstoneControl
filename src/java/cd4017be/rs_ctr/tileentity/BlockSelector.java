@@ -1,5 +1,6 @@
 package cd4017be.rs_ctr.tileentity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
@@ -15,7 +16,8 @@ import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.render.HybridFastTESR;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.util.Orientation;
-import cd4017be.lib.util.TooltipUtil;
+import static cd4017be.lib.util.TooltipUtil.translate;
+import static cd4017be.lib.util.TooltipUtil.format;
 import cd4017be.rs_ctr.gui.BlockButton;
 import cd4017be.rs_ctr.render.FrameRenderer;
 import cd4017be.rs_ctr.render.ISpecialRenderComp;
@@ -37,10 +39,9 @@ implements IFrameOperator, IUpdatable, IntConsumer,
 Supplier<String>, ISpecialRenderComp {
 
 	public static int RANGE = 64;
-	BlockButton scanBtn = new BlockButton(this, () -> null, this)
-	.setSize(0.25F, 0.25F);
+	BlockButton[] buttons = new BlockButton[4];
 	public int[] area = new int[6];
-	public byte missingFrames = -1;
+	public byte missingFrames = -1, invertAxis;
 	BlockHandler out;
 	public int sx, sy, sz;
 	byte tick;
@@ -62,6 +63,15 @@ Supplier<String>, ISpecialRenderComp {
 			.setName("port.rs_ctr.bo")
 			.setLocation(.125, .125, 0, EnumFacing.NORTH)
 		};
+		for (int i = 0; i < 3; i++) {
+			int ax = i;
+			buttons[i] = new BlockButton(
+				a -> invert(ax),
+				()-> "_buttons.num(" + (invertAxis >> ax & 1) + ")",
+				()-> translate("port.rs_ctr.invax" + (invertAxis >> ax & 1))
+			).setSize(0.0625F, 0.0625F);
+		}
+		buttons[3] = new BlockButton(this, () -> null, this).setSize(0.5F, 0.25F);
 	}
 
 	@Override
@@ -72,21 +82,18 @@ Supplier<String>, ISpecialRenderComp {
 				if(val == sx) return;
 				onInputChange();
 				sx = val;
-				markDirty(SYNC);
 			};
 		case 1:
 			return (val) -> {
 				if(val == sy) return;
 				onInputChange();
 				sy = val;
-				markDirty(SYNC);
 			};
 		case 2:
 			return (val) -> {
 				if(val == sz) return;
 				onInputChange();
 				sz = val;
-				markDirty(SYNC);
 			};
 		default:
 			return null;
@@ -97,7 +104,7 @@ Supplier<String>, ISpecialRenderComp {
 	public void setPortCallback(int pin, Object callback) {
 		if(callback instanceof BlockHandler) {
 			out = (BlockHandler)callback;
-			out.updateBlock(selBlock());
+			out.updateBlock(getOutput());
 		} else out = null;
 	}
 
@@ -126,18 +133,26 @@ Supplier<String>, ISpecialRenderComp {
 		}
 		tick = 0;
 		if(out != null)
-			out.updateBlock(selBlock());
+			out.updateBlock(getOutput());
+		markDirty(SYNC);
 	}
 
-	private BlockReference selBlock() {
+	private BlockReference getOutput() {
+		BlockPos p = selBlock();
+		return p == null ? null :
+			new BlockReference(world, p, getOrientation().front);
+	}
+
+	private BlockPos selBlock() {
 		if(
 			missingFrames != 0 || sx < 0 || sy < 0 || sz < 0
 			|| sx >= area[3] || sy >= area[4] || sz >= area[5]
 		) return null;
-		return new BlockReference(
-			world, new BlockPos(sx + area[0], sy + area[1], sz + area[2]),
-			getOrientation().front
-		);
+		int x = sx, y = sy, z = sz, inv = invertAxis;
+		if ((inv & 1) != 0) x = area[3] - x - 1;
+		if ((inv & 2) != 0) y = area[4] - y - 1;
+		if ((inv & 4) != 0) z = area[5] - z - 1;
+		return new BlockPos(x + area[0], y + area[1], z + area[2]);
 	}
 
 	@Override
@@ -159,12 +174,11 @@ Supplier<String>, ISpecialRenderComp {
 	@Override
 	public String get() {
 		if(Minecraft.getMinecraft().player.isSneaking())
-			return TooltipUtil
-			.translate("port.rs_ctr.show_sel" + (showFrame ? '1' : '0'));
+			return translate("port.rs_ctr.show_sel" + (showFrame ? '1' : '0'));
 		int dx = area[3], dy = area[4], dz = area[5];
 		char status = dx <= 0 || dy <= 0 || dz <= 0 ? '2'
 			: missingFrames != 0 ? '1' : '0';
-		return TooltipUtil.format(
+		return format(
 			"port.rs_ctr.area" + status, dx, dy, dz,
 			Integer.bitCount(missingFrames & 0xff)
 		);
@@ -174,11 +188,22 @@ Supplier<String>, ISpecialRenderComp {
 	public void accept(int value) {
 		if((value & BlockButton.A_HIT) != 0) return;
 		if((value & BlockButton.A_SNEAKING) == 0) {
-			unlinkCorners(world, pos, area, ~missingFrames);
-			scanArea(world, pos, area, RANGE, getOrientation().front);
-			missingFrames = (byte)checkCorners(world, pos, area);
+			if (
+				area[3] <= 0 || area[4] <= 0 || area[5] <= 0
+				|| (missingFrames = (byte)checkCorners(world, pos, area)) != 0
+			) {
+				unlinkCorners(world, pos, area, ~missingFrames);
+				scanArea(world, pos, area, RANGE, getOrientation().front);
+				missingFrames = (byte)checkCorners(world, pos, area);
+			}
 		} else showFrame = !showFrame;
 		markDirty(SYNC);
+	}
+
+	private void invert(int ax) {
+		invertAxis ^= 1 << ax;
+		onInputChange();
+		markDirty(REDRAW);
 	}
 
 	@Override
@@ -189,6 +214,7 @@ Supplier<String>, ISpecialRenderComp {
 		nbt.setIntArray("area", area);
 		nbt.setByte("frame", missingFrames);
 		nbt.setBoolean("dsp", showFrame);
+		nbt.setByte("inv", invertAxis);
 		super.storeState(nbt, mode);
 	}
 
@@ -201,6 +227,7 @@ Supplier<String>, ISpecialRenderComp {
 		System.arraycopy(arr, 0, area, 0, Math.min(arr.length, 6));
 		missingFrames = nbt.getByte("frame");
 		showFrame = nbt.getBoolean("dsp");
+		invertAxis = nbt.getByte("inv");
 		super.loadState(nbt, mode);
 	}
 
@@ -212,12 +239,15 @@ Supplier<String>, ISpecialRenderComp {
 
 	@Override
 	protected void initGuiComps(List<IInteractiveComponent> list) {
-		list.add(scanBtn);
+		Collections.addAll(list, buttons);
 	}
 
 	@Override
 	protected void orient(Orientation o) {
-		scanBtn.setLocation(0.5, 0.75, 0, o);
+		Orientation opp = Orientation.values()[o.ordinal() + 2 & 3];
+		for (int i = 0; i < 3; i++)
+			buttons[i].setLocation(.125 + i * .25, .375, 1, opp);
+		buttons[3].setLocation(0.5, 0.75, 0, o);
 		super.orient(o);
 	}
 
@@ -229,14 +259,12 @@ Supplier<String>, ISpecialRenderComp {
 	public void render(double x, double y, double z, BufferBuilder buffer) {
 		if(Util.RenderFrame == lastRender) return;
 		lastRender = Util.RenderFrame;
-		if(
-			missingFrames == 0 && sx >= 0 && sy >= 0 && sz >= 0
-			&& sx < area[3] && sy < area[4] && sz < area[5]
-		) FrameRenderer.renderBeam(
+		BlockPos p = selBlock();
+		if(p != null) FrameRenderer.renderBeam(
 			x + .5, y + .5, z + .5,
-			sx + area[0] - pos.getX(),
-			sy + area[1] - pos.getY(),
-			sz + area[2] - pos.getZ(),
+			p.getX() - pos.getX(),
+			p.getY() - pos.getY(),
+			p.getZ() - pos.getZ(),
 			getOrientation().front, buffer, 0x7fffff00
 		);
 		if(showFrame) {

@@ -38,9 +38,9 @@ tile.rs_ctr.assembler.name=Processor Assembler
 tile.rs_ctr.assembler.tip=Lets you add materials to a §6Redstone Processor§7 to improve its complexity values.
 tile.rs_ctr.power_hub.name=Energy Distributor
 tile.rs_ctr.power_hub.tip=Provides energy for up to 8 attached devices.\nAcceps Forge Energy compatible power through the block's back side.\n§oOnly works with capacitors installed\: See §9§oJEI usage recipes§7.\n§oAlthough not listed, all Forge Energy compatible items can be used as well.
-tile.rs_ctr.item_translocator.name=Item Translocator
+tile.rs_ctr.item_translocator.name=controlled Item Translocator
 tile.rs_ctr.item_translocator.tip=§esource/destin. Inventory IN§7\: the inventory to take from / put in.\n§esource/destin. Slot IN§7\: the inventory's slot ID to interact with.\n§EAmount IN§7\: the number of items to transfer. §oNegative value will transfer destin. -> source instead.\n§eClock IN§7 triggers the transfer on value change.\n§eAmount OUT§7 returns number of items actually transfered.\n§eEnergy IN§7 supplies the energy required for operation.\n§b§oSee also\: §6§oBlock Reference ...§b, §6§oBlock Access Socket
-tile.rs_ctr.fluid_translocator.name=Fluid Translocator
+tile.rs_ctr.fluid_translocator.name=controlled Fluid Translocator
 tile.rs_ctr.fluid_translocator.tip=§esource/destin. Tank IN§7\: the tank to drain from / fill in.\n§EAmount IN§7\: the fluid volume in mB to transfer. §oNegative value will transfer destin. -> source instead.\n§eClock IN§7 triggers the transfer on value change.\n§eAmount OUT§7 returns volume actually transfered.\n§eEnergy IN§7 supplies the energy required for operation.\n§b§oSee also\: §6§oBlock Reference ...§b, §6§oBlock Access Socket
 tile.rs_ctr.panel.name=Control Panel
 tile.rs_ctr.panel.tip=The surface is divided into a 4x4 grid where different §6Modules§7 can be attached. Ports for connecting wires to those Modules are on the back side.\nUse a §6Screwdriver§7 to configure or remove modules.\n§oAll installed Modules and configuration is kept when broken.
@@ -56,6 +56,8 @@ tile.rs_ctr.frame.name=3D Block Frame
 tile.rs_ctr.frame.tip=Used to mark areas for devices\:\nFirst define the size of the area by placing Frames at choosen distances along some axes around the device.\nThen fill in all 8 corners of the area and let the device scan. These corner blocks must stay in place, oherwise the area will become invalid again.
 tile.rs_ctr.block_selector.name=3D Block Selector
 tile.rs_ctr.block_selector.tip=Creates §6Block Reference§7s of blocks specified by §eX, Y, Z coordinates§7 within an area defined by §63D Block Frame§7s.\nCoordinate inputs are valid in range §e0 ... size-1§7 for each axis.
+tile.rs_ctr.block_breaker.name=controlled Block Breaker
+tile.rs_ctr.item_placer.name=controlled Item User
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -182,6 +184,9 @@ port.rs_ctr.show_sel1=§aArea Visible
 port.rs_ctr.area0=§aValid Area\: %d*%d*%d
 port.rs_ctr.area1=Incomplete Area\: %d*%d*%d\n§6Missing %d corner Frames!
 port.rs_ctr.area2=§cInvalid Area\: %d*%d*%d\n§oInteract to scan!
+port.rs_ctr.invax0=normal
+port.rs_ctr.invax1=mirrored
+port.rs_ctr.status=Status OUT
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
@@ -358,5 +363,3 @@ recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
 recipe.rs_ctr.sensors=Comparator tuning
 recipe.rs_ctr.capacity=%.4u Charge
-#added by ingame editor:
-port.rs_ctr.status=Status OUT

@@ -5,13 +5,13 @@ import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
-import cd4017be.rs_ctr.render.PanelRenderer;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
 
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
+import static cd4017be.rs_ctr.render.FrameRenderer.FRAME_RENDER;
 
 import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.BlockFrame;
@@ -60,7 +60,7 @@ public class ClientProxy extends CommonProxy {
 	public void init(ConfigConstants cc) {
 		super.init(cc);
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
-		bindTileEntitySpecialRenderer(BlockFrame.class, FrameRenderer.FRAME_RENDER);
+		bindTileEntitySpecialRenderer(BlockFrame.class, FRAME_RENDER);
 		
 		for (Category c : CircuitInstructionSet.TABS)
 			if (c != null)
@@ -109,7 +109,6 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
 		PORT_RENDER.register("_lever.on", "_lever.off", "_lever.btn");
-		PORT_RENDER.register("_selection");
 		PORT_RENDER.dependencies.add(ItemSensor.MODEL);
 		PORT_RENDER.dependencies.add(FluidSensor.MODEL);
 		PORT_RENDER.dependencies.add(ForgeEnergySensor.MODEL);
