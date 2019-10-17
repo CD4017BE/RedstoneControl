@@ -53,9 +53,9 @@ tile.rs_ctr.splitter_b.tip=Repeats the incoming §6Block Reference§7 to four di
 tile.rs_ctr.multiplex_b.name=Block Reference Multiplexer
 tile.rs_ctr.multiplex_b.tip=Selects one of the four §6Block Reference§7 inputs to pass on as output depending on the value of §eSelect IN§7 if it's in range §e0 ... 3§7. Otherwise outputs no Block Reference.
 tile.rs_ctr.frame.name=3D Block Frame
-tile.rs_ctr.frame.tip=Used to mark areas for devices:\nFirst place Frames at choosen distances along some axes around the device to define the size of the area.\nThen fill in all 8 corners of the area and let the device scan. These corner blocks must stay in place, oherwise the area will become invalid again.
+tile.rs_ctr.frame.tip=Used to mark areas for devices\:\nFirst define the size of the area by placing Frames at choosen distances along some axes around the device.\nThen fill in all 8 corners of the area and let the device scan. These corner blocks must stay in place, oherwise the area will become invalid again.
 tile.rs_ctr.block_selector.name=3D Block Selector
-tile.rs_ctr.block_selector.tip=Creates §6Block Reference§7s of blocks specified by §eX, Y and Z coordinates§7 within an area defined by §63D Block Frame§7s.\nCoordinate inputs are valid in range §e0 ... size-1§7 for each axis.
+tile.rs_ctr.block_selector.tip=Creates §6Block Reference§7s of blocks specified by §eX, Y, Z coordinates§7 within an area defined by §63D Block Frame§7s.\nCoordinate inputs are valid in range §e0 ... size-1§7 for each axis.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
