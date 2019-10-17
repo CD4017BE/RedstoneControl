@@ -14,9 +14,9 @@ import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
-import cd4017be.rs_ctr.Objects;
-
-import static cd4017be.rs_ctr.render.PanelRenderer.*;
+import static cd4017be.rs_ctr.Objects.seg7;
+import static cd4017be.rs_ctr.ClientProxy.t_7seg;
+import static cd4017be.rs_ctr.ClientProxy.t_blank;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -64,7 +64,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 
 	@Override
 	public ItemStack onRemove() {
-		return new ItemStack(Objects.seg7);
+		return new ItemStack(seg7);
 	}
 
 	@Override
@@ -140,12 +140,12 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		if (dots > 0) code |= 0x80 << (dots - 1) * 8;
 		for (int i = 0; i < 4; i++)
 			if (i == 3 && mode.sign) {
-				buffer.addVertexData(texturedRect(p, dx, dy.scale(2), getUV(seg7, 12, (code + 1) * 4), getUV(seg7, 15, code * 4), color, light));
+				buffer.addVertexData(texturedRect(p, dx, dy.scale(2), getUV(t_7seg, 12, (code + 1) * 4), getUV(t_7seg, 15, code * 4), color, light));
 			} else {
 				int u = (code & 3) * 3, v = code & 12; code >>= 4;
-				buffer.addVertexData(texturedRect(p.add(dy), dx, dy, getUV(seg7, u, v + 2), getUV(seg7, u + 3, v), color, light));
+				buffer.addVertexData(texturedRect(p.add(dy), dx, dy, getUV(t_7seg, u, v + 2), getUV(t_7seg, u + 3, v), color, light));
 				u = (code & 3) * 3; v = (code & 12) + 2; code >>= 4;
-				buffer.addVertexData(texturedRect(p, dx, dy, getUV(seg7, u, v + 2), getUV(seg7, u + 3, v), color, light));
+				buffer.addVertexData(texturedRect(p, dx, dy, getUV(t_7seg, u, v + 2), getUV(t_7seg, u + 3, v), color, light));
 				p = p.subtract(dx);
 			}
 		IntArrayModel m = new IntArrayModel(extractData(buffer, vi, buffer.getVertexCount()), color, light);
@@ -164,7 +164,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		Orientation o = host.getOrientation();
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.5, getY() - .5, .505)).addVector(.5, .5, .5), o.X, o.Y.scale(1./3.), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.5, getY() - .5, .505)).addVector(.5, .5, .5), o.X, o.Y.scale(1./3.), getUV(t_blank, 0, 0), getUV(t_blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, t_blank, true, DefaultVertexFormats.BLOCK));
 	}
 
 	static final byte[] DIGITS = {

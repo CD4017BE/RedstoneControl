@@ -1,7 +1,7 @@
 package cd4017be.rs_ctr.tileentity;
 
 import static cd4017be.api.rs_ctr.port.MountedPort.SIZE;
-import static cd4017be.rs_ctr.render.PanelRenderer.sockets;
+import static cd4017be.rs_ctr.ClientProxy.t_sockets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,7 @@ import cd4017be.lib.render.Util;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
-import cd4017be.rs_ctr.Objects;
+import static cd4017be.rs_ctr.Objects.rs_port;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -229,13 +229,13 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			Orientation o = Orientation.fromFacing(port.face);
 			Vec3d dx = o.X.scale(MountedPort.SIZE * -2.), dy = o.Y.scale(MountedPort.SIZE * 2.), p = o.rotate(new Vec3d(MountedPort.SIZE, -MountedPort.SIZE, -0.005));
 			int i = port.isMaster ? 4 : 0, j = port.type == SignalHandler.class ? 0 : port.type == BlockHandler.class ? 4 : port.type == EnergyHandler.class ? 8 : 12;
-			quads.add(new BakedQuad(Util.texturedRect(port.pos.add(p), dx, dy, Util.getUV(sockets, i, j), Util.getUV(sockets, i + 4, j + 4), -1, 0), -1, o.front, sockets, true, DefaultVertexFormats.BLOCK));
+			quads.add(new BakedQuad(Util.texturedRect(port.pos.add(p), dx, dy, Util.getUV(t_sockets, i, j), Util.getUV(t_sockets, i + 4, j + 4), -1, 0), -1, o.front, t_sockets, true, DefaultVertexFormats.BLOCK));
 		}
 		for (int i = 0; i < 6; i++)
 			if ((strong >> i & 1) != 0) {
 				Orientation o = Orientation.fromFacing(EnumFacing.VALUES[i]);
 				Vec3d dx = o.X.scale(MountedPort.SIZE * 2.), dy = o.Y.scale(MountedPort.SIZE * 2.), p = o.rotate(new Vec3d(-.125 - MountedPort.SIZE , -.125 - MountedPort.SIZE , -.37));
-				quads.add(new BakedQuad(Util.texturedRect(p.addVector(.5, .5, .5), dx, dy, Util.getUV(sockets, 0, 12), Util.getUV(sockets, 4, 16), -1, 0), -1, o.back, sockets, true, DefaultVertexFormats.BLOCK));
+				quads.add(new BakedQuad(Util.texturedRect(p.addVector(.5, .5, .5), dx, dy, Util.getUV(t_sockets, 0, 12), Util.getUV(t_sockets, 4, 16), -1, 0), -1, o.back, t_sockets, true, DefaultVertexFormats.BLOCK));
 			}
 	}
 
@@ -290,20 +290,20 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 		if (side <= -2) return cover.hit(this, player);
 		int i;
 		if ((i = Arrays.binarySearch(ports, side + 18)) >= 0) {
-			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 3), world, pos);
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(rs_port, 1, 3), world, pos);
 			remPort(i, player);
 		}
 		if ((i = Arrays.binarySearch(ports, side + 12)) >= 0) {
-			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 2), world, pos);
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(rs_port, 1, 2), world, pos);
 			remPort(i, player);
 		}
 		if ((i = Arrays.binarySearch(ports, side + 6)) >= 0) {
-			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1 + (strong >> side & 1), 1), world, pos);
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(rs_port, 1 + (strong >> side & 1), 1), world, pos);
 			remPort(i, player);
 			strong &= ~(1 << side);
 		}
 		if ((i = Arrays.binarySearch(ports, side)) >= 0) {
-			if (harvest) ItemFluidUtil.dropStack(new ItemStack(Objects.rs_port, 1, 0), world, pos);
+			if (harvest) ItemFluidUtil.dropStack(new ItemStack(rs_port, 1, 0), world, pos);
 			remPort(i, player);
 		}
 		onPortModified(null, E_HOOK_REM);
@@ -333,10 +333,10 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			else if ((strong >> (port.pin - 6) & 1) != 0) out+=2;
 			else out++;
 		ArrayList<ItemStack> list = new ArrayList<>();
-		if (in > 0) list.add(new ItemStack(Objects.rs_port, in, 0));
-		if (out > 0) list.add(new ItemStack(Objects.rs_port, out, 1));
-		if (br > 0) list.add(new ItemStack(Objects.rs_port, br, 2));
-		if (mirr > 0) list.add(new ItemStack(Objects.rs_port, mirr, 2));
+		if (in > 0) list.add(new ItemStack(rs_port, in, 0));
+		if (out > 0) list.add(new ItemStack(rs_port, out, 1));
+		if (br > 0) list.add(new ItemStack(rs_port, br, 2));
+		if (mirr > 0) list.add(new ItemStack(rs_port, mirr, 2));
 		return list;
 	}
 

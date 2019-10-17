@@ -52,6 +52,10 @@ tile.rs_ctr.splitter_b.name=Block Reference 4x Splitter
 tile.rs_ctr.splitter_b.tip=Repeats the incoming §6Block Reference§7 to four different destinations (no delay).
 tile.rs_ctr.multiplex_b.name=Block Reference Multiplexer
 tile.rs_ctr.multiplex_b.tip=Selects one of the four §6Block Reference§7 inputs to pass on as output depending on the value of §eSelect IN§7 if it's in range §e0 ... 3§7. Otherwise outputs no Block Reference.
+tile.rs_ctr.frame.name=3D Block Frame
+tile.rs_ctr.frame.tip=Used to mark areas for devices\:\nFirst define the size of the area by placing Frames at choosen distances along some axes around the device.\nThen fill in all 8 corners of the area and let the device scan. These corner blocks must stay in place, oherwise the area will become invalid again.
+tile.rs_ctr.block_selector.name=3D Block Selector
+tile.rs_ctr.block_selector.tip=Creates §6Block Reference§7s of blocks specified by §eX, Y, Z coordinates§7 within an area defined by §63D Block Frame§7s.\nCoordinate inputs are valid in range §e0 ... size-1§7 for each axis.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -170,6 +174,14 @@ port.rs_ctr.bi2=Block IN 2
 port.rs_ctr.bi3=Block IN 3
 port.rs_ctr.bo=Block OUT
 port.rs_ctr.sel=Select IN
+port.rs_ctr.z=Z-coord IN
+port.rs_ctr.y=Y-coord IN
+port.rs_ctr.x=X-coord IN
+port.rs_ctr.show_sel0=Area Invisible
+port.rs_ctr.show_sel1=§aArea Visible
+port.rs_ctr.area0=§aValid Area\: %d*%d*%d
+port.rs_ctr.area1=Incomplete Area\: %d*%d*%d\n§6Missing %d corner Frames!
+port.rs_ctr.area2=§cInvalid Area\: %d*%d*%d\n§oInteract to scan!
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]

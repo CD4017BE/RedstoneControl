@@ -1,0 +1,13 @@
+{
+	"forge_marker": 1,
+	"defaults": { "model": "rs_ctr:block_selector" },
+	"variants": {
+		"orient": {
+			"n": {},
+			"e": { "y": 90 },
+			"s": { "y": 180 },
+			"w": { "y": 270 }
+		},
+		"inventory": { "y": 0 }
+	}
+}

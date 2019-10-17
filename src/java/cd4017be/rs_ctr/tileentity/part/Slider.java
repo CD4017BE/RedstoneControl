@@ -2,8 +2,6 @@ package cd4017be.rs_ctr.tileentity.part;
 
 import static cd4017be.lib.render.Util.getUV;
 import static cd4017be.lib.render.Util.texturedRect;
-import static cd4017be.rs_ctr.render.PanelRenderer.blank;
-import static cd4017be.rs_ctr.render.PanelRenderer.dial;
 
 import java.util.List;
 
@@ -19,7 +17,9 @@ import cd4017be.lib.render.model.IntArrayModel;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Main;
-import cd4017be.rs_ctr.Objects;
+import static cd4017be.rs_ctr.Objects.slider;
+import static cd4017be.rs_ctr.ClientProxy.t_dial;
+import static cd4017be.rs_ctr.ClientProxy.t_blank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -112,7 +112,7 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 
 	@Override
 	public ItemStack onRemove() {
-		return new ItemStack(Objects.slider);
+		return new ItemStack(slider);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	@SideOnly(Side.CLIENT)
 	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
 		double f = ((double)value - (double)min) / ((double)max - (double)min);
-		renderCache = new IntArrayModel(texturedRect(o.rotate(new Vec3d(-.421875 + f * .75, getY() - 0.4375, .51)).addVector(.5, .5, .5), o.X.scale(.09375), o.Y.scale(.25), getUV(dial, 2, 14), getUV(dial, 2.75F, 12), -1, light), -1, light);
+		renderCache = new IntArrayModel(texturedRect(o.rotate(new Vec3d(-.421875 + f * .75, getY() - 0.4375, .51)).addVector(.5, .5, .5), o.X.scale(.09375), o.Y.scale(.25), getUV(t_dial, 2, 14), getUV(t_dial, 2.75F, 12), -1, light), -1, light);
 		return false;
 	}
 
@@ -164,14 +164,14 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	public void render(List<BakedQuad> quads) {
 		Orientation o = host.getOrientation();
 		double y = getY() - 0.5;
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, .505)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(blank, 0, 0), getUV(blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, blank, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, .505)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(t_blank, 0, 0), getUV(t_blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, t_blank, true, DefaultVertexFormats.BLOCK));
 		int color = 0xff000000;
 		if (title.length() >= 2 && title.charAt(0) == '\u00a7') {
 			int i = Minecraft.getMinecraft().fontRenderer.getColorCode(Character.toLowerCase(title.charAt(1)));
 			if (i != -1)
 				color |= i & 0xff00 | i >> 16 & 0xff | i << 16 & 0xff0000;
 		}
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, .505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(dial, 0, 16), getUV(dial, 7.75F, 14), color, 0), -1, o.back, dial, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.3875, y + .25, .505)).addVector(.5, .5, .5), o.X.scale(.775), o.Y.scale(.125), getUV(t_dial, 0, 16), getUV(t_dial, 7.75F, 14), color, 0), -1, o.back, t_dial, true, DefaultVertexFormats.BLOCK));
 	}
 
 }
