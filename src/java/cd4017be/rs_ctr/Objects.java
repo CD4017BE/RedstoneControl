@@ -88,7 +88,7 @@ public class Objects {
 	public static final BaseItemBlock energy_valve = null;
 	public static final BaseItemBlock panel = null;
 	public static final BaseItemBlock solar_cell = null;
-	public static final BaseItemBlock block_breaker = null;
+	public static final ItemBlockBreaker block_breaker = null;
 	public static final BaseItemBlock item_placer = null;
 	public static final BaseItemBlock frame = null;
 	public static final BaseItemBlock block_selector = null;
@@ -178,7 +178,7 @@ public class Objects {
 				new BaseItemBlock(ENERGY_VALVE),
 				new BaseItemBlock(PANEL),
 				new BaseItemBlock(SOLAR_CELL),
-				new BaseItemBlock(BLOCK_BREAKER),
+				new ItemBlockBreaker(BLOCK_BREAKER),
 				new BaseItemBlock(ITEM_PLACER),
 				new BaseItemBlock(FRAME),
 				new BaseItemBlock(BLOCK_SELECTOR),

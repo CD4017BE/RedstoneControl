@@ -2,30 +2,41 @@ package cd4017be.rs_ctr.tileentity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import cd4017be.api.rs_ctr.com.BlockReference;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
 import cd4017be.lib.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 /** @author CD4017BE */
 public class BlockBreaker extends WallMountGate
-implements ITickableServerOnly, SignalHandler, BlockHandler {
+implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 
-	public static float BASE_ENERGY = 100, ENERGY_MULT = 50, SPEED_MOD = 8;
+	public static float BASE_ENERGY = 1000, ENERGY_MULT = 4000, SPEED_MOD = 8;
 	private static final int S_SUCCESS = 0, S_UNBREAKABLE = -1, S_NOENERGY = 1, S_FULLINV = 2;
 
 	NonNullList<ItemStack> drops = NonNullList.create();
@@ -34,7 +45,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler {
 	SignalHandler out;
 	int clk, status, idle = 1000;
 	boolean update;
-	/** harvest mode: -2 -> no drops, -1 -> silk touch, n>=0 -> fortune level n */
+	/** harvest mode: -1 -> silk touch, n>=0 -> fortune level n */
 	int fortune;
 
 	{
@@ -134,8 +145,8 @@ implements ITickableServerOnly, SignalHandler, BlockHandler {
 		World world = ref.world();
 		Block block = state.getBlock();
 		if(fortune >= 0)
-			block.getDrops(drops, world, ref.pos, state, fortune < 0 ? 0 : fortune);
-		else if(fortune == -1 && block.canSilkHarvest(world, ref.pos, state, null))
+			block.getDrops(drops, world, ref.pos, state, fortune);
+		else if(block.canSilkHarvest(world, ref.pos, state, null))
 			drops.add(getSilkTouchDrop(state));
 		world.setBlockToAir(ref.pos);
 		energy.changeEnergy(e, false);
@@ -150,14 +161,60 @@ implements ITickableServerOnly, SignalHandler, BlockHandler {
 
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
-		// TODO Auto-generated method stub
+		if (mode == SAVE) {
+			nbt.setInteger("clk", clk);
+			nbt.setByte("out", (byte)status);
+			nbt.setInteger("t", idle);
+			nbt.setBoolean("update", update);
+			if (block != null) nbt.setTag("ref", block.serializeNBT());
+			else nbt.removeTag("ref");
+			NBTTagList list = new NBTTagList();
+			for (ItemStack stack : drops)
+				if (!stack.isEmpty())
+					list.appendTag(stack.writeToNBT(new NBTTagCompound()));
+			nbt.setTag("drop", list);
+		}
+		if (mode <= CLIENT)
+			nbt.setByte("type", (byte)fortune);
 		super.storeState(nbt, mode);
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		// TODO Auto-generated method stub
+		if (mode == SAVE) {
+			clk = nbt.getInteger("clk");
+			status = nbt.getByte("out");
+			idle = nbt.getInteger("t");
+			block = nbt.hasKey("ref", NBT.TAG_COMPOUND) ?
+				new BlockReference(nbt.getCompoundTag("ref")) : null;
+			NBTTagList list = nbt.getTagList("drop", NBT.TAG_COMPOUND);
+			drops.clear();
+			for (int i = 0; i < list.tagCount(); i++)
+				drops.add(new ItemStack(list.getCompoundTagAt(i)));
+		}
+		if (mode <= CLIENT)
+			fortune = nbt.getByte("type");
 		super.loadState(nbt, mode);
+	}
+
+	@Override
+	public void onPlaced(EntityLivingBase entity, ItemStack item) {
+		Integer f;
+		Map<Enchantment, Integer> ench = EnchantmentHelper.getEnchantments(item);
+		if ((f = ench.get(Enchantments.FORTUNE)) != null) fortune = f;
+		else if ((f = ench.get(Enchantments.SILK_TOUCH)) != null) fortune = -1;
+		else fortune = 0;
+	}
+
+	@Override
+	public List<ItemStack> dropItem(IBlockState state, int f) {
+		getBlockState();
+		ItemStack stack = new ItemStack(blockType);
+		if (fortune < 0)
+			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.SILK_TOUCH, 1), stack);
+		else if (fortune > 0)
+			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.FORTUNE, fortune), stack);
+		return Arrays.asList(stack);
 	}
 
 	private static ItemStack getSilkTouchDrop(IBlockState state) {
