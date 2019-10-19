@@ -57,7 +57,9 @@ tile.rs_ctr.frame.tip=Used to mark areas for devices\:\nFirst define the size of
 tile.rs_ctr.block_selector.name=3D Block Selector
 tile.rs_ctr.block_selector.tip=Creates §6Block Reference§7s of blocks specified by §eX, Y, Z coordinates§7 within an area defined by §63D Block Frame§7s.\nCoordinate inputs are valid in range §e0 ... size-1§7 for each axis.
 tile.rs_ctr.block_breaker.name=controlled Block Breaker
+tile.rs_ctr.block_breaker.tip=
 tile.rs_ctr.item_placer.name=controlled Item User
+tile.rs_ctr.item_placer.tip=
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -187,6 +189,7 @@ port.rs_ctr.area2=§cInvalid Area\: %d*%d*%d\n§oInteract to scan!
 port.rs_ctr.invax0=normal
 port.rs_ctr.invax1=mirrored
 port.rs_ctr.status=Status OUT
+port.rs_ctr.place=Configuration IN
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
@@ -278,6 +281,7 @@ gui.rs_ctr.state.name=Variables:
 gui.rs_ctr.clock.name=Clock Settings
 gui.rs_ctr.assembler.name=Processor Assembler
 gui.rs_ctr.dsp_cfg.name=Configuration
+gui.rs_ctr.item_placer.name=controlled Item User
 # Gui tooltips
 gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette
