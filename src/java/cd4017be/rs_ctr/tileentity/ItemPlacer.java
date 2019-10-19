@@ -78,7 +78,9 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 	private EnergyHandler energy = EnergyHandler.NOP;
 	private SignalHandler out;
 	private int clk, status, idle = 1000;
-	/**bit[0,1]: yaw, bit[2,3]: pitch, bit[4]: sneak, bit[5]: creative, bit[8-11]: pixelX, bit[12-15]: pixelY, bit[16-22]: hotbarSlot */
+	/**bit[0-5]: hotbarSlot, bit[7]: creative,
+	 * bit[8,9]: yaw, bit[10,11]: pitch, bit[12]: sneak, bit[13]: noSidePlacement, bit[14]: airUse,
+	 * bit[16-19]: pixelX, bit[20-23]: pixelY */
 	public int aim;
 	private boolean update;
 
@@ -129,11 +131,11 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 	}
 
 	public void updateAim(int value) {
-		value &= creative ? 0x3fff3f : 0x3fff1f;
+		value &= creative ? 0xff7fbf : 0xff7f3f;
 		if (value == aim) return;
 		aim = value;
-		if ((player.inventory.currentItem = aim >> 16) >= 36)
-			player.inventory.currentItem = 0;
+		if ((inv.currentItem = aim & 0x3f) >= 36)
+			inv.currentItem = 0;
 		markDirty(SAVE);
 	}
 
@@ -170,20 +172,30 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 		if(energy.changeEnergy(e, true) != e)
 			return S_NOENERGY;
 		if (player == null) initializePlayer();
+		if ((aim & 0x2000) != 0 && !ref.getState().getBlock().isReplaceable(ref.world(), ref.pos))
+			return S_FAIL;
 		RayTraceResult res = setupInteraction(player, ref, aim);
-		BlockPos pos = res.getBlockPos();
-		float X = (float)res.hitVec.x - pos.getX();
-		float Y = (float)res.hitVec.y - pos.getY();
-		float Z = (float)res.hitVec.z - pos.getZ();
 		EnumActionResult ar = null;
-		for (EnumHand hand : EnumHand.values()) {
-			ItemStack stack = player.getHeldItem(hand);
-			if (ar != null && stack.isEmpty()) break;
-			ar = player.interactionManager.processRightClickBlock(
-				player, player.world, stack,
-				hand, pos, res.sideHit, X, Y, Z
+		if ((aim & 0x4000) != 0) {
+			ItemStack stack = player.getHeldItemMainhand();
+			if (stack.isEmpty()) ar = EnumActionResult.PASS;
+			else ar = player.interactionManager.processRightClick(
+				player, player.world, stack, EnumHand.MAIN_HAND
 			);
-			if (ar != EnumActionResult.PASS) break;
+		} else {
+			BlockPos pos = res.getBlockPos();
+			float X = (float)res.hitVec.x - pos.getX();
+			float Y = (float)res.hitVec.y - pos.getY();
+			float Z = (float)res.hitVec.z - pos.getZ();
+			for (EnumHand hand : EnumHand.values()) {
+				ItemStack stack = player.getHeldItem(hand);
+				if (ar != null && stack.isEmpty()) break;
+				ar = player.interactionManager.processRightClickBlock(
+					player, player.world, stack,
+					hand, pos, res.sideHit, X, Y, Z
+				);
+				if (ar != EnumActionResult.PASS) break;
+			}
 		}
 		energy.changeEnergy(e, false);
 		return ar == EnumActionResult.SUCCESS ? S_SUCCESS :
@@ -226,8 +238,8 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 			gp = new GameProfile(nbt.getUniqueId("FPuuid"), nbt.getString("FPname"));
 			creative = nbt.getBoolean("creative");
 			inv.readFromNBT(nbt.getTagList("FPinv", NBT.TAG_COMPOUND));
-			if ((player.inventory.currentItem = aim >> 16) >= 36)
-				player.inventory.currentItem = 0;
+			if ((inv.currentItem = aim & 0x3f) >= 36)
+				inv.currentItem = 0;
 		}
 		super.loadState(nbt, mode);
 	}
@@ -267,14 +279,16 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 	}
 
 	private static RayTraceResult setupInteraction(FakePlayer player, BlockReference block, int aim) {
-		player.setSneaking((aim & 16) != 0);
-		player.capabilities.isCreativeMode = (aim & 32) != 0;
+		player.setSneaking((aim & 0x1000) != 0);
+		player.capabilities.isCreativeMode = (aim & 0x80) != 0;
+		boolean air = (aim & 0x4000) != 0;
 		//create aim vector
 		Vec3d vec = new Vec3d(
-			.46875 - (aim >> 8 & 15) * .0625,
-			(aim >> 12 & 15) * .0625 - .46875,
-			-2.0
+			.46875 - (aim >> 16 & 15) * .0625,
+			(aim >> 20 & 15) * .0625 - .46875,
+			air ? 0.0 : -2.0
 		);
+		aim >>= 8;
 		switch(block.face) {
 		case WEST: aim = aim + 3 & 3 | aim & 12; break;
 		case SOUTH: aim = aim & 15 ^ 2; break;
@@ -300,6 +314,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 			o.back.getFrontOffsetY() * 2.5,
 			o.back.getFrontOffsetZ() * 2.5
 		);
+		if (air) return null;
 		RayTraceResult res = block.getState().collisionRayTrace(
 			player.world, pos, vec, dir
 		);

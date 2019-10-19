@@ -29,13 +29,13 @@ public class GuiItemPlacer extends ModularGui {
 		float partialTicks, int mouseX, int mouseY
 	) {
 		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-		int slot = tile.aim >> 16;
+		int slot = tile.aim & 0x3f;
 		mc.renderEngine.bindTexture(TEX);
 		GlStateManager.color(1, 1, 1, 1);
 		drawTexturedModalRect(guiLeft + 25 + slot % 9 * 18, guiTop + (slot < 9 ? 83 : 7 + slot / 9 * 18), 194, 0, 18, 18);
-		slot = tile.aim >> 8 & 0xff;
+		slot = tile.aim >> 16 & 0xff;
 		drawTexturedModalRect(guiLeft + 169 + (slot & 15), guiTop + 22 - (slot >> 4), 212, 0, 3, 3);
-		slot = tile.aim & 15;
+		slot = tile.aim >> 8 & 15;
 		drawTexturedModalRect(guiLeft + 152, guiTop + 8, 240, slot * 16, 16, 16);
 	}
 
