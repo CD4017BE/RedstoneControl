@@ -14,6 +14,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 /** @author cd4017be */
 public class BlockFrame extends BaseTileEntity implements IFrame {
 
+	public static double RENDER_RANGE = 128;
+
 	public ArrayList<BlockPos> linked = new ArrayList<>();
 
 	@Override
@@ -74,6 +76,11 @@ public class BlockFrame extends BaseTileEntity implements IFrame {
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public double getMaxRenderDistanceSquared() {
+		return RENDER_RANGE * RENDER_RANGE * 3.0;
 	}
 
 }

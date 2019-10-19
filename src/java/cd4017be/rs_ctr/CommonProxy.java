@@ -42,6 +42,7 @@ import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
 import cd4017be.rs_ctr.tileentity.BlockBreaker;
+import cd4017be.rs_ctr.tileentity.BlockFrame;
 import cd4017be.rs_ctr.tileentity.BlockSelector;
 import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
@@ -132,6 +133,7 @@ public class CommonProxy implements IRecipeHandler {
 		FluidTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_fluid_translocator_pb", -FluidTranslocator.TRANSFER_COST);
 		SolarCell.POWER = (int)c.getNumber("energy_solar", SolarCell.POWER);
 		BlockSelector.RANGE = (int)c.getNumber("block_select_range", BlockSelector.RANGE);
+		BlockFrame.RENDER_RANGE = BlockSelector.RANGE * 2;
 		BlockBreaker.BASE_ENERGY = (float)c.getNumber("energy_breaker_op", BlockBreaker.BASE_ENERGY);
 		BlockBreaker.ENERGY_MULT = (float)c.getNumber("energy_breaker_hard", BlockBreaker.ENERGY_MULT);
 		BlockBreaker.SPEED_MOD = (float)c.getNumber("energy_breaker_speed", BlockBreaker.SPEED_MOD);
