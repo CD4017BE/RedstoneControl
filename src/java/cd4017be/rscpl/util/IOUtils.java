@@ -2,8 +2,7 @@ package cd4017be.rscpl.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.jline.utils.InputStreamReader;
+import java.io.InputStreamReader;
 import org.objectweb.asm.Type;
 
 import com.google.gson.stream.JsonReader;
