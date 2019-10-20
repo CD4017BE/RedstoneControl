@@ -83,7 +83,7 @@ public class CircuitEditor extends ModularGui {
 		}).title("gui.rs_ctr.palette", 0.5F);
 		new Button(comps, 7, 7, 162, 162, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(186, 0).tooltip("gui.rs_ctr.editor.del");
 		new Button(comps, 16, 14, 8, 158, 2, ()-> palette.enabled() ? 1 : 0, this::togglePalette).texture(162, 52).tooltip("gui.rs_ctr.palette.open#");
-		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> sendCommand(A_NEW)).tooltip("gui.rs_ctr.editor.new");
+		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> {tile.lastFile = null; sendCommand(A_NEW);}).tooltip("gui.rs_ctr.editor.new");
 		new Button(comps, 16, 16, 214, 210, 0, null, this::load).tooltip("gui.rs_ctr.editor.load");
 		new Button(comps, 16, 16, 196, 210, 0, null, this::save).tooltip("gui.rs_ctr.editor.save");
 		new Button(comps, 16, 16, 174, 210, 0, null, this::compile).tooltip("gui.rs_ctr.editor.compile");
