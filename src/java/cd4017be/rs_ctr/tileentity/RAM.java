@@ -1,12 +1,16 @@
 package cd4017be.rs_ctr.tileentity;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.lib.Gui.AdvancedContainer;
+import cd4017be.lib.network.IGuiHandlerTile;
+import cd4017be.rs_ctr.gui.GuiRAM;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 /** @author cd4017be */
-public class RAM extends WallMountGate implements SignalHandler {
+public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile {
 
-	private int[] memory;
+	public int[] memory;
 	private int addrMask;
 	public byte mode;
 	private SignalHandler out;
@@ -126,6 +130,18 @@ public class RAM extends WallMountGate implements SignalHandler {
 		valueOUT = nbt.getInteger("out");
 		updateAddrMask();
 		needWrite = false;
+	}
+
+	@Override
+	public AdvancedContainer getContainer(EntityPlayer player, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GuiRAM getGuiScreen(EntityPlayer player, int id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
