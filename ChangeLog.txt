@@ -1,3 +1,24 @@
+v0.2.2
+Changes:
+- added controlled Block Breaker: Yay, automatic mining!
+- added controlled Item User: Yay, automatic building!
+- added 3D Block Selector and its Frames
+- added Signal and Block Reference Delay Line
+- added Counter
+- added Block Hardness Sensor
+- made Screw-driver rotate blocks
+- made Fluid Translocator also pump / place fluid blocks in the world: Yay, automatic pumping!
+- fixed Circuit Designer automatically overriding last saved file even when its a new schematic
+- fixed #13 accidental import from non standard library
+- fixed #14 internal capability access on Redstone Sockets
+- limited BlockReference life span to prevent loop capture exploits
+- fixed multi-line sensor descriptions in JEI not rendering correctly
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.14
+
 v0.2.1
 Changes:
 - fixed 16bit variables in circuits being deserialized as 8bit
