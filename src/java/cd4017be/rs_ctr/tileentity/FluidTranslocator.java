@@ -5,6 +5,7 @@ import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.lib.capability.BlockFluidWrapper;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -19,7 +20,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  */
 public class FluidTranslocator extends WallMountGate implements ITickableServerOnly {
 
-	public static int BASE_COST = -100, TRANSFER_COST = -500;
+	public static int BASE_COST = -100, TRANSFER_COST = -500, BLOCK_COST = -500;
 
 	BlockReference ref0, ref1;
 	EnergyHandler energy = EnergyHandler.NOP;
@@ -96,9 +97,18 @@ public class FluidTranslocator extends WallMountGate implements ITickableServerO
 		if (energy.changeEnergy(e, true) != e) return 0;
 		IFluidHandler inv0 = ref0.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 		IFluidHandler inv1 = ref1.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+		e = 0;
+		if (inv0 == null) {
+			inv0 = new BlockFluidWrapper().set(ref0.world(), ref0.pos);
+			e++;
+		}
+		if (inv1 == null) {
+			inv1 = new BlockFluidWrapper().set(ref1.world(), ref1.pos);
+			e++;
+		}
 		if (am > 0) am = transfer(am, inv0, inv1);
 		else am = -transfer(-am, inv1, inv0);
-		energy.changeEnergy(cost(am), false);
+		energy.changeEnergy(cost(am) + e * BLOCK_COST, false);
 		return am;
 	}
 

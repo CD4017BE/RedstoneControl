@@ -133,6 +133,7 @@ public class CommonProxy implements IRecipeHandler {
 		ItemTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_item_translocator_ps", -ItemTranslocator.TRANSFER_COST);
 		FluidTranslocator.BASE_COST = -(int)c.getNumber("energy_fluid_translocator_op", -FluidTranslocator.BASE_COST);
 		FluidTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_fluid_translocator_pb", -FluidTranslocator.TRANSFER_COST);
+		FluidTranslocator.BLOCK_COST = -(int)c.getNumber("energy_fluid_translocator_world", -FluidTranslocator.BLOCK_COST);
 		SolarCell.POWER = (int)c.getNumber("energy_solar", SolarCell.POWER);
 		BlockSelector.RANGE = (int)c.getNumber("block_select_range", BlockSelector.RANGE);
 		BlockFrame.RENDER_RANGE = BlockSelector.RANGE * 2;
