@@ -141,7 +141,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public boolean hasCapability(Capability<?> cap, EnumFacing facing) {
-		if (cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return false;
+		if (facing == null || cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return false;
 		int i = facing.ordinal();
 		return mirrors[i] != null || Arrays.binarySearch(ports, i + 18) >= 0;
 	}
@@ -149,7 +149,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing facing) {
-		if (cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return null;
+		if (facing == null || cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return null;
 		int i = facing.ordinal();
 		BlockReference block = mirrors[i];
 		if (block != null && !RECURSION) {
