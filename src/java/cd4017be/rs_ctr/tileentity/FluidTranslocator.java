@@ -108,7 +108,7 @@ public class FluidTranslocator extends WallMountGate implements ITickableServerO
 		}
 		if (am > 0) am = transfer(am, inv0, inv1);
 		else am = -transfer(-am, inv1, inv0);
-		energy.changeEnergy(cost(am) + e * BLOCK_COST, false);
+		energy.changeEnergy(am == 0 ? BASE_COST : cost(am) + e * BLOCK_COST, false);
 		return am;
 	}
 
