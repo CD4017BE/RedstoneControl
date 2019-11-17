@@ -60,6 +60,10 @@ tile.rs_ctr.block_breaker.name=controlled Block Breaker
 tile.rs_ctr.block_breaker.tip=Breaks blocks and puts any harvested items into an adjacent inventory.\n§eBlock IN\:§7 the Block to break.\n§eClock IN\:§7 value change triggers operation.\n§eStatus OUT\:§7 result of the last operation\:\n§e-1§7 \= did nothing (unbreakable/Air), §e0§7 \= successfull, §e1§7 \= can't proceed (inventory full), §e2§7 \= insufficient energy.\n§eEnergy IN\:§7 energy supply for operation.\n§b§oSee also\: §6§oBlock Reference ...§b, §6§oBlock Access Socket§b, §63D Block Selector
 tile.rs_ctr.item_placer.name=controlled Item User
 tile.rs_ctr.item_placer.tip=Emulates player right click interactions.\nRight-click block to open Fake Player inventory.\n§eBlock IN\:§7 the block location to interact with/at.\n§eConfiguration IN\:§7 {§aaim Up§7, §caim Right§7, §fuse in Air§7, §1no existing Block§7, §3Sneaking§7, §2look Pitch§7, §4look Yaw§7, §6Equiped slot§7} binary packed as\: §70b§800000000§7_§aUUUU§cRRRR§7_§80§2§fA§1B§3S§2PP§4YY§7_§800§6EEEEE\n§eClock IN\:§7 value change triggers action.\n§eStatus OUT\:§7 result of last action\: §e-1§7 \= did nothing, §e0§7 \= successfull, §e1§7 \= failed, §e2§7 \= insufficient energy.\n§eEnergy IN\:§7 energy supply for operation.\n§b§oSee also\: §6§oBlock Reference ...§b, §6§oBlock Access Socket§b, §63D Block Selector
+tile.rs_ctr.delay.name=Signal Delay Line
+tile.rs_ctr.delay.tip=Outputs each of the four incomming signals by one tick (0.05s) delayed.
+tile.rs_ctr.delay_b.name=Block Reference Delay Line
+tile.rs_ctr.delay_b.tip=Repeats each of the four incomming §6Block Reference§7s by one tick (0.05s) delayed.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
