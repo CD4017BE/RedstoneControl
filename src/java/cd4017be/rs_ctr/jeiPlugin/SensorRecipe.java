@@ -34,8 +34,12 @@ public class SensorRecipe implements IRecipeWrapper {
 	@Override
 	public void drawInfo(Minecraft minecraft, int w, int h, int mouseX, int mouseY) {
 		FontRenderer fr = minecraft.fontRenderer;
-		String s = sensor.getTooltipString();
-		fr.drawString(s, (18 + w - fr.getStringWidth(s)) / 2, s.indexOf('\n') >= 0 ? 0 : 5, 0xff808080);
+		String[] ts = sensor.getTooltipString().split("\n");
+		int y = (19 - fr.FONT_HEIGHT * ts.length) / 2;
+		for (String s : ts) {
+			fr.drawString(s, (18 + w - fr.getStringWidth(s)) / 2, y, 0xff404040);
+			y += fr.FONT_HEIGHT;
+		}
 	}
 
 }
