@@ -45,6 +45,7 @@ public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTB
 		F_DOUBLE_VALUE = getFieldOrNull(C_MANAGED_DOUBLE, "value"),
 		F_INT_VALUE = getFieldOrNull(C_MANAGED_INT, "value");
 
+	public static final ResourceLocation MODEL = new ResourceLocation(Main.ID, "block/_sensor.draconic()");
 	private static final double PRECISION = 1000D;
 	public static boolean INVALID_API;
 	static {
@@ -155,8 +156,7 @@ public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTB
 
 	@Override
 	public ResourceLocation getModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return MODEL;
 	}
 
 	@Override

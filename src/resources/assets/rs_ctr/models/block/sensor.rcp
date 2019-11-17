@@ -1,20 +1,22 @@
 {
-	textures = ["rs_ctr:blocks/sensors"];
+	textures = ["rs_ctr:blocks/sensors", "rs_ctr:blocks/sensors1"];
 }
 
-main(t) {
-	Loc dx = t % 2 * 8, dy = #(t / 2) * 8;
+main(i, t) {
+	Loc dx = i % 2 * 8, dy = #(i / 2) * 8;
 	Loc Q = [4,4,8, 12,12,10]#;
 	add(
-		rect(Q, [8,8, 16,10]#, "u-V"),
-		rect(Q, [8,10, 16,12]#, "u+V"),
-		rect(Q, [dx,dy, dx+8,dy+8]#, "uV+"),
-		rect(Q, [8,12, 16,14]#, "-UV"),
-		rect(Q, [8,14, 16,16]#, "+UV")
+		rect(Q, [8,8, 16,10]#, "u-V", t),
+		rect(Q, [8,10, 16,12]#, "u+V", t),
+		rect(Q, [dx,dy, dx+8,dy+8]#, "uV+", t),
+		rect(Q, [8,12, 16,14]#, "-UV", t),
+		rect(Q, [8,14, 16,16]#, "+UV", t)
 	);
 }
 
-item() {main(0);}
-fluid() {main(1);}
-fe() {main(2);}
-eu() {main(2);}
+item() {main(0, 0);}
+fluid() {main(1, 0);}
+fe() {main(2, 0);}
+eu() {main(2, 0);}
+hard() {main(0, 1);}
+draconic() {main(1, 1);}

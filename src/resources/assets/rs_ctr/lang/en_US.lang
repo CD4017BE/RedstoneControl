@@ -209,6 +209,7 @@ sensor.rs_ctr.dfr4=core saturation mode:\nCore Charge [RF]
 sensor.rs_ctr.dfr5=inverted core saturation mode:\nCore Saturation [0...1000]
 sensor.rs_ctr.dfr6=fuel mode:\nTotal Core Mass [mB]
 sensor.rs_ctr.dfr7=inverted fuel mode:\nFuel Conversion [0...1000]
+sensor.rs_ctr.hard=Block Hardness [% Stone]
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d

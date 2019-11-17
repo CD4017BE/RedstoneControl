@@ -5,6 +5,8 @@ import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
+import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
@@ -29,7 +31,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import static net.minecraftforge.fml.client.registry.ClientRegistry.*;
 
 import java.util.Collections;
-
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import static cd4017be.rs_ctr.Objects.*;
 import static cd4017be.lib.BlockItemRegistry.*;
@@ -112,8 +114,11 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.dependencies.add(ItemSensor.MODEL);
 		PORT_RENDER.dependencies.add(FluidSensor.MODEL);
 		PORT_RENDER.dependencies.add(ForgeEnergySensor.MODEL);
+		PORT_RENDER.dependencies.add(BlockHardnessSensor.MODEL);
 		if (HAS_IC2_API)
 			PORT_RENDER.dependencies.add(IC2EnergySensor.MODEL);
+		if (Loader.isModLoaded("draconicevolution"))
+			PORT_RENDER.dependencies.add(DraconicFusionSensor.MODEL);
 		
 		registerRender(RS_PORT, 0, 3);
 		registerRender(WIRE_ANCHOR);
