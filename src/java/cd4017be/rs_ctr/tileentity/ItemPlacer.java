@@ -56,7 +56,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemPlacer extends WallMountGate
 implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, IGuiHandlerTile, IStateInteractionHandler {
 
-	public static float BASE_ENERGY = 100, SPEED_MOD = 8;
+	public static float BASE_ENERGY = 500, SPEED_MOD = 8;
 	private static final int S_SUCCESS = 0, S_PASS = -1, S_FAIL = 1, S_NOENERGY = 2;
 
 	private GameProfile gp = new GameProfile(new UUID(0, 0), "dummyPlayer");

@@ -1,4 +1,4 @@
-VERSION = 74;
+VERSION = 75;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -25,6 +25,9 @@ energy_breaker_op = 2000; !base energy consumed by the Block Breaker per block m
 energy_breaker_hard = 4000; !additional energy consumed by the Block Breaker per block hardness unit (Stone = 1.5).
 energy_breaker_speed = 8.0; !energy consumption increase when running the Block Breaker at max clock speed.
 !total_energy_cost = (energy_breaker_op + energy_breaker_hard * block_hardness) * (1 + energy_breaker_speed / ticks_since_last_op)
+energy_placer_op = 1000; !base energy consumed by the Item User per operation.
+energy_placer_speed = 8.0; !energy consumption increase when running the Item User at max clock speed.
+!total_energy_cost = energy_placer_op * (1 + energy_placer_speed / ticks_since_last_op)
 
 PRE_INIT() {
 	add("item", 400, "battery", "rs_ctr:battery");

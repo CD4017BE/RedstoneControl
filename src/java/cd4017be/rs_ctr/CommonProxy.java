@@ -45,6 +45,7 @@ import cd4017be.rs_ctr.tileentity.BlockBreaker;
 import cd4017be.rs_ctr.tileentity.BlockFrame;
 import cd4017be.rs_ctr.tileentity.BlockSelector;
 import cd4017be.rs_ctr.tileentity.FluidTranslocator;
+import cd4017be.rs_ctr.tileentity.ItemPlacer;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
 import cd4017be.rs_ctr.tileentity.Panel;
 import cd4017be.rs_ctr.tileentity.PowerHub;
@@ -137,6 +138,8 @@ public class CommonProxy implements IRecipeHandler {
 		BlockBreaker.BASE_ENERGY = (float)c.getNumber("energy_breaker_op", BlockBreaker.BASE_ENERGY);
 		BlockBreaker.ENERGY_MULT = (float)c.getNumber("energy_breaker_hard", BlockBreaker.ENERGY_MULT);
 		BlockBreaker.SPEED_MOD = (float)c.getNumber("energy_breaker_speed", BlockBreaker.SPEED_MOD);
+		ItemPlacer.BASE_ENERGY = (float)c.getNumber("energy_placer_op", ItemPlacer.BASE_ENERGY);
+		ItemPlacer.SPEED_MOD = (float)c.getNumber("energy_placer_speed", ItemPlacer.SPEED_MOD);
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));
