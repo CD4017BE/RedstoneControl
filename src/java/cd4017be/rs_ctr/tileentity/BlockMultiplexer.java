@@ -34,9 +34,9 @@ implements SignalHandler, IUpdatable {
 	public Object getPortCallback(int pin) {
 		if(pin < 4)
 			return (BlockHandler)(ref) -> {
-				if(BlockReference.equal(ref, in[pin])) return;
+				if(BlockReference.equalDelayed(ref, in[pin], 1)) return;
 				scheduleUpdate();
-				in[pin] = ref;
+				in[pin] = BlockReference.delayed(ref, 1);
 			};
 		return this;
 	}

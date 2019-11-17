@@ -82,7 +82,7 @@ public class BlockDelayer extends WallMountGate {
 
 		@Override
 		public void updateBlock(BlockReference value) {
-			if(BlockReference.equal(state, value)) return;
+			if(BlockReference.equalDelayed(value, state, 1)) return;
 			if(tick == 0) {
 				tick = TickRegistry.TICK;
 				TickRegistry.schedule(this);
@@ -90,7 +90,7 @@ public class BlockDelayer extends WallMountGate {
 				tick = TickRegistry.TICK;
 				out.updateBlock(state);
 			}
-			state = value;
+			state = BlockReference.delayed(value, 1);
 		}
 
 		@Override
