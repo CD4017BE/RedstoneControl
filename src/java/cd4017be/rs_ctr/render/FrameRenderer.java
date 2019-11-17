@@ -39,6 +39,11 @@ public class FrameRenderer extends FastTESR<TileEntity> {
 		}
 	}
 
+	@Override
+	public boolean isGlobalRenderer(TileEntity te) {
+		return true;
+	}
+
 	public static void renderFrame(
 		double x0, double y0, double z0, double x1, double y1, double z1,
 		BufferBuilder buf, int color

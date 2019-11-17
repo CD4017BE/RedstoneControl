@@ -162,8 +162,8 @@ Supplier<String>, ISpecialRenderComp {
 		if(d == area[3]) i |= 1;
 		else if(d != -1) return;
 		d = pos.getY() - area[1];
-		if(d == area[4]) i |= 2;
-		else if(d != -1) return;
+		if(d == area[4] - 1) i |= 2;
+		else if(d != 0) return;
 		d = pos.getZ() - area[2];
 		if(d == area[4]) i |= 4;
 		else if(d != -1) return;

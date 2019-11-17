@@ -40,10 +40,11 @@ public interface IFrameOperator {
 			}
 		}
 		//transform coords
-		for (int i = 0; i < 3; i++)
-			areaOut[i + 3] += areaOut[i] - 1;
+		areaOut[3] += areaOut[0] - 1;
+		areaOut[4] += areaOut[1] + 1;
+		areaOut[5] += areaOut[2] - 1;
 		areaOut[0] = x - areaOut[0] + 1;
-		areaOut[1] = y - areaOut[1] + 1;
+		areaOut[1] = y - areaOut[1];
 		areaOut[2] = z - areaOut[2] + 1;
 	}
 
@@ -53,7 +54,7 @@ public interface IFrameOperator {
 	public static BlockPos getCorner(int[] area, int i) {
 		return new BlockPos(
 			area[0] + ((i & 1) != 0 ? area[3] : -1),
-			area[1] + ((i & 2) != 0 ? area[4] : -1),
+			area[1] + ((i & 2) != 0 ? area[4] - 1 : 0),
 			area[2] + ((i & 4) != 0 ? area[5] : -1)
 		);
 	}
