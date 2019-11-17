@@ -46,6 +46,7 @@ public class Objects {
 	public static final BlockGate BIN_COMB = null;
 	public static final BlockGate BIN_SPLIT = null;
 	public static final BlockGate XOR_GATE = null;
+	public static final BlockGate COUNTER = null;
 	public static final BlockGate DELAY = null;
 	public static final BlockGate SPLITTER_B = null;
 	public static final BlockGate MULTIPLEX_B = null;
@@ -76,6 +77,7 @@ public class Objects {
 	public static final BaseItemBlock bin_comb = null;
 	public static final BaseItemBlock bin_split = null;
 	public static final BaseItemBlock xor_gate = null;
+	public static final BaseItemBlock counter = null;
 	public static final BaseItemBlock delay = null;
 	public static final BaseItemBlock splitter_b = null;
 	public static final BaseItemBlock multiplex_b = null;
@@ -135,6 +137,7 @@ public class Objects {
 				new BlockGate("bin_comb", Material.CIRCUITS, SoundType.STONE, 3, BinaryCombiner.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("bin_split", Material.CIRCUITS, SoundType.STONE, 3, BinarySplitter.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("xor_gate", Material.CIRCUITS, SoundType.STONE, 3, XORGate.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("counter", Material.CIRCUITS, SoundType.STONE, 3, Counter.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("delay", Material.CIRCUITS, SoundType.STONE, 3, SignalDelayer.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("splitter_b", Material.CIRCUITS, SoundType.STONE, 3, BlockSplitter.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("multiplex_b", Material.CIRCUITS, SoundType.STONE, 3, BlockMultiplexer.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
@@ -170,6 +173,7 @@ public class Objects {
 				new BaseItemBlock(BIN_COMB),
 				new BaseItemBlock(BIN_SPLIT),
 				new BaseItemBlock(XOR_GATE),
+				new BaseItemBlock(COUNTER),
 				new BaseItemBlock(DELAY),
 				new BaseItemBlock(SPLITTER_B),
 				new BaseItemBlock(MULTIPLEX_B),

@@ -64,6 +64,8 @@ tile.rs_ctr.delay.name=Signal Delay Line
 tile.rs_ctr.delay.tip=Outputs each of the four incomming signals by one tick (0.05s) delayed.
 tile.rs_ctr.delay_b.name=Block Reference Delay Line
 tile.rs_ctr.delay_b.tip=Repeats each of the four incomming §6Block Reference§7s by one tick (0.05s) delayed.
+tile.rs_ctr.counter.name=Counter
+tile.rs_ctr.counter.tip=Increments/decrements §eCount OUT§7 whenever §eClock IN§7 changes. If count gets out of range §eRange IN + 1 ... 0§7 or §e0 ... Range IN - 1§7 it wraps around and §eClock OUT§7 gets fipped.\n\n§oNote\: This device operates without signal delays, so consistent timing between §e§oRange IN§7§o and §e§oClock IN§7§o can not be guaranteed!
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -194,6 +196,11 @@ port.rs_ctr.invax0=normal
 port.rs_ctr.invax1=mirrored
 port.rs_ctr.status=Status OUT
 port.rs_ctr.place=Configuration IN
+port.rs_ctr.inc=increment
+port.rs_ctr.dec=decrement
+port.rs_ctr.limit=Limit IN
+port.rs_ctr.count=Count OUT
+port.rs_ctr.clko=Clock OUT
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
