@@ -1,7 +1,6 @@
 package cd4017be.rs_ctr.item;
 
 import java.util.HashSet;
-
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
 import net.minecraft.block.state.IBlockState;
@@ -9,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +50,18 @@ public class ItemWrench extends BaseItem {
 			player.sendStatusMessage(new TextComponentTranslation("msg.rs_ctr.copy_clr"), true);
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.PASS, stack);
+		return new ActionResult<>(EnumActionResult.PASS, stack);
+	}
+
+	@Override
+	public EnumActionResult onItemUse(
+		EntityPlayer player, World world, BlockPos pos, EnumHand hand,
+		EnumFacing facing, float hitX, float hitY, float hitZ
+	) {
+		IBlockState state = world.getBlockState(pos);
+		return state.getBlock().rotateBlock(
+			world, pos, player.isSneaking() ? facing.getOpposite() : facing
+		) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	@Override
