@@ -37,7 +37,7 @@ public class BlockBreaker extends WallMountGate
 implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 
 	public static float BASE_ENERGY = 1000, ENERGY_MULT = 4000, SPEED_MOD = 8;
-	private static final int S_SUCCESS = 0, S_UNBREAKABLE = -1, S_NOENERGY = 1, S_FULLINV = 2;
+	private static final int S_SUCCESS = 0, S_UNBREAKABLE = -1, S_FULLINV = 1, S_NOENERGY = 2;
 
 	NonNullList<ItemStack> drops = NonNullList.create();
 	BlockReference block;

@@ -57,9 +57,9 @@ tile.rs_ctr.frame.tip=Used to mark areas for devices\:\nFirst define the size of
 tile.rs_ctr.block_selector.name=3D Block Selector
 tile.rs_ctr.block_selector.tip=Creates §6Block Reference§7s of blocks specified by §eX, Y, Z coordinates§7 within an area defined by §63D Block Frame§7s.\nCoordinate inputs are valid in range §e0 ... size-1§7 for each axis.
 tile.rs_ctr.block_breaker.name=controlled Block Breaker
-tile.rs_ctr.block_breaker.tip=
+tile.rs_ctr.block_breaker.tip=Breaks blocks and puts any harvested items into an adjacent inventory.\n§eBlock IN\:§7 the Block to break.\n§eClock IN\:§7 value change triggers operation.\n§eStatus OUT\:§7 result of the last operation\:\n§e-1§7 \= did nothing (unbreakable/Air), §e0§7 \= successfull, §e1§7 \= can't proceed (inventory full), §e2§7 \= insufficient energy.\n§eEnergy IN\:§7 energy supply for operation.\n§b§oSee also\: §6§oBlock Reference ...§b, §6§oBlock Access Socket§b, §63D Block Selector
 tile.rs_ctr.item_placer.name=controlled Item User
-tile.rs_ctr.item_placer.tip=
+tile.rs_ctr.item_placer.tip=Emulates player right click interactions.\nRight-click block to open Fake Player inventory.\n§eBlock IN\:§7 the block location to interact with/at.\n§eConfiguration IN\:§7 {§aaim Up§7, §caim Right§7, §fuse in Air§7, §1no existing Block§7, §3Sneaking§7, §2look Pitch§7, §4look Yaw§7, §6Equiped slot§7} binary packed as\: §70b§800000000§7_§aUUUU§cRRRR§7_§80§2§fA§1B§3S§2PP§4YY§7_§800§6EEEEE\n§eClock IN\:§7 value change triggers action.\n§eStatus OUT\:§7 result of last action\: §e-1§7 \= did nothing, §e0§7 \= successfull, §e1§7 \= failed, §e2§7 \= insufficient energy.\n§eEnergy IN\:§7 energy supply for operation.\n§b§oSee also\: §6§oBlock Reference ...§b, §6§oBlock Access Socket§b, §63D Block Selector
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -362,6 +362,17 @@ gui.rs_ctr.align=Text alignment
 gui.rs_ctr.v_off=OFF value
 gui.rs_ctr.v_on=ON value
 gui.rs_ctr.thr=Threshold value\n§oON when above
+gui.rs_ctr.item_placer.slot=Equiped Item\:\n§7Slot\: §4%d §8\= bits[0...5]
+gui.rs_ctr.item_placer.aim=Block surface aim\:\n§7right\: %d §8\= bits[16...19]\n§7up\: %d §8\= bits[20...23]
+gui.rs_ctr.item_placer.look=Look orientation\:\n§7yaw\: §4%d §8\= bits[8...9]\n§7pitch\: §2%d §8\= bits[10...11]\n§7§orelative to §1§oSocket
+gui.rs_ctr.item_placer.sneak0=Sneaking\: No\n§8bit[12] \= §70
+gui.rs_ctr.item_placer.sneak1=Sneaking\: Yes\n§8bit[12] \= §71
+gui.rs_ctr.item_placer.side0=allow existing blocks\n§8bit[13] \= §70
+gui.rs_ctr.item_placer.side1=don't allow existing blocks\n§8bit[13] \= §71
+gui.rs_ctr.item_placer.air0=Use on Blocks\n§8bit[14] \= §70
+gui.rs_ctr.item_placer.air1=Use in Air\n§8bit[14] \= §71
+gui.rs_ctr.item_placer.creative0=Creative Mode\: OFF\n§8bit[7] \= §70
+gui.rs_ctr.item_placer.creative1=Creative Mode\: ON\n§8bit[7] \= §71
 
 recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors

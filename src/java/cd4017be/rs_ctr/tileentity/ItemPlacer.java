@@ -73,13 +73,13 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 		inv.mainInventory::get,
 		(stack, i)-> inv.mainInventory.set(i, stack)
 	), armorinv = new PlayerArmorInvWrapper(inv);
-	private boolean creative;
+	public boolean creative;
 	private BlockReference block;
 	private EnergyHandler energy = EnergyHandler.NOP;
 	private SignalHandler out;
 	private int clk, status, idle = 1000;
 	/**bit[0-5]: hotbarSlot, bit[7]: creative,
-	 * bit[8,9]: yaw, bit[10,11]: pitch, bit[12]: sneak, bit[13]: noSidePlacement, bit[14]: airUse,
+	 * bit[8,9]: yaw, bit[10,11]: pitch, bit[12]: sneak, bit[14]: noSidePlacement, bit[15]: airUse,
 	 * bit[16-19]: pixelX, bit[20-23]: pixelY */
 	public int aim;
 	private boolean update;
@@ -131,7 +131,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 	}
 
 	public void updateAim(int value) {
-		value &= creative ? 0xff7fbf : 0xff7f3f;
+		value &= creative ? 0xffdfbf : 0xffdf3f;
 		if (value == aim) return;
 		aim = value;
 		if ((inv.currentItem = aim & 0x3f) >= 36)
@@ -172,11 +172,11 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 		if(energy.changeEnergy(e, true) != e)
 			return S_NOENERGY;
 		if (player == null) initializePlayer();
-		if ((aim & 0x2000) != 0 && !ref.getState().getBlock().isReplaceable(ref.world(), ref.pos))
+		if ((aim & 0x4000) != 0 && !ref.getState().getBlock().isReplaceable(ref.world(), ref.pos))
 			return S_FAIL;
 		RayTraceResult res = setupInteraction(player, ref, aim);
 		EnumActionResult ar = null;
-		if ((aim & 0x4000) != 0) {
+		if ((aim & 0x8000) != 0) {
 			ItemStack stack = player.getHeldItemMainhand();
 			if (stack.isEmpty()) ar = EnumActionResult.PASS;
 			else ar = player.interactionManager.processRightClick(
@@ -220,9 +220,10 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 			else nbt.removeTag("ref");
 			nbt.setUniqueId("FPuuid", gp.getId());
 			nbt.setString("FPname", gp.getName());
-			nbt.setBoolean("creative", creative);
 			nbt.setTag("FPinv", inv.writeToNBT(new NBTTagList()));
 		}
+		if (mode <= CLIENT)
+			nbt.setBoolean("creative", creative);
 		super.storeState(nbt, mode);
 	}
 
@@ -236,11 +237,12 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 			block = nbt.hasKey("ref", NBT.TAG_COMPOUND) ?
 				new BlockReference(nbt.getCompoundTag("ref")) : null;
 			gp = new GameProfile(nbt.getUniqueId("FPuuid"), nbt.getString("FPname"));
-			creative = nbt.getBoolean("creative");
 			inv.readFromNBT(nbt.getTagList("FPinv", NBT.TAG_COMPOUND));
 			if ((inv.currentItem = aim & 0x3f) >= 36)
 				inv.currentItem = 0;
 		}
+		if (mode <= CLIENT)
+			creative = nbt.getBoolean("creative");
 		super.loadState(nbt, mode);
 	}
 
@@ -281,7 +283,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 	private static RayTraceResult setupInteraction(FakePlayer player, BlockReference block, int aim) {
 		player.setSneaking((aim & 0x1000) != 0);
 		player.capabilities.isCreativeMode = (aim & 0x80) != 0;
-		boolean air = (aim & 0x4000) != 0;
+		boolean air = (aim & 0x8000) != 0;
 		//create aim vector
 		Vec3d vec = new Vec3d(
 			.46875 - (aim >> 16 & 15) * .0625,
