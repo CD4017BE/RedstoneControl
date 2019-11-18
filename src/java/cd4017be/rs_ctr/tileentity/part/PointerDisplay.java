@@ -99,6 +99,8 @@ public class PointerDisplay extends SignalModule implements SignalHandler, IBloc
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
+		IPanel host = this.host;
+		if (host == null) return;
 		int color = 0xff000000;
 		if (unit.length() >= 2 && unit.charAt(0) == '\u00a7') {
 			int i = Minecraft.getMinecraft().fontRenderer.getColorCode(Character.toLowerCase(unit.charAt(1)));

@@ -70,7 +70,7 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	@Override
 	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
 		if (super.onInteract(player, hit, side, aim)) return true;
-		value = value(aim);
+		value = value(aim, host.getOrientation());
 		if (out != null)
 			out.updateSignal(value);
 		host.updateDisplay();
@@ -79,15 +79,16 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 
 	@Override
 	public Pair<Vec3d, String> getDisplayText(Vec3d aim) {
-		int val = value(aim);
+		IPanel host = this.host;
+		if (host == null) return null;
 		Orientation o = host.getOrientation();
+		int val = value(aim, o);
 		aim = aim.add(o.Y.scale(-.375 + getY() - aim.subtract(.5, .5, .5).dotProduct(o.Y)));
 		return Pair.of(aim, String.format("%d", val));
 	}
 
-	private int value(Vec3d aim) {
+	private int value(Vec3d aim, Orientation o) {
 		aim = aim.subtract(.5, .5, .5);
-		Orientation o = host.getOrientation();
 		double v = (aim.dotProduct(o.X) + .375) / .75;
 		if (aim.dotProduct(o.Y) + .25 >= getY()) {
 			double f = 1D / (v - .5);
@@ -162,6 +163,8 @@ public class Slider extends SignalModule implements IBlockRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
+		IPanel host = this.host;
+		if (host == null) return;
 		Orientation o = host.getOrientation();
 		double y = getY() - 0.5;
 		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.375, y + .125, .505)).addVector(.5, .5, .5), o.X.scale(.75), o.Y.scale(.0625), getUV(t_blank, 0, 0), getUV(t_blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, t_blank, true, DefaultVertexFormats.BLOCK));

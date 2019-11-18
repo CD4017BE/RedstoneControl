@@ -115,6 +115,8 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
+		IPanel host = this.host;
+		if (host == null) return;
 		light = host.frontLight();
 		IntArrayModel m = renderCache;
 		if (m == null && (refreshFTESR(host.getOrientation(), x, y, z, light, buffer) || (m = renderCache) == null)) return;
@@ -161,7 +163,8 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 
 	@Override
 	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
-		return !player.isDead && player.getDistanceSqToCenter(host.pos()) < 256;
+		IPanel host = this.host;
+		return !player.isDead && host != null && player.getDistanceSqToCenter(host.pos()) < 256;
 	}
 
 }

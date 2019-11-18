@@ -163,6 +163,8 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
+		IPanel host = this.host;
+		if (host == null) return;
 		Orientation o = host.getOrientation();
 		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.5, getY() - .5, .505)).addVector(.5, .5, .5), o.X, o.Y.scale(1./3.), getUV(t_blank, 0, 0), getUV(t_blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, t_blank, true, DefaultVertexFormats.BLOCK));
 	}

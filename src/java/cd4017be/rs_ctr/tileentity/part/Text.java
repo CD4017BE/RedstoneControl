@@ -142,7 +142,8 @@ public class Text extends Module implements IStateInteractionHandler {
 
 	@Override
 	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
-		return !player.isDead && player.getDistanceSqToCenter(host.pos()) < 256;
+		IPanel host = this.host;
+		return !player.isDead && host != null && player.getDistanceSqToCenter(host.pos()) < 256;
 	}
 
 	@Override
