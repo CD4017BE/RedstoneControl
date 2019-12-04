@@ -339,7 +339,6 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		return makeDefaultDrops(null);
 	}
 
-	@SideOnly(Side.CLIENT)
 	int cachedLight = -1;
 
 	@Override
