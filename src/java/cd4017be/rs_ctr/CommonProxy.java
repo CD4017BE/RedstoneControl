@@ -164,6 +164,7 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Text.ID, Text::new);
 		Module.REGISTRY.put(Lever.ID, Lever::new);
 		Module.REGISTRY.put(Lamp.ID, Lamp::new);
+		Module.REGISTRY.put(Clock.ID, cd4017be.rs_ctr.tileentity.part.Clock::new);
 		
 		CircuitInstructionSet.INS_SET.loadTabs();
 	}
