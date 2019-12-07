@@ -217,6 +217,8 @@ sensor.rs_ctr.dfr5=inverted core saturation mode:\nCore Saturation [0...1000]
 sensor.rs_ctr.dfr6=fuel mode:\nTotal Core Mass [mB]
 sensor.rs_ctr.dfr7=inverted fuel mode:\nFuel Conversion [0...1000]
 sensor.rs_ctr.hard=Block Hardness [% Stone]
+sensor.rs_ctr.light=Light Levels\nBlock[0...15] + 256*Sky[0...15]
+sensor.rs_ctr.grow=Crop Growth\n-1\: none, 0\: growing, 1\: mature
 
 #Circuit gates
 gate.cost=§8Complexity\: §c%d §b%d
