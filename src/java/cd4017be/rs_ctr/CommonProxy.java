@@ -40,8 +40,10 @@ import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
 import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
+import cd4017be.rs_ctr.sensor.GrowthSensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
+import cd4017be.rs_ctr.sensor.LightSensor;
 import cd4017be.rs_ctr.tileentity.BlockBreaker;
 import cd4017be.rs_ctr.tileentity.BlockFrame;
 import cd4017be.rs_ctr.tileentity.BlockSelector;
@@ -147,6 +149,8 @@ public class CommonProxy implements IRecipeHandler {
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));
 		registerSensor(new ForgeEnergySensor(), c.get("sensors_FE", Object[].class, null));
 		registerSensor(new BlockHardnessSensor(), c.get("sensors_hard", Object[].class, null));
+		registerSensor(new LightSensor(), c.get("sensors_light", Object[].class, null));
+		registerSensor(new GrowthSensor(), c.get("sensors_grow", Object[].class, null));
 		if (HAS_IC2_API)
 			registerSensor(new IC2EnergySensor(), c.get("sensors_EU", Object[].class, null));
 		if (net.minecraftforge.fml.common.Loader.isModLoaded("draconicevolution"))

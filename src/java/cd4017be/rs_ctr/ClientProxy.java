@@ -9,9 +9,10 @@ import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
 import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
 import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
+import cd4017be.rs_ctr.sensor.GrowthSensor;
 import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
-
+import cd4017be.rs_ctr.sensor.LightSensor;
 import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
 import static cd4017be.rs_ctr.render.FrameRenderer.FRAME_RENDER;
 
@@ -115,6 +116,8 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.dependencies.add(FluidSensor.MODEL);
 		PORT_RENDER.dependencies.add(ForgeEnergySensor.MODEL);
 		PORT_RENDER.dependencies.add(BlockHardnessSensor.MODEL);
+		PORT_RENDER.dependencies.add(LightSensor.MODEL);
+		PORT_RENDER.dependencies.add(GrowthSensor.MODEL);
 		if (HAS_IC2_API)
 			PORT_RENDER.dependencies.add(IC2EnergySensor.MODEL);
 		if (Loader.isModLoaded("draconicevolution"))
