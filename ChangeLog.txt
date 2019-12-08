@@ -1,3 +1,10 @@
+v0.2.3
+Changes:
+- fixed CD4017BE/CD4017BE_lib#20 crash through race condition
+- fixed #15 server crash due to client side only issues
+- added Light Sensor augment
+- added Plant Growth Sensor augment
+
 v0.2.2
 Changes:
 - added controlled Block Breaker: Yay, automatic mining!

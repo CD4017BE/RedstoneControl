@@ -10,6 +10,11 @@ buildscript {
         classpath "net.minecraftforge.gradle:ForgeGradle:${snapshot}-SNAPSHOT"
     }
 }
+
+plugins {
+	id("maven-publish")
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 /*
@@ -52,6 +57,7 @@ task deobfJar(type: Jar) {
 }
 
 tasks.build.dependsOn('sourceJar', 'deobfJar')
+tasks.publish.dependsOn('build')
 
 processResources {
     from (sourceSets.main.resources.srcDirs)
@@ -80,6 +86,13 @@ repositories {
 	maven {
 		url = "http://maven.ic2.player.to/"
 	}
+	maven {
+		url = "https://maven.pkg.github.com/cd4017be/cd4017be_lib"
+		credentials {
+			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+			password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
+		}
+	}
 }
 
 dependencies {
@@ -92,9 +105,8 @@ dependencies {
 	compile "li.cil.tis3d:TIS-3D:${tis3d_version}"
 	// IC2
 	compile "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
-	
-	String libDir = new File(file('./').getParentFile(), "CD4017BE_lib").getAbsolutePath()
-	compile files("${libDir}/build/libs/CD4017BE_lib-${mc_version}-${lib_version}-deobf.jar")
+	// CD4017BE_lib
+	compile "com.cd4017be.lib:CD4017BE_lib:${mc_version}-${lib_version}:deobf"
 }
 
 processResources
@@ -116,3 +128,24 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/cd4017be/redstonecontrol")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("PASSWORD")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            artifact jar
+            artifact deobfJar
+            artifact sourceJar
+        }
+    }
+}
+
