@@ -57,8 +57,9 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 		if (value == clk) return;
 		clk = value;
 		update = true;
-		if (flow != amOut)
-			flowOut.updateSignal(amOut = flow);
+		if (flow != amOut && flowOut != null)
+			flowOut.updateSignal(flow);
+		amOut = flow;
 		flow = 0;
 		markDirty(SAVE);
 	}
