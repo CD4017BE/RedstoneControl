@@ -4,6 +4,7 @@ import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.port.IConnector;
+import net.minecraft.item.Item;
 
 /**
  * 
@@ -17,6 +18,7 @@ public enum WireType {
 	public final String wiredId, wirelessId, model;
 	public final Class<?> clazz;
 	public final int color;
+	public Item wireItem;
 
 	private WireType(Class<?> clazz, String wiredId, String wirelessId, int color, String model) {
 		this.clazz = clazz;
