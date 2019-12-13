@@ -61,7 +61,8 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	BlockButton coreBtn = new BlockButton(null, ()-> null, ()-> name + "\n" + getError()) {
 		@Override
 		public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
-			GuiNetworkHandler.openBlockGui(player, pos, 0);
+			if (!hit)
+				GuiNetworkHandler.openBlockGui(player, pos, 0);
 			return true;
 		}
 	}.setSize(0.25F, 0.25F);

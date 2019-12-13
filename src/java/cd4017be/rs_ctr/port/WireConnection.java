@@ -12,7 +12,6 @@ import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.api.rs_ctr.wire.IWiredConnector;
 import cd4017be.api.rs_ctr.wire.RelayPort;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.render.PortRenderer;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -101,7 +100,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 
 	@Override
 	protected ItemStack drop() {
-		return new ItemStack(Objects.wire, count);
+		return new ItemStack(type.wireItem, count);
 	}
 
 	@Override

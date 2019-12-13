@@ -67,6 +67,7 @@ public class CompiledCircuit extends UnloadedCircuit implements CompiledProgram 
 
 	@Override
 	public Circuit load() {
+		if (ID == null) return this;
 		String name = name(ID);
 		CircuitLoader.INSTANCE.register(name, classCode);
 		Circuit c = CircuitLoader.INSTANCE.newCircuit(name);
