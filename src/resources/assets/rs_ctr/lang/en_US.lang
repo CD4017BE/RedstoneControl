@@ -374,6 +374,9 @@ gui.rs_ctr.align=Text alignment
 gui.rs_ctr.v_off=OFF value
 gui.rs_ctr.v_on=ON value
 gui.rs_ctr.thr=Threshold value\n§oON when above
+gui.rs_ctr.thr_off=Disable threshold
+gui.rs_ctr.thr_on=Enable threshold
+gui.rs_ctr.incr=Increment Step
 gui.rs_ctr.item_placer.slot=Equiped Item\:\n§7Slot\: §4%d §8\= bits[0...5]
 gui.rs_ctr.item_placer.aim=Block surface aim\:\n§7right\: %d §8\= bits[16...19]\n§7up\: %d §8\= bits[20...23]
 gui.rs_ctr.item_placer.look=Look orientation\:\n§7yaw\: §4%d §8\= bits[8...9]\n§7pitch\: §2%d §8\= bits[10...11]\n§7§orelative to §1§oSocket

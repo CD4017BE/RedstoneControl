@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.core.util.Loader;
-
 import cd4017be.api.recipes.ItemOperand;
 import cd4017be.api.recipes.RecipeAPI;
 import cd4017be.api.recipes.RecipeAPI.IRecipeHandler;
@@ -165,6 +164,9 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Lever.ID, Lever::new);
 		Module.REGISTRY.put(Lamp.ID, Lamp::new);
 		Module.REGISTRY.put(Clock.ID, cd4017be.rs_ctr.tileentity.part.Clock::new);
+		Module.REGISTRY.put(Trigger.ID, Trigger::new);
+		Module.REGISTRY.put(Scale.ID, Scale::new);
+		Module.REGISTRY.put(Offset.ID, Offset::new);
 		
 		CircuitInstructionSet.INS_SET.loadTabs();
 	}
