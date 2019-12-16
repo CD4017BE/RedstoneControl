@@ -124,6 +124,12 @@ item.rs_ctr.lever\:1.name=Lamp-Switch Module
 item.rs_ctr.lever\:2.name=Lamp-Button Module
 item.rs_ctr.lever\:i.tip=Switches between two signal states when §aclicked§7.\nTo be attached on a §6Control Panel§7.\n§eWidth\:§7 1  §eHeight\:§7 1\n§ePlacement\:§7 anywhere 4x4
 item.rs_ctr.lever\:2.tip=Stays ON after being §aclicked§7 for a configurable time interval.\n§aSneak-click§7 to turn off early.\nTo be attached on a §6Control Panel§7.\n§eWidth\:§7 1  §eHeight\:§7 1\n§ePlacements\:§7 anywhere 4x4
+item.rs_ctr.trigger.name=Signal Threshold Latch
+item.rs_ctr.trigger.tip=
+item.rs_ctr.scale.name=Signal Scaler
+item.rs_ctr.scale.tip=
+item.rs_ctr.offset.name=Signal Offset
+item.rs_ctr.offset.tip=
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Telekinetic Actuator
 item.cd4017be.m\:telekin_alloy.name=Telekinetic Alloy
@@ -377,6 +383,9 @@ gui.rs_ctr.thr=Threshold value\n§oON when above
 gui.rs_ctr.thr_off=Disable threshold
 gui.rs_ctr.thr_on=Enable threshold
 gui.rs_ctr.incr=Increment Step
+gui.rs_ctr.scale=internal scale factor
+gui.rs_ctr.div0=multiply adjustment
+gui.rs_ctr.div1=divide adjustment
 gui.rs_ctr.item_placer.slot=Equiped Item\:\n§7Slot\: §4%d §8\= bits[0...5]
 gui.rs_ctr.item_placer.aim=Block surface aim\:\n§7right\: %d §8\= bits[16...19]\n§7up\: %d §8\= bits[20...23]
 gui.rs_ctr.item_placer.look=Look orientation\:\n§7yaw\: §4%d §8\= bits[8...9]\n§7pitch\: §2%d §8\= bits[10...11]\n§7§orelative to §1§oSocket
