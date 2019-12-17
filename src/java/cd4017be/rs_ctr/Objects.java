@@ -67,6 +67,7 @@ public class Objects {
 	public static final BlockGate ITEM_PLACER = null;
 	public static final AdvancedBlock FRAME = null;
 	public static final BlockGate BLOCK_SELECTOR = null;
+	public static final BlockGate OC_ADAPTER = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -98,6 +99,7 @@ public class Objects {
 	public static final BaseItemBlock item_placer = null;
 	public static final BaseItemBlock frame = null;
 	public static final BaseItemBlock block_selector = null;
+	public static final BaseItemBlock oc_adapter = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
@@ -161,7 +163,8 @@ public class Objects {
 				new BlockGate("block_breaker", Material.ROCK, SoundType.STONE, 3, BlockBreaker.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("item_placer", Material.ROCK, SoundType.STONE, 3, ItemPlacer.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new AdvancedBlock("frame", Material.ROCK, SoundType.STONE, 0, BlockFrame.class).setHardness(2.5F).setCreativeTab(tabCircuits),
-				new BlockGate("block_selector", Material.CIRCUITS, SoundType.STONE, 0, BlockSelector.class, HOR_AXIS).setCreativeTab(tabCircuits)
+				new BlockGate("block_selector", Material.CIRCUITS, SoundType.STONE, 0, BlockSelector.class, HOR_AXIS).setCreativeTab(tabCircuits),
+				new BlockGate("oc_adapter", Material.CIRCUITS, SoundType.STONE, 3, OC_Adapter.class, HOR_AXIS).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.75)).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -198,6 +201,7 @@ public class Objects {
 				new BaseItemBlock(ITEM_PLACER),
 				new BaseItemBlock(FRAME),
 				new BaseItemBlock(BLOCK_SELECTOR),
+				new BaseItemBlock(OC_ADAPTER),
 				WireType.SIGNAL.wireItem = new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				WireType.ENERGY.wireItem = new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				WireType.BLOCK.wireItem = new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),
