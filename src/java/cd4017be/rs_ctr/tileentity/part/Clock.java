@@ -155,6 +155,12 @@ implements SignalHandler, ITickReceiver, IBlockRenderComp {
 	}
 
 	@Override
+	public void deserializeNBT(NBTTagCompound nbt) {
+		super.deserializeNBT(nbt);
+		interval = nbt.getShort("int");
+	}
+
+	@Override
 	protected void loadCfg(NBTTagCompound nbt) {
 		int i = nbt.getShort("int");
 		interval = interval > 0 ^ i > 0 ? -i : i;
@@ -202,12 +208,12 @@ implements SignalHandler, ITickReceiver, IBlockRenderComp {
 		Vec2f t0 = getUV(t_blank, 0, 0), t1 = getUV(t_blank, 16, 16);
 		buffer.addVertexData(
 			texturedRect(
-				p, dx, dy, t0, t1, value < 0 ? 0xff0000ff : 0xff00003f, light
+				p, dx, dy, t0, t1, value < 0 ? 0xff0000ff : 0xff00002f, light
 			)
 		);
 		buffer.addVertexData(
 			texturedRect(
-				p.add(dx.scale(5)), dx, dy, t0, t1, interval > 0 ? 0xff00ff00 : 0xff003f00, light
+				p.add(dx.scale(5)), dx, dy, t0, t1, interval > 0 ? 0xff00ff00 : 0xff002f00, light
 			)
 		);
 		IntArrayModel m = new IntArrayModel(

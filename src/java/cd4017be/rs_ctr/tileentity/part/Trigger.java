@@ -64,7 +64,7 @@ implements SignalHandler, IBlockRenderComp {
 	public void setPortCallback(Object callback) {
 		if(callback instanceof SignalHandler) {
 			SignalHandler h = (SignalHandler)callback;
-			h.updateSignal(value >= 0 ? 0 : 0xffff);
+			h.updateSignal(value);
 			out = h;
 		} else out = SignalHandler.NOP;
 	}
@@ -186,12 +186,12 @@ implements SignalHandler, IBlockRenderComp {
 		Vec2f t0 = getUV(t_blank, 0, 0), t1 = getUV(t_blank, 16, 16);
 		buffer.addVertexData(
 			texturedRect(
-				p, dx, dy, t0, t1, value <= 0 ? 0xffff0000 : 0xff3f0000, light
+				p, dx, dy, t0, t1, value <= 0 ? 0xffff0000 : 0xff2f0000, light
 			)
 		);
 		buffer.addVertexData(
 			texturedRect(
-				p.add(dy.scale(1.5)), dx, dy, t0, t1, value > 0 ? 0xff0000ff : 0xff00003f, light
+				p.add(dy.scale(1.5)), dx, dy, t0, t1, value > 0 ? 0xff0000ff : 0xff00002f, light
 			)
 		);
 		IntArrayModel m = new IntArrayModel(

@@ -8,6 +8,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
@@ -148,6 +149,8 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 		depthMask(false);
 		disableLighting();
 		disableTexture2D();
+		setActiveTexture(OpenGlHelper.lightmapTexUnit);
+		disableTexture2D();
 		scale(1.28, -1.28, 1);
 		translate(.5, -100, -.01);
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -163,6 +166,8 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 		}
 		glDisableClientState(GL_VERTEX_ARRAY);
 		depthMask(true);
+		enableTexture2D();
+		setActiveTexture(OpenGlHelper.defaultTexUnit);
 		enableTexture2D();
 		popMatrix();
 		blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
