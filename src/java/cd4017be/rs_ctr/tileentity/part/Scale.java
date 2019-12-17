@@ -44,8 +44,11 @@ implements SignalHandler, IBlockRenderComp {
 	SignalHandler out = SignalHandler.NOP;
 	String unit = "";
 	long scale = 0x1_0000_0000L;
-	double base;
+	double base = 1.0;
 	int gain = 54, in;
+	{
+		title = "Scale";
+	}
 
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
@@ -149,7 +152,7 @@ implements SignalHandler, IBlockRenderComp {
 	}
 
 	@Override
-	public void writeSync(PacketBuffer buf) {
+	public void writeSync(PacketBuffer buf, boolean init) {
 		buf.writeByte(gain);
 	}
 

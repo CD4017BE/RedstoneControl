@@ -172,7 +172,7 @@ implements SignalHandler, ITickReceiver, IBlockRenderComp {
 	}
 
 	@Override
-	public void writeSync(PacketBuffer buf) {
+	public void writeSync(PacketBuffer buf, boolean init) {
 		buf.writeByte(value < 0 ? -1 : 0);
 		buf.writeShort(interval);
 	}

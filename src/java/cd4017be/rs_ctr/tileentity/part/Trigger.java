@@ -134,7 +134,7 @@ implements SignalHandler, IBlockRenderComp {
 	}
 
 	@Override
-	public void writeSync(PacketBuffer buf) {
+	public void writeSync(PacketBuffer buf, boolean init) {
 		buf.writeInt(on);
 		buf.writeInt(off);
 		buf.writeByte(value);

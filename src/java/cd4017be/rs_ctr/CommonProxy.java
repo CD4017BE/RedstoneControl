@@ -167,6 +167,7 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Trigger.ID, Trigger::new);
 		Module.REGISTRY.put(Scale.ID, Scale::new);
 		Module.REGISTRY.put(Offset.ID, Offset::new);
+		Module.REGISTRY.put(Oscilloscope.ID, Oscilloscope::new);
 		
 		CircuitInstructionSet.INS_SET.loadTabs();
 	}

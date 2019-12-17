@@ -115,6 +115,7 @@ public class Objects {
 	public static final ItemPanelModule trigger = null;
 	public static final ItemPanelModule scale = null;
 	public static final ItemPanelModule offset = null;
+	public static final ItemPanelModule oscilloscope = null;
 	public static final ItemWrench wrench = null;
 
 	//Sounds
@@ -213,6 +214,7 @@ public class Objects {
 				new ItemPanelModule("trigger", "trigger").setCreativeTab(tabCircuits),
 				new ItemPanelModule("scale", "scale").setCreativeTab(tabCircuits),
 				new ItemPanelModule("offset", "offset").setCreativeTab(tabCircuits),
+				new ItemPanelModule("oscilloscope", "oscilloscope").setCreativeTab(tabCircuits),
 				new ItemWrench("wrench").setCreativeTab(tabCircuits)
 		);
 	}
