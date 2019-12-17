@@ -7,6 +7,7 @@ import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.port.Link;
 import cd4017be.lib.script.ScriptFiles.Version;
+import cd4017be.rs_ctr.tileentity.OC_Adapter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -53,6 +54,7 @@ public class Main {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+		OC_Adapter.registerAPI();
 	}
 
 	@Mod.EventHandler

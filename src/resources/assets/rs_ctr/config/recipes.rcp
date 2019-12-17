@@ -1,4 +1,4 @@
-VERSION = 80;
+VERSION = 83;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -150,6 +150,7 @@ moddedRecipes() {
 		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, "paper", it("item.wire"));
 	}
 	if (hasmod("opencomputers")) {
+		add("shaped", it("tile.oc_adapter"), "5 3/014/523", it("opencomputers:card"):6, it("opencomputers:material"):11, it("opencomputers:component"):6, it("tile.processor2"), it("opencomputers:card"):4, it("item.wire_e"));
 		add("battery", it("opencomputers:capacitor"), 1600000); !CAPACITOR
 		add("circuitMat", it("opencomputers:material"):6, 3, 0, 0, -2, 1, 3); !transistor
 		add("circuitMat", it("opencomputers:material"):7, 1, 3, 0, -1, 0, 4); !chip T1
