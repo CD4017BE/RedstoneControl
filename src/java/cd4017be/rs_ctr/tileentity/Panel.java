@@ -249,7 +249,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			PacketBuffer pkt = SyncNetworkHandler.preparePacket(pos);
 			for (Module m : modules)
 				if (m != null)
-					m.writeSync(pkt);
+					m.writeSync(pkt, false);
 			SyncNetworkHandler.instance.sendToPlayers(pkt, watching);
 		}
 	}
@@ -284,7 +284,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			pkt = SyncNetworkHandler.preparePacket(pos);
 			for (Module m : modules)
 				if (m != null)
-					m.writeSync(pkt);
+					m.writeSync(pkt, true);
 			SyncNetworkHandler.instance.sendToPlayer(pkt, sender);
 		}
 	}

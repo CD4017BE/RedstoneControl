@@ -50,8 +50,9 @@ public class ClientProxy extends CommonProxy {
 	T_7SEG = new ResourceLocation(Main.ID, "blocks/7seg"),
 	T_SOCKETS = new ResourceLocation(Main.ID, "blocks/sockets"),
 	T_FRAME = new ResourceLocation(Main.ID, "blocks/area"),
-	T_BEAM = new ResourceLocation(Main.ID, "blocks/beam");
-	public static TextureAtlasSprite t_blank, t_dial, t_7seg, t_sockets, t_frame, t_beam;
+	T_BEAM = new ResourceLocation(Main.ID, "blocks/beam"),
+	T_OSC = new ResourceLocation(Main.ID, "blocks/oscilloscope");
+	public static TextureAtlasSprite t_blank, t_dial, t_7seg, t_sockets, t_frame, t_beam, t_osc;
 
 	@Override
 	public void preInit() {
@@ -80,6 +81,7 @@ public class ClientProxy extends CommonProxy {
 		map.registerSprite(T_SOCKETS);
 		map.registerSprite(T_FRAME);
 		map.registerSprite(T_BEAM);
+		map.registerSprite(T_OSC);
 	}
 
 	@SubscribeEvent
@@ -92,6 +94,7 @@ public class ClientProxy extends CommonProxy {
 		t_sockets = map.getAtlasSprite(T_SOCKETS.toString());
 		t_frame = map.getAtlasSprite(T_FRAME.toString());
 		t_beam = map.getAtlasSprite(T_BEAM.toString());
+		t_osc = map.getAtlasSprite(T_OSC.toString());
 	}
 
 	@SubscribeEvent
@@ -142,6 +145,10 @@ public class ClientProxy extends CommonProxy {
 		registerRender(slider);
 		registerRender(text, 1, 4);
 		registerRender(lever, 0, 2);
+		registerRender(trigger);
+		registerRender(scale);
+		registerRender(offset);
+		registerRender(oscilloscope);
 	}
 
 	private static void addGates(BlockGate... gates) {

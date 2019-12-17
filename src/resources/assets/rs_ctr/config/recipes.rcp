@@ -1,4 +1,4 @@
-VERSION = 80;
+VERSION = 81;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -108,6 +108,10 @@ INIT() {
 	add("shaped", it("item.lever"):1, "0/1/2", it("item.lamp"), it("minecraft:lever"), it("item.constant"));
 	add("shaped", it("item.lever"):1, "0/1", it("item.lamp"), it("item.lever"):0);
 	add("shaped", it("item.lever"):2, "0/1/2", it("item.lamp"), it("minecraft:stone_button"), it("item.constant"));
+	add("shaped", it("item.offset"), "0/1", it("item.constant"), it("tile.num_comb"));
+	add("shaped", it("item.scale"), "02/11", it("item.constant"), it("tile.num_comb"), it("item.wire"));
+	add("shaped", it("item.trigger"), "20/1 /20", it("item.constant"), it("tile.logic_comb"), it("minecraft:comparator"));
+	add("shaped", it("item.oscilloscope"), "000/000/111", it("item.lamp"), it("tile.delay"));
 	Loc t = it("item.text"), t1 = t:1;
 	add("shaped", 4 * t1, "0/1", "paper", it("minecraft:sign"));
 	add("shapeless", t:4, t1, t1, t1, t1);
