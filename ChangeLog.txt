@@ -1,3 +1,22 @@
+v0.2.4
+Changes:
+- fixed #17 missing null check in signal output
+- fixed broken wires dropping wrong items
+- fixed #20 NPE when placing empty processor causing item dupe
+- fixed Processor opening GUI when trying to break
+- fixed #18, #19 and several other spelling mistakes
+- added reference subtract input to clocked comparator
+- added Threshold Trigger component
+- added Signal Scale component
+- added Signal Offset component
+- added Oscilloscope component
+- added signal adapter for OpenComputers
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.15
+
 v0.2.3
 Changes:
 - fixed CD4017BE/CD4017BE_lib#20 crash through race condition
