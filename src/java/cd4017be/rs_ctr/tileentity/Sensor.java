@@ -38,21 +38,28 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 
 	protected SignalHandler out;
 	protected BlockReference blockRef;
-	protected int clock, value;
+	protected int clock, value, ref;
+	protected boolean refChanged;
 	protected IBlockSensor impl = SensorRegistry.DEFAULT;
 	protected ItemStack stack = ItemStack.EMPTY;
 
 	{
 		ports = new MountedPort[] {
-			new MountedPort(this, 0, BlockHandler.class, false).setLocation(0.25F, 0.25F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.bi"),
-			new MountedPort(this, 1, SignalHandler.class, false).setLocation(0.25F, 0.75F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.clk"),
-			new MountedPort(this, 2, SignalHandler.class, true).setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o")
+			new MountedPort(this, 0, BlockHandler.class, false).setLocation(0.25F, 0.125F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.bi"),
+			new MountedPort(this, 1, SignalHandler.class, false).setLocation(0.25F, 0.5F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.clk"),
+			new MountedPort(this, 2, SignalHandler.class, true).setLocation(0.75F, 0.5F, 0.125F, EnumFacing.EAST).setName("port.rs_ctr.o"),
+			new MountedPort(this, 3, SignalHandler.class, false).setLocation(0.25F, 0.875F, 0.125F, EnumFacing.WEST).setName("port.rs_ctr.ref")
 		};
 	}
 
 	@Override
-	public SignalHandler getPortCallback(int pin) {
-		return this;
+	public Object getPortCallback(int pin) {
+		return pin == 3 ? (SignalHandler)(v)-> {
+			if (v == ref) return;
+			ref = v;
+			refChanged = true;
+			markDirty(SAVE);
+		} : this;
 	}
 
 	@Override
@@ -64,7 +71,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	@Override
 	protected void resetPin(int pin) {
 		if (pin == 0) blockRef = null;
-		else clock = 0;
+		else if (pin == 3) ref = 0;
 	}
 
 	@Override
@@ -77,9 +84,10 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		if (val == clock) return;
 		clock = val;
 		if (blockRef == null || !blockRef.isLoaded()) return;
-		if ((val = impl.readValue(blockRef)) == value) return;
+		if ((val = impl.readValue(blockRef)) == value && !refChanged) return;
 		value = val;
-		if (out != null) out.updateSignal(val);
+		refChanged = false;
+		if (out != null) out.updateSignal(val - ref);
 	}
 
 	@Override
@@ -88,6 +96,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		if (mode == SAVE) {
 			nbt.setInteger("clk", clock);
 			nbt.setInteger("val", value);
+			nbt.setInteger("ref", ref);
 		}
 		if (!stack.isEmpty()) {
 			nbt.setTag("sensor", stack.writeToNBT(new NBTTagCompound()));
@@ -103,6 +112,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		if (mode == SAVE) {
 			clock = nbt.getInteger("clk");
 			value = nbt.getInteger("val");
+			ref = nbt.getInteger("ref");
+			refChanged = true;
 			blockRef = null;
 		}
 		stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;

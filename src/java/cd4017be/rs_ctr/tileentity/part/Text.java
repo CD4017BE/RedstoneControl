@@ -92,7 +92,7 @@ public class Text extends Module implements IStateInteractionHandler {
 	}
 
 	@Override
-	public void writeSync(PacketBuffer buf) {
+	public void writeSync(PacketBuffer buf, boolean init) {
 	}
 
 	@Override

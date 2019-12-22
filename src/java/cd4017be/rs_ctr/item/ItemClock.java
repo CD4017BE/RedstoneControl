@@ -10,7 +10,6 @@ import cd4017be.lib.Gui.ItemInteractionHandler;
 import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.Spinner;
-import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.network.IGuiHandlerItem;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
@@ -37,13 +36,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class ItemClock extends BaseItem implements IConnectorItem, IGuiHandlerItem {
+public class ItemClock extends ItemPanelModule implements IConnectorItem, IGuiHandlerItem {
 
 	/**
 	 * @param id
 	 */
 	public ItemClock(String id) {
-		super(id);
+		super(id, "clock");
 	}
 
 	@Override

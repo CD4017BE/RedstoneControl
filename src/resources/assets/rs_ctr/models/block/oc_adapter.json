@@ -1,0 +1,22 @@
+{
+	"parent": "block/block",
+    "textures": {
+		"side": "rs_ctr:blocks/oc_adapter_side",
+		"back": "rs_ctr:blocks/oc_adapter_back",
+		"main": "rs_ctr:blocks/oc_adapter",
+        "particle": "rs_ctr:blocks/oc_adapter"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 12 ],
+            "faces": {
+				"east":  { "uv": [ 0, 0, 16, 12 ], "rotation": 270, "texture": "#side", "cullface": "east" },
+                "west":    { "uv": [ 0, 0, 16, 12 ], "rotation": 90, "texture": "#side", "cullface": "west" },
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#back", "cullface": "north" },
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#main" },
+                "down":  { "uv": [ 0, 0, 16, 12 ], "texture": "#side", "cullface": "down" },
+                "up":  { "uv": [ 0, 12, 16, 0 ], "texture": "#side", "cullface": "up" }
+            }
+        }
+    ]
+}

@@ -167,8 +167,9 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	/**
 	 * encode all "fast changing" state for synchronization
 	 * @param buf the packet to encode in
+	 * @param init whether this is the first packet send to the player
 	 */
-	public abstract void writeSync(PacketBuffer buf);
+	public abstract void writeSync(PacketBuffer buf, boolean init);
 
 	/**
 	 * decode all "fast changing" state from synchronization

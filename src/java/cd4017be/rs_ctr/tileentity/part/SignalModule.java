@@ -89,7 +89,7 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 	}
 
 	@Override
-	public void writeSync(PacketBuffer buf) {
+	public void writeSync(PacketBuffer buf, boolean init) {
 		buf.writeInt(value);
 	}
 

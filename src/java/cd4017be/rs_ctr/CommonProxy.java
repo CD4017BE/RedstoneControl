@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import org.apache.logging.log4j.core.util.Loader;
-
 import cd4017be.api.recipes.ItemOperand;
 import cd4017be.api.recipes.RecipeAPI;
 import cd4017be.api.recipes.RecipeAPI.IRecipeHandler;
@@ -50,6 +49,7 @@ import cd4017be.rs_ctr.tileentity.BlockSelector;
 import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemPlacer;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
+import cd4017be.rs_ctr.tileentity.OC_Adapter;
 import cd4017be.rs_ctr.tileentity.Panel;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import cd4017be.rs_ctr.tileentity.SolarCell;
@@ -131,6 +131,7 @@ public class CommonProxy implements IRecipeHandler {
 		d = c.getNumber("panel_sync_dst_max", Math.sqrt(Panel.UPDATE_RANGE1)); Panel.UPDATE_RANGE1 = d * d;
 		d = c.getNumber("panel_text_render_dst", Math.sqrt(Panel.TEXT_RANGE)); Panel.TEXT_RANGE = d * d;
 		PowerHub.FE_UNIT = (long)c.getNumber("energy_unit_FE", PowerHub.FE_UNIT);
+		OC_Adapter.OC_UNIT = c.getNumber("energy_unit_OC", OC_Adapter.OC_UNIT);
 		ItemTranslocator.BASE_COST = -(int)c.getNumber("energy_item_translocator_op", -ItemTranslocator.BASE_COST);
 		ItemTranslocator.TRANSFER_COST = -(int)c.getNumber("energy_item_translocator_ps", -ItemTranslocator.TRANSFER_COST);
 		FluidTranslocator.BASE_COST = -(int)c.getNumber("energy_fluid_translocator_op", -FluidTranslocator.BASE_COST);
@@ -168,6 +169,11 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Text.ID, Text::new);
 		Module.REGISTRY.put(Lever.ID, Lever::new);
 		Module.REGISTRY.put(Lamp.ID, Lamp::new);
+		Module.REGISTRY.put(Clock.ID, cd4017be.rs_ctr.tileentity.part.Clock::new);
+		Module.REGISTRY.put(Trigger.ID, Trigger::new);
+		Module.REGISTRY.put(Scale.ID, Scale::new);
+		Module.REGISTRY.put(Offset.ID, Offset::new);
+		Module.REGISTRY.put(Oscilloscope.ID, Oscilloscope::new);
 		
 		CircuitInstructionSet.INS_SET.loadTabs();
 	}
