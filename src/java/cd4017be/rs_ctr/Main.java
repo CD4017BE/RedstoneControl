@@ -50,11 +50,11 @@ public class Main {
 	public void load(FMLInitializationEvent event) {
 		Objects.init();
 		proxy.init(new ConfigConstants(RecipeScriptContext.instance.modules.get("redstoneControl")));
+		OC_Adapter.registerAPI();
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		OC_Adapter.registerAPI();
 	}
 
 	@Mod.EventHandler
