@@ -1,0 +1,420 @@
+#PARSE_ESCAPES
+itemGroup.rs_ctr=红石控制
+# Blocks
+# names & tooltips
+tile.rs_ctr.rs_port\:0.name=红石读取接口
+tile.rs_ctr.rs_port\:0.tip=贴在方块表面可读取其发出的红石信号。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o信号 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.rs_port\:1.name=红石写入接口
+tile.rs_ctr.rs_port\:1.tip=贴在方块表面可控制其收到的红石信号。\n可与其他§6接口§7包括另一个§6写入接口§7在同一表面上组合。（两个写入接口的组合将发出穿透固体方块的强大信号）。\n§b§o另请参阅：§6§o信号 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.rs_port\:2.name=方块访问接口
+tile.rs_ctr.rs_port\:2.tip=贴在方块表面可使连接本接口的设备与方块互动。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.rs_port\:3.name=方块镜像接口
+tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可通过这个接口访问方块§9物品栏§7和§9流体存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.splitter.name=信号4x分离器
+tile.rs_ctr.splitter.tip=在四个不同输出上重复输入信号（无延迟）。
+tile.rs_ctr.analog_comb.name=信号模拟合并器
+tile.rs_ctr.analog_comb.tip=输出四个输入信号中的最高值。
+tile.rs_ctr.logic_comb.name=信号逻辑合并器
+tile.rs_ctr.logic_comb.tip=用逻辑§e或§7合并四个输入信号，结果为§e真§7时输出§e65536§7，为§e假§7时输出§e0§7。\n输出端和每个输入端都可以单独设置反相，由此可以实现§e与§7，§e与非§7和§e或非§7等逻辑门。
+tile.rs_ctr.xor_gate.name=异或门
+tile.rs_ctr.xor_gate.tip=对四个输入信号进行§e异或§7，当输入中有§e奇数§7个为§e真§7时输出§e65536§7，否则输出§e0§7。
+tile.rs_ctr.num_comb.name=信号算术合并器
+tile.rs_ctr.num_comb.tip=将4个输入信号的值加在一起。\n输入可以是负数，因此可以计算减法。
+tile.rs_ctr.bin_comb.name=二进制信号打包器
+tile.rs_ctr.bin_comb.tip=输出信号由4个输入信号的二进制形式连接而成。从每个输入信号取出多少位是可配置的：\n§e1位§7只能表示§e0§7和§e1\\n§e2位§7能表示§e0§7，§e1§7，§e2§7和§e3\\n§e4位§7能表示§e0§7 - §e15\\n§e8位§7能表示§e0§7 - §e255\n§o只有给定范围内的值能在§6§o二进制信号解包器§7§o上无损恢复。
+tile.rs_ctr.bin_split.name=二进制信号解包器
+tile.rs_ctr.bin_split.tip=与§6二进制信号打包器§7工作方式相反：\n输入信号的二进制表示被分成4段的§e1§7，§e2§7，§e4§7或§e8位§7数字（依设置决定）然后再组成独立的输出信号。\n\n§o这时得多个信号共享一条线成为可能。另外§6§o信号逻辑合并器§7§o在§e§o按位§7§o模式下对被打包的所有信号进行并行操作。
+tile.rs_ctr.wire_anchor.name=线缆锚
+tile.rs_ctr.wire_anchor.tip=§6信号线§7s可以连接线缆锚以改变其路径。\n§o一个方块内可以有多个线缆锚。
+tile.rs_ctr.processor.tip=能被§6电路设计器§7编程的集成电路。\n提供最多§16个输入§7和§26个输出§7端口，但比§eDIP8§7版有更少的元件容量。
+tile.rs_ctr.processor.name=红石处理器§eQFP12
+tile.rs_ctr.editor.name=电路设计器
+tile.rs_ctr.editor.tip=用于对已组装的§6处理器§7编程。
+tile.rs_ctr.comparator.name=钟控比较器
+tile.rs_ctr.comparator.tip=当§eClock IN§7的值变化时，§eOUT§7会更新为从§eBlock IN§7读取的当前比较器数值。输出信号会减去§eThreshold IN§7输入的信号。\n§b§o另请参阅：§6§o方块引用... §b，§6§o方块访问接口\n\n§o该设备可通过在其上附着特定物品来调整观察的方块属性，详情请查看§9§oJEI§7。
+tile.rs_ctr.processor2.name=红石处理器§eDIP8
+tile.rs_ctr.processor2.tip=能被§6电路设计器§7编程的集成电路。\n提供最多§14个输入§7和§24个输出§7端口。
+tile.rs_ctr.assembler.name=处理器组装器
+tile.rs_ctr.assembler.tip=用于向§6红石处理器§7添加材料来提升其复杂度。
+tile.rs_ctr.power_hub.name=能量分配器
+tile.rs_ctr.power_hub.tip=向最多8个设备提供能量。\n方块的背面则接受FE兼容的能量输入。\n§o只在有电容器时工作：另请参阅§9§oJEI使用配方§7。\n§o尽管没有列出，所有FE兼容的物品都可以使用。
+tile.rs_ctr.item_translocator.name=钟控物品转运器
+tile.rs_ctr.item_translocator.tip=§esource/destin. Inventory IN§7：用于取走/放入物品的物品栏。\n§esource/destin. Slot IN§7：物品栏内要互动的格ID。\n§EAmount IN§7：要传输的物品数量。§o负值则会反向传输。\n§eClock IN§7值改变时触发传输。\n§eAmount OUT§7返回单次操作真正传输的物品数量。\n§eEnergy IN§7提供操作所需能量。
+tile.rs_ctr.fluid_translocator.name=钟控流体转运器
+tile.rs_ctr.fluid_translocator.tip=§esource/destin. Tank IN§7：进行抽取/灌入的储罐。\n§EAmount IN§7：传输的流体体积，以mB为单位。§o负值则会反向传输。\n§eClock IN§7值改变时触发传输。\n§eAmount OUT§7返回单次操作真正传输的流体体积。\n§eEnergy IN§7提供操作所需能量。
+tile.rs_ctr.panel.name=控制面板
+tile.rs_ctr.panel.tip=表面分成了一个4x4网格，不同的§6模块§7可以贴在上面。这些模块连线用的端口在面板的背面。\n使用§6螺丝刀§7来配置或移除模块。\n§o已安装的模块和配置在面板破坏时会保留。
+tile.rs_ctr.solar_cell.name=太阳能电池
+tile.rs_ctr.solar_cell.tip=从阳光中获得能量\n来给你的口袋计算器供能。
+tile.rs_ctr.energy_valve.name=功率调节器
+tile.rs_ctr.energy_valve.tip=控制并测量§9FE§7传输过设备的数量：\n改变§eClock IN§7的值会开始传输§eRF Limit IN§7给定大小的能量，§eRF flow OUT§7则会返回上一次操作传输了多少能量。
+tile.rs_ctr.splitter_b.name=方块查询4x分离器
+tile.rs_ctr.splitter_b.tip=在四个不同输出上重复输入的§6方块查询信号§7（无延迟）。
+tile.rs_ctr.multiplex_b.name=方块查询复用器
+tile.rs_ctr.multiplex_b.tip=如果§eSelect IN§7的值在§e0 ... 3§7内则选择四个§6方块查询§7输入中的对应输入进行输出。否则不输出方块查询。
+tile.rs_ctr.frame.name=3维方块框架
+tile.rs_ctr.frame.tip=用于标记设备的工作范围：\n首先将框架以想要的距离放置在设备附近的轴线上。\n然后将框架放在区域的8个角上并让设备扫描。这些角落的方块必须留在那里，否则区域会无效。
+tile.rs_ctr.block_selector.name=3维方块选择器
+tile.rs_ctr.block_selector.tip=使用在§63维方块框架§7定义的区域中的§eX，Y，Z座标§7创建其对应方块的§6方块引用§7。\n3个座标对应的输入范围是§e0～长度-1§7。
+tile.rs_ctr.block_breaker.name=可控物品破坏器
+tile.rs_ctr.block_breaker.tip=破坏方块并将任何收获的物品放入相邻方块的物品栏中。\n§eBlock IN：§7要破坏的方块。\n§eClock IN：§7该值改变时会触发操作。\n§eStatus OUT：§7上次操作的结果：\n§e-1§7 \=什么都没做（不可破坏/空气），§e0§7 \=成功，§e1§7 \=不能处理（物品栏满），§e2§7 \=能量不足。\n§eEnergy IN\:§7提供操作所需的能量。\n§b§o另请参阅：§6§o方块引用 ...§b，§6§o方块访问接口§b，§63维方块线择器
+tile.rs_ctr.item_placer.name=可控物品使用器
+tile.rs_ctr.item_placer.tip=模拟玩家右击的行为。\n右击方块打开假玩家的物品栏。\n§eBlock IN：§7需要互动的方块所在地。\n§eConfiguration IN\:§7 {§a上瞄（U）§7，§c右瞄（R）§7，§f对空气使用（A）§7，§1无现存方块（B）§7，§3潜行（S）§7, §2仰俯角（P）§7，§4舵角（Y）§7, §6装备栏（E）§7} 二进制串格式：§70b§800000000§7_§aUUUU§cRRRR§7_§80§2§fA§1B§3S§2PP§4YY§7_§800§6EEEEE\n§eClock IN：§7该值改变时会触发操作。\n§eStatus OUT：§7上次操作的结果：§e-1§7 \=什么都没做，§e0§7 \=成功，§e1§7 \=失败，§e2§7 \=能量不足。\n§eEnergy IN\:§7供应操作所需能量。\n§b§o另请参阅：§6§o方块引用 ...§b，§6§o方块访问接口§b，§63维方块选择器
+tile.rs_ctr.delay.name=信号延迟线
+tile.rs_ctr.delay.tip=能将至多4个输入信号延迟一tick（0.05秒）。
+tile.rs_ctr.delay_b.name=方块引用延迟线
+tile.rs_ctr.delay_b.tip=将四个输入的§6方块引用§7信号以一tick（0.05秒）的延迟输出。
+tile.rs_ctr.counter.name=计数器
+tile.rs_ctr.counter.tip=每当§eClock IN§7变化时增加/减少§eCount OUT§7。如果计数超出了负数时§eRange IN + 1 ... 0§7或正数时§e0 ... Range IN - 1§7的范围，计数会从头再来并反转§eClock OUT§7的输出。\n\n§o注意：该设备的操作没有信号延迟，因此无法保证§e§oRange IN§7§o和§e§oClock IN§7§o间的定时一致！
+tile.rs_ctr.oc_adapter.name=信号IO控制器
+tile.rs_ctr.oc_adapter.tip=§9Open Computers§7专用的适配器。提供§18个输入§7和§28个输出§7端口。输入信号可配置用于触发信号改变事件。\n另外背后的§e4能量§7端口能方便地给OC网络的机器供能。
+
+# chat messages
+msg.rs_ctr.type=§c不兼容的接口类型！
+msg.rs_ctr.wire0=§c输入只能连接到输出，反之亦然！
+msg.rs_ctr.wire1=§c距离过远，线不够了！
+msg.rs_ctr.wire2=§c距离过远，最远是%d个方块！
+msg.rs_ctr.wire3=§c第一个端口已经不存在了！
+msg.rs_ctr.const=§c常量只能连接到输入！
+msg.rs_ctr.lamp=§c指示灯只能连接到输出！
+msg.rs_ctr.probe0=§c必须先连接到方块！
+msg.rs_ctr.probe1=§c只能连接到方块查询入口！
+msg.rs_ctr.save_succ=§a电路图保存成功！
+msg.rs_ctr.load_succ=§a电路图加载成功！
+msg.rs_ctr.invalid_file=§c选中的文件没有电路图数据！
+msg.rs_ctr.no_file=§c选中的文件不存在！
+msg.rs_ctr.cfg_store=§2配置已保存
+msg.rs_ctr.cfg_load=§2配置已加载
+msg.rs_ctr.copy_clr=§1配置已清空
+msg.rs_ctr.cfg_invalid=§4配置对该元件无效！
+
+# Items
+# names & tooltips
+item.rs_ctr.wire.name=信号线缆
+item.rs_ctr.wire.tip=对信号接口§a右击§7可贴上，再对另一出入相反接口§a右击§7以进行连接。\n§o端口间直线距离有几格就需要几个物品。\n\n§a左击§7或§a空手§7时§a潜行右击§7可断开已有连接。
+item.rs_ctr.wireless.name=无线信号连接器
+item.rs_ctr.wireless.tip=像§6信号线§7一样，但能远距离甚至跨维度连接两个端口。
+item.rs_ctr.constant.tip=贴在输入端口上可以提供一个常量。\n对空气§a右击§7配置这个常量。
+item.rs_ctr.constant.name=常量塞
+item.rs_ctr.lamp.name=信号状态灯
+item.rs_ctr.lamp.tip=贴在输出端上以查看其信号状况。\n\n也能作为指示灯贴在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.tag.name=线缆标签
+item.rs_ctr.tag.tip=§a右击§7空气来配置标签名字。\n§a右击§7已连接的端口来给连接命名。之后它会显示名字，而不是连接ID。
+item.rs_ctr.block_wire.name=方块查询线缆
+item.rs_ctr.block_wire.tip=用于连接§6方块查询端口§7，就像§6信号线缆§7连接信号端口一样。\n§o端口间直线距离有几格就需要几个物品。\n§b§o另请参阅：§6§o方块访问接口
+item.rs_ctr.clock.name=时钟信号塞
+item.rs_ctr.clock.tip=向连接的端口持续发出方波信号。信号值会在§e65535§7和§e0§7之间变化。\n对空气§a右击§7配置脉冲宽度和脉冲相位。\n§o世界上所有的时钟都是同步的。\n\n也能贴在§6控制面板§7上作为可调整的钟\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.wire_e.name=能量线缆
+item.rs_ctr.wire_e.tip=用于连接能量端口，就像§6信号线缆§7连接信号端口一样。\n§o端口间直线距离有几格就需要几个物品。
+item.rs_ctr.processor.stats=复杂度：§c%d §b%d §9%d §7大小：§f%d
+item.rs_ctr.wrench.name=螺丝刀
+item.rs_ctr.wrench.name1=螺丝刀 §9已储存配置。
+item.rs_ctr.wrench.tip=§a右击§7§6控制面板§7来编辑模块的配置。\n§a左击§7§6控制面板§7来移除一个模块（创造下也可以）。\n§a潜行右击§7§6控制面板§7复制模块配置。§n然后：\n§a右击§7模块来粘贴配置。\n对空气§a潜行右击§7清空配置。\n\n另外对方块§a使用§7会旋转方块。
+item.rs_ctr.seg7.name=7段显示模块
+item.rs_ctr.seg7.tip=一个4位数字7段LED显示模块，用于§6控制面板§7。\n提供用于十进制和十六进制的集成编码器。§eOUT§7信号端口用于连接多个模块来显示更大的数字。\n§e宽：§74  §e高：§7 2\n§e放置：§7 顶部、中部、底部
+item.rs_ctr.pointer_dsp.name=模拟显示模块
+item.rs_ctr.pointer_dsp.tip=一个基于模拟指针的显示模块，用于§6控制面板§7。\n缩放比例可以是四分之一或整个圆，范围可以自由调节。\n§e宽：§7 4  §e高：§7 4\n§e放置：§7 中部
+item.rs_ctr.slider.name=滑块模块
+item.rs_ctr.slider.tip=贴在§6控制面板§7上的滑块模块允许在选定范围内连续地选定值。\n与上半部分刻度§a互动§7可进行精细控制。\n§e宽：§74  §e高：§7 2\n§e放置：§7 顶部、中部、底部
+item.rs_ctr.text\:1.name=1/4长度文本模块
+item.rs_ctr.text\:2.name=1/2长度文本模块
+item.rs_ctr.text\:3.name=3/4长度文本模块
+item.rs_ctr.text\:4.name=全长度文本模块
+item.rs_ctr.text\:i.tip=在§6控制面板§7上显示4行字符的模块。\n§e宽：§7 \\i  §e高：§7 1\n§e放置：§7 4x4任何位置
+item.rs_ctr.lever\:0.name=拉杆模块
+item.rs_ctr.lever\:1.name=亮灯开关模块
+item.rs_ctr.lever\:2.name=亮灯按钮模块
+item.rs_ctr.lever\:i.tip=§a右击§7时在两种状态间切换的开关。\n用于放置在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§7 4x4任何位置
+item.rs_ctr.lever\:2.tip=§a右击§7后在可配置时间内停留在开状态。\n§a潜行右击§7可以提早结束开状态。\n用于放置在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§7 4x4的任意位置
+item.rs_ctr.trigger.name=信号阈值锁存器
+item.rs_ctr.trigger.tip=一个锁存器，当§e输入>启用阈值§7时§e打开§7，在§e输入<\=禁用阈值§7时§e关闭§7（当启用<禁用时数值比较会反转）。\n两个阈值都能在§6控制面板§7上调节。\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4任何位置
+item.rs_ctr.scale.name=信号缩放器
+item.rs_ctr.scale.tip=一个能对信号进行可调缩放的§6控制面板§7元件。\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.offset.name=信号偏移器
+item.rs_ctr.offset.tip=一个能对信号进行可调偏移的§6控制面板§7元件。\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.oscilloscope.name=示波屏
+item.rs_ctr.oscilloscope.tip=将3个频道的信号的值以每个100次采样（屏幕上从左到右）显示在§6控制面板上§7。\n输入信号的二进制格式为0x§3TT§1CC§2BB§4AA§7（4x8bit），§4A§7，§2B§7，§1C§7是在§e0...100§7内（屏幕的底部到顶部）的三个频道，§3T§7是推进采样并移动的时钟信号。\n输出信号可连入另一个示波屏以实现屏幕连接。\n§e宽：§7 4  §e高：§7 4\n§e放置：§7中央\n§b§o另请参阅：§6§o二进制信号打包器§b，§6§o信号缩放器§b，§6§o信号偏移器
+item.cd4017be.m\:battery.name=红石电池
+item.cd4017be.m\:actuator.name=远程执行器
+item.cd4017be.m\:telekin_alloy.name=心灵传动合金
+
+#Signal port names
+port.rs_ctr.rsR=Read
+port.rs_ctr.rsW=Write
+port.rs_ctr.i=IN
+port.rs_ctr.i0=IN 0
+port.rs_ctr.i1=IN 1
+port.rs_ctr.i2=IN 2
+port.rs_ctr.i3=IN 3
+port.rs_ctr.i4=IN 4
+port.rs_ctr.i5=IN 5
+port.rs_ctr.i6=IN 6
+port.rs_ctr.i7=IN 7
+port.rs_ctr.o=OUT
+port.rs_ctr.o0=OUT 0
+port.rs_ctr.o1=OUT 1
+port.rs_ctr.o2=OUT 2
+port.rs_ctr.o3=OUT 3
+port.rs_ctr.o4=OUT 4
+port.rs_ctr.o5=OUT 5
+port.rs_ctr.o6=OUT 6
+port.rs_ctr.o7=OUT 7
+port.rs_ctr.num0=positive
+port.rs_ctr.num1=negative
+port.rs_ctr.logic0=x > 0
+port.rs_ctr.logic1=x <\= 0
+port.rs_ctr.logic2=bit-wise
+port.rs_ctr.logic3=bit-wise\ninverted
+port.rs_ctr.logic4=OR
+port.rs_ctr.logic5=NOR
+port.rs_ctr.bin4=4x4bit -> 16bit
+port.rs_ctr.bin2=4x2bit -> 8bit
+port.rs_ctr.bin1=4x1bit -> 4bit
+port.rs_ctr.bin8=4x8bit -> 32bit
+port.rs_ctr.bins1=4bit -> 4x1bit
+port.rs_ctr.bins2=8bit -> 4x2bit
+port.rs_ctr.bins4=16bit -> 4x4bit
+port.rs_ctr.bins8=32bit -> 4x8bit
+port.rs_ctr.clk=Clock IN
+port.rs_ctr.bi=Block IN
+port.rs_ctr.ref=Threshold IN
+port.rs_ctr.clock=⎍ %.2fs
+port.rs_ctr.energy_io=Energy I/O
+port.rs_ctr.energy_i=Energy IN
+port.rs_ctr.energy_o=Energy OUT
+port.rs_ctr.battery0=§c无电容\n§c安装！
+port.rs_ctr.battery=§a充电：\n§a%.4u / %.3u
+port.rs_ctr.inv0=source Inventory IN
+port.rs_ctr.inv1=destin. Inventory IN
+port.rs_ctr.slot0=source Slot IN
+port.rs_ctr.slot1=destin. Slot IN
+port.rs_ctr.am_i=Amount IN
+port.rs_ctr.am_o=Amount OUT
+port.rs_ctr.cfg=配置
+port.rs_ctr.tank0=source Tank IN
+port.rs_ctr.tank1=destin. Tank IN
+port.rs_ctr.rf_i=RF Limit IN
+port.rs_ctr.rf_o=RF Flow OUT
+port.rs_ctr.brR=Get Block OUT
+port.rs_ctr.brW=Mirror Block IN
+port.rs_ctr.bi0=Block IN 0
+port.rs_ctr.bi1=Block IN 1
+port.rs_ctr.bi2=Block IN 2
+port.rs_ctr.bi3=Block IN 3
+port.rs_ctr.bo=Block OUT
+port.rs_ctr.sel=Select IN
+port.rs_ctr.z=Z-coord IN
+port.rs_ctr.y=Y-coord IN
+port.rs_ctr.x=X-coord IN
+port.rs_ctr.show_sel0=关闭区域显示
+port.rs_ctr.show_sel1=§a显示区域
+port.rs_ctr.area0=§a有效区域：%d*%d*%d
+port.rs_ctr.area1=未完成区域：%d*%d*%d\n§6缺失%d个角上的框架！
+port.rs_ctr.area2=§c无效区域：%d*%d*%d\n§o右击开始扫描！
+port.rs_ctr.invax0=普通
+port.rs_ctr.invax1=镜像
+port.rs_ctr.status=Status OUT
+port.rs_ctr.place=Configuration IN
+port.rs_ctr.inc=增加
+port.rs_ctr.dec=减少
+port.rs_ctr.limit=Limit IN
+port.rs_ctr.count=Count OUT
+port.rs_ctr.clko=Clock OUT
+sensor.rs_ctr.none=比较器\n值
+sensor.rs_ctr.item=已存储物品计数
+sensor.rs_ctr.fluid=已存储流体 [mB]
+sensor.rs_ctr.fe=已存储能量 [RF]
+sensor.rs_ctr.eu=已存储能量 [EU]
+sensor.rs_ctr.dfr-2=神龙聚变反应堆\n[°C, RF/‰, ∑mB/‰] +/-
+sensor.rs_ctr.dfr-1=神龙聚变反应堆\n§7没有连接的稳定器或注入器！
+sensor.rs_ctr.dfr0=温度模式：\n温度 [°C]
+sensor.rs_ctr.dfr1=反相温度模式：\n状态 {-1:冷, 0:离线, 1:安全, 2:普通, 3:过热}
+sensor.rs_ctr.dfr2=控制场模式：\n力场充能 [RF]
+sensor.rs_ctr.dfr3=反相控制场模式：\n力场强度 [0...1000]
+sensor.rs_ctr.dfr4=核心饱和度模式：\n核心充能 [RF]
+sensor.rs_ctr.dfr5=反相核心饱和度模式：\n核心饱和度 [0...1000]
+sensor.rs_ctr.dfr6=燃料模式：\n总核心质量 [mB]
+sensor.rs_ctr.dfr7=反相燃料模式：\n燃料交换 [0...1000]
+sensor.rs_ctr.hard=方块硬度 [% 石头]
+sensor.rs_ctr.light=光照等级\n方块[0...15] + 256*天空[0...15]
+sensor.rs_ctr.grow=作物生长\n-1：无，0：生长中，1：成熟
+
+#Circuit gates
+gate.cost=§8复杂度：§c%d §b%d
+gategroup.rs_ctr.io=内存与IO
+gate.rs_ctr.in=输入接口\n§7获取外部信号
+gate.rs_ctr.out=输出接口\n§7对外输出信号
+gate.rs_ctr.return=执行终点\n§7确保连接的\n§7信号被评估。
+gate.rs_ctr.read_b=变量读 8bit\n§7输出上个评估循\n§7环设定的变量。
+gate.rs_ctr.read_s=变量读 16bit\n§7输出上个评估循\n§7环设定的变量。
+gate.rs_ctr.read=变量读 32bit\n§7输出上个评估循\n§7环设定的变量。
+gate.rs_ctr.write_b=变量写 8bit\n§7存储输入变量以\n§7提供给下个周期。\n§3§o只在连接到终点节点\n§3§o时执行操作！
+gate.rs_ctr.write_s=变量写 16bit\n§7存储输入变量以\n§7提供给下个周期。\n§3§o只在连接到终点节点\n§3§o时执行操作！
+gate.rs_ctr.write=变量写 32bit\n§7存储输入变量以\n§7提供给下个周期。\n§3§o只在连接到终点节点\n§3§o时执行操作！
+gate.rs_ctr.feedback=反馈循环 32bit\n§7变量读写合二为一。\n§7基本上是将信号延迟了一个周期。\n§3§o这个元件的输入输出是反的！
+gate.rs_ctr.feedback_b=反馈循环 8bit\n§7变量读写合二为一。\n§7基本上是将信号延迟了一个周期。\n§3§o这个元件的输入输出是反的！
+gate.rs_ctr.feedback_s=反馈循环 16bit\n§7变量读写合二为一。\n§7基本上是将信号延迟了一个周期。\n§3§o这个元件的输入输出是反的！
+gate.rs_ctr.array_b=数组 8bit\n§7提供保存的一个8bit整型\n§7的可索引定长列表。
+gate.rs_ctr.array_s=数组 16bit\n§7提供保存的一个16bit整型\n§7的可索引定长列表。
+gate.rs_ctr.array_i=数组 32bit\n§7提供保存的一个32bit整型\n§7的可索引定长列表。
+gate.rs_ctr.aset=数组写\n§7将in1写入到in3数组的in2位置。\n§7N位索引的有效索引为§e0 ... N-1§7。\n§4§o访问越界会烧坏元件！\n§3§o只在连接到终点节点\n§3§o时执行操作！
+gate.rs_ctr.aget=数组读\n§7读取in2数组中的in1位置。\n§7N位索引的有效索引为§e0 ... N-1§7。\n§4§o访问越界会烧坏元件！
+gate.rs_ctr.alen=数组长度\n§7输出输入数组\n§7的元素数量。
+gategroup.rs_ctr.logic=逻辑
+gate.rs_ctr.or=或门\n§7out \= in1 ∨ in2\n§7按位
+gate.rs_ctr.nand=与非门\n§7out \= ¬(in1 ∧ in2)\n§7按位
+gate.rs_ctr.xor=异或门\n§7out \= in1 ⊻ in2\n§7按位
+gate.rs_ctr.nor=或非门\n§7in \= ¬(in1 ∨ in2)\n§7按位
+gate.rs_ctr.not=非门\n§7out \= ¬in\n§7按位
+gate.rs_ctr.and=与门\n§7out \= in1 ∧ in2\n§7按位
+gate.rs_ctr.xnor=同或门\n§7in \= ¬(in1 ⊻ in2)\n§7按位
+gate.rs_ctr.swt=多路选择器\n§7in1 \= true -> out \= in2\n§else -> out \= in3
+gate.rs_ctr.branch=执行选择器\n§7in1 \= true -> 评估in2\n§7else -> 评估in3
+gate.rs_ctr.sequence=执行序列\n§7先评估in1\n§7再评估in2
+gate.rs_ctr.update=更新触发器\n§7评估时总触发\n§7下一周期。
+gategroup.rs_ctr.comp=比较器
+gate.rs_ctr.lt0=为负\n§7in < 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ge0=非负\n§7in < 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.gt0=为正\n§7in > 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.le0=非正\n§7in > 0 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.eq0=为零\n§7in \= 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ne0=非零\n§7in \= 0 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.ne=不等于\n§7in1 \= in2 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.lt=小于\n§7in1 < in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.eq=等于\n§7in1 \= in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ge=大于等于\n§7in1 < in2 -> out \= false\n§7else -> out \= true
+gategroup.rs_ctr.num=算术
+gate.rs_ctr.cst=常量\n§7out \= #
+gate.rs_ctr.neg=相反数\n§7out \= -in
+gate.rs_ctr.sub=减\n§7out \= in1 - in2
+gate.rs_ctr.add=加\n§7out \= in1 + in2
+gate.rs_ctr.div=除\n§7out \= in1 / in2\n§7向下取整\n§4§o除以0会烧坏元件！
+gate.rs_ctr.dec=减少\n§7out \= in - 1
+gate.rs_ctr.abs=绝对值\n§7in < 0 -> out \= -in\n§7else -> out \= in
+gate.rs_ctr.mul=乘\n§7out \= in1 * in2
+gate.rs_ctr.inc=增加\n§7out \= in + 1
+gate.rs_ctr.mod=模\n§7out \= in1 mod in2\n§7sgn(out) \= sgn(in1)\n§4§o除以0会烧坏元件！
+gate.rs_ctr.min=最小\n§7in1 < in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.max=最大\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
+gategroup.rs_ctr.bin=位与字节
+gate.rs_ctr.bsl=按位左移\n§7out \= in1 * 2^in2
+gate.rs_ctr.bsr=按位右移\n§7out \= in1 / 2^in2
+gate.rs_ctr.bitspl=位分离器\n§7将8位输入值分割成独立的位。\n§7依照对应位的值输出§e真§7或§e假§7。
+gate.rs_ctr.bitcom=位合并器\n§7将独立的位合并\n§7成一个8位输出值。
+gate.rs_ctr.bytespl=字节分离器\n§7将32位数分离成\n§74个有符号或无符号的8位数。
+gate.rs_ctr.bytecom=字节合并器\n§7将4个8位数合并为一个32位数。\n§7§o忽略输入中更高位的内容。
+
+# GUI
+# Inventory names
+gui.rs_ctr.constant.name=设定值
+gui.rs_ctr.tag.name=标签：
+gui.rs_ctr.editor.name=电路编辑器：
+gui.rs_ctr.debug.name=调试器
+gui.rs_ctr.state.name=变量：
+gui.rs_ctr.clock.name=时钟设定
+gui.rs_ctr.assembler.name=处理器组装机
+gui.rs_ctr.dsp_cfg.name=配置
+gui.rs_ctr.item_placer.name=可控物品使用器
+# Gui tooltips
+gui.rs_ctr.palette=逻辑门选项卡
+gui.rs_ctr.palette.open0=打开逻辑门选项卡
+gui.rs_ctr.palette.open1=打开物品栏
+gui.rs_ctr.opLabel=逻辑门标签\n§7（与变量和\n§7IO相关）
+gui.rs_ctr.value=值
+gui.rs_ctr.interrupt0=改变值§n并不§r触发下一周期
+gui.rs_ctr.interrupt1=改变值触发下一周期
+gui.rs_ctr.signed0=无符号
+gui.rs_ctr.signed1=有符号
+gui.rs_ctr.array_len=条目数
+gui.rs_ctr.array_idx=索引
+gui.rs_ctr.editor.title=你的电路名
+gui.rs_ctr.editor.del=§4删除逻辑门
+gui.rs_ctr.editor.new=新原理图\n§4清除电路板
+gui.rs_ctr.editor.compile=编译电路\n§a右击§7\: 调试器
+gui.rs_ctr.editor.load=导入原理图
+gui.rs_ctr.editor.save=保存原理图\n§a右击§7\: 另存为 ...
+gui.rs_ctr.editor.ingreds=电路复杂度：\n§c%d / %d 基础\n§b%d / %d 高级\n§9%d / %d 内存
+gui.rs_ctr.editor.info=控制\n基本机制\n信号类型\n调试/测试
+gui.rs_ctr.editor.info0=§7§n元件互动：§a 左键\n§7添加元件, 先在选项卡中单击, 再在想放的地方单击。\n§7§o当通过按钮进入元件界面时，元件选项卡会代替你的物品栏。\n§a单击§7可以选中电路板上的元件。配置选项会在电路板右下方出现。\n§a按住拖拽§7可移动元件[红色方框表示与其他元件的冲突]。\n§7将元件移出电路板会删除元件[亮红色方框]。\n§7§n引脚/连线互动：§a右击\n§7可连接两个元件，首先§a点击§7输入引脚[元件的左边]，然后你可以点击电路板的一些地方让布线更好，最后§a点击§7另一个元件的输出引脚[元件的右边]。\n§a按住拖拽§7连线的顶点可以移动。\n§a按住Alt§7可以只显示连线。
+gui.rs_ctr.editor.info1=§7总的来说电路会从§6输入接口§7接收外部的信号，进行一些计算，并将一个或多个结果通过§6输出接口§7输出到外界。这就是所谓的§e周期§7。\n\n§6变量§7允许电路跨周期记忆信息。变量的组成为：在前一个周期接收值的§6写§7元件和对应[同一标签]的在下一周期输出值的§6读§7元件。读元件也定义了变量的初值。\n\n§7通常在输入或变量发生改变后，新的周期会在一tick延迟后得到评估。但你也可以对单独的§6变量写§7或§6输入§7设置不触发新的周期。\n§7§o注意：通过调试器或处理器的状态界面手动修改变量不会触发新周期。
+gui.rs_ctr.editor.info2=§7连线有不同的颜色来表示传递的信号的类型，这是由被连接的元件引脚决定的：\n§4§n32位整型§7：标准数字类型，也被所有红石接口使用。有效范围是§a-2147483648 ... 2147483647§7。\n§5§n8/16位整型§7：8位的表示范围是§a-128 ... 127§7（有符号）或§a0 ... 255§7（无符号）16位则是§a-32768 ... 32767§7（有符号）或§a0 ... 65536§7（无符号）\n§9§n布尔类型§7：要么是§a真§7要么是§a假§7的逻辑类型。当用于整型输入时，§a真 -> -1§7，§a假 -> 0§7，从整型转为布尔类型时则是§a非零§7为真。\n§6§n浮点类型§7：表示小数，转换时舍入到最近的整数。\n§8§n因果关系§7：不传播数据，只控制执行流。\n§e§n数组§7\：即一使用§eget§7 and和§eset§7操作的集成§lR§7随机§lA§7访问§lM§7存储器。
+gui.rs_ctr.editor.info3=§7尽管你可以在§6处理器§7上随意覆写电路，但在把你设计的成品连上你的……核反应堆控制之前用§e调试器§7测试一下通常是个好主意。\n§7§e调试器§7窗口可用§a右击§7§e编译按钮§7打开（而不是左击）。在那里，你可以给你的电路输入不同的值，看看它执行个别周期后的输出和变量状态的行为。\n§7调试器的变量编辑功能也能稍后在§6处理器§7的§e状态界面§7（放下处理器后右击打开）找到。\n§7因此看起来没用的§e只读§7和§e唯写§7变量可用于以后的参数调整或获取电路运行的更多细节。
+gui.rs_ctr.debug.run0=自动执行
+gui.rs_ctr.debug.run1=手动执行
+gui.rs_ctr.debug.step0=强制周期\n§4§o稳定状态
+gui.rs_ctr.debug.step1=运行周期\n§2§o不稳定
+gui.rs_ctr.debug.reset=重置计数
+gui.rs_ctr.state.io=信号IO：
+gui.rs_ctr.hex0=十进制
+gui.rs_ctr.hex1=十六进制
+gui.rs_ctr.interval=反相
+gui.rs_ctr.phase=相位偏移
+gui.rs_ctr.error1=§4因果循环：输入值依赖于自己！\n§7§o插入§6§o反馈循环§7§o操作来修复。
+gui.rs_ctr.error2=§4不兼容的数据类型
+gui.rs_ctr.error3=§4缺少输入信号
+gui.rs_ctr.error4=§4无效的标识符
+gui.rs_ctr.error5=§4重复的变量声明
+gui.rs_ctr.error6=§4变量类型冲突！
+gui.rs_ctr.error7=§4无效值
+gui.rs_ctr.error32=§4处理器缺失
+gui.rs_ctr.error33=§4电路对给定处\n§4理器过于复杂
+gui.rs_ctr.error34=§4处理器没有\n足够的I/O
+gui.rs_ctr.error64=§6强烈建议对IO\n§6端口进行标记
+gui.rs_ctr.error65=§6逻辑门输出未被使用！
+gui.rs_ctr.save_file=导出
+gui.rs_ctr.load_file=导入
+gui.rs_ctr.processor.run=手动触发周期
+gui.rs_ctr.processor.power=红石耗尽：\n§e%.0f %%
+gui.rs_ctr.assembler.stats=§c%d\n§b%d\n§9%d\n§f%d\n§e%.1f cyc\n§a%.1f c/s
+gui.rs_ctr.assembler.stats4=§e%+d cap
+gui.rs_ctr.assembler.stats5=§a%+d u/t
+gui.rs_ctr.assembler.info=处理器组装\n红石能量
+gui.rs_ctr.assembler.info0=§7复杂的电路需要复杂的§6处理器§7。\n§7有3种与不同计算任务相关的§e复杂度§7，每种都能通过向§6处理器§7添加特定组件增加上限。\n§7然而这些组件会占用处理器内有限的§e空间§7。\n§7注意，不同组件会提供不同种类的§e复杂度§7上限，但也会消耗不同的§e空间§7和有不同的§e红石能量强度§7。§o参见下页。
+gui.rs_ctr.assembler.info1=§7红石似乎在没有任何明显能量来源的情况下会自然地积聚电荷。§o人们相信它来自放射性衰变。\n§7这些电荷非常弱，但足以执行简单的逻辑计算，但当信号迅速切换时，它们很快就会耗尽，这一点可以从红石手电§6红石火把§7的烧尽效应中看出。\n§7某些高能材料可能会略微提高充电强度，而试图将电路小型化并降低材料成本则会严重削弱充电强度，最终导致电路在没有外部电源的情况下无法稳定运行.\n§7§o如此带来的特征是§e§o最长脉冲宽度§7§o和§e§o最高运行速率§7。
+gui.rs_ctr.mat3=剩余空间
+gui.rs_ctr.mat2=内存（字节）
+gui.rs_ctr.mat1=高级复杂度
+gui.rs_ctr.mat0=基础复杂度
+gui.rs_ctr.mat5=最高运行速率
+gui.rs_ctr.mat4=最长脉冲宽度
+gui.rs_ctr.max=刻度上限
+gui.rs_ctr.min=刻度下限
+gui.rs_ctr.uscale=单位缩放比例
+gui.rs_ctr.style=显示风格
+gui.rs_ctr.label=标签
+gui.rs_ctr.unit=单位
+gui.rs_ctr.encoder0=未加工分段编码：\n§7每个数字有8位\n§e1：§7中央\n§e2：§7左上\n§e4：§7顶端\n§e8：§7右上\n§e16：§7右下\n§e32：§7底部\n§e64：§7左下\n§e128：§7小数点
+gui.rs_ctr.encoder1=有符号未加工分段编码：\n§7后3个数字占用的0-23位使用§e未加工分段编码§7。\n§7第一个数字占用[24, 25]两位：\n§e0：§7 +\n§e1：§7 +1\n§e2：§7 -\n§e3：§7 -1
+gui.rs_ctr.encoder2=十进制编码
+gui.rs_ctr.encoder3=有符号十进制编码
+gui.rs_ctr.encoder4=十六进制编码
+gui.rs_ctr.color=显示颜色
+gui.rs_ctr.dot=小数点位置
+gui.rs_ctr.text=文本行
+gui.rs_ctr.align=文本对齐
+gui.rs_ctr.v_off=关时输出值
+gui.rs_ctr.v_on=开时输出值
+gui.rs_ctr.thr=阈值\n§o超过时切换为开
+gui.rs_ctr.thr_off=关闭阈值
+gui.rs_ctr.thr_on=开启阈值
+gui.rs_ctr.incr=增加步长
+gui.rs_ctr.scale=内部缩放比例
+gui.rs_ctr.div0=乘调整
+gui.rs_ctr.div1=除调整
+gui.rs_ctr.ofs=实际偏移
+gui.rs_ctr.item_placer.slot=装备物品：\n§7槽：§4%d §8\= bits[0...5]
+gui.rs_ctr.item_placer.aim=方块表面瞄准：\n§7右：%d §8\= bits[16...19]\n§7上：%d §8\= bits[20...23]
+gui.rs_ctr.item_placer.look=观察朝向：\n§7舵角：§4%d §8\= bits[8...9]\n§7俯仰角：§2%d §8\= bits[10...11]\n§7§o与§1§o接口§e有关
+gui.rs_ctr.item_placer.sneak0=潜行：否\n§8bit[12] \= §70
+gui.rs_ctr.item_placer.sneak1=潜行：是\n§8bit[12] \= §71
+gui.rs_ctr.item_placer.side0=允许现存方块\n§8bit[13] \= §70
+gui.rs_ctr.item_placer.side1=不允许现存方块\n§8bit[13] \= §71
+gui.rs_ctr.item_placer.air0=对方块使用\n§8bit[14] \= §70
+gui.rs_ctr.item_placer.air1=对空气使用\n§8bit[14] \= §71
+gui.rs_ctr.item_placer.creative0=创造模式：关\n§8bit[7] \= §70
+gui.rs_ctr.item_placer.creative1=创造模式：开\n§8bit[7] \= §71
+
+recipe.rs_ctr.circuit_mat=处理器组件
+recipe.rs_ctr.battery=电容
+recipe.rs_ctr.sensors=比较器调整
+recipe.rs_ctr.capacity=%.4u 充能
