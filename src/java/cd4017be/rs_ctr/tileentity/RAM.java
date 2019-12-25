@@ -1,11 +1,13 @@
 package cd4017be.rs_ctr.tileentity;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.network.IGuiHandlerTile;
 import cd4017be.rs_ctr.gui.GuiRAM;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 /** @author cd4017be */
 public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile {
@@ -14,14 +16,30 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 	private int addrMask;
 	public byte mode;
 	private SignalHandler out;
-	private int addrIN, valueIN, valueOUT;
+	private int writeIN, valueIN, valueOUT;
 	public int readAddr, writeAddr;
 	private long scheduledTime;
 	private boolean needWrite;
+	{
+		ports = new MountedPort[] {
+			new MountedPort(this, 0, SignalHandler.class, false)
+			.setLocation(.125, .125, .25, EnumFacing.SOUTH).setName("\\write address"),
+			new MountedPort(this, 1, SignalHandler.class, false)
+			.setLocation(.125, .375, .25, EnumFacing.SOUTH).setName("\\write value"),
+			new MountedPort(this, 2, SignalHandler.class, false)
+			.setLocation(.125, .625, .25, EnumFacing.SOUTH).setName("\\read address"),
+			new MountedPort(this, 3, SignalHandler.class, true)
+			.setLocation(.125, .875, .25, EnumFacing.SOUTH).setName("\\read value")
+		};
+	}
 
 	@Override
-	public Object getPortCallback(int pin) {
-		return pin == 0 ? this : (SignalHandler)this::updateVal;
+	public SignalHandler getPortCallback(int pin) {
+		switch(pin) {
+		case 0: return this::updateAddr;
+		case 1: return this::updateVal;
+		default: return this;
+		}
 	}
 
 	@Override
@@ -39,7 +57,6 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 	@Override
 	public void updateSignal(int value) {
 		int addr = value & ~addrMask;
-		// read
 		int v = 0;
 		if(addr == readAddr) {
 			doWrite();
@@ -47,26 +64,26 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		}
 		if(v != valueOUT)
 			out.updateSignal(valueOUT = v);
-		// write
-		addr = addr == writeAddr ? value & addrMask : -1;
-		if(addr == addrIN)
-			return;
-		doWrite();
-		addrIN = addr;
-		scheduleWrite();
 	}
 
 	public void updateVal(int value) {
-		if(value == valueIN)
-			return;
+		if(value == valueIN) return;
 		doWrite();
 		valueIN = value;
 		scheduleWrite();
 	}
 
+	public void updateAddr(int value) {
+		int addr = value & ~addrMask;
+		addr = addr == writeAddr ? value & addrMask : -1;
+		if(addr == writeIN) return;
+		doWrite();
+		writeIN = addr;
+		scheduleWrite();
+	}
+
 	private void scheduleWrite() {
-		if(addrIN < 0)
-			return;
+		if(writeIN < 0)return;
 		needWrite = true;
 		scheduledTime = world.getTotalWorldTime();
 	}
@@ -76,7 +93,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 			return;
 		needWrite = false;
 		int val = valueIN;
-		int addr = addrIN & addrMask;
+		int addr = writeIN & addrMask;
 		if(mode == 0)
 			memory[addr] = val;
 		else if(mode == 1) {
@@ -113,7 +130,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		nbt.setByte("mode", this.mode);
 		nbt.setInteger("read", readAddr);
 		nbt.setInteger("write", writeAddr);
-		nbt.setInteger("addr", addrIN);
+		nbt.setInteger("addr", writeIN);
 		nbt.setInteger("val", valueIN);
 		nbt.setInteger("out", valueOUT);
 	}
@@ -125,7 +142,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		this.mode = nbt.getByte("mode");
 		readAddr = nbt.getInteger("read");
 		writeAddr = nbt.getInteger("write");
-		addrIN = nbt.getInteger("addr");
+		writeIN = nbt.getInteger("addr");
 		valueIN = nbt.getInteger("val");
 		valueOUT = nbt.getInteger("out");
 		updateAddrMask();
