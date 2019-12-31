@@ -93,10 +93,10 @@ public class ItemProcessor extends BaseItemBlock {
 	}
 
 	public void storeAll(ItemStack stack, ItemStack[] ingreds, int[] cmplx) {
-		NBTTagCompound nbt = stack.getTagCompound();
-		if (nbt == null) stack.setTagCompound(nbt = new NBTTagCompound());
+		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setIntArray("stats", cmplx);
 		nbt.setTag("ingr", ItemFluidUtil.saveItems(ingreds));
+		stack.setTagCompound(nbt);
 	}
 
 	/**

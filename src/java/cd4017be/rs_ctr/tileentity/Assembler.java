@@ -2,14 +2,10 @@ package cd4017be.rs_ctr.tileentity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
-
 import cd4017be.lib.Gui.AdvancedContainer;
+import cd4017be.lib.Gui.AdvancedContainer.IQuickTransferHandler;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.GlitchSaveSlot;
-import cd4017be.lib.Gui.ModularGui;
-import cd4017be.lib.Gui.comp.FormatText;
-import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.capability.AbstractInventory;
 import cd4017be.lib.capability.BasicInventory;
@@ -20,15 +16,15 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
 import cd4017be.lib.tileentity.BaseTileEntity;
 import cd4017be.lib.util.Utils;
-import cd4017be.rs_ctr.Main;
 import static cd4017be.rs_ctr.CommonProxy.*;
+
+import cd4017be.rs_ctr.gui.GuiAssembler;
 import cd4017be.rs_ctr.item.ItemProcessor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,7 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest, Supplier<Object[]> {
+public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest, IQuickTransferHandler {
 
 	public final Inventory inv = new Inventory();
 	public final BasicInventory buff = new BasicInventory(6);
@@ -55,13 +51,11 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode != SAVE) return;
 		if (nbt.hasKey("chip", NBT.TAG_COMPOUND))
-			inv.setStackInSlot(0, new ItemStack(nbt.getCompoundTag("inv")));
+			inv.setStackInSlot(0, new ItemStack(nbt.getCompoundTag("chip")));
 		else inv.setStackInSlot(0, ItemStack.EMPTY);
 		buff.read(nbt.getTagList("buff", NBT.TAG_COMPOUND));
 	}
 
-	@SideOnly(Side.CLIENT)
-	private static final ResourceLocation TEX = new ResourceLocation(Main.ID, "textures/gui/assembler.png");
 	private static final Builder ssb = StateSynchronizer.builder().addMulFix(4, NULL.length);
 
 	@Override
@@ -71,10 +65,11 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 		int[] range = new int[] {4, 10};
 		for (int i = 0; i < 3; i++)
 			cont.addItemSlot(new GlitchSaveSlot(inv, i + 1, 53, 16 + i * 18, false).setTarget(range), false);
-		range = new int[] {1, 3};
+		range = new int[] {1, 4};
 		for (int i = 0; i < 6; i++)
-			cont.addItemSlot(new GlitchSaveSlot(buff, i, 8 + (i&1) * 18, 16 + (i>>1) * 18, true).setTarget(range), false);
+			cont.addItemSlot(new GlitchSaveSlot(buff, i, 8 + (i&1) * 18, 16 + (i>>1) * 18, false).setTarget(range), false);
 		cont.addPlayerInventory(8, 86);
+		cont.transferHandlers.add(this);
 		return cont;
 	}
 
@@ -94,25 +89,19 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public ModularGui getGuiScreen(EntityPlayer player, int id) {
-		ModularGui gui = new ModularGui(getContainer(player, id));
-		GuiFrame comps = new GuiFrame(gui, 176, 168, 1).background(TEX, 0, 0).title("gui.rs_ctr.assembler.name", 0.5F);
-		new FormatText(comps, 48, 54, 120, 16, "gui.rs_ctr.assembler.stats", this);
-		gui.compGroup = comps;
-		return gui;
+	public boolean transfer(ItemStack stack, AdvancedContainer cont) {
+		if (stack.getItem() instanceof ItemProcessor) {
+			cont.hardInvUpdate();
+			return cont.mergeItemStack(stack, 0, 1, false);
+		}
+		return cont.mergeItemStack(stack, 1, 4, false)
+				|| cont.mergeItemStack(stack, 4, 10, false);
 	}
 
 	@Override
-	public Object[] get() {
-		int[] stats = inv.stats[0];
-		int usage = Math.max(0, stats[0] + stats[1]);
-		float burst = (float)stats[5] / (float)(usage - stats[4]);
-		return new Object[] {
-			stats[0], stats[1], stats[2], stats[3],
-			burst < 0 ? Float.POSITIVE_INFINITY : burst,
-			(float)stats[4] / (float)usage * 20F
-		};
+	@SideOnly(Side.CLIENT)
+	public GuiAssembler getGuiScreen(EntityPlayer player, int id) {
+		return new GuiAssembler(this, player);
 	}
 
 	@Override
@@ -127,12 +116,12 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 		return list;
 	}
 
-	class Inventory extends AbstractInventory {
+	public class Inventory extends AbstractInventory {
 
 		ItemProcessor item = null;
 		ItemStack container = ItemStack.EMPTY;
 		final ItemStack[] ingreds = Utils.init(new ItemStack[3], ItemStack.EMPTY);
-		final int[][] stats = new int[ingreds.length + 1][NULL.length];
+		public final int[][] stats = new int[ingreds.length + 1][NULL.length];
 
 		@Override
 		public void setStackInSlot(int slot, ItemStack stack) {

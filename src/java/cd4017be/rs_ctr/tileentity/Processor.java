@@ -74,7 +74,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	DelayedSignal delayed;
 	String[] keys = new String[0];
 
-	{ports = new MountedSignalPort[0];}
+	{ports = new MountedSignalPort[] {new MountedSignalPort(this, 0, EnergyHandler.class, true)};}
 
 	@Override
 	public void process() {
