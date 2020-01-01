@@ -2,11 +2,13 @@ package cd4017be.rs_ctr.tileentity;
 
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.ArrayUtils;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
+import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.lib.network.IGuiHandlerTile;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
@@ -14,6 +16,7 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.gui.GuiRAM;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -184,12 +188,15 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 	}
 
 	private static final StateSynchronizer.Builder ssb = StateSynchronizer.builder()
-	.addFix(4, 4, 1, 1).addMulFix(4, 64);
+	.addFix(4, 4, 1, 1).addMulFix(4, 64).addVar(1);
 
 	@Override
 	public AdvancedContainer getContainer(EntityPlayer player, int id) {
 		AdvancedContainer c = new AdvancedContainer(this, ssb.build(world.isRemote), player);
-		if (world.isRemote) Arrays.fill(memory, 0);
+		if (world.isRemote) {
+			if (memory.length != 64) memory = new int[64];
+			else Arrays.fill(memory, 0);
+		}
 		return c;
 	}
 
@@ -201,7 +208,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		int m = memory.length - 1;
 		for (int i = (page & 0xff) << 6, l = i + 64; i < l; i++)
 			b.writeInt(i <= m ? memory[i] : 0);
-		state.endFixed();
+		state.endFixed().putAll(ArrayUtils.EMPTY_INT_ARRAY);
 	}
 
 	@Override
@@ -212,6 +219,13 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		page = (byte)state.get(page);
 		for (int i = 0; i < 64; i++)
 			memory[i] = state.get(memory[i]);
+		if (!state.next()) return;
+		int l = state.buffer.readVarInt();
+		if (l <= 0) return;
+		byte[] mem = new byte[l << 2];
+		state.buffer.readBytes(mem);
+		if (world.isRemote && Minecraft.getMinecraft().currentScreen instanceof GuiRAM)
+			((GuiRAM)Minecraft.getMinecraft().currentScreen).processDownload(mem);
 	}
 
 	@Override
@@ -219,7 +233,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		return canPlayerAccessUI(player);
 	}
 
-	public static final byte A_MODE = 0, A_PAGE = 1, A_SET_MEM = 2;
+	public static final byte A_MODE = 0, A_PAGE = 1, A_SET_MEM = 2, A_DOWNLOAD = 3, A_UPLOAD = 4;
 
 	@Override
 	public void handleAction(PacketBuffer pkt, EntityPlayerMP sender)
@@ -241,6 +255,28 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 				memory[idx] = v << bit | memory[idx] & ~(15 << bit);
 			break;
 		}
+		case A_DOWNLOAD:
+			if (sender.openContainer instanceof AdvancedContainer) {
+				AdvancedContainer c = (AdvancedContainer)sender.openContainer;
+				StateSyncServer sss = ((StateSyncServer)c.sync).begin();
+				pkt = sss.buffer;
+				pkt.writeVarInt(memory.length);
+				for (int i : memory)
+					pkt.writeIntLE(i);
+				sss.set(68);
+				pkt = sss.encodePacket();
+				if (pkt != null)
+					GuiNetworkHandler.GNH_INSTANCE.sendToPlayer(pkt, sender);
+			}
+			break;
+		case A_UPLOAD:
+			int l = pkt.readUnsignedShort();
+			if (l > memory.length) return;
+			for (int i = 0; i < l; i++)
+				memory[i] = pkt.readIntLE();
+			Arrays.fill(memory, l, memory.length, 0);
+			sender.sendMessage(new TextComponentTranslation("msg.rs_ctr.import_succ"));
+			break;
 		default: return;
 		}
 		markDirty(SAVE);
