@@ -2,6 +2,7 @@ package cd4017be.rs_ctr.gui;
 
 import cd4017be.lib.Gui.HidableSlot;
 import cd4017be.lib.Gui.comp.Button;
+import cd4017be.lib.Gui.comp.FileBrowser;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.InfoTab;
 import cd4017be.lib.Gui.comp.Progressbar;
@@ -33,10 +34,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import javax.swing.JFileChooser;
-
-import org.lwjgl.opengl.Display;
-
 import cd4017be.lib.Gui.ModularGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,6 +48,7 @@ import net.minecraft.util.ResourceLocation;
  */
 public class CircuitEditor extends ModularGui {
 
+	private static final File dir = new File(Minecraft.getMinecraft().mcDataDir, "circuitSchematics");
 	private static final int FILE_MAGIC = 0x4017CB00;
 	private static final ResourceLocation BG_TEX = new ResourceLocation(Main.ID, "textures/gui/editor.png");
 	private static final ResourceLocation COMP_TEX = new ResourceLocation(Main.ID, "textures/gui/palette.png");
@@ -71,7 +69,10 @@ public class CircuitEditor extends ModularGui {
 		GuiFrame comps = new GuiFrame(this, 256, 256, 17).background(BG_TEX, 0, 0).title(tile.getName(), 0.1F);
 		comps.texture(COMP_TEX, 256, 256);
 		new InfoTab(comps, 7, 8, 7, 6, "gui.rs_ctr.editor.info");
-		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> sendPkt(A_NAME, name)).tooltip("gui.rs_ctr.editor.title");
+		new TextField(comps, 120, 8, 128, 4, 64, ()-> tile.name, (name)-> {
+			sendPkt(A_NAME, name);
+			tile.lastFile = null;
+		}).tooltip("gui.rs_ctr.editor.title");
 		(this.cfg = new GuiFrame(comps, 76, 27, 2)).position(173, 173);
 		this.board = new SchematicBoard(comps, 8, 16, tile.schematic, this::changeSelPart);
 		(this.palette = new GatePalette(comps, CircuitInstructionSet.TABS, 7, 173, board::place) {
@@ -84,8 +85,11 @@ public class CircuitEditor extends ModularGui {
 		new Button(comps, 7, 7, 162, 162, 0, ()-> board.selPart != null ? 1 : 0, board::del).texture(186, 0).tooltip("gui.rs_ctr.editor.del");
 		new Button(comps, 16, 14, 8, 158, 2, ()-> palette.enabled() ? 1 : 0, this::togglePalette).texture(162, 52).tooltip("gui.rs_ctr.palette.open#");
 		new Button(comps, 16, 16, 232, 210, 0, null, (i)-> {tile.lastFile = null; sendCommand(A_NEW);}).tooltip("gui.rs_ctr.editor.new");
-		new Button(comps, 16, 16, 214, 210, 0, null, this::load).tooltip("gui.rs_ctr.editor.load");
-		new Button(comps, 16, 16, 196, 210, 0, null, this::save).tooltip("gui.rs_ctr.editor.save");
+		new Button(comps, 16, 16, 214, 210, 0, null, (b)-> selFile(false)).tooltip("gui.rs_ctr.editor.load");
+		new Button(comps, 16, 16, 196, 210, 0, null, (b)-> {
+			if (b == Button.B_RIGHT || tile.lastFile == null) selFile(true);
+			else save(tile.lastFile);
+		}).tooltip("gui.rs_ctr.editor.save");
 		new Button(comps, 16, 16, 174, 210, 0, null, this::compile).tooltip("gui.rs_ctr.editor.compile");
 		
 		new Progressbar(comps, 56, 4, 192, 232, 200, 0, Progressbar.H_FILL_R, ()-> this.tile.ingreds[0], 0, 112);
@@ -137,18 +141,20 @@ public class CircuitEditor extends ModularGui {
 		}
 	}
 
-	private File selFile(boolean save) {
-		File file = new File(Minecraft.getMinecraft().mcDataDir, "circuitSchematics");
-		if (save) file.mkdirs();
-		JFileChooser fd = new JFileChooser(file);
-		fd.setSelectedFile(new File(file, tile.name + ".cb"));
-		int r = fd.showDialog(Display.getParent(), TooltipUtil.translate("gui.rs_ctr." + (save ? "save_file" : "load_file")));
-		return r == JFileChooser.APPROVE_OPTION ? fd.getSelectedFile() : null;
+	private void selFile(boolean save) {
+		if (save) dir.mkdirs();
+		GuiFrame fb = new FileBrowser((GuiFrame)compGroup, (f)-> {
+			f.close();
+			if (save) save(f.getFile());
+			else load(f.getFile());
+		}, (fn) -> fn.endsWith(".cb"))
+			.setFile(new File(dir, tile.name + ".cb").getAbsoluteFile())
+			.title(save ? "gui.rs_ctr.save_file" : "gui.rs_ctr.load_file", 0.5F);
+		fb.init(width, height, zLevel, fontRenderer);
+		fb.position(8, 8);
 	}
 
-	void load(int b) {
-		File file = selFile(false);
-		if (file == null) return;
+	void load(File file) {
 		try {
 			PacketBuffer data = preparePacket(container);
 			data.writeByte(A_LOAD);
@@ -169,9 +175,7 @@ public class CircuitEditor extends ModularGui {
 		}
 	}
 
-	void save(int b) {
-		File file = tile.lastFile;
-		if ((file == null || b == Button.B_RIGHT) && (file = selFile(true)) == null) return;
+	void save(File file) {
 		try {
 			ByteBuf data = Unpooled.buffer();
 			data.writeInt(FILE_MAGIC);
