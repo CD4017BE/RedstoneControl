@@ -9,6 +9,7 @@ import cd4017be.api.rs_ctr.port.Link;
 import cd4017be.lib.script.ScriptFiles.Version;
 import cd4017be.rs_ctr.tileentity.OC_Adapter;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -50,7 +51,8 @@ public class Main {
 	public void load(FMLInitializationEvent event) {
 		Objects.init();
 		proxy.init(new ConfigConstants(RecipeScriptContext.instance.modules.get("redstoneControl")));
-		OC_Adapter.registerAPI();
+		if (Loader.isModLoaded("opencomputers"))
+			OC_Adapter.registerAPI();
 	}
 
 	@Mod.EventHandler
