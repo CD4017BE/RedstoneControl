@@ -1,4 +1,4 @@
-VERSION = 84;
+VERSION = 88;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -34,6 +34,9 @@ PRE_INIT() {
 	add("item", 400, "battery", "rs_ctr:battery");
 	add("item", 401, "actuator");
 	add("item", 402, "telekin_alloy");
+	add("item", 403, "corerope");
+	add("item", 404, "corerope1");
+	add("item", 405, "corerope2");
 }
 
 INIT() {
@@ -92,6 +95,17 @@ INIT() {
 	add("shaped", it("tile.block_selector"), "010/222", it("m.telekin_alloy"), it("tile.frame"), it("tile.multiplex_b"));
 	add("shaped", it("tile.block_breaker"), "254/535/0 1", it("tile.rs_port"):1, it("tile.rs_port"):0, it("minecraft:diamond_pickaxe"), it("m.actuator"), it("minecraft:hopper"), "ingotIron");
 	add("shaped", it("tile.item_placer"), "254/535/001", it("tile.rs_port"):1, it("tile.rs_port"):0, it("minecraft:skull"):2, it("m.actuator"), it("minecraft:dispenser"), "ingotIron");
+	add("shaped", it("tile.ram"), "021", it("tile.bin_comb"), it("tile.bin_split"), it("tile.logic_comb"));
+	add("shaped", it("tile.ram"):5, "1/0", it("tile.ram"), it("m.corerope1"));
+	add("shaped", it("tile.ram"):7, "101", it("tile.ram"):5, it("m.corerope1"));
+	add("shaped", it("tile.ram"):9, "1/0", it("tile.ram"):7, it("m.corerope2"));
+	add("shaped", it("tile.ram"):11, "101", it("tile.ram"):9, it("m.corerope2"));
+	add("shaped", it("tile.ram"):13, " 1 /101/ 1 ", it("tile.ram"):11, it("m.corerope2"));
+	add("shaped", it("tile.ram"):5, "0", it("tile.ram"):5);
+	add("shaped", it("tile.ram"):7, "0", it("tile.ram"):7);
+	add("shaped", it("tile.ram"):9, "0", it("tile.ram"):9);
+	add("shaped", it("tile.ram"):11, "0", it("tile.ram"):11);
+	add("shaped", it("tile.ram"):13, "0", it("tile.ram"):13);
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", 8 * it("item.wire_e"), "000/010/000", it("item.wire"), "ingotGold");
 	add("shaped", 8 * it("item.block_wire"), "000/010/000", it("item.wire"), it("m.telekin_alloy"));
@@ -112,6 +126,9 @@ INIT() {
 	add("shaped", it("item.scale"), "02/11", it("item.constant"), it("tile.num_comb"), it("item.wire"));
 	add("shaped", it("item.trigger"), "20/1 /20", it("item.constant"), it("tile.logic_comb"), it("minecraft:comparator"));
 	add("shaped", it("item.oscilloscope"), "000/000/111", it("item.lamp"), it("tile.delay"));
+	add("shaped", it("m.corerope"), " 01/0 0/10 ", "nuggetIron", it("item.wire"));
+	add("shaped", it("m.corerope1"), "000/010/000", it("m.corerope"), "ingotIron");
+	add("shaped", it("m.corerope2"), " 0 /0 0/ 0 ", it("m.corerope1"));
 	Loc t = it("item.text"), t1 = t:1;
 	add("shaped", 4 * t1, "0/1", "paper", it("minecraft:sign"));
 	add("shapeless", t:4, t1, t1, t1, t1);

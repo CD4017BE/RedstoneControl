@@ -68,6 +68,8 @@ tile.rs_ctr.counter.name=Counter
 tile.rs_ctr.counter.tip=Increments/decrements §eCount OUT§7 whenever §eClock IN§7 changes. If count gets out of range §eRange IN + 1 ... 0§7 or §e0 ... Range IN - 1§7 it wraps around and §eClock OUT§7 gets flipped.\n\n§oNote\: This device operates without signal delays, so consistent timing between §e§oRange IN§7§o and §e§oClock IN§7§o can not be guaranteed!
 tile.rs_ctr.oc_adapter.name=Signal IO Controller
 tile.rs_ctr.oc_adapter.tip=Adapter for §9Open Computers§7. Offers §18 input§7 and §28 output§7 ports. Inputs can be configured to trigger signal change events.\nAlso has §e4 Energy§7 ports on the back to conveniently power machines from OC network.
+tile.rs_ctr.ram.name=external RAM chip [%sbit]
+tile.rs_ctr.ram.tip=Directly addressable memory that supports simultaneous read and write access. Offers vastly more storage capacity than typically fits into a §6Processor§7.\nInteract with block to view/edit contents. Data remains when broken.
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -87,6 +89,15 @@ msg.rs_ctr.cfg_store=§2Configuration stored
 msg.rs_ctr.cfg_load=§2Configuration loaded
 msg.rs_ctr.copy_clr=§1Configuration cleared
 msg.rs_ctr.cfg_invalid=§4Invalid configuration for component!
+msg.rs_ctr.decode_hex=§bDecoding file in intel hex format ...
+msg.rs_ctr.decode_img=§bDecoding file as image with %d bits per pixel ...
+msg.rs_ctr.decode_bin=§bDecoding file as raw binary data ...
+msg.rs_ctr.import_succ=§aMemory import successfull!
+msg.rs_ctr.encode_hex=§bEncoding file in intel hex format ...
+msg.rs_ctr.encode_img=§bEncoding file as %dx%d image with %d bits per pixel ...
+msg.rs_ctr.encode_bin=§bEncoding file as raw binary data ...
+msg.rs_ctr.export_succ=§aMemory export successfull!
+msg.rs_ctr.dir_invalid=§4To protect you from accidentally corrupting game files or other important data, you can not export to files outside the "circuitSchematics/data/" directory.
 
 # Items
 # names & tooltips
@@ -137,6 +148,9 @@ item.rs_ctr.oscilloscope.tip=Displays the values of 3 channels as graphs with 10
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Telekinetic Actuator
 item.cd4017be.m\:telekin_alloy.name=Telekinetic Alloy
+item.cd4017be.m\:corerope.name=Core-Rope Cell
+item.cd4017be.m\:corerope1.name=Core-Rope Cluster
+item.cd4017be.m\:corerope2.name=Core-Rope Grid
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -220,6 +234,10 @@ port.rs_ctr.dec=decrement
 port.rs_ctr.limit=Limit IN
 port.rs_ctr.count=Count OUT
 port.rs_ctr.clko=Clock OUT
+port.rs_ctr.ra=Read Address
+port.rs_ctr.rv=Read Value
+port.rs_ctr.wa=Write Address
+port.rs_ctr.wv=Write Value
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]
@@ -315,6 +333,7 @@ gui.rs_ctr.clock.name=Clock Settings
 gui.rs_ctr.assembler.name=Processor Assembler
 gui.rs_ctr.dsp_cfg.name=Configuration
 gui.rs_ctr.item_placer.name=controlled Item User
+gui.rs_ctr.ram.name=Memory content
 # Gui tooltips
 gui.rs_ctr.palette=Gate Palette
 gui.rs_ctr.palette.open0=Open Gate Palette
@@ -413,6 +432,11 @@ gui.rs_ctr.item_placer.air0=Use on Blocks\n§8bit[14] \= §70
 gui.rs_ctr.item_placer.air1=Use in Air\n§8bit[14] \= §71
 gui.rs_ctr.item_placer.creative0=Creative Mode\: OFF\n§8bit[7] \= §70
 gui.rs_ctr.item_placer.creative1=Creative Mode\: ON\n§8bit[7] \= §71
+gui.rs_ctr.ram.layout=Memory layout\: %2$d words of size %dbit
+gui.rs_ctr.fmt_w=Image width\n§7for .png export\nBytes per line\n§7for .hex export
+gui.rs_ctr.fmt_h=Image height\n§7for .png export
+gui.rs_ctr.import_file=Import memory from file
+gui.rs_ctr.export_file=Export memory to file
 
 recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
