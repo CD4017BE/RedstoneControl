@@ -68,6 +68,8 @@ tile.rs_ctr.counter.name=计数器
 tile.rs_ctr.counter.tip=每当§eClock IN§7变化时增加/减少§eCount OUT§7。如果计数超出了负数时§eRange IN + 1 ... 0§7或正数时§e0 ... Range IN - 1§7的范围，计数会从头再来并反转§eClock OUT§7的输出。\n\n§o注意：该设备的操作没有信号延迟，因此无法保证§e§oRange IN§7§o和§e§oClock IN§7§o间的定时一致！
 tile.rs_ctr.oc_adapter.name=信号IO控制器
 tile.rs_ctr.oc_adapter.tip=§9Open Computers§7专用的适配器。提供§18个输入§7和§28个输出§7端口。输入信号可配置用于触发信号改变事件。\n另外背后的§e4能量§7端口能方便地给OC网络的机器供能。
+tile.rs_ctr.ram.name=外部RAM芯片[%s位]
+tile.rs_ctr.ram.tip=可直接寻址的内存，支持同时读写。提供的存储容量比§6处理器§7中通常提供的存储容量大得多。\n右击方块可查看/编辑内容。被破坏时数据仍然保留。
 
 # chat messages
 msg.rs_ctr.type=§c不兼容的接口类型！
@@ -87,6 +89,15 @@ msg.rs_ctr.cfg_store=§2配置已保存
 msg.rs_ctr.cfg_load=§2配置已加载
 msg.rs_ctr.copy_clr=§1配置已清空
 msg.rs_ctr.cfg_invalid=§4配置对该元件无效！
+msg.rs_ctr.decode_hex=§b以intel hex格式解码文件...
+msg.rs_ctr.decode_img=§b作为每像素%d位的图片解码文件...
+msg.rs_ctr.decode_bin=§b作为原始二进制数据解码文件...
+msg.rs_ctr.import_succ=§a内存导入成功！
+msg.rs_ctr.encode_hex=§b以intel hex格式编码文件...
+msg.rs_ctr.encode_img=§b编码文件为%dx%d大小，每像素%d位的图片...
+msg.rs_ctr.encode_bin=§b编码文件为原始二进制数据...
+msg.rs_ctr.export_succ=§a内存导出成功！
+msg.rs_ctr.dir_invalid=§4为了预防存档或重要数据意外损坏，你不能导出到“circuitSchematics/data/”目录以外的地方。
 
 # Items
 # names & tooltips
@@ -137,6 +148,9 @@ item.rs_ctr.oscilloscope.tip=将3个频道的信号的值以每个100次采样�
 item.cd4017be.m\:battery.name=红石电池
 item.cd4017be.m\:actuator.name=远程执行器
 item.cd4017be.m\:telekin_alloy.name=心灵传动合金
+item.cd4017be.m\:corerope.name=芯绳单元
+item.cd4017be.m\:corerope1.name=芯绳集群
+item.cd4017be.m\:corerope2.name=芯绳网格
 
 #Signal port names
 port.rs_ctr.rsR=Read
@@ -220,6 +234,10 @@ port.rs_ctr.dec=减少
 port.rs_ctr.limit=Limit IN
 port.rs_ctr.count=Count OUT
 port.rs_ctr.clko=Clock OUT
+port.rs_ctr.ra=地址读
+port.rs_ctr.rv=数据读
+port.rs_ctr.wa=地址写
+port.rs_ctr.wv=数据写
 sensor.rs_ctr.none=比较器\n值
 sensor.rs_ctr.item=已存储物品计数
 sensor.rs_ctr.fluid=已存储流体 [mB]
@@ -315,6 +333,7 @@ gui.rs_ctr.clock.name=时钟设定
 gui.rs_ctr.assembler.name=处理器组装机
 gui.rs_ctr.dsp_cfg.name=配置
 gui.rs_ctr.item_placer.name=可控物品使用器
+gui.rs_ctr.ram.name=内存内容
 # Gui tooltips
 gui.rs_ctr.palette=逻辑门选项卡
 gui.rs_ctr.palette.open0=打开逻辑门选项卡
@@ -413,6 +432,11 @@ gui.rs_ctr.item_placer.air0=对方块使用\n§8bit[14] \= §70
 gui.rs_ctr.item_placer.air1=对空气使用\n§8bit[14] \= §71
 gui.rs_ctr.item_placer.creative0=创造模式：关\n§8bit[7] \= §70
 gui.rs_ctr.item_placer.creative1=创造模式：开\n§8bit[7] \= §71
+gui.rs_ctr.ram.layout=内存布局：%2$d字，共%d位
+gui.rs_ctr.fmt_w=图像宽\n§7对于.png导出\n位每行\n§7对于.hex导出
+gui.rs_ctr.fmt_h=图像宽\n§7对于.png导出
+gui.rs_ctr.import_file=从文件导入内存
+gui.rs_ctr.export_file=导出内存到文件
 
 recipe.rs_ctr.circuit_mat=处理器组件
 recipe.rs_ctr.battery=电容
