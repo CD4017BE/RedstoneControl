@@ -9,6 +9,7 @@ import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.GlitchSaveSlot;
 import cd4017be.lib.capability.LinkedInventory;
+import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.lib.network.IGuiHandlerTile;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
@@ -31,6 +32,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
@@ -135,7 +138,7 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		if (cc.compileWarning != null) throw cc.compileWarning;
 	}
 
-	private void putItem(ItemStack stack, int slot) {
+	void putItem(ItemStack stack, int slot) {
 		inventory = stack;
 		if (world.isRemote) return;
 		ingreds[6] = InvalidSchematicException.NO_ERROR;
@@ -190,7 +193,7 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		return new CircuitEditor(this, player);
 	}
 
-	public static final byte A_NEW = -1, A_LOAD = -2, A_SAVE = -3, A_COMPILE = -4, A_NAME = -5;
+	public static final byte A_NEW = -1, A_LOAD = -2, A_SAVE = -3, A_COMPILE = -4, A_NAME = -5, A_GO = -6;
 
 	@Override
 	public void handleAction(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
@@ -215,6 +218,16 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 				ingreds[6] = e.compact();
 			} return;
 		case A_NAME: name = pkt.readString(64); return;
+		case A_GO: {
+			Assembler ass = getAssembler();
+			if (ass == null) return;
+			ItemStack stack = inventory;
+			if (!stack.isEmpty()) {
+				putItem(ass.buff.items[6], 0);
+				ass.buff.setStackInSlot(6, stack);
+			}
+			GuiNetworkHandler.openBlockGui(sender, ass.getPos(), 0);
+		}	break;
 		default:
 			if (!schematic.handleUserInput(cmd, pkt)) return;
 			if (cmd == Schematic.ADD_GATE || cmd == Schematic.REM_GATE) break;
@@ -223,6 +236,15 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 		}
 		computeCost();
 		markDirty(SYNC);
+	}
+
+	public Assembler getAssembler() {
+		TileEntity te;;
+		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.EAST))) instanceof Assembler)
+			return (Assembler)te;
+		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.WEST))) instanceof Assembler)
+			return (Assembler)te;
+		return null;
 	}
 
 }

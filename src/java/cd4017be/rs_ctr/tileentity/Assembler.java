@@ -10,6 +10,7 @@ import cd4017be.lib.block.AdvancedBlock.IComparatorSource;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.capability.AbstractInventory;
 import cd4017be.lib.capability.BasicInventory;
+import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.lib.network.IGuiHandlerTile;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
@@ -26,8 +27,11 @@ import cd4017be.rs_ctr.item.ItemProcessor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -171,6 +175,20 @@ public class Assembler extends BaseTileEntity implements IComparatorSource, ITic
 	}
 
 	@Override
+	public void handleAction(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
+		if (pkt.readByte() != 0) return;
+		Editor editor = getEditor();
+		if (editor == null) return;
+		ItemStack stack = inv.container;
+		if (!stack.isEmpty()) {
+			stack = stack.copy();
+			inv.setStackInSlot(0, editor.inventory);
+			editor.putItem(stack, 0);
+		}
+		GuiNetworkHandler.openBlockGui(sender, editor.getPos(), 0);
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public GuiAssembler getGuiScreen(EntityPlayer player, int id) {
 		return new GuiAssembler(this, player);
@@ -186,6 +204,15 @@ public class Assembler extends BaseTileEntity implements IComparatorSource, ITic
 			list.add(inv.container);
 		buff.addToList(list);
 		return list;
+	}
+
+	public Editor getEditor() {
+		TileEntity te;;
+		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.EAST))) instanceof Editor)
+			return (Editor)te;
+		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.WEST))) instanceof Editor)
+			return (Editor)te;
+		return null;
 	}
 
 	public class Inventory extends AbstractInventory {

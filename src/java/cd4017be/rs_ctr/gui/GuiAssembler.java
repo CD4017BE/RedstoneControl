@@ -3,6 +3,7 @@ package cd4017be.rs_ctr.gui;
 import java.util.function.Supplier;
 
 import cd4017be.lib.Gui.ModularGui;
+import cd4017be.lib.Gui.comp.Button;
 import cd4017be.lib.Gui.comp.FormatText;
 import cd4017be.lib.Gui.comp.GuiFrame;
 import cd4017be.lib.Gui.comp.InfoTab;
@@ -10,6 +11,7 @@ import cd4017be.lib.Gui.comp.SideSelector;
 import cd4017be.lib.Gui.comp.Tooltip;
 import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.tileentity.Assembler;
+import cd4017be.rs_ctr.tileentity.Editor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -25,10 +27,12 @@ public class GuiAssembler extends ModularGui implements Supplier<Object[]> {
 	private static final ResourceLocation TEX = new ResourceLocation(Main.ID, "textures/gui/assembler.png");
 
 	private final Assembler tile;
+	private final Editor editor;
 
 	public GuiAssembler(Assembler tile, EntityPlayer player) {
 		super(tile.getContainer(player, 0));
 		this.tile = tile;
+		this.editor = tile.getEditor();
 		GuiFrame comps = new GuiFrame(this, 176, 168, 11)
 		.background(TEX, 0, 0).title("gui.rs_ctr.assembler.name", 0.5F);
 		new InfoTab(comps, 7, 8, 7, 6, "gui.rs_ctr.assembler.info");
@@ -38,6 +42,8 @@ public class GuiAssembler extends ModularGui implements Supplier<Object[]> {
 		new SideSelector(comps, this, 36, 54, 7, 15, ()-> EnumFacing.HORIZONTALS[(int)(System.currentTimeMillis() / 500) & 3], null, null).type(SideSelector.T_IN);
 		new SideSelector(comps, this, 18, 18, 79, 33, ()-> EnumFacing.DOWN, null, null).type(SideSelector.T_IN);
 		new SideSelector(comps, this, 18, 18, 79, 15, ()-> EnumFacing.UP, null, null).type(SideSelector.T_IN).tooltip("gui.rs_ctr.template");
+		if (editor != null)
+			new Button(comps, 9, 9, 84, 51, 0, ()-> 0, (b)-> sendPkt((byte)0)).texture(208, 0).tooltip("gui.rs_ctr.to_editor");
 		compGroup = comps;
 	}
 
@@ -57,10 +63,12 @@ public class GuiAssembler extends ModularGui implements Supplier<Object[]> {
 		int[] stats = tile.inv.stats[0];
 		int usage = Math.max(0, stats[0] + stats[1]);
 		float burst = (float)stats[5] / (float)(usage - stats[4]);
+		int[] req = editor == null ? new int[6] : editor.ingreds;
 		return new Object[] {
 			stats[0], stats[1], stats[2], stats[3],
 			burst < 0 ? Float.POSITIVE_INFINITY : burst,
-			(float)stats[4] / (float)usage * 20F
+			(float)stats[4] / (float)usage * 20F,
+			req[3], req[4], req[5]
 		};
 	}
 
