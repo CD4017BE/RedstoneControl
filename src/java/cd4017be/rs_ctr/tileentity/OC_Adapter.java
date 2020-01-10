@@ -195,7 +195,7 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 		Connector c = (Connector)node;
 		double d = (double)dE / OC_UNIT;
 		if (!sim) return (int)Math.rint(c.changeBuffer(d) * OC_UNIT);
-		d += c.localBuffer();
+		d += c.globalBuffer();
 		if (dE > 0) {
 			d -= c.globalBufferSize();
 			if (d <= 0) return dE;
