@@ -6,16 +6,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** @author cd4017be */
 public interface IFrameOperator {
 
 	void onFrameBreak(BlockPos pos);
-
-	@SideOnly(Side.CLIENT)
-	void render(double x, double y, double z, BufferBuilder buffer);
 
 	/**@param world
 	 * @param origin scan starting position

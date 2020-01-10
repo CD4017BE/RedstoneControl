@@ -17,7 +17,7 @@ import static cd4017be.rs_ctr.render.PortRenderer.PORT_RENDER;
 import static cd4017be.rs_ctr.render.FrameRenderer.FRAME_RENDER;
 
 import cd4017be.rs_ctr.block.BlockGate;
-import cd4017be.rs_ctr.tileentity.BlockFrame;
+import cd4017be.rs_ctr.tileentity.BlockSelector;
 import cd4017be.rs_ctr.tileentity.Gate;
 import cd4017be.rscpl.gui.Category;
 import cd4017be.rscpl.gui.GateTextureHandler;
@@ -64,7 +64,7 @@ public class ClientProxy extends CommonProxy {
 	public void init(ConfigConstants cc) {
 		super.init(cc);
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
-		bindTileEntitySpecialRenderer(BlockFrame.class, FRAME_RENDER);
+		bindTileEntitySpecialRenderer(BlockSelector.class, FRAME_RENDER);
 		
 		for (Category c : CircuitInstructionSet.TABS)
 			if (c != null)

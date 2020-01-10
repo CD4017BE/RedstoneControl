@@ -10,11 +10,11 @@ import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.frame.IFrameOperator;
 import static cd4017be.api.rs_ctr.frame.IFrameOperator.*;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
+import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.render.HybridFastTESR;
-import cd4017be.lib.render.Util;
 import cd4017be.lib.util.Orientation;
 import static cd4017be.lib.util.TooltipUtil.translate;
 import static cd4017be.lib.util.TooltipUtil.format;
@@ -29,14 +29,16 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** @author cd4017be */
 public class BlockSelector extends WallMountGate
 implements IFrameOperator, IUpdatable, IntConsumer,
-Supplier<String>, ISpecialRenderComp {
+Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 
 	public static int RANGE = 64;
 	BlockButton[] buttons = new BlockButton[4];
@@ -251,36 +253,6 @@ Supplier<String>, ISpecialRenderComp {
 		super.orient(o);
 	}
 
-	@SideOnly(Side.CLIENT)
-	private int lastRender;
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void render(double x, double y, double z, BufferBuilder buffer) {
-		if(Util.RenderFrame == lastRender) return;
-		lastRender = Util.RenderFrame;
-		BlockPos p = selBlock();
-		if(p != null) FrameRenderer.renderBeam(
-			x + .5, y + .5, z + .5,
-			p.getX() - pos.getX(),
-			p.getY() - pos.getY(),
-			p.getZ() - pos.getZ(),
-			getOrientation().front, buffer, 0x7fffff00
-		);
-		if(showFrame) {
-			x += area[0] - pos.getX();
-			y += area[1] - pos.getY();
-			z += area[2] - pos.getZ();
-			FrameRenderer.renderFrame(
-				x - .0625, y - .0625, z - .0625,
-				x + (double)area[3] + .0625,
-				y + (double)area[4] + .0625,
-				z + (double)area[5] + .0625,
-				buffer, missingFrames == 0 ? 0x7f00ff00 : 0x7f0000ff
-			);
-		}
-	}
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderSpecial(
@@ -311,6 +283,47 @@ Supplier<String>, ISpecialRenderComp {
 	@SideOnly(Side.CLIENT)
 	public boolean hasFastRenderer() {
 		return missingFrames == 0 && !HybridFastTESR.isAimedAt(this);
+	}
+
+	@Override
+	public double getMaxRenderDistanceSquared() {
+		int d;
+		return super.getMaxRenderDistanceSquared()
+			+ (d = area[3]) * d
+			+ (d = area[4]) * d
+			+ (d = area[5]) * d;
+	}
+
+	@Override
+	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
+		BlockPos p = selBlock();
+		if(p != null) FrameRenderer.renderBeam(
+			x + .5, y + .5, z + .5,
+			p.getX() - pos.getX(),
+			p.getY() - pos.getY(),
+			p.getZ() - pos.getZ(),
+			getOrientation().front, buffer, 0x7fffff00
+		);
+		if(showFrame) {
+			x += area[0] - pos.getX();
+			y += area[1] - pos.getY();
+			z += area[2] - pos.getZ();
+			FrameRenderer.renderFrame(
+				x - .0625, y - .0625, z - .0625,
+				x + (double)area[3] + .0625,
+				y + (double)area[4] + .0625,
+				z + (double)area[5] + .0625,
+				buffer, missingFrames == 0 ? 0x7f00ff00 : 0x7f0000ff
+			);
+		}
+	}
+
+	@Override
+	public AxisAlignedBB getRenderBB(World world, BlockPos pos) {
+		return new AxisAlignedBB(
+			area[0] - 1, area[1], area[2] - 1,
+			area[0] + area[3] + 1, area[1] + area[4], area[2] + area[5] + 1
+		);
 	}
 
 }
