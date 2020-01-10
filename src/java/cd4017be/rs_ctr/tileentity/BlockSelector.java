@@ -167,7 +167,7 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 		if(d == area[4] - 1) i |= 2;
 		else if(d != 0) return;
 		d = pos.getZ() - area[2];
-		if(d == area[4]) i |= 4;
+		if(d == area[5]) i |= 4;
 		else if(d != -1) return;
 		missingFrames |= 1 << i;
 		markDirty(SYNC);
@@ -196,10 +196,22 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 			) {
 				unlinkCorners(world, pos, area, ~missingFrames);
 				scanArea(world, pos, area, RANGE, getOrientation().front);
+				fallbackArea();
 				missingFrames = (byte)checkCorners(world, pos, area);
 			}
 		} else showFrame = !showFrame;
 		markDirty(SYNC);
+	}
+
+	private void fallbackArea() {
+		if (area[3] > 0 && area[4] > 0 && area[5] > 0) return;
+		if (sx < 0 || sx > RANGE || sy < 0 || sy > RANGE || sz < 0 || sz > RANGE) return;
+		area[0] = pos.getX() - ((invertAxis & 1) != 0 ? sx : -1);
+		area[1] = pos.getY() - ((invertAxis & 2) != 0 ? sy - 1 : 0);
+		area[2] = pos.getZ() - ((invertAxis & 4) != 0 ? sz : -1);
+		area[3] = sx;
+		area[4] = sy;
+		area[5] = sz;
 	}
 
 	private void invert(int ax) {

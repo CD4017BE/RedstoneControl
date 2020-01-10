@@ -1,6 +1,5 @@
 package cd4017be.api.rs_ctr.frame;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -10,6 +9,8 @@ import net.minecraft.world.World;
 /** @author cd4017be */
 public interface IFrameOperator {
 
+	static final EnumFacing[] XYZ_DIRS = {EnumFacing.WEST, EnumFacing.DOWN, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH};
+
 	void onFrameBreak(BlockPos pos);
 
 	/**@param world
@@ -18,29 +19,54 @@ public interface IFrameOperator {
 	 * @param range maximum distance to scan
 	 * @param front optional direction to exclude */
 	public static void scanArea(World world, BlockPos origin, int[] areaOut, int range, EnumFacing front) {
-		int x = origin.getX(), y = origin.getY(), z = origin.getZ();
 		MutableBlockPos p = new MutableBlockPos();
-		//scan for range markers
+		//axis scan for range markers
+		int l, found = 0;
 		for (int j = 0; j < 6; j++) {
-			areaOut[j] = 0;
-			EnumFacing s = EnumFacing.VALUES[((j + 2) % 3) << 1 | j / 3];
-			if (s == front) continue;
-			int dx = s.getFrontOffsetX(), dy = s.getFrontOffsetY(), dz = s.getFrontOffsetZ();
-			int x1 = x, y1 = y, z1 = z;
-			for (int i = 1; i <= range; i++) {
-				if (world.getTileEntity(p.setPos(x1 += dx, y1 += dy, z1 += dz)) instanceof IFrame) {
-					areaOut[j] = i;
-					break;
-				}
+			EnumFacing s = XYZ_DIRS[j];
+			if (s == front || (l = scan(world, p.setPos(origin), s, range)) > range)
+				areaOut[j] = 0;
+			else {
+				areaOut[j] = l;
+				found |= 1 << j;
+			}
+		}
+		//extended edge scan
+		l = 0;
+		switch(found) {
+		case 0b100100: l++;
+		case 0b010010: l++;
+		case 0b001001:
+			EnumFacing d = XYZ_DIRS[l];
+			int n = areaOut[l];
+			int m = -areaOut[l + 3];
+			for (int j = 0; j < 6; j++) {
+				if ((found >> j & 1) != 0) continue;
+				EnumFacing s = XYZ_DIRS[j];
+				if (s == front) continue;
+				l = Math.min(
+					scan(world, p.setPos(origin).move(d, n), s, range),
+					scan(world, p.setPos(origin).move(d, m), s, range)
+				);
+				if (l <= range) areaOut[j] = l;
 			}
 		}
 		//transform coords
 		areaOut[3] += areaOut[0] - 1;
 		areaOut[4] += areaOut[1] + 1;
 		areaOut[5] += areaOut[2] - 1;
-		areaOut[0] = x - areaOut[0] + 1;
-		areaOut[1] = y - areaOut[1];
-		areaOut[2] = z - areaOut[2] + 1;
+		areaOut[0] = origin.getX() - areaOut[0] + 1;
+		areaOut[1] = origin.getY() - areaOut[1];
+		areaOut[2] = origin.getZ() - areaOut[2] + 1;
+	}
+
+	static int scan(World world, MutableBlockPos p, EnumFacing s, int range) {
+		int dx = s.getFrontOffsetX(), dy = s.getFrontOffsetY(), dz = s.getFrontOffsetZ();
+		int x = p.getX(), y = p.getY(), z = p.getZ();
+		for (int i = 1; i <= range; i++)
+			if (world.getTileEntity(p.setPos(x += dx, y += dy, z += dz)) instanceof IFrame)
+				return i;
+		return range + 1;
 	}
 
 	/**@param area
