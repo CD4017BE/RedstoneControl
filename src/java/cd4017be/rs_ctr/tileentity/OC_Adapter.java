@@ -35,12 +35,17 @@ import net.minecraftforge.fml.common.Optional.Method;
 public class OC_Adapter extends WallMountGate implements Environment, ITickable, IUpdatable, EnergyHandler {
 
 	public static double OC_UNIT = 1000D;
+	public static int MAX_BUFFER = 64;
 
 	private Object node = ComputerAPI.newOCnode(this, "rsio", true);
 	private final SignalHandler[] out = new SignalHandler[8];
 	private final int[] state = new int[16];
 	private int update, interrupt;
 	private String target = "";
+	private int[] bufIN, bufOUT;
+	private long changes;
+	private int nIN, nOUT, tIN, tOUT, time;
+	private byte tick;
 
 	{
 		ports = new MountedPort[20];
@@ -67,6 +72,9 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 			state[pin] = val;
 			if ((interrupt >> pin & 1) != 0)
 				((Node)node).sendToAddress(target, "computer.signal", "rs_change", pin, val);
+			//late buffer signal update
+			if (pin < nIN && tick == TickRegistry.TICK)
+				bufIN[pin + (time & tIN) * nIN] = val;
 		} : this;
 	}
 
@@ -92,6 +100,22 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 			nbt.setByte("int", (byte)interrupt);
 			nbt.setByte("update", (byte)update);
 			nbt.setIntArray("io", state);
+			nbt.setInteger("time", time);
+			if (bufIN != null) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("n", (byte)nIN);
+				tag.setByte("t", (byte)tIN);
+				tag.setIntArray("buf", bufIN);
+				nbt.setTag("in", tag);
+			}
+			if (bufOUT != null) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("n", (byte)nOUT);
+				tag.setByte("t", (byte)tOUT);
+				tag.setIntArray("buf", bufOUT);
+				tag.setLong("c", changes);
+				nbt.setTag("out", tag);
+			}
 		}
 	}
 
@@ -105,6 +129,23 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 			update = nbt.getByte("update");
 			int[] arr = nbt.getIntArray("io");
 			System.arraycopy(arr, 0, state, 0, Math.min(arr.length, state.length));
+			NBTTagCompound tag = nbt.getCompoundTag("in");
+			nIN = tag.getByte("n");
+			tIN = tag.getByte("t");
+			bufIN = tag.getIntArray("buf");
+			if (nIN == 0 || arr.length != nIN * (tIN + 1)) {
+				bufIN = null;
+				nIN = tIN = 0;
+			}
+			tag = nbt.getCompoundTag("out");
+			nOUT = tag.getByte("n");
+			tOUT = tag.getByte("t");
+			bufOUT = tag.getIntArray("buf");
+			changes = tag.getLong("c");
+			if (nOUT == 0 || arr.length != nOUT * (tOUT + 1)) {
+				bufOUT = null;
+				nOUT = tOUT = 0;
+			}
 		}
 	}
 
@@ -140,6 +181,23 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 	public void update() {
 		if (node == null) return;
 		ComputerAPI.update(this, node, 0);
+		time++;
+		tick = TickRegistry.TICK;
+		if (bufIN != null) {
+			int t = (time & tIN) * nIN;
+			for (int i = nIN - 1; i >= 0; i--)
+				bufIN[i + t] = state[i + 8];
+		}
+		if (bufOUT != null) {
+			int t = (time & tOUT) * nOUT;
+			int c = (int)(changes >> t) & 0xff >> 8 - nOUT;
+			if (c != 0) {
+				changes ^= (long)c << t;
+				for (int i = nOUT - 1; i >= 0; i--)
+					if ((c >> i & 1) != 0)
+						setOut(i, bufOUT[i + t]);
+			}
+		}
 	}
 
 	@Override
@@ -153,23 +211,45 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 	}
 
 	@Method(modid = "opencomputers")
-	@Callback(direct = true, limit = 100, doc = "function(port:number):number -- returns the signal currently received at given input port [0-7].")
+	@Callback(direct = true, limit = 100, doc = "function(port:number[, time:number]):number -- returns the signal currently (or at the given buffered time < time()) received at given input port [0-7].")
 	public Object[] getInput(Context context, Arguments args) throws Exception {
 		int i = args.checkInteger(0);
-		return i >= 0 && i < 8 ? new Object[] {state[i + 8]} : null;
+		if (i < 0 || i >= 8) return null;
+		if (args.count() > 1 && i < nIN) {
+			int t = args.checkInteger(1);
+			return new Object[] {
+				time() > t && time - t <= tIN
+					? bufIN[i + (t & tIN) * nIN]
+					: Double.NaN
+			};
+		}
+		return new Object[] {state[i + 8]};
 	}
 
 	@SuppressWarnings("unchecked")
 	@Method(modid = "opencomputers")
-	@Callback(direct = true, limit = 25, doc = "function(port:number, value:number) -- sets the signal value of given output port [0-7]. Signal update happens next tick.")
+	@Callback(direct = true, limit = 25, doc = "function(port:number[, time:number], value:number):bool -- sets the signal value of given output port [0-7] for the next tick (or given future time > time()).")
 	public Object[] setOutput(Context context, Arguments args) throws Exception {
-		synchronized(state) {
+		if (args.count() > 2) {
+			int i = args.checkInteger(0);
+			if (i < 0 || i >= nOUT) return null;
+			int t = args.checkInteger(1) - 1, v = args.checkInteger(2);
+			if (t - time > tOUT + 1)
+				return new Object[] {false};
+			else if (t > time) {
+				i += (t & tOUT) * nOUT;
+				bufOUT[i] = v;
+				changes |= 1L << i;
+			} else synchronized(state) {
+				setOut(i, v);
+			}
+		} else synchronized(state) {
 			if (args.isTable(0))
 				for (Entry<Number, Number> e : ((Map<Number, Number>)args.checkTable(0)).entrySet())
 					setOut(e.getKey().intValue(), e.getValue().intValue());
 			else setOut(args.checkInteger(0), args.checkInteger(1));
 		}
-		return null;
+		return new Object[] {true};
 	}
 
 	@Method(modid = "opencomputers")
@@ -177,6 +257,57 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 	public Object[] registerEvent(Context context, Arguments args) throws Exception {
 		interrupt = args.checkInteger(0);
 		target = context.node().address();
+		return null;
+	}
+
+	@Method(modid = "opencomputers")
+	@Callback(direct = true, doc = "function([setTime:number]):number -- returns the internal timer in ticks or resets it to the given value")
+	public Object[] time(Context context, Arguments args) throws Exception {
+		if (args.count() > 0)
+			time = args.checkInteger(0);
+		return new Object[] {time()};
+	}
+
+	private int time() {
+		return tick == TickRegistry.TICK ? time : time + 1;
+	}
+
+	@Method(modid = "opencomputers")
+	@Callback(direct = false, doc = "function(inputs:number, ticks:number) -- configures the first given number of inputs to be buffered over given number of ticks to support tick precise reading.")
+	public Object[] bufferInput(Context context, Arguments args) throws Exception {
+		int n = args.checkInteger(0);
+		if (n <= 0) {
+			nIN = 0;
+			tIN = 0;
+			bufIN = null;
+		} else {
+			if (n > 8) n = 8;
+			int t = (Integer.highestOneBit(args.checkInteger(1) - 1) << 1);
+			if (t <= 1 || t * n > MAX_BUFFER) throw new Exception("buffer size out of range 2*inputs..." + MAX_BUFFER);
+			nIN = n;
+			tIN = t - 1;
+			bufIN = new int[n * t];
+		}
+		return null;
+	}
+
+	@Method(modid = "opencomputers")
+	@Callback(direct = false, doc = "function(inputs:number, ticks:number) -- configures the first given number of outputs to be buffered over given number of ticks to support tick precise writing.")
+	public Object[] bufferOutput(Context context, Arguments args) throws Exception {
+		int n = args.checkInteger(0);
+		if (n <= 0) {
+			nOUT = 0;
+			tOUT = 0;
+			bufOUT = null;
+		} else {
+			if (n > 8) n = 8;
+			int t = (Integer.highestOneBit(args.checkInteger(1) - 1) << 1);
+			if (t <= 1 || t * n > MAX_BUFFER) throw new Exception("buffer size out of range 2*inputs..." + MAX_BUFFER);
+			nOUT = n;
+			tOUT = t - 1;
+			bufOUT = new int[n * t];
+			changes = 0;
+		}
 		return null;
 	}
 
