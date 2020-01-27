@@ -70,11 +70,12 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 		return pin < 16 ? (SignalHandler)(val) -> {
 			if (val == state[pin]) return;
 			state[pin] = val;
-			if ((interrupt >> pin & 1) != 0)
-				((Node)node).sendToAddress(target, "computer.signal", "rs_change", pin, val);
+			int ipin = pin - 8;
+			if ((interrupt >> ipin & 1) != 0)
+				((Node)node).sendToAddress(target, "computer.signal", "rs_change", ipin, val);
 			//late buffer signal update
-			if (pin < nIN && tick == TickRegistry.TICK)
-				bufIN[pin + (time & tIN) * nIN] = val;
+			if (ipin < nIN && tick == TickRegistry.TICK)
+				bufIN[ipin + (time & tIN) * nIN] = val;
 		} : this;
 	}
 
