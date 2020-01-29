@@ -1,0 +1,15 @@
+{
+	"id": 84,
+	"type": "out",
+	"lock": "right",
+	"width": 2,
+	"pins_in": "bZ ",
+	"end": "rV",
+	"link": "a",
+	"nodes": {
+		"out": "rV",
+		"in": ["bZ", "a[I"],
+		"code": "rs_ctr:clk_out",
+		"args": ["$-1", "$-2"]
+	}
+}
