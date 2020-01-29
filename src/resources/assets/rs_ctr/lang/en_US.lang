@@ -262,6 +262,7 @@ gate.cost=§8Complexity\: §c%d §b%d
 gategroup.rs_ctr.io=Memory & IO
 gate.rs_ctr.in=Input Socket\n§7receives external signals
 gate.rs_ctr.out=Output Socket\n§7emits external signals
+gate.rs_ctr.clock_out=Clock Output Socket\n§7Emits an external clock signal, switching\n§7on each execution cycle the input is §etrue§7.
 gate.rs_ctr.return=Execution End Node\n§7Ensures that the connected\n§7signal is evaluated.
 gate.rs_ctr.read_b=Variable Read 8bit\n§7Outputs the variable value set\n§7in previous evaluation cycle.
 gate.rs_ctr.read_s=Variable Read 16bit\n§7Outputs the variable value set\n§7in previous evaluation cycle.

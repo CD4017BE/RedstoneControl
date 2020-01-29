@@ -1,0 +1,14 @@
+jof 0 end
+in 1
+dup
+ldc $0
+dup_x1
+iaload
+ldc 65535
+ixor
+iastore
+iload mod
+ldc $1
+ior
+istore mod
+end:
