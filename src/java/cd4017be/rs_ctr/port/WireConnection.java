@@ -4,7 +4,6 @@ import java.util.List;
 
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.api.rs_ctr.port.IConnector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.ITagableConnector;
 import cd4017be.api.rs_ctr.port.MountedPort;
@@ -36,9 +35,9 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	public static final String ID = "wire";
 
 	private final WireType type;
-	private BlockPos linkPos;
-	private int linkPin;
-	private Vec3d line;
+	BlockPos linkPos;
+	int linkPin;
+	Vec3d line;
 	private int count;
 	private String tag;
 
@@ -84,17 +83,7 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	@Override
 	public void onRemoved(MountedPort port, EntityPlayer player) {
 		super.onRemoved(port, player);
-		World world = port.getWorld();
-		BlockPos pos = port.getPos();
-		Port p = IPortProvider.getPort(world, linkPos, linkPin);
-		if (p instanceof MountedPort) {
-			IConnector c = ((MountedPort)p).getConnector();
-			if (c instanceof WireConnection) {
-				WireConnection wc = (WireConnection)c;
-				if (wc.linkPos.equals(pos) && wc.linkPin == port.pin)
-					((MountedPort)p).setConnector(null, player);
-			}
-		}
+		IWiredConnector.super.onRemoved(port, player);
 		port.disconnect();
 	}
 
@@ -104,18 +93,9 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	}
 
 	@Override
-	public void onPortMove(MountedPort port) {
-		Port p = getLinkPort(port);
-		if (!(p instanceof MountedPort)) return;
-		MountedPort lp = (MountedPort)p;
-		Vec3d path = getPath(port, lp);
-		line = path.scale(.5);
-		port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
-		IConnector c = lp.getConnector();
-		if (c instanceof WireConnection) {
-			((WireConnection)c).line = path.scale(-.5);
-			lp.owner.onPortModified(p, IPortProvider.E_CON_UPDATE);
-		}
+	public void onLinkMove(MountedPort host, MountedPort link) {
+		line = IWiredConnector.getPath(host, link).scale(.5);
+		host.owner.onPortModified(host, IPortProvider.E_CON_UPDATE);
 	}
 
 	private float[] vertices; //render cache
@@ -167,13 +147,6 @@ public class WireConnection extends Plug implements ITagableConnector, IWiredCon
 	@Override
 	public boolean isLinked(MountedPort to) {
 		return to.pin == linkPin && to.getPos().equals(linkPos);
-	}
-
-	public static Vec3d getPath(MountedPort from, MountedPort to) {
-		Vec3d path = new Vec3d(to.getPos().subtract(from.getPos())).add(to.pos.subtract(from.pos));
-		if (!(from instanceof RelayPort)) path = path.subtract(new Vec3d(from.face.getDirectionVec()).scale(0.125));
-		if (!(to instanceof RelayPort)) path = path.add(new Vec3d(to.face.getDirectionVec()).scale(0.125));
-		return path;
 	}
 
 }

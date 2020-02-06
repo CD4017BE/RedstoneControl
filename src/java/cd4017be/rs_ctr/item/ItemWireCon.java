@@ -1,9 +1,12 @@
 package cd4017be.rs_ctr.item;
 
+import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.IIntegratedConnector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.api.rs_ctr.wire.RelayPort;
+import cd4017be.api.rs_ctr.wire.IWiredConnector;
 import cd4017be.api.rs_ctr.wire.IWiredConnector.IWiredConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
@@ -82,12 +85,30 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 			stack.setTagCompound(null);
 			return;
 		}
-		MountedPort lport = (MountedPort)p;
-		Vec3d path = WireConnection.getPath(port, lport);
-		port.setConnector(new WireConnection(lpos, lp, path.scale(0.5), d/2, type), player);
-		lport.setConnector(new WireConnection(pos, port.pin, path.scale(-0.5), d - d/2, type), player);
-		if (lport instanceof RelayPort) lport.connect(port);
-		else port.connect(lport);
+		MountedPort lport;
+		if (port.isMaster) lport = (MountedPort)p;
+		else {
+			lport = port;
+			port = (MountedPort)p;
+			BlockPos bp = pos;
+			pos = lpos;
+			lpos = bp;
+		}
+		Vec3d path = IWiredConnector.getPath(port, lport);
+		IConnector con = port.getConnector();
+		WireConnection wire = new WireConnection(pos, port.pin, path.scale(-0.5), d, type);
+		lport.setConnector(wire, player);
+		path = path.scale(0.5);
+		if (con instanceof IIntegratedConnector) {
+			if (!((IIntegratedConnector)con).addLink(lport, path, player)) {
+				lport.setConnector(null, player);
+				player.sendMessage(new TextComponentTranslation("msg.rs_ctr.split1"));
+			}
+		} else {
+			port.setConnector(new WireConnection(lpos, lp, path, 0, type), player);
+			if (lport instanceof RelayPort) lport.connect(port);
+			else port.connect(lport);
+		}
 		stack.setTagCompound(null);
 		stack.shrink(d);
 	}

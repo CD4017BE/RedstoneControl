@@ -11,19 +11,20 @@ import net.minecraft.item.Item;
  * @author CD4017BE
  */
 public enum WireType {
-	SIGNAL(SignalHandler.class, "wire", "wireless", 0xff0000ff, "_plug.main(0)"),
-	ENERGY(EnergyHandler.class, "wireE", "wirelessE", 0xff00ffff, "_plug.main(7)"),
-	BLOCK(BlockHandler.class, "wireB", "wirelessB", 0xffffff00, "_plug.main(5)");
+	SIGNAL(SignalHandler.class, "wire", "wireless", "split", 0xff0000ff, "_plug.main(0)"),
+	ENERGY(EnergyHandler.class, "wireE", "wirelessE", "splitE", 0xff00ffff, "_plug.main(7)"),
+	BLOCK(BlockHandler.class, "wireB", "wirelessB", "splitB", 0xffffff00, "_plug.main(5)");
 
-	public final String wiredId, wirelessId, model;
+	public final String wiredId, wirelessId, splitId, model;
 	public final Class<?> clazz;
 	public final int color;
 	public Item wireItem;
 
-	private WireType(Class<?> clazz, String wiredId, String wirelessId, int color, String model) {
+	private WireType(Class<?> clazz, String wiredId, String wirelessId, String splitId, int color, String model) {
 		this.clazz = clazz;
 		this.wiredId = wiredId;
 		this.wirelessId = wirelessId;
+		this.splitId = splitId;
 		this.color = color;
 		this.model = model;
 	}

@@ -32,6 +32,7 @@ import cd4017be.rs_ctr.item.ItemWireCon;
 import cd4017be.rs_ctr.port.BlockProbe;
 import cd4017be.rs_ctr.port.Clock;
 import cd4017be.rs_ctr.port.Constant;
+import cd4017be.rs_ctr.port.SplitPlug;
 import cd4017be.rs_ctr.port.StatusLamp;
 import cd4017be.rs_ctr.port.WireAnchor;
 import cd4017be.rs_ctr.port.WireType;
@@ -125,6 +126,7 @@ public class CommonProxy implements IRecipeHandler {
 	public void init(ConfigConstants c) {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
+		SplitPlug.MAX_LINK_COUNT = (int)c.getNumber("max_split_links", SplitPlug.MAX_LINK_COUNT);
 		double d;
 		d = c.getNumber("panel_sync_dst_min", Math.sqrt(Panel.UPDATE_RANGE0)); Panel.UPDATE_RANGE0 = d * d;
 		d = c.getNumber("panel_sync_dst_max", Math.sqrt(Panel.UPDATE_RANGE1)); Panel.UPDATE_RANGE1 = d * d;
