@@ -112,6 +112,7 @@ public class Objects {
 	public static final ItemStatusLamp lamp = null;
 	public static final ItemWireTag tag = null;
 	public static final ItemClock clock = null;
+	public static final ItemEdgeTrigger edge_trigger = null;
 	public static final BaseItem circuitboard = null;
 	public static final ItemPanelModule seg7 = null;
 	public static final ItemPanelModule pointer_dsp = null;
@@ -217,6 +218,7 @@ public class Objects {
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
 				new ItemWireTag("tag").setCreativeTab(tabCircuits),
 				new ItemClock("clock").setCreativeTab(tabCircuits),
+				new ItemEdgeTrigger("edge_trigger").setCreativeTab(tabCircuits),
 				new ItemPanelModule("seg7", "7seg").setCreativeTab(tabCircuits),
 				new ItemPanelModule("pointer_dsp", "pointer").setCreativeTab(tabCircuits),
 				new ItemPanelModule("slider", "slider").setCreativeTab(tabCircuits),
