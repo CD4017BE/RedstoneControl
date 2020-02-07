@@ -73,15 +73,14 @@ tile.rs_ctr.ram.tip=Directly addressable memory that supports simultaneous read 
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
+msg.rs_ctr.dir_in=§cCan only connect to input ports!
+msg.rs_ctr.dir_out=§cCan only connect to output ports!
 msg.rs_ctr.wire0=§cInputs can only connect to outputs and vice versa!
 msg.rs_ctr.wire1=§cToo far away, not enough wire!
 msg.rs_ctr.wire2=§cToo far away, max length is %d blocks!
 msg.rs_ctr.wire3=§cFirst port doesn't exist anymore!
-msg.rs_ctr.const=§cConstants can only connect to inputs!
-msg.rs_ctr.lamp=§cLamps can only connect to outputs!
 msg.rs_ctr.probe0=§cMust be connected to block first!
 msg.rs_ctr.probe1=§cCan only connect to Block Reference inputs!
-msg.rs_ctr.split=§cSplitter Plugs can only connect to outputs!
 msg.rs_ctr.split1=§cOut of split channels!
 msg.rs_ctr.save_succ=§aCircuit Schematic successfully saved!
 msg.rs_ctr.load_succ=§aCircuit Schematic successfully loaded!

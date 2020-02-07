@@ -31,7 +31,7 @@ public class ItemSplitCon extends BaseItem implements IConnectorItem {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
 		} else if(!port.isMaster) {
-			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.split"));
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.dir_out"));
 			return;
 		}
 		int n;

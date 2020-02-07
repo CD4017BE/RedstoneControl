@@ -51,7 +51,7 @@ public class ItemClock extends ItemPanelModule implements IConnectorItem, IGuiHa
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
 		} else if (port.isMaster) {
-			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.clock"));
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.dir_in"));
 			return;
 		}
 		NBTTagCompound nbt = stack.getTagCompound();

@@ -28,7 +28,7 @@ public class ItemStatusLamp extends ItemPanelModule implements IConnectorItem {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.type"));
 			return;
 		} else if (!port.isMaster) {
-			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.lamp"));
+			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.dir_out"));
 			return;
 		}
 		port.setConnector(new StatusLamp(), player);
