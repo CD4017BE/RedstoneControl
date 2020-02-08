@@ -57,15 +57,23 @@ public class ItemConstantPlug extends ItemPlug implements IConnectorItem, IGuiHa
 	@Override
 	public String getItemStackDisplayName(ItemStack item) {
 		String s = super.getItemStackDisplayName(item);
-		if (item.hasTagCompound()) s += " \u00a79" + item.getTagCompound().getInteger("val");
+		NBTTagCompound nbt = item.getTagCompound();
+		if (nbt != null) s += " \u00a79" + toString(nbt.getInteger("val"), nbt.getByte("dsp"));
 		return s;
 	}
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		if (player.isSneaking()) stack.setTagCompound(null);
-		else openHeldItemGui(player, hand, 0, 0, 0);
+		if (!player.isSneaking())
+			openHeldItemGui(player, hand, 0, 0, 0);
+		else if (stack.hasTagCompound()) {
+			stack = stack.copy();
+			NBTTagCompound nbt = stack.getTagCompound();
+			if (nbt.getInteger("val") == 0)
+				stack.setTagCompound(null);
+			else nbt.setByte("dsp", (byte)((nbt.getByte("dsp") + 1) % 3));
+		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 	}
 
@@ -83,7 +91,13 @@ public class ItemConstantPlug extends ItemPlug implements IConnectorItem, IGuiHa
 				.title("gui.rs_ctr.constant.name", 0.5F)
 				.background(new ResourceLocation(Main.ID, "textures/gui/small.png"), 0, 0);
 		frame.add(new TextField(frame, 64, 7, 8, 16, 12, state, (t)-> {
-			try {gui.sendPkt(Integer.parseInt(t));
+			try {
+				if (t.isEmpty()) return;
+				t = t.toLowerCase();
+				char c = t.charAt(0);
+				if (c == 'x') gui.sendPkt(Integer.parseInt(t.substring(1), 16), (byte)1);
+				else if (c == 'b') gui.sendPkt(Integer.parseInt(t.substring(1), 2), (byte)2);
+				else gui.sendPkt(Integer.parseInt(t), (byte)0);
 			} catch (NumberFormatException e) {}
 		}));
 		gui.compGroup = frame;
@@ -93,6 +107,7 @@ public class ItemConstantPlug extends ItemPlug implements IConnectorItem, IGuiHa
 	static class StateInteractionHandler extends ItemInteractionHandler implements Supplier<String> {
 
 		int value;
+		byte dsp;
 
 		public StateInteractionHandler(int slot) {
 			super(Objects.constant, slot);
@@ -100,30 +115,45 @@ public class ItemConstantPlug extends ItemPlug implements IConnectorItem, IGuiHa
 
 		@Override
 		protected void initSync(Builder sb) {
-			sb.addFix(4);
+			sb.addFix(4, 1);
 		}
 
 		@Override
 		public void writeState(StateSyncServer state, AdvancedContainer cont) {
-			state.buffer.writeInt(getNBT(cont.player).getInteger("val"));
+			NBTTagCompound nbt = getNBT(cont.player);
+			state.buffer.writeInt(nbt.getInteger("val")).writeByte(nbt.getByte("dsp"));
 			state.endFixed();
 		}
 
 		@Override
 		public void readState(StateSyncClient state, AdvancedContainer cont) {
 			value = state.get(value);
+			dsp = (byte)state.get(dsp);
 		}
 
 		@Override
 		public void handleAction(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
-			getNBT(sender).setInteger("val", pkt.readInt());
+			NBTTagCompound nbt = getNBT(sender);
+			nbt.setInteger("val", pkt.readInt());
+			nbt.setByte("dsp", pkt.readByte());
 		}
 
 		@Override
 		public String get() {
-			return Integer.toString(value);
+			return ItemConstantPlug.toString(value, dsp);
 		}
 
+	}
+
+	public static String toString(int value, byte dsp) {
+		switch(dsp) {
+		case 0:
+			return Integer.toString(value);
+		case 1:
+			return 'x' + Integer.toHexString(value);
+		default:
+			return 'b' + Integer.toBinaryString(value);
+		}
 	}
 
 }
