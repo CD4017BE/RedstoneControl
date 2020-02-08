@@ -33,6 +33,7 @@ import cd4017be.rs_ctr.port.BlockProbe;
 import cd4017be.rs_ctr.port.Clock;
 import cd4017be.rs_ctr.port.Constant;
 import cd4017be.rs_ctr.port.EdgeTrigger;
+import cd4017be.rs_ctr.port.PulseGen;
 import cd4017be.rs_ctr.port.SplitPlug;
 import cd4017be.rs_ctr.port.StatusLamp;
 import cd4017be.rs_ctr.port.WireAnchor;
@@ -164,6 +165,7 @@ public class CommonProxy implements IRecipeHandler {
 		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
 		IConnector.REGISTRY.put(Clock.ID, Clock::new);
 		IConnector.REGISTRY.put(EdgeTrigger.ID, EdgeTrigger::new);
+		IConnector.REGISTRY.put(PulseGen.ID, PulseGen::new);
 		
 		Module.REGISTRY.put(_7Segment.ID, _7Segment::new);
 		Module.REGISTRY.put(PointerDisplay.ID, PointerDisplay::new);

@@ -152,6 +152,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(oscilloscope);
 		registerRender(ram, null);
 		registerRender(edge_trigger, 0, 1);
+		registerRender(pulse_gen);
 	}
 
 	private static void addGates(BlockGate... gates) {
