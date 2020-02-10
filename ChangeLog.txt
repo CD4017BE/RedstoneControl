@@ -1,3 +1,34 @@
+v0.2.6
+Changes:
+- added binary and hex editing/display for constant plug and lamp
+- added Pulse Generator Plug
+- added Toggle Latch Plug
+- added Signal Splitter Plug
+- add clock output operator for Processors
+- add buffered, tick precise I/O operations to OpenComputers Adapter
+- fixed energy drain from OpenComputers Adapter not working
+- added any -> X and X -> any Slot operations to Item Translocator
+- improved BlockFrame scan (finds the full box starting from edge now)
+- moved Frame rendering to BlockSelector (fixes corner boxes drawing)
+- added quick switch buttons between Assembler and Editor GUI
+- added Processor auto assembly feature
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.17
+
+v0.2.5
+Changes:
+- fixed OpenComputers API registration for the case OC is not installed
+- replace JFileChooser with internal FileBrowser GUI component from CD4017BE_lib (fixes freeze)
+- add external RAM Chip
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.16
+
 v0.2.4
 Changes:
 - fixed #17 missing null check in signal output
