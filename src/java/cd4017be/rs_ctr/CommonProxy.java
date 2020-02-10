@@ -32,6 +32,9 @@ import cd4017be.rs_ctr.item.ItemWireCon;
 import cd4017be.rs_ctr.port.BlockProbe;
 import cd4017be.rs_ctr.port.Clock;
 import cd4017be.rs_ctr.port.Constant;
+import cd4017be.rs_ctr.port.EdgeTrigger;
+import cd4017be.rs_ctr.port.PulseGen;
+import cd4017be.rs_ctr.port.SplitPlug;
 import cd4017be.rs_ctr.port.StatusLamp;
 import cd4017be.rs_ctr.port.WireAnchor;
 import cd4017be.rs_ctr.port.WireType;
@@ -44,7 +47,6 @@ import cd4017be.rs_ctr.sensor.IC2EnergySensor;
 import cd4017be.rs_ctr.sensor.ItemSensor;
 import cd4017be.rs_ctr.sensor.LightSensor;
 import cd4017be.rs_ctr.tileentity.BlockBreaker;
-import cd4017be.rs_ctr.tileentity.BlockFrame;
 import cd4017be.rs_ctr.tileentity.BlockSelector;
 import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemPlacer;
@@ -126,6 +128,7 @@ public class CommonProxy implements IRecipeHandler {
 	public void init(ConfigConstants c) {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
+		SplitPlug.MAX_LINK_COUNT = (int)c.getNumber("max_split_links", SplitPlug.MAX_LINK_COUNT);
 		double d;
 		d = c.getNumber("panel_sync_dst_min", Math.sqrt(Panel.UPDATE_RANGE0)); Panel.UPDATE_RANGE0 = d * d;
 		d = c.getNumber("panel_sync_dst_max", Math.sqrt(Panel.UPDATE_RANGE1)); Panel.UPDATE_RANGE1 = d * d;
@@ -139,7 +142,6 @@ public class CommonProxy implements IRecipeHandler {
 		FluidTranslocator.BLOCK_COST = -(int)c.getNumber("energy_fluid_translocator_world", -FluidTranslocator.BLOCK_COST);
 		SolarCell.POWER = (int)c.getNumber("energy_solar", SolarCell.POWER);
 		BlockSelector.RANGE = (int)c.getNumber("block_select_range", BlockSelector.RANGE);
-		BlockFrame.RENDER_RANGE = BlockSelector.RANGE * 2;
 		BlockBreaker.BASE_ENERGY = (float)c.getNumber("energy_breaker_op", BlockBreaker.BASE_ENERGY);
 		BlockBreaker.ENERGY_MULT = (float)c.getNumber("energy_breaker_hard", BlockBreaker.ENERGY_MULT);
 		BlockBreaker.SPEED_MOD = (float)c.getNumber("energy_breaker_speed", BlockBreaker.SPEED_MOD);
@@ -162,6 +164,8 @@ public class CommonProxy implements IRecipeHandler {
 		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
 		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
 		IConnector.REGISTRY.put(Clock.ID, Clock::new);
+		IConnector.REGISTRY.put(EdgeTrigger.ID, EdgeTrigger::new);
+		IConnector.REGISTRY.put(PulseGen.ID, PulseGen::new);
 		
 		Module.REGISTRY.put(_7Segment.ID, _7Segment::new);
 		Module.REGISTRY.put(PointerDisplay.ID, PointerDisplay::new);

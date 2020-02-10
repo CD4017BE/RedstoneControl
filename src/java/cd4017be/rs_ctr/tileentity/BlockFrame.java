@@ -7,14 +7,11 @@ import cd4017be.lib.tileentity.BaseTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 
 /** @author cd4017be */
 public class BlockFrame extends BaseTileEntity implements IFrame {
-
-	public static double RENDER_RANGE = 128;
 
 	public ArrayList<BlockPos> linked = new ArrayList<>();
 
@@ -27,13 +24,13 @@ public class BlockFrame extends BaseTileEntity implements IFrame {
 	public void link(BlockPos pos) {
 		if (linked.contains(pos)) return;
 		linked.add(pos.toImmutable());
-		markDirty(SYNC);
+		markDirty(SAVE);
 	}
 
 	@Override
 	public void unlink(BlockPos pos) {
 		linked.remove(pos);
-		markDirty(SYNC);
+		markDirty(SAVE);
 	}
 
 	@Override
@@ -51,36 +48,30 @@ public class BlockFrame extends BaseTileEntity implements IFrame {
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
 		super.storeState(nbt, mode);
-		NBTTagList list = new NBTTagList();
-		for (BlockPos pos : linked) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("x", pos.getX());
-			tag.setInteger("y", pos.getY());
-			tag.setInteger("z", pos.getZ());
-			list.appendTag(tag);
+		if (mode == SAVE) {
+			NBTTagList list = new NBTTagList();
+			for (BlockPos pos : linked) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger("x", pos.getX());
+				tag.setInteger("y", pos.getY());
+				tag.setInteger("z", pos.getZ());
+				list.appendTag(tag);
+			}
+			nbt.setTag("link", list);
 		}
-		nbt.setTag("link", list);
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		super.loadState(nbt, mode);
-		NBTTagList list = nbt.getTagList("link", NBT.TAG_COMPOUND);
-		linked.clear();
-		for (int i = 0; i < list.tagCount(); i++) {
-			NBTTagCompound tag = list.getCompoundTagAt(i);
-			linked.add(new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")));
+		if (mode == SAVE) {
+			NBTTagList list = nbt.getTagList("link", NBT.TAG_COMPOUND);
+			linked.clear();
+			for (int i = 0; i < list.tagCount(); i++) {
+				NBTTagCompound tag = list.getCompoundTagAt(i);
+				linked.add(new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")));
+			}
 		}
-	}
-
-	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return INFINITE_EXTENT_AABB;
-	}
-
-	@Override
-	public double getMaxRenderDistanceSquared() {
-		return RENDER_RANGE * RENDER_RANGE * 3.0;
 	}
 
 }

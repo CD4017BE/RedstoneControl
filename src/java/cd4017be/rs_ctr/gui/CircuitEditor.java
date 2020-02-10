@@ -15,6 +15,7 @@ import cd4017be.rs_ctr.Main;
 import cd4017be.rs_ctr.circuit.CircuitCompiler;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.tileentity.Assembler;
 import cd4017be.rs_ctr.tileentity.Editor;
 import cd4017be.rscpl.editor.BoundingBox2D;
 import cd4017be.rscpl.editor.Gate;
@@ -101,6 +102,11 @@ public class CircuitEditor extends ModularGui {
 		new Tooltip(comps, 56, 16, 192, 232, "gui.rs_ctr.editor.ingreds", ()-> new Object[] {
 			this.tile.ingreds[3], this.tile.ingreds[0], this.tile.ingreds[4], this.tile.ingreds[1], this.tile.ingreds[5], this.tile.ingreds[2]
 		});
+		
+		Assembler ass = tile.getAssembler();
+		if (ass != null)
+			new Button(comps, 10, 9, 177, 200, 0, ()-> 0, (b)-> sendCommand(A_GO)).texture(168, 89).tooltip("gui.rs_ctr.to_assembler");
+		
 		this.compGroup = comps;
 		this.error = new GuiErrorMarker(this);
 		palette.setEnabled(false);

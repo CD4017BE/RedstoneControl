@@ -6,15 +6,19 @@ import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IQuickTransferHandler;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.Gui.GlitchSaveSlot;
+import cd4017be.lib.block.AdvancedBlock.IComparatorSource;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.capability.AbstractInventory;
 import cd4017be.lib.capability.BasicInventory;
+import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.lib.network.IGuiHandlerTile;
 import cd4017be.lib.network.StateSyncClient;
 import cd4017be.lib.network.StateSyncServer;
 import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.network.StateSynchronizer.Builder;
 import cd4017be.lib.tileentity.BaseTileEntity;
+import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
+import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Utils;
 import static cd4017be.rs_ctr.CommonProxy.*;
 
@@ -23,21 +27,91 @@ import cd4017be.rs_ctr.item.ItemProcessor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.RangedWrapper;
+import static net.minecraftforge.items.ItemHandlerHelper.*;
 
 
 /**
  * @author CD4017BE
  *
  */
-public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest, IQuickTransferHandler {
+public class Assembler extends BaseTileEntity implements IComparatorSource, ITickableServerOnly, IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest, IQuickTransferHandler {
 
 	public final Inventory inv = new Inventory();
-	public final BasicInventory buff = new BasicInventory(6);
+	public final BasicInventory buff = new BasicInventory(7);
+	public int step;
+
+	@Override
+	public void update() {
+		if (step < 0 || step > 3 || (world.getTotalWorldTime() & 3) != 0) return;
+		ItemStack stack = buff.items[6];
+		if (stack.getCount() <= 0 || stack.getCount() >= stack.getMaxStackSize() || stack.getItem() != inv.item) {
+			step = -1;
+			return;
+		}
+		int i = step;
+		if (i < 3) {
+			ItemStack[] ingreds = new ItemStack[3];
+			inv.item.loadIngredients(stack, ingreds);
+			ItemStack a = ingreds[i], b = inv.ingreds[i];
+			int na = a.getCount(), nb = b.getCount();
+			int n = nb == 0 || canItemStacksStack(a, b) ? na - nb : -nb;
+			if (n == 0) i++;
+			else if (n < 0)
+				inv.setStackInSlot(i + 1, insertItemStacked(buff, copyStackWithSize(b, -n), false));
+			else if((n = ItemFluidUtil.drain(buff, a, n)) > 0) {
+				inv.setStackInSlot(i + 1, copyStackWithSize(a, n += nb));
+				if (n == na) i++;
+			}
+		} else {
+			int[] stats = new int[6];
+			inv.item.loadStats(stack, stats);
+			for (int j = 0; j < 6; j++)
+				if (stats[j] != inv.stats[0][j]) {
+					step = -1;
+					return;
+				}
+			stack.grow(1);
+			inv.setStackInSlot(0, ItemStack.EMPTY);
+			return;
+		}
+		step = i;
+	}
+
+	@Override
+	public int comparatorValue() {
+		return inv.container.isEmpty() ? 0 : 1;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability != CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return null;
+		switch(facing) {
+		case UP:
+			return (T) new RangedWrapper(buff, 6, 7);
+		case DOWN:
+			return (T) new RangedWrapper(inv, 0, 1);
+		default:
+			return (T) new RangedWrapper(buff, 0, 6);
+		}
+	}
 
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
@@ -56,7 +130,7 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 		buff.read(nbt.getTagList("buff", NBT.TAG_COMPOUND));
 	}
 
-	private static final Builder ssb = StateSynchronizer.builder().addMulFix(4, NULL.length);
+	private static final Builder ssb = StateSynchronizer.builder().addMulFix(4, NULL.length).addFix(1);
 
 	@Override
 	public AdvancedContainer getContainer(EntityPlayer player, int id) {
@@ -68,6 +142,7 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 		range = new int[] {1, 4};
 		for (int i = 0; i < 6; i++)
 			cont.addItemSlot(new GlitchSaveSlot(buff, i, 8 + (i&1) * 18, 16 + (i>>1) * 18, false).setTarget(range), false);
+		cont.addItemSlot(new GlitchSaveSlot(buff, 6, 80, 16, false), false);
 		cont.addPlayerInventory(8, 86);
 		cont.transferHandlers.add(this);
 		return cont;
@@ -75,12 +150,13 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 
 	@Override
 	public void writeState(StateSyncServer state, AdvancedContainer cont) {
-		state.writeIntArray(inv.stats[0]).endFixed();
+		state.writeIntArray(inv.stats[0]).writeInt(step).endFixed();
 	}
 
 	@Override
 	public void readState(StateSyncClient state, AdvancedContainer cont) {
 		state.get(inv.stats[0]);
+		step = state.get(step);
 	}
 
 	@Override
@@ -99,6 +175,20 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 	}
 
 	@Override
+	public void handleAction(PacketBuffer pkt, EntityPlayerMP sender) throws Exception {
+		if (pkt.readByte() != 0) return;
+		Editor editor = getEditor();
+		if (editor == null) return;
+		ItemStack stack = inv.container;
+		if (!stack.isEmpty()) {
+			stack = stack.copy();
+			inv.setStackInSlot(0, editor.inventory);
+			editor.putItem(stack, 0);
+		}
+		GuiNetworkHandler.openBlockGui(sender, editor.getPos(), 0);
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public GuiAssembler getGuiScreen(EntityPlayer player, int id) {
 		return new GuiAssembler(this, player);
@@ -114,6 +204,15 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 			list.add(inv.container);
 		buff.addToList(list);
 		return list;
+	}
+
+	public Editor getEditor() {
+		TileEntity te;;
+		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.EAST))) instanceof Editor)
+			return (Editor)te;
+		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.WEST))) instanceof Editor)
+			return (Editor)te;
+		return null;
 	}
 
 	public class Inventory extends AbstractInventory {
@@ -143,6 +242,7 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 				if (item == null) {
 					Arrays.fill(ingreds, ItemStack.EMPTY);
 					for (int[] s : stats) Arrays.fill(s, 0);
+					step = -1;
 				} else {
 					item.loadStats(stack, stats[0]);
 					item.loadIngredients(stack, ingreds);
@@ -152,7 +252,9 @@ public class Assembler extends BaseTileEntity implements IGuiHandlerTile, IState
 						for (int j = 0; j < old.length; j++)
 							old[j] = s[j] * n;
 					}
+					step = 0;
 				}
+				world.updateComparatorOutputLevel(pos, blockType);
 			}
 		}
 

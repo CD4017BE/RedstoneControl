@@ -1,43 +1,16 @@
 package cd4017be.rs_ctr.render;
 
-import cd4017be.api.rs_ctr.frame.IFrame;
-import cd4017be.api.rs_ctr.frame.IFrameOperator;
 import static cd4017be.rs_ctr.ClientProxy.t_frame;
 import static cd4017be.rs_ctr.ClientProxy.t_beam;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.client.model.animation.FastTESR;
 import static java.lang.Float.floatToIntBits;
 
 /** @author cd4017be */
-public class FrameRenderer extends FastTESR<TileEntity> {
+public class FrameRenderer extends PortRenderer {
 
 	public static final FrameRenderer FRAME_RENDER = new FrameRenderer();
-
-	@Override
-	public void renderTileEntityFast(
-		TileEntity te, double x, double y, double z, float partialTicks,
-		int destroyStage, float partial, BufferBuilder buffer
-	) {
-		if(!(te instanceof IFrame)) return;
-		{
-			BlockPos p = te.getPos();
-			x -= p.getX();
-			y -= p.getY();
-			z -= p.getZ();
-		}
-		World world = te.getWorld();
-		for(BlockPos pos : ((IFrame)te).getLinks()) {
-			TileEntity te1 = world.getTileEntity(pos);
-			if(te1 instanceof IFrameOperator)
-				((IFrameOperator)te1).render(
-					x + pos.getX(), y + pos.getY(), z + pos.getZ(), buffer
-				);
-		}
-	}
 
 	@Override
 	public boolean isGlobalRenderer(TileEntity te) {

@@ -1,5 +1,5 @@
 [
 	"rs_ctr:read_b", "rs_ctr:read_s", "rs_ctr:read", "rs_ctr:feedback_b", "rs_ctr:feedback_s", "rs_ctr:feedback", "rs_ctr:return",
 	"rs_ctr:write_b", "rs_ctr:write_s", "rs_ctr:write", "rs_ctr:aget", "rs_ctr:aset", "rs_ctr:alen", "rs_ctr:in", "rs_ctr:out", 
-	"rs_ctr:array_b", "rs_ctr:array_s", "rs_ctr:array_i"
+	"rs_ctr:array_b", "rs_ctr:array_s", "rs_ctr:array_i", "rs_ctr:clock_out"
 ]

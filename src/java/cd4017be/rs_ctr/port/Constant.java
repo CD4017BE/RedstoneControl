@@ -8,6 +8,7 @@ import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
+import cd4017be.rs_ctr.item.ItemConstantPlug;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +26,7 @@ public class Constant extends Plug implements IBlockRenderComp {
 
 	public static final String ID = "const";
 	public int value;
+	public byte dsp;
 
 	@Override
 	protected String id() {
@@ -35,12 +37,14 @@ public class Constant extends Plug implements IBlockRenderComp {
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setInteger("val", value);
+		nbt.setByte("dsp", dsp);
 		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		value = nbt.getInteger("val");
+		dsp = nbt.getByte("dsp");
 	}
 
 	@Override
@@ -64,7 +68,7 @@ public class Constant extends Plug implements IBlockRenderComp {
 
 	@Override
 	public String displayInfo(MountedPort port, int linkID) {
-		return "\n" + value;
+		return "\n" + ItemConstantPlug.toString(value, dsp);
 	}
 
 	@Override

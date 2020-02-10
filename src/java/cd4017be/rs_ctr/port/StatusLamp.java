@@ -58,7 +58,7 @@ public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 
 	@Override
 	public String displayInfo(MountedPort port, int linkID) {
-		return "\n" + state;
+		return "\n" + state + "\nx" + Integer.toHexString(state);
 	}
 
 	@Override

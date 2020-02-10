@@ -1,8 +1,10 @@
-VERSION = 88;
+VERSION = 92;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
 max_wire_length = 16;
+
+max_split_links = 8; !maximum number of connections for Splitter Plugs
 
 block_select_range = 64; !maximum distance a Block Selector will scan for Frame Blocks in each direction.
 
@@ -109,11 +111,14 @@ INIT() {
 	add("shaped", 8 * it("item.wire"), "010", "dustRedstone", it("minecraft:string"));
 	add("shaped", 8 * it("item.wire_e"), "000/010/000", it("item.wire"), "ingotGold");
 	add("shaped", 8 * it("item.block_wire"), "000/010/000", it("item.wire"), it("m.telekin_alloy"));
+	add("shapeless", 4 * it("item.split_s"), it("tile.splitter"));
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
 	add("shaped", it("item.constant"), "1/0", it("item.wire"), it("minecraft:redstone_torch"));
 	add("shaped", it("item.lamp"), "1/0", it("item.wire"), "dustGlowstone");
 	add("shaped", it("item.tag"), "1/0", it("item.wire"), it("minecraft:name_tag"));
 	add("shaped", 3 * it("item.clock"), " 1 /000", it("item.wire"), it("minecraft:clock"));
+	add("shaped", it("item.edge_trigger"), " 4 / 3 /102", it("item.wire"), it("minecraft:redstone_torch"), it("minecraft:repeater"), it("minecraft:lever"), it("tile.rs_port"):0);
+	add("shaped", it("item.pulse_gen"), " 4 / 3 /102", it("item.wire"), it("minecraft:redstone_torch"), it("minecraft:repeater"), "dustRedstone", it("tile.rs_port"):0);
 	add("shaped", it("item.wrench"), "0/0/1", "nuggetIron", "plankWood");
 	add("shaped", it("item.pointer_dsp"), "0/1", it("minecraft:compass"), it("item.wire"));
 	add("shaped", it("item.seg7"), "000/121", it("item.lamp"), "gemQuartz", "dustRedstone");
@@ -192,6 +197,7 @@ POST_INIT() {
 	!variables & IO tab:
 	c:"in" = base;
 	c:"out" = base;
+	c:"clock_out" = 3*base;
 	c:"read_b" = base;
 	c:"read_s" = base;
 	c:"read" = base;

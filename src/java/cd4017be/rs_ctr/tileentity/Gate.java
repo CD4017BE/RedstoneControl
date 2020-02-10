@@ -222,6 +222,8 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	public ArrayList<ITESRenderComp> getTESRComponents() {
 		if (tesrComps == null) {
 			tesrComps = new ArrayList<>();
+			if (this instanceof ITESRenderComp)
+				tesrComps.add((ITESRenderComp)this);
 			for (IInteractiveComponent c : getComponents()) {
 				if (c instanceof ITESRenderComp)
 					tesrComps.add((ITESRenderComp) c);

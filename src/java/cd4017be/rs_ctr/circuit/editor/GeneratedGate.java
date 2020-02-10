@@ -78,7 +78,7 @@ public class GeneratedGate extends Gate implements ISpecialCfg {
 
 	@Override
 	public void setPosition(int x, int y) {
-		super.setPosition(((GeneratedType)type).placementMode.adjustX(x, 58), y);
+		super.setPosition(((GeneratedType)type).placementMode.adjustX(x, 59 - type.width), y);
 	}
 
 }

@@ -6,12 +6,14 @@ import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
+import cd4017be.lib.util.ItemFluidUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * @author CD4017BE
@@ -114,10 +116,25 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 	}
 
 	private int transfer(int am, IItemHandler fromInv, int fromSlot, IItemHandler toInv, int toSlot) {
-		if (fromInv == null || toInv == null || fromSlot < 0 || toSlot < 0 || fromSlot >= fromInv.getSlots() || toSlot >= toInv.getSlots()) return 0;
-		ItemStack stack = fromInv.extractItem(fromSlot, am, true);
-		if ((am = stack.getCount()) > 0 && (am -= toInv.insertItem(toSlot, stack, false).getCount()) > 0)
-			fromInv.extractItem(fromSlot, am, false);
+		if (fromInv == null || toInv == null || fromSlot >= fromInv.getSlots() || toSlot >= toInv.getSlots() || (fromSlot < 0 && toSlot < 0)) return 0;
+		if (fromSlot < 0) {
+			int n = am;
+			ItemStack stack = ItemFluidUtil.drain(
+				fromInv,
+				(s)-> n - toInv.insertItem(toSlot, ItemHandlerHelper.copyStackWithSize(s, n), true).getCount()
+			);
+			if ((am = stack.getCount()) > 0)
+				toInv.insertItem(toSlot, stack, false);
+		} else {
+			ItemStack stack = fromInv.extractItem(fromSlot, am, true);
+			if (
+				(am = stack.getCount()) > 0
+				&& (am -= (
+					toSlot >= 0 ? toInv.insertItem(toSlot, stack, false)
+					: ItemHandlerHelper.insertItemStacked(toInv, stack, false)
+				).getCount()) > 0
+			) fromInv.extractItem(fromSlot, am, false);
+		}
 		return am;
 	}
 
