@@ -145,6 +145,7 @@ public class CommonProxy implements IRecipeHandler {
 		BlockBreaker.BASE_ENERGY = (float)c.getNumber("energy_breaker_op", BlockBreaker.BASE_ENERGY);
 		BlockBreaker.ENERGY_MULT = (float)c.getNumber("energy_breaker_hard", BlockBreaker.ENERGY_MULT);
 		BlockBreaker.SPEED_MOD = (float)c.getNumber("energy_breaker_speed", BlockBreaker.SPEED_MOD);
+		BlockBreaker.NO_TOOL_MULT = (float)c.getNumber("energy_breaker_byhand", BlockBreaker.NO_TOOL_MULT);
 		ItemPlacer.BASE_ENERGY = (float)c.getNumber("energy_placer_op", ItemPlacer.BASE_ENERGY);
 		ItemPlacer.SPEED_MOD = (float)c.getNumber("energy_placer_speed", ItemPlacer.SPEED_MOD);
 		

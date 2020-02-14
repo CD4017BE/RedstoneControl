@@ -14,6 +14,7 @@ import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
 import cd4017be.lib.util.Utils;
+import cd4017be.rs_ctr.item.ItemBlockBreaker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -36,7 +37,7 @@ import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABI
 public class BlockBreaker extends WallMountGate
 implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 
-	public static float BASE_ENERGY = 1000, ENERGY_MULT = 4000, SPEED_MOD = 8;
+	public static float BASE_ENERGY = 1000, ENERGY_MULT = 4000, SPEED_MOD = 8, NO_TOOL_MULT = 0.5F;
 	private static final int S_SUCCESS = 0, S_UNBREAKABLE = -1, S_FULLINV = 1, S_NOENERGY = 2;
 
 	NonNullList<ItemStack> drops = NonNullList.create();
@@ -45,7 +46,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 	SignalHandler out;
 	int clk, status, idle = 1000;
 	boolean update;
-	/** harvest mode: -1 -> silk touch, n>=0 -> fortune level n */
+	/** harvest mode: -2 -> no tool, -1 -> silk touch, n>=0 -> fortune level n */
 	int fortune;
 
 	{
@@ -134,28 +135,30 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 
 	private int mineBlock(BlockReference ref) {
 		IBlockState state = ref.getState();
-		if(state.getMaterial() == Material.AIR)
+		Material m = state.getMaterial();
+		if(m == Material.AIR || m == Material.WATER || m == Material.LAVA)
 			return S_UNBREAKABLE;
 		float h = state.getBlockHardness(world, pos);
 		if(h < 0)
 			return S_UNBREAKABLE;
-		int e = energyCost(h);
+		int e = energyCost(h, m.isToolNotRequired());
 		if(energy.changeEnergy(e, true) != e)
 			return S_NOENERGY;
 		World world = ref.world();
 		Block block = state.getBlock();
-		if(fortune >= 0)
-			block.getDrops(drops, world, ref.pos, state, fortune);
-		else if(block.canSilkHarvest(world, ref.pos, state, null))
+		if(fortune >= 0 || (fortune == -1 ? !block.canSilkHarvest(world, ref.pos, state, null) : m.isToolNotRequired()))
+			block.getDrops(drops, world, ref.pos, state, Math.max(0, fortune));
+		else if (fortune == -1)
 			drops.add(getSilkTouchDrop(state));
 		world.setBlockToAir(ref.pos);
 		energy.changeEnergy(e, false);
 		return drops.isEmpty() ? S_SUCCESS : clearDrops();
 	}
 
-	private int energyCost(float h) {
+	private int energyCost(float h, boolean byHand) {
 		h = h * ENERGY_MULT + BASE_ENERGY;
 		h += h * SPEED_MOD / idle; // increased energy cost at high speed
+		if (byHand) h *= NO_TOOL_MULT;
 		return -(int)h;
 	}
 
@@ -199,18 +202,20 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 
 	@Override
 	public void onPlaced(EntityLivingBase entity, ItemStack item) {
-		Integer f;
-		Map<Enchantment, Integer> ench = EnchantmentHelper.getEnchantments(item);
-		if ((f = ench.get(Enchantments.FORTUNE)) != null) fortune = f;
-		else if ((f = ench.get(Enchantments.SILK_TOUCH)) != null) fortune = -1;
-		else fortune = 0;
+		if (item.getItem() instanceof ItemBlockBreaker) {
+			Integer f;
+			Map<Enchantment, Integer> ench = EnchantmentHelper.getEnchantments(item);
+			if ((f = ench.get(Enchantments.FORTUNE)) != null) fortune = f;
+			else if ((f = ench.get(Enchantments.SILK_TOUCH)) != null) fortune = -1;
+			else fortune = 0;
+		} else fortune = -2;
 	}
 
 	@Override
 	public List<ItemStack> dropItem(IBlockState state, int f) {
 		getBlockState();
 		ItemStack stack = new ItemStack(blockType);
-		if (fortune < 0)
+		if (fortune == -1)
 			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.SILK_TOUCH, 1), stack);
 		else if (fortune > 0)
 			EnchantmentHelper.setEnchantments(Collections.singletonMap(Enchantments.FORTUNE, fortune), stack);
