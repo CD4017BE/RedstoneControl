@@ -134,6 +134,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(wire);
 		registerRender(wire_e);
 		registerRender(split_s);
+		registerRender(split_b);
 		registerRender(wireless);
 		registerRender(constant);
 		registerRender(lamp);

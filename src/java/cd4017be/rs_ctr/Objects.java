@@ -21,6 +21,7 @@ import cd4017be.lib.templates.TabMaterials;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.block.*;
 import cd4017be.rs_ctr.item.*;
+import cd4017be.rs_ctr.port.BlockSplitPlug;
 import cd4017be.rs_ctr.port.SignalSplitPlug;
 import cd4017be.rs_ctr.port.WireType;
 import cd4017be.rs_ctr.tileentity.*;
@@ -108,6 +109,7 @@ public class Objects {
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
 	public static final ItemSplitCon split_s = null;
+	public static final ItemSplitCon split_b = null;
 	public static final ItemWirelessCon wireless = null;
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
@@ -217,6 +219,7 @@ public class Objects {
 				WireType.ENERGY.wireItem = new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				WireType.BLOCK.wireItem = new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),
 				new ItemSplitCon("split_s", WireType.SIGNAL, SignalSplitPlug::new).setCreativeTab(tabCircuits),
+				new ItemSplitCon("split_b", WireType.BLOCK, BlockSplitPlug::new).setCreativeTab(tabCircuits),
 				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
