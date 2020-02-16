@@ -56,8 +56,10 @@ tile.rs_ctr.frame.name=3维方块框架
 tile.rs_ctr.frame.tip=用于标记设备的工作范围：\n首先将框架以想要的距离放置在设备附近的轴线上。\n然后将框架放在区域的8个角上并让设备扫描。这些角落的方块必须留在那里，否则区域会无效。
 tile.rs_ctr.block_selector.name=3维方块选择器
 tile.rs_ctr.block_selector.tip=使用在§63维方块框架§7定义的区域中的§eX，Y，Z座标§7创建其对应方块的§6方块引用§7。\n3个座标对应的输入范围是§e0～长度-1§7。
-tile.rs_ctr.block_breaker.name=可控物品破坏器
+tile.rs_ctr.block_breaker.name=可控方块挖掘器
 tile.rs_ctr.block_breaker.tip=破坏方块并将任何收获的物品放入相邻方块的物品栏中。\n§eBlock IN：§7要破坏的方块。\n§eClock IN：§7该值改变时会触发操作。\n§eStatus OUT：§7上次操作的结果：\n§e-1§7 \=什么都没做（不可破坏/空气），§e0§7 \=成功，§e1§7 \=不能处理（物品栏满），§e2§7 \=能量不足。\n§eEnergy IN\:§7提供操作所需的能量。\n§b§o另请参阅：§6§o方块引用 ...§b，§6§o方块访问接口§b，§63维方块线择器
+tile.rs_ctr.block_breaker1.name=可控方块破坏器
+tile.rs_ctr.block_breaker1.tip=§6可控方块挖掘器§7的廉价版本，不能被附魔，破坏需要用工具挖掘的方块（石头、矿物等）时也§c不会有任何掉落§7。
 tile.rs_ctr.item_placer.name=可控物品使用器
 tile.rs_ctr.item_placer.tip=模拟玩家右击的行为。\n右击方块打开假玩家的物品栏。\n§eBlock IN：§7需要互动的方块所在地。\n§eConfiguration IN\:§7 {§a上瞄（U）§7，§c右瞄（R）§7，§f对空气使用（A）§7，§1无现存方块（B）§7，§3潜行（S）§7, §2仰俯角（P）§7，§4舵角（Y）§7, §6装备栏（E）§7} 二进制串格式：§70b§800000000§7_§aUUUU§cRRRR§7_§80§2§fA§1B§3S§2PP§4YY§7_§800§6EEEEE\n§eClock IN：§7该值改变时会触发操作。\n§eStatus OUT：§7上次操作的结果：§e-1§7 \=什么都没做，§e0§7 \=成功，§e1§7 \=失败，§e2§7 \=能量不足。\n§eEnergy IN\:§7供应操作所需能量。\n§b§o另请参阅：§6§o方块引用 ...§b，§6§o方块访问接口§b，§63维方块选择器
 tile.rs_ctr.delay.name=信号延迟线
@@ -147,7 +149,9 @@ item.rs_ctr.offset.tip=一个能对信号进行可调偏移的§6控制面板§7
 item.rs_ctr.oscilloscope.name=示波屏
 item.rs_ctr.oscilloscope.tip=将3个频道的信号的值以每个100次采样（屏幕上从左到右）显示在§6控制面板上§7。\n输入信号的二进制格式为0x§3TT§1CC§2BB§4AA§7（4x8bit），§4A§7，§2B§7，§1C§7是在§e0...100§7内（屏幕的底部到顶部）的三个频道，§3T§7是推进采样并移动的时钟信号。\n输出信号可连入另一个示波屏以实现屏幕连接。\n§e宽：§7 4  §e高：§7 4\n§e放置：§7中央\n§b§o另请参阅：§6§o二进制信号打包器§b，§6§o信号缩放器§b，§6§o信号偏移器
 item.rs_ctr.split_s.name=信号分离塞
-item.rs_ctr.split_s.tip=贴到信号输出端口将允许多条线连接到该端口（最多§e\\<max_split_links>§7条）。\n\n§o每个通道需要一个分离塞。连接线缆时，如有必要，额外的分离塞会自动从你的物品栏中取出。
+item.rs_ctr.split_s.tip=贴到信号输出端口将允许多条线连接到该端口（最多§e\\<max_split_links>§7条）。\n\n§o分离出的每个通道需要一个分离塞。连接线缆时，如有必要，额外的分离塞会自动从你的物品栏中取出。
+item.rs_ctr.split_b.name=方块引用分离塞
+item.rs_ctr.split_b.tip=贴到方块引用输出端口将允许多条线连接到该端口（最多§e\\<max_split_links>§7条）。\n\n§o分离出的每个通道需要一个分离塞。连接线缆时，如有必要，额外的分离塞会自动从你的物品栏中取出。
 item.rs_ctr.edge_trigger\:0.name=切换锁存器塞：§e ⍏ ⟹ ⇵
 item.rs_ctr.edge_trigger\:1.name=切换锁存器塞：§e ⍖ ⟹ ⇵
 item.rs_ctr.edge_trigger\:i.tip=每当贴着的端口中输出信号有上升沿/下降沿（在§e0§7附近）就会将输出到相连信号线中的信号在§e0§7和§e65536§7间切换。\n\n对空气右击可切换模式。\n\n§o用于将常见的§3§o上升/下降沿§7§o时钟信号转为机器需要的§3§o改变时触发§7§o时钟信号。
