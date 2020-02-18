@@ -103,7 +103,7 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(1).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), true, PORT_RENDER, BlockMimicModel.provider));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, COUNTER, DELAY, SPLITTER_B, MULTIPLEX_B, DELAY_B, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL, BLOCK_SELECTOR, BLOCK_BREAKER, ITEM_PLACER, OC_ADAPTER, RAM);
+		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, COUNTER, DELAY, SPLITTER_B, MULTIPLEX_B, DELAY_B, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL, BLOCK_SELECTOR, BLOCK_BREAKER, BLOCK_BREAKER1, ITEM_PLACER, OC_ADAPTER, RAM);
 		
 		WIRE_ANCHOR.setBlockLayer(null);
 		
@@ -134,6 +134,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(wire);
 		registerRender(wire_e);
 		registerRender(split_s);
+		registerRender(split_b);
 		registerRender(wireless);
 		registerRender(constant);
 		registerRender(lamp);

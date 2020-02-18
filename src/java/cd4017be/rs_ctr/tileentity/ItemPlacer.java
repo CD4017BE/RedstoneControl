@@ -176,12 +176,16 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 			return S_FAIL;
 		RayTraceResult res = setupInteraction(player, ref, aim);
 		EnumActionResult ar = null;
+		boolean useItem = false;
 		if ((aim & 0x8000) != 0) {
 			ItemStack stack = player.getHeldItemMainhand();
 			if (stack.isEmpty()) ar = EnumActionResult.PASS;
-			else ar = player.interactionManager.processRightClick(
-				player, player.world, stack, EnumHand.MAIN_HAND
-			);
+			else {
+				ar = player.interactionManager.processRightClick(
+					player, player.world, stack, EnumHand.MAIN_HAND
+				);
+				useItem = true;
+			}
 		} else {
 			BlockPos pos = res.getBlockPos();
 			float X = (float)res.hitVec.x - pos.getX();
@@ -190,6 +194,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 			for (EnumHand hand : EnumHand.values()) {
 				ItemStack stack = player.getHeldItem(hand);
 				if (ar != null && stack.isEmpty()) break;
+				useItem |= !stack.isEmpty();
 				ar = player.interactionManager.processRightClickBlock(
 					player, player.world, stack,
 					hand, pos, res.sideHit, X, Y, Z
@@ -197,7 +202,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 				if (ar != EnumActionResult.PASS) break;
 			}
 		}
-		energy.changeEnergy(e, false);
+		energy.changeEnergy(useItem ? e : -(int)BASE_ENERGY, false);
 		return ar == EnumActionResult.SUCCESS ? S_SUCCESS :
 			ar == EnumActionResult.FAIL ? S_FAIL : S_PASS;
 	}
@@ -283,7 +288,7 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 	private static RayTraceResult setupInteraction(FakePlayer player, BlockReference block, int aim) {
 		player.setSneaking((aim & 0x1000) != 0);
 		player.capabilities.isCreativeMode = (aim & 0x80) != 0;
-		boolean air = (aim & 0x8000) != 0;
+		boolean air = (aim & 0x8000) != 0, noBlock = (aim & 0x4000) != 0;
 		//create aim vector
 		Vec3d vec = new Vec3d(
 			.46875 - (aim >> 16 & 15) * .0625,
@@ -312,14 +317,18 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 		player.prevRotationYawHead = player.rotationYawHead = player.rotationYaw;
 		//ray trace
 		Vec3d dir = vec.addVector(
-			o.back.getFrontOffsetX() * 2.5,
-			o.back.getFrontOffsetY() * 2.5,
-			o.back.getFrontOffsetZ() * 2.5
+			o.back.getFrontOffsetX() * 3.5,
+			o.back.getFrontOffsetY() * 3.5,
+			o.back.getFrontOffsetZ() * 3.5
 		);
 		if (air) return null;
-		RayTraceResult res = block.getState().collisionRayTrace(
-			player.world, pos, vec, dir
-		);
+		RayTraceResult res = null;
+		if (noBlock) {
+			BlockPos pos1 = pos.offset(o.back);
+			IBlockState state = player.world.getBlockState(pos1);
+			if (!state.getBlock().isReplaceable(player.world, pos1))
+				res = state.collisionRayTrace(player.world, pos1, vec, dir);
+		} else res = block.getState().collisionRayTrace(player.world, pos, vec, dir);
 		if (res != null) return res;
 		return new RayTraceResult(dir, o.front, pos);
 	}

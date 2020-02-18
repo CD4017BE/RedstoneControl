@@ -78,8 +78,7 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 		}
 		if (creative) d = 0;
 		BlockPos lpos = new BlockPos(lx, ly, lz);
-		int lp = nbt.getInteger("lp");
-		Port p = IPortProvider.getPort(player.world, lpos, lp);
+		Port p = IPortProvider.getPort(player.world, lpos, nbt.getInteger("lp"));
 		if (!(p instanceof MountedPort)) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire3")));
 			stack.setTagCompound(null);
@@ -105,7 +104,7 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 				player.sendMessage(new TextComponentTranslation("msg.rs_ctr.split1"));
 			}
 		} else {
-			port.setConnector(new WireConnection(lpos, lp, path, 0, type), player);
+			port.setConnector(new WireConnection(lpos, lport.pin, path, 0, type), player);
 			if (lport instanceof RelayPort) lport.connect(port);
 			else port.connect(lport);
 		}

@@ -41,7 +41,8 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 
 	SignalHandler out;
 	int[] graph = new int[100];
-	int value, idx;
+	int value, idx, lastSend;
+	boolean paused;
 
 	@Override
 	public void init(List<MountedPort> ports, int idx, IPanel panel) {
@@ -53,7 +54,7 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 
 	@Override
 	public void updateSignal(int value) {
-		if(((value ^ this.value) & 0xff000000) == 0) return;
+		if(paused || ((value ^ this.value) & 0xff000000) == 0) return;
 		if (out != null)
 			out.updateSignal(graph[idx]);
 		if ((value & 0xff) > 100) value = value & 0xffffff00 | 100;
@@ -70,6 +71,7 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 		nbt.setInteger("val", value);
 		nbt.setByte("idx", (byte)idx);
 		nbt.setIntArray("graph", graph);
+		nbt.setBoolean("pause", paused);
 		return nbt;
 	}
 
@@ -77,8 +79,10 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 	public void deserializeNBT(NBTTagCompound nbt) {
 		value = nbt.getInteger("val");
 		idx = (nbt.getByte("idx") & 0xff) % 100;
+		lastSend = idx;
 		int[] arr = nbt.getIntArray("graph");
 		System.arraycopy(arr, 0, graph, 0, Math.min(arr.length, 100));
+		paused = nbt.getBoolean("pause");
 		loadCfg(nbt);
 	}
 
@@ -111,19 +115,33 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 			for (int i = 0; i < 100; i++)
 				buf.writeInt(graph[i]);
 		} else {
+			buf.writeByte(lastSend);
 			buf.writeByte(idx);
-			buf.writeInt(value);
+			while(lastSend != idx) {
+				buf.writeInt(graph[lastSend]);
+				if (++lastSend >= 100) lastSend -= 100;
+			}
 		}
+		buf.writeBoolean(paused);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void readSync(PacketBuffer buf) {
-		if ((idx = buf.readByte()) < 0) {
-			idx = -1 - idx;
+		int idx = buf.readByte();
+		if (idx < 0) {
+			this.idx = (-1 - idx) % 100;
 			for (int i = 0; i < 100; i++)
 				graph[i] = buf.readInt();
-		} else graph[idx % 100] = buf.readInt();
+		} else {
+			int m = idx % 100;
+			this.idx = idx = (buf.readByte() & 0xff) % 100;
+			while(m != idx) {
+				graph[m] = buf.readInt();
+				if (++m >= 100) m -= 100;
+			}
+		}
+		paused = buf.readBoolean();
 	}
 
 	@Override
@@ -144,6 +162,9 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 	@SideOnly(Side.CLIENT)
 	public void drawText(FontRenderer fr) {
 		pushMatrix();
+		translate(.64, 128, -.01);
+		fr.drawString(paused ? "\u2223\u2223" : "\u25b6", 0, -128, 0xffffffff);
+		scale(1.28, -1.28, 1);
 		enableBlend();
 		blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE);
 		depthMask(false);
@@ -151,16 +172,14 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 		disableTexture2D();
 		setActiveTexture(OpenGlHelper.lightmapTexUnit);
 		disableTexture2D();
-		scale(1.28, -1.28, 1);
-		translate(.5, -100, -.01);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(2, GL_BYTE, 2, vertexArray);
 		for (int i = 0; i < 24; i+=8) {
 			color(i == 0 ? 1 : 0, i == 8 ? 1 : 0, i == 16 ? 1 : 0, 1);
-			int k = 1;
-			for (int j = idx + 1; j < 100; j++, k+=2)
+			int k = 1, idx = this.idx + 1;
+			for (int j = idx; j < 100; j++, k+=2)
 				vertexArray.put(k, (byte)(graph[j] >> i));
-			for (int j = 0; j <= idx; j++, k+=2)
+			for (int j = 0; j < idx; j++, k+=2)
 				vertexArray.put(k, (byte)(graph[j] >> i));
 			glDrawArrays(GL11.GL_LINE_STRIP, 0, 100);
 		}
@@ -171,6 +190,15 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 		enableTexture2D();
 		popMatrix();
 		blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+	}
+
+	@Override
+	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
+		if (super.onInteract(player, hit, side, aim)) return true;
+		if (hit) return false;
+		paused = !paused;
+		host.updateDisplay();
+		return true;
 	}
 
 	@Override
