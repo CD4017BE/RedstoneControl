@@ -2,6 +2,7 @@ package cd4017be.rs_ctr;
 
 import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
+import cd4017be.api.rs_ctr.com.BlockReference;
 import cd4017be.api.rs_ctr.port.IConnector;
 import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
@@ -129,6 +130,7 @@ public class CommonProxy implements IRecipeHandler {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
 		SplitPlug.MAX_LINK_COUNT = (int)c.getNumber("max_split_links", SplitPlug.MAX_LINK_COUNT);
+		BlockReference.INIT_LIFESPAN = (int)c.getNumber("blockref_livespan", BlockReference.INIT_LIFESPAN);
 		double d;
 		d = c.getNumber("panel_sync_dst_min", Math.sqrt(Panel.UPDATE_RANGE0)); Panel.UPDATE_RANGE0 = d * d;
 		d = c.getNumber("panel_sync_dst_max", Math.sqrt(Panel.UPDATE_RANGE1)); Panel.UPDATE_RANGE1 = d * d;
