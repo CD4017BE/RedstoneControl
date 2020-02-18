@@ -62,19 +62,20 @@ public class GuiRAM extends ModularGui {
 			try {
 				fmtW = Integer.parseInt(t);
 				if (fmtW <= 0) fmtW = 1;
-				else if (fmtW > 1024) fmtW = 1024;
+				else if (fmtW > 4096) fmtW = 4096;
+				fmtH = Math.max(1, Math.min(4096, (tile.addrMask + 1) / fmtW));
 			} catch(NumberFormatException e) {}
 		}).tooltip("gui.rs_ctr.fmt_w");
 		new TextField(frame, 48, 7, 104, 129, 8, ()-> Integer.toString(fmtH), (t)-> {
 			try {
 				fmtH = Integer.parseInt(t);
 				if (fmtH <= 0) fmtH = 1;
-				else if (fmtH > 1024) fmtH = 1024;
+				else if (fmtH > 4096) fmtH = 4096;
 			} catch(NumberFormatException e) {}
 		}).tooltip("gui.rs_ctr.fmt_h");
 		compGroup = frame;
 		fmtW = 16;
-		fmtH = tile.memSize() >> 4;
+		fmtH = tile.addrMask + 1 >> 4;
 	}
 
 	public void processDownload(byte[] mem) {
