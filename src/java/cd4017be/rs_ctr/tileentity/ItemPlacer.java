@@ -12,6 +12,7 @@ import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.HidableSlot;
 import cd4017be.lib.Gui.SlotArmor;
 import cd4017be.lib.Gui.SlotOffhand;
+import cd4017be.lib.Gui.AdvancedContainer.IQuickTransferHandler;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.capability.LinkedInventory;
@@ -54,7 +55,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 public class ItemPlacer extends WallMountGate
-implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, IGuiHandlerTile, IStateInteractionHandler {
+implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, IGuiHandlerTile, IStateInteractionHandler, IQuickTransferHandler {
 
 	public static float BASE_ENERGY = 500, SPEED_MOD = 8;
 	private static final int S_SUCCESS = 0, S_PASS = -1, S_FAIL = 1, S_NOENERGY = 2;
@@ -333,25 +334,30 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 		return new RayTraceResult(dir, o.front, pos);
 	}
 
-	private static final StateSynchronizer.Builder ssb
-	= StateSynchronizer.builder().addFix(4);
+	private static final StateSynchronizer.Builder ssb = StateSynchronizer.builder().addFix(4);
 
 	@Override
 	public AdvancedContainer getContainer(EntityPlayer player, int id) {
 		AdvancedContainer cont = new AdvancedContainer(this, ssb.build(world.isRemote), player);
 		int x = 26, y = 26;
+		for (int i = 0; i < 9; i++)
+			cont.addItemSlot(new HidableSlot(inv, i, x + i * 18, y + 58), false);
 		for (int i = 0; i < 3; i++) 
 			for (int j = 0; j < 9; j++)
 				cont.addItemSlot(new HidableSlot(inv, i * 9 + j + 9, x + j * 18, y + i * 18), false);
-		for (int i = 0; i < 9; i++)
-			cont.addItemSlot(new HidableSlot(inv, i, x + i * 18, y + 58), false);
-		cont.addItemSlot(new SlotOffhand(inv, 40, x - 18, y + 58), false);
 		for (int i = 0; i < 4; i++)
 			cont.addItemSlot(new SlotArmor(inv, i + 36, x - 18, y - i * 18 + 36, EntityEquipmentSlot.values()[i + 2]), false);
+		cont.addItemSlot(new SlotOffhand(inv, 40, x - 18, y + 58), false);
 		cont.addPlayerInventory(26, 124, true, false);
+		cont.transferHandlers.add(this);
 		return cont;
 	}
 
+	@Override
+	public boolean transfer(ItemStack stack, AdvancedContainer cont) {
+		return cont.mergeItemStack(stack, 36, 40, false)
+			|| cont.mergeItemStack(stack, 0, 36, false);
+	}
 
 	@Override
 	public void writeState(StateSyncServer state, AdvancedContainer cont) {

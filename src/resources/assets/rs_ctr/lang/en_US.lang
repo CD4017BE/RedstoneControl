@@ -259,7 +259,6 @@ port.rs_ctr.slot0=source Slot IN
 port.rs_ctr.slot1=destin. Slot IN
 port.rs_ctr.am_i=Amount IN
 port.rs_ctr.am_o=Amount OUT
-port.rs_ctr.cfg=Configuration
 port.rs_ctr.tank0=source Tank IN
 port.rs_ctr.tank1=destin. Tank IN
 port.rs_ctr.rf_i=RF Limit IN

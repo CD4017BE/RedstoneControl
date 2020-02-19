@@ -254,7 +254,8 @@ public class Assembler extends BaseTileEntity implements IComparatorSource, ITic
 					}
 					step = 0;
 				}
-				world.updateComparatorOutputLevel(pos, blockType);
+				if (!(unloaded || world.isRemote))
+					world.updateComparatorOutputLevel(pos, blockType);
 			}
 		}
 

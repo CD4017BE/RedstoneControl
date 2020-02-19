@@ -8,6 +8,8 @@ max_split_links = 8; !maximum number of connections for Splitter Plugs
 
 block_select_range = 64; !maximum distance a Block Selector will scan for Frame Blocks in each direction.
 
+blockref_livespan = 16; !how long a Block Reference stays valid after creation. This is to prevent long term storage of Block Reference Signals using delay loop contraptions. 
+
 panel_text_render_dst = 12.0; !Distance from Control Panel in which text labels are rendered. [Client side]
 panel_sync_dst_min = 16.0; !Distance from Control Panel below which it starts sending state updates to client. [Client side]
 panel_sync_dst_max = 18.0; !Distance from Control Panel above which it stops sending state updates to client, must be greater than dst_min. [Server side]
