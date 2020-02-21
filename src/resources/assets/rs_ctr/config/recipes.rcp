@@ -1,4 +1,4 @@
-VERSION = 95;
+VERSION = 96;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -118,6 +118,7 @@ INIT() {
 	add("shapeless", 4 * it("item.split_s"), it("tile.splitter"));
 	add("shapeless", 4 * it("item.split_b"), it("tile.splitter_b"));
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
+	add("shaped", it("item.wireless_b"), " 1 /020/ 1 ", it("item.wireless"), it("m.telekin_alloy"), it("minecraft:nether_star"));
 	add("shaped", it("item.constant"), "1/0", it("item.wire"), it("minecraft:redstone_torch"));
 	add("shaped", it("item.lamp"), "1/0", it("item.wire"), "dustGlowstone");
 	add("shaped", it("item.tag"), "1/0", it("item.wire"), it("minecraft:name_tag"));

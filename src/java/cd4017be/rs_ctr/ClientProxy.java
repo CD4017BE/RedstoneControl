@@ -5,6 +5,7 @@ import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.port.WireType;
 import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
 import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
@@ -111,7 +112,8 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_buttons.logic(0)", "_buttons.logic(1)", "_buttons.logic(2)", "_buttons.logic(3)");
 		PORT_RENDER.register("_buttons.bin(0)", "_buttons.bin(1)", "_buttons.bin(2)", "_buttons.bin(3)");
 		PORT_RENDER.register("_buttons.energy(0)", "_buttons.energy(1)");
-		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)", "_plug.main(7)", "_plug.main(8)");
+		for (WireType t : WireType.values()) PORT_RENDER.register(t.wireModel(), t.wirelessModel());
+		PORT_RENDER.register("_plug.misc(0)", "_plug.misc(1)", "_plug.misc(2)", "_plug.misc(3)", "_plug.misc(4)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
 		PORT_RENDER.register("_lever.on", "_lever.off", "_lever.btn");
@@ -136,6 +138,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(split_s);
 		registerRender(split_b);
 		registerRender(wireless);
+		registerRender(wireless_b);
 		registerRender(constant);
 		registerRender(lamp);
 		registerRender(tag);

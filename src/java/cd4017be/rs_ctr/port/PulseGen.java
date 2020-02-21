@@ -135,7 +135,7 @@ public class PulseGen extends WireBranch implements IIntegratedConnector, Signal
 		super.render(quads);
 		PortRenderer.PORT_RENDER.drawModel(
 			quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z,
-			Orientation.fromFacing(port.face), "_plug.main(8)"
+			Orientation.fromFacing(port.face), "_plug.misc(4)"
 		);
 	}
 

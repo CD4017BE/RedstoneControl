@@ -110,7 +110,7 @@ public class Objects {
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
 	public static final ItemSplitCon split_s = null;
 	public static final ItemSplitCon split_b = null;
-	public static final ItemWirelessCon wireless = null;
+	public static final ItemWirelessCon wireless = null, wireless_b = null;
 	public static final ItemConstantPlug constant = null;
 	public static final ItemStatusLamp lamp = null;
 	public static final ItemWireTag tag = null;
@@ -220,7 +220,8 @@ public class Objects {
 				WireType.BLOCK.wireItem = new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),
 				new ItemSplitCon("split_s", WireType.SIGNAL, SignalSplitPlug::new).setCreativeTab(tabCircuits),
 				new ItemSplitCon("split_b", WireType.BLOCK, BlockSplitPlug::new).setCreativeTab(tabCircuits),
-				new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
+				WireType.SIGNAL.wirelessItem = new ItemWirelessCon("wireless", WireType.SIGNAL).setCreativeTab(tabCircuits),
+				WireType.BLOCK.wirelessItem = new ItemWirelessCon("wireless_b", WireType.BLOCK).setCreativeTab(tabCircuits),
 				new ItemConstantPlug("constant").setCreativeTab(tabCircuits),
 				new ItemStatusLamp("lamp").setCreativeTab(tabCircuits),
 				new ItemWireTag("tag").setCreativeTab(tabCircuits),

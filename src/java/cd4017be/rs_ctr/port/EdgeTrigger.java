@@ -91,7 +91,7 @@ public class EdgeTrigger extends WireBranch implements IIntegratedConnector, Sig
 	@Override
 	public void render(List<BakedQuad> quads) {
 		super.render(quads);
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(8)");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.misc(4)");
 	}
 
 }
