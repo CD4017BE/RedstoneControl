@@ -49,6 +49,7 @@ import cd4017be.rs_ctr.sensor.ItemSensor;
 import cd4017be.rs_ctr.sensor.LightSensor;
 import cd4017be.rs_ctr.tileentity.BlockBreaker;
 import cd4017be.rs_ctr.tileentity.BlockSelector;
+import cd4017be.rs_ctr.tileentity.ChunkLoader;
 import cd4017be.rs_ctr.tileentity.FluidTranslocator;
 import cd4017be.rs_ctr.tileentity.ItemPlacer;
 import cd4017be.rs_ctr.tileentity.ItemTranslocator;
@@ -126,6 +127,7 @@ public class CommonProxy implements IRecipeHandler {
 		RecipeAPI.Handlers.put(BATTERY, this);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void init(ConfigConstants c) {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
 		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
@@ -150,6 +152,9 @@ public class CommonProxy implements IRecipeHandler {
 		BlockBreaker.NO_TOOL_MULT = (float)c.getNumber("energy_breaker_byhand", BlockBreaker.NO_TOOL_MULT);
 		ItemPlacer.BASE_ENERGY = (float)c.getNumber("energy_placer_op", ItemPlacer.BASE_ENERGY);
 		ItemPlacer.SPEED_MOD = (float)c.getNumber("energy_placer_speed", ItemPlacer.SPEED_MOD);
+		ChunkLoader.RANGE = (int)c.getNumber("chunk_loader_range", ChunkLoader.RANGE);
+		ChunkLoader.MAX_MINUTES = (int)(c.getNumber("chunkload_time_cap", ChunkLoader.MAX_MINUTES / 60D) * 60D);
+		Objects.cl_fuel.setMaxDamage((int)(c.getNumber("chunkload_item_time", Objects.cl_fuel.getMaxDamage() / 60D) * 60D));
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));

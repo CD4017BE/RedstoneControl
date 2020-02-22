@@ -72,6 +72,7 @@ public class Objects {
 	public static final BlockGate BLOCK_SELECTOR = null;
 	public static final BlockGate OC_ADAPTER = null;
 	public static final BlockGate RAM = null;
+	public static final BlockGate CHUNK_LOADER = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -105,6 +106,7 @@ public class Objects {
 	public static final BaseItemBlock block_selector = null;
 	public static final BaseItemBlock oc_adapter = null;
 	public static final BaseItemBlock ram = null;
+	public static final BaseItemBlock chunk_loader = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
@@ -128,6 +130,7 @@ public class Objects {
 	public static final ItemPanelModule offset = null;
 	public static final ItemPanelModule oscilloscope = null;
 	public static final ItemWrench wrench = null;
+	public static final ItemChunkLoaderFuel cl_fuel = null;
 
 	//Sounds
 	public static final BaseSound LEVER_FLIP = null;
@@ -175,7 +178,8 @@ public class Objects {
 				new AdvancedBlock("frame", Material.ROCK, SoundType.STONE, 0, BlockFrame.class).setHardness(2.5F).setCreativeTab(tabCircuits),
 				new BlockGate("block_selector", Material.CIRCUITS, SoundType.STONE, 0, BlockSelector.class, HOR_AXIS).setCreativeTab(tabCircuits),
 				new BlockGate("oc_adapter", Material.CIRCUITS, SoundType.STONE, 3, OC_Adapter.class, HOR_AXIS).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.75)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("ram", Material.CIRCUITS, SoundType.STONE, 3, RAM.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("ram", Material.CIRCUITS, SoundType.STONE, 3, RAM.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("chunk_loader", Material.CIRCUITS, SoundType.STONE, 0, ChunkLoader.class, HOR_AXIS).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -215,6 +219,7 @@ public class Objects {
 				new BaseItemBlock(BLOCK_SELECTOR),
 				new BaseItemBlock(OC_ADAPTER),
 				new ItemRAM(RAM),
+				new BaseItemBlock(CHUNK_LOADER),
 				WireType.SIGNAL.wireItem = new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				WireType.ENERGY.wireItem = new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				WireType.BLOCK.wireItem = new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),
@@ -237,7 +242,8 @@ public class Objects {
 				new ItemPanelModule("scale", "scale").setCreativeTab(tabCircuits),
 				new ItemPanelModule("offset", "offset").setCreativeTab(tabCircuits),
 				new ItemPanelModule("oscilloscope", "oscilloscope").setCreativeTab(tabCircuits),
-				new ItemWrench("wrench").setCreativeTab(tabCircuits)
+				new ItemWrench("wrench").setCreativeTab(tabCircuits),
+				new ItemChunkLoaderFuel("cl_fuel").setCreativeTab(tabCircuits)
 		);
 	}
 
