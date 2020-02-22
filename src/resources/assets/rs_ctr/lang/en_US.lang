@@ -102,7 +102,7 @@ tile.rs_ctr.ram.name=external RAM chip [%sbit]
 tile.rs_ctr.ram.tip=Directly addressable memory that supports simultaneous read and write access. Offers vastly more storage capacity than typically fits into a §6Processor§7.\nInteract with block to view/edit contents. Data remains when broken.
 tile.rs_ctr.ram.tipA=timing read\: §ainstant §e[Read Address]\ntiming write\: §anext sync. world tick
 tile.rs_ctr.chunk_loader.name=Chunk Loader
-tile.rs_ctr.chunk_loader.tip=Keeps a region which is defined by §63D Block Frame§7s chunk loaded.\n§eActive IN§7\: operation mode\: 0 \= off, 1 \= single chunk, 2 \= region\n§erem. Time OUT§7\: minutes of remaining runtime which is refilled using §6Time Essence§7.\n§oRuntime is consumed at twice the normal rate if more than one chunk is loaded.\n\n§8§nGeneral note\:§8 be carefull with pipes and machinery crossing the boundaries of a chunk loaded area! If these attept to interact with neighboring unloaded blocks, those chunks may be hot-loaded to fullfill the request. But since no player or chunk loader is keeping them loaded, one tick later they will unload again which leads into a repeating cycle. So to avoid lag it's actually better to keep those chunks permanently loaded as well.\n§8§oDevices in this mod are save, they only hot-load chunks when absolutely necessary!
+tile.rs_ctr.chunk_loader.tip=Keeps a region which is defined by §63D Block Frame§7s chunk loaded.\n§eActive IN§7\: operation mode\: 0 \= off, 1 \= single chunk, 2 \= region\n§erem. Time OUT§7\: minutes of remaining §6Runtime§7 which must be refilled regulary.\n§oRuntime is consumed at twice the normal rate if more than one chunk is loaded.\n\n§8§nGeneral note\:§8 be carefull with pipes and machinery crossing the boundaries of a chunk loaded area! If these attept to interact with neighboring unloaded blocks, those chunks may be hot-loaded to fullfill the request. But since no player or chunk loader is keeping them loaded, one tick later they will unload again which leads into a repeating cycle. So to avoid lag it's actually better to keep those chunks permanently loaded as well.\n§8§oDevices in this mod are save, they only hot-load chunks when absolutely necessary!
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -201,7 +201,7 @@ item.rs_ctr.edge_trigger\:i.tipA=timing\: §ainstant\nmax connections\: §a1
 item.rs_ctr.pulse_gen.name=Pulse Generator Plug
 item.rs_ctr.pulse_gen.tip=Sends a value of §e65535§7 into a connected wire if the output signal of the port this is attached on had changed during the previous tick, otherwise it emits §e0§7.
 item.rs_ctr.pulse_gen.tipA=timing\: §anext sync. post-tick\nmax connections\: §a1
-item.rs_ctr.cl_fuel.name=Time Essence [§a%d\:%02d h§r]
+item.rs_ctr.cl_fuel.name=Runtime [§a%d\:%02d h§r]
 item.rs_ctr.cl_fuel.tip=§aUse§7 on §6Chunk Loader§7 to refill its runtime.\n§oItem will be consumed!\n§aHit§7 a §6Chunk Loader§7 to retrieve it's stored time back.
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Telekinetic Actuator
