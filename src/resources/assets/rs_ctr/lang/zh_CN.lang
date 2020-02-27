@@ -11,7 +11,7 @@ tile.rs_ctr.rs_port\:1.tipA=时机：§a即时 §e[Write]
 tile.rs_ctr.rs_port\:2.name=方块访问接口
 tile.rs_ctr.rs_port\:2.tip=贴在方块表面可使连接本接口的设备与方块互动。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
 tile.rs_ctr.rs_port\:3.name=方块镜像接口
-tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可通过这个接口访问方块§9物品栏§7和§9流体存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可使方块通过这个接口访问传入方块§9物品栏§7和§9流体存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
 tile.rs_ctr.rs_port\:3.tipA=时机：§a即时 §e[Mirror Block IN]
 tile.rs_ctr.splitter.name=信号4x分离器
 tile.rs_ctr.splitter.tip=在四个不同输出上重复输入信号。
@@ -341,7 +341,7 @@ gate.rs_ctr.nor=或非门\n§7in \= ¬(in1 ∨ in2)\n§7按位
 gate.rs_ctr.not=非门\n§7out \= ¬in\n§7按位
 gate.rs_ctr.and=与门\n§7out \= in1 ∧ in2\n§7按位
 gate.rs_ctr.xnor=同或门\n§7in \= ¬(in1 ⊻ in2)\n§7按位
-gate.rs_ctr.swt=多路选择器\n§7in1 \= true -> out \= in2\n§else -> out \= in3
+gate.rs_ctr.swt=多路选择器\n§7in1 \= true -> out \= in2\n§7else -> out \= in3
 gate.rs_ctr.branch=执行选择器\n§7in1 \= true -> 计算in2\n§7else -> 计算in3
 gate.rs_ctr.sequence=执行序列\n§7先计算in1\n§7再计算in2
 gate.rs_ctr.update=更新触发器\n§7计算时总触发\n§7下一周期。
