@@ -288,10 +288,10 @@ port.rs_ctr.dec=减少
 port.rs_ctr.limit=Limit IN
 port.rs_ctr.count=Count OUT
 port.rs_ctr.clko=Clock OUT
-port.rs_ctr.ra=地址读
-port.rs_ctr.rv=数据读
-port.rs_ctr.wa=地址写
-port.rs_ctr.wv=数据写
+port.rs_ctr.ra=读取地址
+port.rs_ctr.rv=数据输出
+port.rs_ctr.wa=写入地址
+port.rs_ctr.wv=数据输入
 sensor.rs_ctr.none=比较器\n值
 sensor.rs_ctr.item=已存储物品计数
 sensor.rs_ctr.fluid=已存储流体 [mB]
@@ -492,7 +492,7 @@ gui.rs_ctr.item_placer.air0=对方块使用\n§8bit[14] \= §70
 gui.rs_ctr.item_placer.air1=对空气使用\n§8bit[14] \= §71
 gui.rs_ctr.item_placer.creative0=创造模式：关\n§8bit[7] \= §70
 gui.rs_ctr.item_placer.creative1=创造模式：开\n§8bit[7] \= §71
-gui.rs_ctr.ram.layout=内存布局：%2$d字，共%d位
+gui.rs_ctr.ram.layout=内存布局：有%2$d字，一字%1$d位
 gui.rs_ctr.fmt_w=图像宽\n§7对于.png导出\n位每行\n§7对于.hex导出
 gui.rs_ctr.fmt_h=图像宽\n§7对于.png导出
 gui.rs_ctr.import_file=从文件导入内存
