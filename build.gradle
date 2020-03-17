@@ -106,7 +106,8 @@ dependencies {
 	// IC2
 	compile "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
 	// CD4017BE_lib
-	compile "com.cd4017be.lib:CD4017BE_lib:${mc_version}-${lib_version}:deobf"
+	compileOnly "com.cd4017be.lib:CD4017BE_lib:${mc_version}-${lib_version}:deobf"
+	runtime "com.cd4017be.lib:CD4017BE_lib:${mc_version}-${lib_version}"
 }
 
 processResources
