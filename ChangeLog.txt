@@ -1,9 +1,15 @@
 v0.2.6
 Changes:
+- added primitive version of Block Breaker
+- fixed Block Breaker attempting to break liquid blocks (which previously caused extremely high energy consumption)
+- fixed silk-touch Block Breaker not producing drops for non silk-touchable blocks
+- made controlled Item User more competent in placing certain Items into empty blocks
+- added Item shift-clicking support in controlled Item User GUI
 - added binary and hex editing/display for constant plug and lamp
 - added Pulse Generator Plug
 - added Toggle Latch Plug
 - added Signal Splitter Plug
+- added Block Reference Splitter Plug
 - add clock output operator for Processors
 - add buffered, tick precise I/O operations to OpenComputers Adapter
 - fixed energy drain from OpenComputers Adapter not working
@@ -12,6 +18,10 @@ Changes:
 - moved Frame rendering to BlockSelector (fixes corner boxes drawing)
 - added quick switch buttons between Assembler and Editor GUI
 - added Processor auto assembly feature
+- added extended tool-tips with timing information and other data
+- added Block Reference life-span config option
+- fixed Oscilloscope server -> client sync. missing samples due to timing
+- updated all german translations to newest state
 
 Dependencies:
 - for MC-1.12.2
