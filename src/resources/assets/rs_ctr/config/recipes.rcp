@@ -1,4 +1,4 @@
-VERSION = 98;
+VERSION = 99;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -133,6 +133,7 @@ INIT() {
 	add("shaped", it("item.edge_trigger"), " 4 / 3 /102", it("item.wire"), it("minecraft:redstone_torch"), it("minecraft:repeater"), it("minecraft:lever"), it("tile.rs_port"):0);
 	add("shaped", it("item.pulse_gen"), " 4 / 3 /102", it("item.wire"), it("minecraft:redstone_torch"), it("minecraft:repeater"), "dustRedstone", it("tile.rs_port"):0);
 	add("shaped", it("item.wrench"), "0/0/1", "nuggetIron", "plankWood");
+	add("shaped", it("item.signal_probe"), "0 0/121/343", it("item.wrench"), it("item.wire"), "paneGlass", it("minecraft:stone_button"), "dustGlowstone");
 	add("shaped", it("item.pointer_dsp"), "0/1", it("minecraft:compass"), it("item.wire"));
 	add("shaped", it("item.seg7"), "000/121", it("item.lamp"), "gemQuartz", "dustRedstone");
 	add("shaped", it("item.slider"), "1 2/000", it("minecraft:coal"):1, it("minecraft:redstone_torch"), it("item.wire"));

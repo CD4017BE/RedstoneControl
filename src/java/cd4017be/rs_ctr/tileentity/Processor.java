@@ -355,4 +355,11 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		circuit.setState(state);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id < circuit.inputs.length ? circuit.inputs[id]
+			: (id -= circuit.inputs.length) < circuit.outputs.length ? circuit.outputs[id]
+			: null;
+	}
+
 }

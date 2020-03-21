@@ -1,0 +1,13 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "rs_ctr:items/signal_probe"
+	},
+	"display": {
+		"firstperson_righthand": {
+			"rotation": [0, -22.5, 0],
+			"translation": [4, 1, -8],
+			"scale": [1, 1, 1]
+		}
+	}
+}

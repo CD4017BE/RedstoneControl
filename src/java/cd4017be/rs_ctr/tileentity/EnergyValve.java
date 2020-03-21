@@ -148,4 +148,9 @@ public class EnergyValve extends WallMountGate implements IEnergyStorage, Signal
 		return true;
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id == 0 ? clk : id == 1 ? amIn : amOut;
+	}
+
 }

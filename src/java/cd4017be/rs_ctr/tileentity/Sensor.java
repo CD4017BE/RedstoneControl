@@ -196,4 +196,14 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 		impl.onRefChange(null, null);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return blockRef;
+		case 1: return clock;
+		case 2: return value - ref;
+		default: return ref;
+		}
+	}
+
 }

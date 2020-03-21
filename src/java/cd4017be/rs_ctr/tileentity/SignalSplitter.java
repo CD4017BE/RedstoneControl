@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.tileentity;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.IStateInfo;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -10,7 +11,7 @@ import net.minecraft.util.EnumFacing;
  * @author CD4017BE
  *
  */
-public class SignalSplitter extends WallMountGate {
+public class SignalSplitter extends WallMountGate implements IStateInfo {
 
 	protected final SignalHandler[] callbacks = new SignalHandler[4];
 	protected int state;
@@ -55,6 +56,11 @@ public class SignalSplitter extends WallMountGate {
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode == SAVE) state = nbt.getInteger("state");
 		super.loadState(nbt, mode);
+	}
+
+	@Override
+	public Object getState(int id) {
+		return state;
 	}
 
 }

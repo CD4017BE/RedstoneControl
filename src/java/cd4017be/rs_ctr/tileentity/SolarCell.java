@@ -54,4 +54,9 @@ public class SolarCell extends WallMountGate implements ITickableServerOnly {
 		tick = (byte)(posIn.getX() + posIn.getY() + posIn.getZ() & 7);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return null;
+	}
+
 }

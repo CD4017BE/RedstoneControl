@@ -6,6 +6,7 @@ import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.port.WireType;
+import cd4017be.rs_ctr.render.SignalProbeRenderer;
 import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
 import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
@@ -165,6 +166,8 @@ public class ClientProxy extends CommonProxy {
 		registerRender(edge_trigger, 0, 1);
 		registerRender(pulse_gen);
 		registerRender(cl_fuel);
+		registerRender(signal_probe);
+		signal_probe.setTileEntityItemStackRenderer(new SignalProbeRenderer(signal_probe));
 	}
 
 	private static void addGates(BlockGate... gates) {

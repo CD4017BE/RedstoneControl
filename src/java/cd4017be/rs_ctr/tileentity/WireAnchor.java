@@ -32,4 +32,9 @@ public class WireAnchor extends Gate {
 		else super.onPortModified(port, event);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return null;
+	}
+
 }

@@ -377,4 +377,9 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id == 0 ? (int)mode : minutes;
+	}
+
 }

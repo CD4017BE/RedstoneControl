@@ -131,6 +131,7 @@ public class Objects {
 	public static final ItemPanelModule oscilloscope = null;
 	public static final ItemWrench wrench = null;
 	public static final ItemChunkLoaderFuel cl_fuel = null;
+	public static final ItemSignalProbe signal_probe = null;
 
 	//Sounds
 	public static final BaseSound LEVER_FLIP = null;
@@ -243,7 +244,8 @@ public class Objects {
 				new ItemPanelModule("offset", "offset").setCreativeTab(tabCircuits),
 				new ItemPanelModule("oscilloscope", "oscilloscope").setCreativeTab(tabCircuits),
 				new ItemWrench("wrench").setCreativeTab(tabCircuits),
-				new ItemChunkLoaderFuel("cl_fuel").setCreativeTab(tabCircuits)
+				new ItemChunkLoaderFuel("cl_fuel").setCreativeTab(tabCircuits),
+				new ItemSignalProbe("signal_probe").setCreativeTab(tabCircuits)
 		);
 	}
 

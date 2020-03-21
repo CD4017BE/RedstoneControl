@@ -348,4 +348,9 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		return cachedLight = world.getCombinedLight(pos.offset(o.back), 0);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return modules[id >> 1].getState(id & 1);
+	}
+
 }

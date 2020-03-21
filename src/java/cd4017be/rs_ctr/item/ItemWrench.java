@@ -66,7 +66,7 @@ public class ItemWrench extends BaseItem {
 
 	@Override
 	public String getItemStackDisplayName(ItemStack item) {
-		return TooltipUtil.translate(this.getUnlocalizedName(item) + (item.hasTagCompound() ? ".name1" : ".name"));
+		return TooltipUtil.translate(this.getUnlocalizedName(item) + (item.getSubCompound("cfg") != null ? ".name1" : ".name"));
 	}
 
 }

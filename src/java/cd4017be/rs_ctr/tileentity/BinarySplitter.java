@@ -78,4 +78,9 @@ public class BinarySplitter extends SignalSplitter {
 		list.add(button);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id < 4 ? state >>> (shift * id) & mask : state;
+	}
+
 }

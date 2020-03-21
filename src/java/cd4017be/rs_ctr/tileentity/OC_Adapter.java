@@ -342,4 +342,9 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 		Driver.add((stack) -> stack.getItem() == oc_adapter ? OC_Adapter.class : null);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id < state.length ? state[id] : null;
+	}
+
 }

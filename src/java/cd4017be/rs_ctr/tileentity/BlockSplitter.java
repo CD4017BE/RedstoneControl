@@ -67,4 +67,9 @@ public class BlockSplitter extends WallMountGate implements BlockHandler {
 		super.loadState(nbt, mode);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return state;
+	}
+
 }

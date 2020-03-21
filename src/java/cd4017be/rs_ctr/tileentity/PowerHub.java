@@ -285,4 +285,9 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 		if (watching.add(sender)) markDirty(SAVE);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return null;
+	}
+
 }

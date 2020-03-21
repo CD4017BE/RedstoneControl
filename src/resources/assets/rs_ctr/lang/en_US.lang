@@ -203,6 +203,9 @@ item.rs_ctr.pulse_gen.tip=Sends a value of §e65535§7 into a connected wire if 
 item.rs_ctr.pulse_gen.tipA=timing\: §anext sync. post-tick\nmax connections\: §a1
 item.rs_ctr.cl_fuel.name=Runtime [§a%d\:%02d h§r]
 item.rs_ctr.cl_fuel.tip=§aUse§7 on §6Chunk Loader§7 to refill its runtime.\n§oItem will be consumed!\n§aHit§7 a §6Chunk Loader§7 to retrieve it's stored time back.
+item.rs_ctr.signal_probe.tip=Displays all signals currently going in and out of a device.\n\nAlso works as a §6Screwdriver§7.
+item.rs_ctr.signal_probe.name=Signal Probe Monitor
+item.rs_ctr.signal_probe.name1=Signal Probe Monitor §9stored conf.
 item.cd4017be.m\:battery.name=Redstone Battery
 item.cd4017be.m\:actuator.name=Telekinetic Actuator
 item.cd4017be.m\:telekin_alloy.name=Telekinetic Alloy
@@ -210,6 +213,17 @@ item.cd4017be.m\:corerope.name=Core-Rope Cell
 item.cd4017be.m\:corerope1.name=Core-Rope Cluster
 item.cd4017be.m\:corerope2.name=Core-Rope Grid
 
+#Signal Probing Display
+sp.rs_ctr.none=[       ]
+sp.rs_ctr.num=hex\: %1$08X dec\: %1$d
+sp.rs_ctr.i=§9 > §r
+sp.rs_ctr.o=§a < §r
+sp.rs_ctr.block=%d %d %d d\=%d %s
+sp.rs_ctr.invalid=no signals!
+sp.rs_ctr.plug=[ plug ]
+sp.rs_ctr.id=#%-6d
+sp.rs_ctr.unknown=unknown Value
+sp.rs_ctr.null=null reference
 #Signal port names
 port.rs_ctr.rsR=Read
 port.rs_ctr.rsW=Write

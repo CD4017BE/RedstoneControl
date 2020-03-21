@@ -35,10 +35,8 @@ public class XORGate extends SignalCombiner {
 
 
 	@Override
-	public void process() {
-		int val = inputs[0] ^ inputs[1] ^ inputs[2] ^ inputs[3];
-		super.process();
-		setOutput(val);
+	protected int computeResult() {
+		return inputs[0] ^ inputs[1] ^ inputs[2] ^ inputs[3];
 	}
 
 	@Override

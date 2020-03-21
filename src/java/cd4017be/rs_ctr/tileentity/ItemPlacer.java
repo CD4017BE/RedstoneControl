@@ -380,4 +380,15 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest, 
 		return new GuiItemPlacer(this, player);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return block;
+		case 1: return aim;
+		case 2: return clk;
+		case 3: return status;
+		default: return null;
+		}
+	}
+
 }

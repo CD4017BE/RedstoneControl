@@ -338,4 +338,14 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 		);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return sx;
+		case 1: return sy;
+		case 2: return sz;
+		default: return getOutput();
+		}
+	}
+
 }
