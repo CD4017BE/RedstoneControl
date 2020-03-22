@@ -101,6 +101,8 @@ tile.rs_ctr.oc_adapter.tipA=时机：§a下一同步。每刻后\n能量转换�
 tile.rs_ctr.ram.name=外部RAM芯片[%s比特]
 tile.rs_ctr.ram.tip=可直接寻址的内存，支持同时读写。提供的存储容量比§6处理器§7中通常提供的存储容量大得多。\n右击方块可查看/编辑内容。被破坏时数据仍然保留。
 tile.rs_ctr.ram.tipA=读时机：§a即时 §e[Read Address]\n写时机：§a下一同步。世界刻
+tile.rs_ctr.chunk_loader.name=区块加载器
+tile.rs_ctr.chunk_loader.tip=保持被§63维方块框架§7定义的区域处于区块加载状态。\n§eActive IN§7：操作模式：0 \= 关闭，1 \= 单个区块，2 \= 区域\n§erem. Time OUT§7：剩余§6运行时间§7的分钟数，必须定期补充。\n§o如果有多于一个区块被加载，运行时间会以普通速度的两倍被消耗。\n\n§8§n一般注解：§8要小心跨过区块加载区域边界的管道和机器！如果它们尝试与相邻的未加载区块互动，那些区块可能会热加载来满足互动需求。但由于没有玩家或区块加载器来保持这种区块的加载，一刻后会被再次卸载，导致无限循环。为了避免卡顿，最好让这些区块也被永久加载。\n§8§o本模组的设备很节省。它们只在绝对必要时热加载区块！
 
 # chat messages
 msg.rs_ctr.type=§c不兼容的接口类型！
@@ -138,8 +140,10 @@ item.rs_ctr.wire.tip=对信号接口§a右击§7可贴上，再对另一出入�
 item.rs_ctr.wire.tipA=最大长度§a\\<max_wire_length> m
 item.rs_ctr.wireless.name=无线信号连接器
 item.rs_ctr.wireless.tip=像§6信号线§7一样，但能远距离甚至跨维度连接两个端口。
-item.rs_ctr.constant.tip=贴在输入端口上可以提供一个常量。\n对空气§a右击§7配置这个常量。\n对空气§a潜行右击§7切换十进制/十六进制/二进制模式。
+item.rs_ctr.wireless_b.name=无线方块引用连接器
+item.rs_ctr.wireless_b.tip=像§6方块引用线缆§7一样，但能远距离甚至跨维度连接两个端口。
 item.rs_ctr.constant.name=常量塞
+item.rs_ctr.constant.tip=贴在输入端口上可以提供一个常量。\n对空气§a右击§7配置这个常量。\n对空气§a潜行右击§7切换十进制/十六进制/二进制模式。
 item.rs_ctr.lamp.name=信号状态灯
 item.rs_ctr.lamp.tip=贴在输出端上以查看其信号状况。\n\n也能作为指示灯贴在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§74x4的任意位置
 item.rs_ctr.tag.name=线缆标签
@@ -197,6 +201,11 @@ item.rs_ctr.edge_trigger\:i.tipA=时机：§a即时\n最大连接：§a1
 item.rs_ctr.pulse_gen.name=脉冲生成塞
 item.rs_ctr.pulse_gen.tip=每当贴着的端口中输出信号在上一刻有变化则向相连信号线输出§e65535§7，否则输出§e0§7。
 item.rs_ctr.pulse_gen.tipA=时机：§a下一同步。每刻后\n最大连接：§a1
+item.rs_ctr.cl_fuel.name=运行时间[§a%d：%02d h§r]
+item.rs_ctr.cl_fuel.tip=§a右击§7§6区块加载器§7来补充其运行时间。\n§o物品会被消耗！\n§a左击§7§6区块加载器§7可取回其中储存的时间。
+item.rs_ctr.signal_probe.tip=显示设备中当前正在输入输出的所有信号。\n\n也能当成一个§6螺丝刀§7。
+item.rs_ctr.signal_probe.name=信号探针显示器
+item.rs_ctr.signal_probe.name1=信号探针显示器 §9已储存配置。
 item.cd4017be.m\:battery.name=红石电池
 item.cd4017be.m\:actuator.name=远程执行器
 item.cd4017be.m\:telekin_alloy.name=心灵传动合金
@@ -204,6 +213,17 @@ item.cd4017be.m\:corerope.name=芯绳单元
 item.cd4017be.m\:corerope1.name=芯绳集群
 item.cd4017be.m\:corerope2.name=芯绳网格
 
+#Signal Probing Display
+sp.rs_ctr.none=[       ]
+sp.rs_ctr.num=十六进制：%1$08X 十进制：%1$d
+sp.rs_ctr.i=§9 > §r
+sp.rs_ctr.o=§a < §r
+sp.rs_ctr.block=%d %d %d d\=%d %s
+sp.rs_ctr.invalid=无信号！
+sp.rs_ctr.plug=[ plug ]
+sp.rs_ctr.id=#%-6d
+sp.rs_ctr.unknown=未知值
+sp.rs_ctr.null=空引用
 #Signal port names
 port.rs_ctr.rsR=Read
 port.rs_ctr.rsW=Write
@@ -292,6 +312,14 @@ port.rs_ctr.ra=读取地址
 port.rs_ctr.rv=数据输出
 port.rs_ctr.wa=写入地址
 port.rs_ctr.wv=数据输入
+port.rs_ctr.area_cl0=§a有效区域 %d*%d\n区块：%d / %d
+port.rs_ctr.area_cl2=区域过大：%d*%d\n§c太多区块：%d / %d
+port.rs_ctr.area_cl1=未完成区域：%d*%d\n§6缺少%5$d个角落的框架！
+port.rs_ctr.load=Active IN
+port.rs_ctr.time=rem. Time OUT
+port.rs_ctr.time_cl0=时间：%d\:%02d h [§coff§f]
+port.rs_ctr.time_cl1=时间：%d\:%02d h [§ax1§r]
+port.rs_ctr.time_cl2=时间：%d\:%02d h [§9x2§r]
 sensor.rs_ctr.none=比较器\n值
 sensor.rs_ctr.item=已存储物品计数
 sensor.rs_ctr.fluid=已存储流体 [mB]
