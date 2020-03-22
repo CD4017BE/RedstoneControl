@@ -51,9 +51,14 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 
 	@Override
 	public void process() {
+		int val = computeResult();
 		for (tick = 0; delayed != null; delayed = delayed.next, scheduleUpdate())
 			inputs[delayed.id] = delayed.value;
+		if (output0 != null) output0.updateSignal(val);
+		if (output1 != null) output1.updateSignal(val);
 	}
+
+	protected abstract int computeResult();
 
 	protected void setInput(int pin, int val) {
 		if (val != inputs[pin]) {
@@ -66,11 +71,6 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 			}
 			inputs[pin] = val;
 		}
-	}
-
-	protected void setOutput(int val) {
-		if (output0 != null) output0.updateSignal(val);
-		if (output1 != null) output1.updateSignal(val);
 	}
 
 	protected void scheduleUpdate() {
@@ -101,6 +101,11 @@ public abstract class SignalCombiner extends WallMountGate implements IUpdatable
 			System.arraycopy(arr, 0, inputs, 0, Math.min(arr.length, inputs.length));
 			tick = 0;
 		}
+	}
+
+	@Override
+	public Object getState(int id) {
+		return id < inputs.length ? inputs[id] : computeResult();
 	}
 
 }

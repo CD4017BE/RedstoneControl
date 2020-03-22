@@ -53,7 +53,7 @@ public class WireConnection extends WireBranch implements ITagableConnector, IBl
 		if(port instanceof RelayPort) return;
 		PortRenderer.PORT_RENDER.drawModel(
 			quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z,
-			Orientation.fromFacing(port.face), type.model
+			Orientation.fromFacing(port.face), type.wireModel()
 		);
 	}
 

@@ -105,4 +105,9 @@ public class BlockDelayer extends WallMountGate {
 
 	}
 
+	@Override
+	public Object getState(int id) {
+		return channels[id & 3].state;
+	}
+
 }

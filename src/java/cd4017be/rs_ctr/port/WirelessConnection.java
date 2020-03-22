@@ -10,7 +10,6 @@ import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.Orientation;
-import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
@@ -85,7 +84,7 @@ public class WirelessConnection extends Plug implements ITagableConnector, IBloc
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(2)");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), type.wirelessModel());
 	}
 
 	@Override
@@ -111,7 +110,7 @@ public class WirelessConnection extends Plug implements ITagableConnector, IBloc
 
 	@Override
 	protected ItemStack drop() {
-		return new ItemStack(Objects.wireless);
+		return new ItemStack(type.wirelessItem);
 	}
 
 	@Override

@@ -8,13 +8,12 @@ package cd4017be.rs_ctr.tileentity;
 public class AnalogCombiner extends SignalCombiner {
 
 	@Override
-	public void process() {
+	protected int computeResult() {
 		int v = inputs[0], v1;
 		if ((v1 = inputs[1]) > v) v = v1;
 		if ((v1 = inputs[2]) > v) v = v1;
 		if ((v1 = inputs[3]) > v) v = v1;
-		super.process();
-		setOutput(v);
+		return v;
 	}
 
 }

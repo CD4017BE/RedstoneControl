@@ -305,4 +305,14 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		return Arrays.asList(stack);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return writeIN;
+		case 1: return valueOUT;
+		case 2: return readIN;
+		default: return valueOUT;
+		}
+	}
+
 }

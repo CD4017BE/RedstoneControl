@@ -11,6 +11,7 @@ import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.com.BlockReference;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.IStateInfo;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.TickRegistry;
@@ -50,7 +51,7 @@ import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABI
  * @author CD4017BE
  *
  */
-public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareTile, IUpdatable, IModularTile, ITilePlaceHarvest, IBlockRenderComp {
+public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareTile, IUpdatable, IModularTile, ITilePlaceHarvest, IBlockRenderComp, IStateInfo {
 
 	private static boolean RECURSION;
 
@@ -83,10 +84,13 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			SignalHandler c = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 			callbacks[pin] = c;
 			if (c != null) c.updateSignal(states[pin]);
-		} else if (callback instanceof BlockHandler) {
-			EnumFacing side = EnumFacing.VALUES[(pin - 12)^1];
-			((BlockHandler)callback).updateBlock(new BlockReference(world, pos.offset(side, -1), side));
-		}
+		} else if (callback instanceof BlockHandler)
+			((BlockHandler)callback).updateBlock(blockRefFor(pin - 12));
+	}
+
+	private BlockReference blockRefFor(int side) {
+		EnumFacing s = EnumFacing.VALUES[side^1];
+		return new BlockReference(world, pos.offset(s, -1), s);
 	}
 
 	@Override
@@ -367,6 +371,13 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 			}
 		}
 
+	}
+
+	@Override
+	public Object getState(int id) {
+		if (id < 12) return states[id];
+		if (id < 18) return blockRefFor(id - 12);
+		return mirrors[id - 18];
 	}
 
 }

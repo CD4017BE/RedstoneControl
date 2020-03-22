@@ -257,4 +257,9 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id == 0 ? value : mode.remainder(value);
+	}
+
 }

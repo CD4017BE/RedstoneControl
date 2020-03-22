@@ -81,16 +81,18 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	public boolean onInteract(EntityPlayer player, boolean hit, EnumFacing side, Vec3d aim) {
 		ItemStack stack = player.getHeldItemMainhand();
 		if (stack.isEmpty() || !ItemWrench.WRENCHES.contains(stack.getItem().getRegistryName())) return false;
+		NBTTagCompound nbt;
 		if (hit) {
 			stack = onRemove();
 			if (!player.isCreative())
 				ItemFluidUtil.dropStack(stack, player);
 			host.remove(idx);
 		} else if (player.isSneaking()) {
-			stack.setTagCompound(serializeNBT());
+			nbt = stack.getTagCompound();
+			if (nbt == null) stack.setTagCompound(nbt = new NBTTagCompound());
+			nbt.setTag("cfg", serializeNBT());
 			player.sendStatusMessage(new TextComponentTranslation("msg.rs_ctr.cfg_store"), true);
-		} else if (stack.hasTagCompound()) {
-			NBTTagCompound nbt = stack.getTagCompound();
+		} else if ((nbt = stack.getSubCompound("cfg")) != null) {
 			String id = nbt.getString("id");
 			if (id.equals(id())) {
 				loadCfg(nbt);
@@ -190,6 +192,14 @@ public abstract class Module implements IInteractiveComponent, INBTSerializable<
 	 */
 	@SideOnly(Side.CLIENT)
 	public abstract GuiScreen getCfgScreen(EntityPlayer player);
+
+	/**
+	 * @param id last bit of port id
+	 * @return current value received/send on that port
+	 */
+	public Object getState(int id) {
+		return null;
+	}
 
 	/**
 	 * implemented by TileEntities that can have panel modules attached

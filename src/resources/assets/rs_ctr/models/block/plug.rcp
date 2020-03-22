@@ -10,3 +10,7 @@ main(t) {
 	}
 	add(rect(Q, [0,3, 2,5]#, "uv-", 0));
 }
+
+wire(t) {main(t);}
+wireless(t) {main(t + 3);}
+misc(t) {main(t + 6);}

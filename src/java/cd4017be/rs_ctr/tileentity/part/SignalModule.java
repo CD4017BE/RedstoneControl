@@ -167,4 +167,9 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 		return !player.isDead && host != null && player.getDistanceSqToCenter(host.pos()) < 256;
 	}
 
+	@Override
+	public Object getState(int id) {
+		return value;
+	}
+
 }

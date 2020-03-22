@@ -302,4 +302,9 @@ implements SignalHandler, ITickReceiver, IBlockRenderComp {
 		return stack;
 	}
 
+	@Override
+	public Object getState(int id) {
+		return (id == 0 ? interval < 0 : value >= 0) ? 0 : 0xffff;
+	}
+
 }

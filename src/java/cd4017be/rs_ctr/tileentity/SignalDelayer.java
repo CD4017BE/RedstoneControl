@@ -1,6 +1,7 @@
 package cd4017be.rs_ctr.tileentity;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.IStateInfo;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
@@ -8,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 /** @author CD4017BE */
-public class SignalDelayer extends WallMountGate {
+public class SignalDelayer extends WallMountGate implements IStateInfo {
 
 	private final Delay[] channels = new Delay[4];
 
@@ -94,6 +95,11 @@ public class SignalDelayer extends WallMountGate {
 			}
 		}
 
+	}
+
+	@Override
+	public Object getState(int id) {
+		return channels[id & 3].state;
 	}
 
 }

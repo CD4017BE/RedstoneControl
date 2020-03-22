@@ -149,6 +149,8 @@ item.rs_ctr.split_b.tip=Kann in einen Blockreferenzausgang gesteckt werden um an
 item.rs_ctr.split_b.tipA=Timing\: §ainstantan\nMax. Verbindungen\: §a\\<max_split_links>
 item.rs_ctr.wireless.name=kabelloser Signalverbinder
 item.rs_ctr.wireless.tip=Ein §6Signal"kabel"§7 welches zwei Anschlüsse über unbegrenzte Distanz verbinden kann.\nFunktioniert auch dimensionsübergreifend.
+item.rs_ctr.wireless_b.name=kabelloser Blockreferenzverbinder
+item.rs_ctr.wireless_b.tip=Ein §6Blockreferenz"kabel"§7 welches zwei Anschlüsse über unbegrenzte Distanz verbinden kann.\nErmöglicht somit auch dimensionsübergreifende Blockinteraktionen.
 item.rs_ctr.constant.name=Konstantenstecker
 item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\n§aBenutze§7 in die Luft um den Signalwert einzustellen.
 item.rs_ctr.lamp.name=Signalstatuslampe
@@ -205,6 +207,9 @@ item.rs_ctr.wrench.name=Schraubendreher
 item.rs_ctr.wrench.name1=Schraubendreher §9gespeicherte Konfig.
 item.rs_ctr.wrench.tip=§aBenutze§7 auf §6Steuerpult§7 um Module zu konfigurieren.\n§aSchlage§7 auf §6Steuerpult§7 um Module zu entfernen (geht auch im Kreativmodus).\n§aBenutze geduckt§7 auf §6Steuerpult§7 um Einstellungen eines Moduls zu kopieren. §nDann\:\n§aBenutze§7 auf ein anderes Modul um die kopierten Einstellungen zu übernehmen.\n§aBenutze geduckt§7 in die Luft um gespeicherte Einstellungen zu löschen.\n\nAndere Blöcke werden bei §aBenutzung§7 gedreht.
 item.rs_ctr.processor.stats=Komplexität\: §c%d §b%d §9%d §7Größe\: §f%d
+item.rs_ctr.signal_probe.tip=Zeigt die aktuellen Signalwerte aller Anschlüsse eines Gerätes an.\n\nKann außerdem als §6Schaubendreher§7 verwendet werden.
+item.rs_ctr.signal_probe.name=Signalprüfer
+item.rs_ctr.signal_probe.name1=Signalprüfer §9gespeicherte Konfig.
 item.cd4017be.m\:battery.name=Redstone Batterie
 item.cd4017be.m\:telekin_alloy.name=telekinetische Legierung
 item.cd4017be.m\:actuator.name=Ferninteraktionsmodul
@@ -212,6 +217,17 @@ item.cd4017be.m\:corerope.name=Ringkern
 item.cd4017be.m\:corerope1.name=Ringkern Kluster
 item.cd4017be.m\:corerope2.name=Ringkern Matrix
 
+#Signalprüfdisplay
+sp.rs_ctr.none=[      ]
+sp.rs_ctr.num=hex\: %1$08X dez\: %1$d
+sp.rs_ctr.i=§9 > §r
+sp.rs_ctr.o=§a < §r
+sp.rs_ctr.block=%d %d %d d\=%d %s
+sp.rs_ctr.invalid=keine Signale!
+sp.rs_ctr.plug=Stecker
+sp.rs_ctr.id=#%-5d
+sp.rs_ctr.null=Nullreferenz
+sp.rs_ctr.unknown=Wert unbekannt
 #Signalanschlussnamen
 port.rs_ctr.rsR=Lesen
 port.rs_ctr.rsW=Schreiben

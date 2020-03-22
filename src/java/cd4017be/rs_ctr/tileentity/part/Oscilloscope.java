@@ -234,5 +234,9 @@ public class Oscilloscope extends Module implements SignalHandler, IBlockRenderC
 			vertexArray.flip();
 		} else vertexArray = null;
 	}
+	@Override
+	public Object getState(int id) {
+		return id == 0 ? value : graph[idx];
+	}
 
 }

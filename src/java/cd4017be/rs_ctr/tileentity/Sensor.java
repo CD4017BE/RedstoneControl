@@ -65,23 +65,25 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	@Override
 	public void setPortCallback(int pin, Object callback) {
 		out = callback instanceof SignalHandler ? (SignalHandler)callback : null;
-		if (out != null) out.updateSignal(value);
+		if (out != null) out.updateSignal(value - ref);
 	}
 
 	@Override
 	protected void resetPin(int pin) {
-		if (pin == 0) blockRef = null;
+		if (pin == 0)
+			updateBlock(new BlockReference(world, pos.offset(o.front), o.back));
 		else if (pin == 3) ref = 0;
 	}
 
 	@Override
 	public void updateBlock(BlockReference ref) {
 		impl.onRefChange(blockRef = ref, this);
+		updateSignal(clock);
 	}
 
 	@Override
 	public void updateSignal(int val) {
-		if (val == clock) return;
+		if (val == clock && ((MountedPort)ports[1]).getConnector() != null) return;
 		clock = val;
 		if (blockRef == null || !blockRef.isLoaded()) return;
 		if ((val = impl.readValue(blockRef)) == value && !refChanged) return;
@@ -128,6 +130,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	protected void orient(Orientation o) {
 		super.orient(o);
 		mountPos = o.rotate(new Vec3d(0, 0, -0.25)).addVector(0.5, 0.5, 0.5);
+		if (((MountedPort)ports[0]).getConnector() == null)
+			resetPin(0);
 	}
 
 	@Override
@@ -194,6 +198,21 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	protected void onUnload() {
 		super.onUnload();
 		impl.onRefChange(null, null);
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+	}
+
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return blockRef;
+		case 1: return clock;
+		case 2: return value - ref;
+		default: return ref;
+		}
 	}
 
 }

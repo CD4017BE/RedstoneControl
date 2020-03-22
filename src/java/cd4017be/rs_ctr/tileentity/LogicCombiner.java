@@ -44,10 +44,8 @@ public class LogicCombiner extends SignalCombiner {
 	}
 
 	@Override
-	public void process() {
-		int val = inputs[0] | inputs[1] | inputs[2] | inputs[3];
-		super.process();
-		setOutput(val ^ outInv);
+	protected int computeResult() {
+		return (inputs[0] | inputs[1] | inputs[2] | inputs[3]) ^ outInv;
 	}
 
 	@Override
@@ -86,6 +84,13 @@ public class LogicCombiner extends SignalCombiner {
 			buttons[i].setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
 		buttons[4].setLocation(0.625F, 0.5F, 0.25F, o);
 		super.orient(o);
+	}
+
+	@Override
+	public Object getState(int id) {
+		if (id < 4 && (inModes[id] & 1) != 0)
+			return inputs[id] ^ 0xffff;
+		return super.getState(id);
 	}
 
 }

@@ -34,10 +34,8 @@ public class NummericCombiner extends SignalCombiner {
 	}
 
 	@Override
-	public void process() {
-		int val = inputs[0] + inputs[1] + inputs[2] + inputs[3];
-		super.process();
-		setOutput(val);
+	protected int computeResult() {
+		return inputs[0] + inputs[1] + inputs[2] + inputs[3];
 	}
 
 	@Override
@@ -69,6 +67,13 @@ public class NummericCombiner extends SignalCombiner {
 		for (int i = 0; i < 4; i++)
 			buttons[i].setLocation(0.375F, 0.125F + i * 0.25F, 0.25F, o);
 		super.orient(o);
+	}
+
+	@Override
+	public Object getState(int id) {
+		if (id < 4 && (inModes >> id & 1) != 0)
+			return -inputs[id];
+		return super.getState(id);
 	}
 
 }

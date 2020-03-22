@@ -5,6 +5,8 @@ import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.lib.render.model.BlockMimicModel;
 import cd4017be.lib.render.model.MultipartModel;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
+import cd4017be.rs_ctr.port.WireType;
+import cd4017be.rs_ctr.render.SignalProbeRenderer;
 import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
 import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
 import cd4017be.rs_ctr.sensor.FluidSensor;
@@ -18,6 +20,7 @@ import static cd4017be.rs_ctr.render.FrameRenderer.FRAME_RENDER;
 
 import cd4017be.rs_ctr.block.BlockGate;
 import cd4017be.rs_ctr.tileentity.BlockSelector;
+import cd4017be.rs_ctr.tileentity.ChunkLoader;
 import cd4017be.rs_ctr.tileentity.Gate;
 import cd4017be.rscpl.gui.Category;
 import cd4017be.rscpl.gui.GateTextureHandler;
@@ -65,6 +68,7 @@ public class ClientProxy extends CommonProxy {
 		super.init(cc);
 		bindTileEntitySpecialRenderer(Gate.class, PORT_RENDER);
 		bindTileEntitySpecialRenderer(BlockSelector.class, FRAME_RENDER);
+		bindTileEntitySpecialRenderer(ChunkLoader.class, FRAME_RENDER);
 		
 		for (Category c : CircuitInstructionSet.TABS)
 			if (c != null)
@@ -103,7 +107,12 @@ public class ClientProxy extends CommonProxy {
 		
 		registerBlockModel(RS_PORT, new MultipartModel(RS_PORT).setPipeVariants(1).setProvider(7, PORT_RENDER));
 		overrideBlockModel(WIRE_ANCHOR, new MultipartModel(WIRE_ANCHOR, Collections.singletonMap(WIRE_ANCHOR.getDefaultState(), new ModelResourceLocation(WIRE_ANCHOR.getRegistryName(), "empty")), true, PORT_RENDER, BlockMimicModel.provider));
-		addGates(SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, COUNTER, DELAY, SPLITTER_B, MULTIPLEX_B, DELAY_B, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL, BLOCK_SELECTOR, BLOCK_BREAKER, BLOCK_BREAKER1, ITEM_PLACER, OC_ADAPTER, RAM);
+		addGates(
+			SPLITTER, ANALOG_COMB, LOGIC_COMB, NUM_COMB, BIN_COMB, BIN_SPLIT, XOR_GATE, COUNTER, DELAY,
+			SPLITTER_B, MULTIPLEX_B, DELAY_B, PROCESSOR, PROCESSOR2, COMPARATOR, POWER_HUB, 
+			ITEM_TRANSLOCATOR, FLUID_TRANSLOCATOR, ENERGY_VALVE, PANEL, SOLAR_CELL, BLOCK_SELECTOR, 
+			BLOCK_BREAKER, BLOCK_BREAKER1, ITEM_PLACER, OC_ADAPTER, RAM, CHUNK_LOADER
+		);
 		
 		WIRE_ANCHOR.setBlockLayer(null);
 		
@@ -111,7 +120,8 @@ public class ClientProxy extends CommonProxy {
 		PORT_RENDER.register("_buttons.logic(0)", "_buttons.logic(1)", "_buttons.logic(2)", "_buttons.logic(3)");
 		PORT_RENDER.register("_buttons.bin(0)", "_buttons.bin(1)", "_buttons.bin(2)", "_buttons.bin(3)");
 		PORT_RENDER.register("_buttons.energy(0)", "_buttons.energy(1)");
-		PORT_RENDER.register("_plug.main(0)", "_plug.main(1)", "_plug.main(2)", "_plug.main(3)", "_plug.main(4)", "_plug.main(5)", "_plug.main(6)", "_plug.main(7)", "_plug.main(8)");
+		for (WireType t : WireType.values()) PORT_RENDER.register(t.wireModel(), t.wirelessModel());
+		PORT_RENDER.register("_plug.misc(0)", "_plug.misc(1)", "_plug.misc(2)", "_plug.misc(3)", "_plug.misc(4)");
 		PORT_RENDER.register("_hook.pin(1)", "_hook.pin(2)", "_hook.pin(3)");
 		PORT_RENDER.register("_battery");
 		PORT_RENDER.register("_lever.on", "_lever.off", "_lever.btn");
@@ -136,6 +146,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(split_s);
 		registerRender(split_b);
 		registerRender(wireless);
+		registerRender(wireless_b);
 		registerRender(constant);
 		registerRender(lamp);
 		registerRender(tag);
@@ -154,6 +165,9 @@ public class ClientProxy extends CommonProxy {
 		registerRender(ram, null);
 		registerRender(edge_trigger, 0, 1);
 		registerRender(pulse_gen);
+		registerRender(cl_fuel);
+		registerRender(signal_probe);
+		signal_probe.setTileEntityItemStackRenderer(new SignalProbeRenderer(signal_probe));
 	}
 
 	private static void addGates(BlockGate... gates) {

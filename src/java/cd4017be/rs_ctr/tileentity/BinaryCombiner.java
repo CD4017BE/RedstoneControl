@@ -36,10 +36,8 @@ public class BinaryCombiner extends SignalCombiner {
 	}
 
 	@Override
-	public void process() {
-		int v = inputs[0] | inputs[1] | inputs[2] | inputs[3];
-		super.process();
-		setOutput(v);
+	protected int computeResult() {
+		return inputs[0] | inputs[1] | inputs[2] | inputs[3];
 	}
 
 	@Override
@@ -69,6 +67,11 @@ public class BinaryCombiner extends SignalCombiner {
 	@Override
 	protected void initGuiComps(List<IInteractiveComponent> list) {
 		list.add(button);
+	}
+
+	@Override
+	public Object getState(int id) {
+		return id < inputs.length ? inputs[id] >>> shift * id : computeResult();
 	}
 
 }

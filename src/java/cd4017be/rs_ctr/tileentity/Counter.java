@@ -118,4 +118,14 @@ public class Counter extends WallMountGate implements SignalHandler {
 		list.add(button);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return clkI;
+		case 1: return limit;
+		case 2: return clkO;
+		default: return count;
+		}
+	}
+
 }

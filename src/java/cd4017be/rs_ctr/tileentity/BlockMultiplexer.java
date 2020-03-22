@@ -116,4 +116,9 @@ implements SignalHandler, IUpdatable {
 		}
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id < 4 ? in[id] : id == 4 ? sel : sel < 0 ? null : in[sel];
+	}
+
 }

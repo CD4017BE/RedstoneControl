@@ -273,4 +273,9 @@ implements SignalHandler, IBlockRenderComp {
 		return new ItemStack(Objects.offset);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id == 0 ? value - offset: value;
+	}
+
 }

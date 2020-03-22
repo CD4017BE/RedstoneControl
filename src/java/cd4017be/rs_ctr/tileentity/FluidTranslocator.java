@@ -156,4 +156,16 @@ public class FluidTranslocator extends WallMountGate implements ITickableServerO
 		super.loadState(nbt, mode);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return ref0;
+		case 1: return ref1;
+		case 3: return clk;
+		case 4: return amIn;
+		case 5: return amOut;
+		default: return null;
+		}
+	}
+
 }

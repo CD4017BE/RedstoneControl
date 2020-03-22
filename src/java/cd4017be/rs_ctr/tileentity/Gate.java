@@ -10,6 +10,7 @@ import cd4017be.api.rs_ctr.interact.IInteractiveDevice;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.api.rs_ctr.port.IPortProvider;
+import cd4017be.api.rs_ctr.port.IStateInfo;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.api.rs_ctr.wire.IHookAttachable;
@@ -42,7 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Template implementation of {@link IPortProvider}
  * @author CD4017BE
  */
-public abstract class Gate extends BaseTileEntity implements IHookAttachable, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, ICoverableTile {
+public abstract class Gate extends BaseTileEntity implements IHookAttachable, IInteractiveTile, ISelfAwareTile, IInteractiveDevice, ICoverableTile, IStateInfo {
 
 	protected MountedPort[] ports;
 	protected IInteractiveComponent[] gui;
@@ -270,6 +271,11 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			port.setLocation(pos.x + .5, pos.y + .5, pos.z + .5, side);
 		}
 		this.o = o;
+	}
+
+	@Override
+	public Port[] availablePorts() {
+		return ports;
 	}
 
 }

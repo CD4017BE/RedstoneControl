@@ -215,7 +215,7 @@ public abstract class SplitPlug extends Plug implements IIntegratedConnector, IT
 	public void render(List<BakedQuad> quads) {
 		for (WireBranch b : links)
 			b.render(quads);
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), type().model);
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), type().wireModel());
 	}
 
 }

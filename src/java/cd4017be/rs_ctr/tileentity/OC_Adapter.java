@@ -326,7 +326,7 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 		if (!(node instanceof Connector)) return 0;
 		Connector c = (Connector)node;
 		double d = (double)dE / OC_UNIT;
-		if (!sim) return (int)Math.rint(c.changeBuffer(d) * OC_UNIT);
+		if (!sim) return (int)Math.rint((d - c.changeBuffer(d)) * OC_UNIT);
 		d += c.globalBuffer();
 		if (dE > 0) {
 			d -= c.globalBufferSize();
@@ -340,6 +340,11 @@ public class OC_Adapter extends WallMountGate implements Environment, ITickable,
 	@Method(modid = "opencomputers")
 	public static void registerAPI() {
 		Driver.add((stack) -> stack.getItem() == oc_adapter ? OC_Adapter.class : null);
+	}
+
+	@Override
+	public Object getState(int id) {
+		return id < state.length ? state[id] : null;
 	}
 
 }

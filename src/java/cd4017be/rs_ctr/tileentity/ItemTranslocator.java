@@ -172,4 +172,18 @@ public class ItemTranslocator extends WallMountGate implements ITickableServerOn
 		super.loadState(nbt, mode);
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return ref0;
+		case 1: return ref1;
+		case 3: return slot0;
+		case 4: return slot1;
+		case 5: return clk;
+		case 6: return amIn;
+		case 7: return amOut;
+		default: return null;
+		}
+	}
+
 }

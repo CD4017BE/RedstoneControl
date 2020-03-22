@@ -267,4 +267,9 @@ implements SignalHandler, IBlockRenderComp {
 		return new ItemStack(Objects.scale);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return id == 0 ? in : value;
+	}
+
 }

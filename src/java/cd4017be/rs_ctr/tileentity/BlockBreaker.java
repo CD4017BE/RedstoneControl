@@ -247,4 +247,14 @@ implements ITickableServerOnly, SignalHandler, BlockHandler, ITilePlaceHarvest {
 		getSTD = m;
 	}
 
+	@Override
+	public Object getState(int id) {
+		switch(id) {
+		case 0: return block;
+		case 1: return clk;
+		case 2: return status;
+		default: return null;
+		}
+	}
+
 }

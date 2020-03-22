@@ -242,4 +242,9 @@ public class Lever extends SignalModule implements ITickReceiver {
 		host.markDirty(BaseTileEntity.SYNC);
 	}
 
+	@Override
+	public Object getState(int id) {
+		return value != 0 ? onVal : color < 16 ? offVal : 0;
+	}
+
 }
