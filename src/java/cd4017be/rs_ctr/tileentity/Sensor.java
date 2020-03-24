@@ -130,7 +130,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	protected void orient(Orientation o) {
 		super.orient(o);
 		mountPos = o.rotate(new Vec3d(0, 0, -0.25)).addVector(0.5, 0.5, 0.5);
-		if (((MountedPort)ports[0]).getConnector() == null)
+		if (((MountedPort)ports[0]).getConnector() == null && world != null)
 			resetPin(0);
 	}
 
