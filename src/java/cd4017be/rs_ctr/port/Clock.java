@@ -1,9 +1,9 @@
 package cd4017be.rs_ctr.port;
 
 import java.util.List;
-
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.TickRegistry;
@@ -20,12 +20,8 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-
-/**
- * @author CD4017BE
- *
- */
-public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
+/** @author CD4017BE */
+public class Clock extends Connector implements ITickReceiver, IBlockRenderComp {
 
 	public static final String ID = "clock";
 
@@ -34,11 +30,15 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	WorldInfo worldRef;
 	SignalHandler callback;
 
+	public Clock(MountedPort port) {
+		super(port);
+	}
+
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setInteger("int", interval);
-		nbt.setInteger("pha", (int)(phase % (long)(interval << 1)));
+		nbt.setInteger("pha", (int)(phase % (interval << 1)));
 		return nbt;
 	}
 
@@ -54,19 +54,11 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	}
 
 	@Override
-	protected ItemStack drop() {
-		ItemStack stack = new ItemStack(Objects.clock);
-		stack.setTagCompound(serializeNBT());
-		return stack;
-	}
-
-	@Override
 	public boolean tick() {
-		if (worldRef == null) return false;
+		if(worldRef == null) return false;
 		int t = (int)(worldRef.getWorldTotalTime() - phase);
-		if (t == 0) {
-			callback.updateSignal(65535);
-		} else if (t >= interval) {
+		if(t == 0) callback.updateSignal(65535);
+		else if(t >= interval) {
 			phase += interval << 1;
 			callback.updateSignal(0);
 		}
@@ -74,9 +66,8 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	}
 
 	@Override
-	public void onLoad(MountedPort port) {
-		super.onLoad(port);
-		if (worldRef == null) TickRegistry.instance.add(this);
+	public void onLoad() {
+		if(worldRef == null) TickRegistry.instance.add(this);
 		worldRef = port.getWorld().getWorldInfo();
 		callback = (SignalHandler)port.owner.getPortCallback(port.pin);
 		long t = Math.floorMod(worldRef.getWorldTotalTime() - phase + interval, interval << 1) - interval;
@@ -92,20 +83,25 @@ public class Clock extends Plug implements ITickReceiver, IBlockRenderComp {
 	}
 
 	@Override
-	public void onRemoved(MountedPort port, EntityPlayer player) {
-		super.onRemoved(port, player);
+	public void onRemoved(EntityPlayer player) {
 		port.owner.onPortModified(port, IPortProvider.E_DISCONNECT);
+		ItemStack stack = new ItemStack(Objects.clock);
+		stack.setTagCompound(serializeNBT());
+		dropItem(stack, player);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.misc(3)");
+		PortRenderer.PORT_RENDER.drawModel(
+			quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z,
+			Orientation.fromFacing(port.face), "_plug.misc(3)"
+		);
 	}
 
 	@Override
 	public String displayInfo(MountedPort port, int linkID) {
-		return "\n" + TooltipUtil.format("port.rs_ctr.clock", (float)interval / 20F);
+		return "\n" + TooltipUtil.format("port.rs_ctr.clock", interval / 20F);
 	}
 
 }

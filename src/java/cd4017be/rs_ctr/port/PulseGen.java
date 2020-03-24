@@ -1,10 +1,7 @@
 package cd4017be.rs_ctr.port;
 
 import java.util.List;
-import cd4017be.api.rs_ctr.com.SignalHandler;
-import cd4017be.api.rs_ctr.port.IIntegratedConnector;
 import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.lib.TickRegistry;
 import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.util.Orientation;
@@ -12,22 +9,21 @@ import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /** @author CD4017BE */
-public class PulseGen extends WireBranch implements IIntegratedConnector, SignalHandler, IUpdatable {
+public class PulseGen extends LogicPlug implements IUpdatable {
 
 	public static final String ID = "pulse_gen";
 	private static final byte S_OFF = 0, S_RISE = 1, S_ON = 2, S_FALL = 3;
 
-	SignalHandler out = SignalHandler.NOP;
 	int last;
 	byte state, tick;
 
-	public PulseGen() {
-		super(WireType.SIGNAL);
-		subPort(new Port(this, 0, SignalHandler.class, true));
+	public PulseGen(MountedPort port) {
+		super(port);
 	}
 
 	@Override
@@ -79,19 +75,13 @@ public class PulseGen extends WireBranch implements IIntegratedConnector, Signal
 	}
 
 	@Override
-	public void setPortCallback(int pin, Object callback) {
-		out = callback instanceof SignalHandler ? (SignalHandler)callback : SignalHandler.NOP;
-		out.updateSignal(state >= S_ON ? 65535 : 0);
+	protected int getOutput() {
+		return state >= S_ON ? 65535 : 0;
 	}
 
 	@Override
 	protected String id() {
 		return ID;
-	}
-
-	@Override
-	protected ItemStack drop() {
-		return new ItemStack(Objects.pulse_gen);
 	}
 
 	@Override
@@ -110,9 +100,14 @@ public class PulseGen extends WireBranch implements IIntegratedConnector, Signal
 	}
 
 	@Override
-	public void onLoad(MountedPort port) {
-		super.onLoad(port);
-		port.owner.setPortCallback(port.pin, this);
+	public void onRemoved(EntityPlayer player) {
+		super.onRemoved(player);
+		dropItem(new ItemStack(Objects.pulse_gen), player);
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
 		if(state != S_OFF && tick == 0) {
 			tick = TickRegistry.TICK;
 			TickRegistry.schedule(this);
@@ -120,14 +115,8 @@ public class PulseGen extends WireBranch implements IIntegratedConnector, Signal
 	}
 
 	@Override
-	public void onUnload() {
-		super.onUnload();
-		port.owner.setPortCallback(port.pin, null);
-	}
-
-	@Override
 	public String displayInfo(MountedPort port, int linkID) {
-		return TooltipUtil.translate("port.rs_ctr.pulse") + super.displayInfo(port, subPort.getLink());
+		return TooltipUtil.translate("port.rs_ctr.pulse") + super.displayInfo(port, outPort.getLink());
 	}
 
 	@Override

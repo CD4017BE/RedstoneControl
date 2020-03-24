@@ -4,13 +4,13 @@ import static cd4017be.lib.network.GuiNetworkHandler.openHeldItemGui;
 
 import java.util.function.Supplier;
 
-import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.ITagableConnector;
 import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.api.rs_ctr.wire.IWiredConnector;
 import cd4017be.api.rs_ctr.wire.WireLine;
-import cd4017be.api.rs_ctr.wire.IWiredConnector.IWiredConnectorItem;
 import cd4017be.api.rs_ctr.wire.WireLine.WireLoopException;
+import cd4017be.api.rs_ctr.wire.WiredConnector;
+import cd4017be.api.rs_ctr.wire.WiredConnector.IWiredConnectorItem;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.ItemInteractionHandler;
 import cd4017be.lib.Gui.ModularGui;
@@ -60,21 +60,17 @@ public class ItemWireTag extends BaseItem implements IWiredConnectorItem, IGuiHa
 
 	@Override
 	public void doAttach(ItemStack stack, MountedPort port, EntityPlayer player) {
-		IConnector c = port.getConnector();
+		Connector c = port.getConnector();
 		if (!(c instanceof ITagableConnector)) return;
 		ITagableConnector tc = (ITagableConnector)c;
 		if (stack.hasTagCompound()) {
 			String tag = stack.getTagCompound().getString("name");
 			if (!tag.equals(tc.getTag()))
-				if (tc instanceof IWiredConnector) try {
-					new WireLine(port).forEach(p -> {
-						IConnector con = p.getConnector();
-						if (con instanceof ITagableConnector)
-							((ITagableConnector)con).setTag(p, tag);
-					});
+				if (tc instanceof WiredConnector) try {
+					new WireLine((WiredConnector)tc).forEach(con -> con.setTag(tag));
 				} catch (WireLoopException e) {
 					return;
-				} else tc.setTag(port, tag);
+				} else tc.setTag(tag);
 			stack.setTagCompound(null);
 		} else if (tc.getTag() != null) {
 			NBTTagCompound nbt = new NBTTagCompound();

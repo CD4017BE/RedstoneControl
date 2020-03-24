@@ -1,7 +1,8 @@
 package cd4017be.rs_ctr.item;
 
-import cd4017be.api.rs_ctr.port.IConnector;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.rs_ctr.port.EdgeTrigger;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,8 +21,10 @@ public class ItemEdgeTrigger extends ItemPlug implements IConnectorItem {
 	}
 
 	@Override
-	protected IConnector create(ItemStack stack, EntityPlayer player) {
-		return new EdgeTrigger(stack.getMetadata() == 0);
+	protected Connector create(MountedPort port, ItemStack stack, EntityPlayer player) {
+		EdgeTrigger con = new EdgeTrigger(port);
+		con.rising = stack.getMetadata() == 0;
+		return con;
 	}
 
 	@Override

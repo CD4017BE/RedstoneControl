@@ -1,9 +1,9 @@
 package cd4017be.rs_ctr.item;
 
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
 import cd4017be.api.rs_ctr.port.IPortProvider;
-import java.util.function.Supplier;
-import cd4017be.api.rs_ctr.port.IConnector;
+import java.util.function.Function;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.rs_ctr.port.SplitPlug;
@@ -16,13 +16,13 @@ import net.minecraft.util.text.TextComponentTranslation;
 public class ItemSplitCon extends BaseItem implements IConnectorItem {
 
 	public final WireType type;
-	public final Supplier<SplitPlug> constructor;
+	public final Function<MountedPort, SplitPlug> constructor;
 
-	public ItemSplitCon(String id, WireType type, Supplier<SplitPlug> constructor) {
+	public ItemSplitCon(String id, WireType type, Function<MountedPort, SplitPlug> constructor) {
 		super(id);
 		this.type = type;
 		this.constructor = constructor;
-		IConnector.REGISTRY.put(type.splitId, constructor);
+		Connector.REGISTRY.put(type.splitId, constructor);
 	}
 
 	@Override
@@ -35,16 +35,17 @@ public class ItemSplitCon extends BaseItem implements IConnectorItem {
 			return;
 		}
 		int n;
-		IConnector con = port.getConnector();
+		Connector con = port.getConnector();
 		if(con instanceof SplitPlug) {
 			SplitPlug sp = (SplitPlug)con;
 			n = sp.addLinks(1);
 			if(n > 0) port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
 		} else {
-			SplitPlug sp = constructor.get();
+			SplitPlug sp = constructor.apply(port);
 			if (player.isCreative() || (n = stack.getCount()) > 2) n = 2;
 			n = sp.addLinks(n);
 			port.setConnector(sp, player);
+			port.connect(sp.inPort);
 		}
 		if(!player.isCreative()) stack.shrink(n);
 	}

@@ -2,7 +2,7 @@ package cd4017be.rs_ctr.item;
 
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.port.BlockProbe;
@@ -83,7 +83,7 @@ public class ItemBlockProbe extends BaseItem implements IConnectorItem {
 			return;
 		}
 		if (creative) d = 0;
-		port.setConnector(new BlockProbe(pos, side, d), player);
+		port.setConnector(new BlockProbe(port, pos, side, d), player);
 		stack.setTagCompound(null);
 		stack.shrink(d);
 	}

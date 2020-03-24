@@ -3,8 +3,9 @@ package cd4017be.rs_ctr.item;
 import java.util.function.Supplier;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
-import cd4017be.api.rs_ctr.port.IConnector;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.ItemInteractionHandler;
 import cd4017be.lib.Gui.ModularGui;
@@ -46,10 +47,10 @@ public class ItemConstantPlug extends ItemPlug implements IConnectorItem, IGuiHa
 	}
 
 	@Override
-	protected IConnector create(ItemStack stack, EntityPlayer player) {
+	protected Connector create(MountedPort port, ItemStack stack, EntityPlayer player) {
 		NBTTagCompound nbt = stack.getTagCompound();
 		if (nbt == null) return null;
-		Constant c = new Constant();
+		Constant c = new Constant(port);
 		c.deserializeNBT(nbt);
 		return c;
 	}

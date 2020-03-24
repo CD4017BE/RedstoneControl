@@ -3,7 +3,7 @@ package cd4017be.rs_ctr;
 import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.com.BlockReference;
-import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.api.rs_ctr.wire.RelayPort;
@@ -168,12 +168,12 @@ public class CommonProxy implements IRecipeHandler {
 			registerSensor((stack)-> new DraconicFusionSensor(), c.get("sensors_draconic", Object[].class, null));
 		
 		WireType.registerAll();
-		IConnector.REGISTRY.put(Constant.ID, Constant::new);
-		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
-		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
-		IConnector.REGISTRY.put(Clock.ID, Clock::new);
-		IConnector.REGISTRY.put(EdgeTrigger.ID, EdgeTrigger::new);
-		IConnector.REGISTRY.put(PulseGen.ID, PulseGen::new);
+		Connector.REGISTRY.put(Constant.ID, Constant::new);
+		Connector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
+		Connector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
+		Connector.REGISTRY.put(Clock.ID, Clock::new);
+		Connector.REGISTRY.put(EdgeTrigger.ID, EdgeTrigger::new);
+		Connector.REGISTRY.put(PulseGen.ID, PulseGen::new);
 		
 		Module.REGISTRY.put(_7Segment.ID, _7Segment::new);
 		Module.REGISTRY.put(PointerDisplay.ID, PointerDisplay::new);

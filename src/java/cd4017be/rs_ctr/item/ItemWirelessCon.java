@@ -3,7 +3,7 @@ package cd4017be.rs_ctr.item;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.TooltipUtil;
@@ -65,8 +65,8 @@ public class ItemWirelessCon extends BaseItem implements IConnectorItem {
 		}
 		MountedPort lport = (MountedPort)p;
 		
-		port.setConnector(new WirelessConnection(lpos, lp, !player.isCreative(), type), player);
-		lport.setConnector(new WirelessConnection(pos, port.pin, false, type), player);
+		port.setConnector(new WirelessConnection(port, lpos, lp, !player.isCreative(), type), player);
+		lport.setConnector(new WirelessConnection(port, pos, port.pin, false, type), player);
 		port.connect(lport);
 		stack.setTagCompound(null);
 		if (!player.isCreative()) stack.shrink(1);

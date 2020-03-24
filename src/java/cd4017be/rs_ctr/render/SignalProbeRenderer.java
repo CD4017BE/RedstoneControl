@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import cd4017be.api.rs_ctr.com.BlockReference;
-import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.ITagableConnector;
 import cd4017be.api.rs_ctr.port.MountedPort;
@@ -143,7 +143,7 @@ public class SignalProbeRenderer extends TileEntityItemStackRenderer implements 
 		int i = p.getLink();
 		if (i != 0) {
 			String s;
-			IConnector c;
+			Connector c;
 			if (
 				p instanceof MountedPort
 				&& (c = ((MountedPort)p).getConnector()) instanceof ITagableConnector

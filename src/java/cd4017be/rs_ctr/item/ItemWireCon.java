@@ -1,15 +1,15 @@
 package cd4017be.rs_ctr.item;
 
-import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.IIntegratedConnector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.port.Port;
 import cd4017be.api.rs_ctr.wire.RelayPort;
-import cd4017be.api.rs_ctr.wire.IWiredConnector;
-import cd4017be.api.rs_ctr.wire.IWiredConnector.IWiredConnectorItem;
+import cd4017be.api.rs_ctr.wire.WiredConnector.IWiredConnectorItem;
 import cd4017be.lib.item.BaseItem;
 import cd4017be.lib.util.TooltipUtil;
+import cd4017be.rs_ctr.port.WireBranch;
 import cd4017be.rs_ctr.port.WireConnection;
 import cd4017be.rs_ctr.port.WireType;
 import net.minecraft.entity.Entity;
@@ -59,11 +59,11 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 			nbt.setBoolean("d", port.isMaster);
 			return;
 		}
+		stack.setTagCompound(null);
 		if (!nbt.getBoolean("d") ^ port.isMaster) {
 			if (port instanceof RelayPort) port = ((RelayPort)port).opposite;
 			else {
 				player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire0")));
-				stack.setTagCompound(null);
 				return;
 			}
 		}
@@ -73,43 +73,32 @@ public class ItemWireCon extends BaseItem implements IWiredConnectorItem {
 			player.sendMessage(new TextComponentString(d > MAX_LENGTH ?
 					TooltipUtil.format("msg.rs_ctr.wire2", MAX_LENGTH) :
 						TooltipUtil.translate("msg.rs_ctr.wire1")));
-			stack.setTagCompound(null);
 			return;
 		}
-		if (creative) d = 0;
 		BlockPos lpos = new BlockPos(lx, ly, lz);
 		Port p = IPortProvider.getPort(player.world, lpos, nbt.getInteger("lp"));
 		if (!(p instanceof MountedPort)) {
 			player.sendMessage(new TextComponentString(TooltipUtil.translate("msg.rs_ctr.wire3")));
-			stack.setTagCompound(null);
 			return;
 		}
-		MountedPort lport;
-		if (port.isMaster) lport = (MountedPort)p;
-		else {
-			lport = port;
-			port = (MountedPort)p;
-			BlockPos bp = pos;
-			pos = lpos;
-			lpos = bp;
-		}
-		Vec3d path = IWiredConnector.getPath(port, lport);
-		IConnector con = port.getConnector();
-		WireConnection wire = new WireConnection(pos, port.pin, path.scale(-0.5), d, type);
-		lport.setConnector(wire, player);
-		path = path.scale(0.5);
-		if (con instanceof IIntegratedConnector) {
-			if (!((IIntegratedConnector)con).addLink(lport, path, player)) {
-				lport.setConnector(null, player);
-				player.sendMessage(new TextComponentTranslation("msg.rs_ctr.split1"));
-			}
-		} else {
-			port.setConnector(new WireConnection(lpos, lport.pin, path, 0, type), player);
-			if (lport instanceof RelayPort) lport.connect(port);
-			else port.connect(lport);
-		}
-		stack.setTagCompound(null);
-		stack.shrink(d);
+		MountedPort lport = (MountedPort)p;
+		WireBranch conA, conB;
+		Connector con;
+		if ((con = port.getConnector()) instanceof IIntegratedConnector) {
+			if (!((IIntegratedConnector)con).addWire(conA = new WireBranch(port, type), player, true))
+				return;
+		} else conA = new WireConnection(port, type);
+		if ((con = lport.getConnector()) instanceof IIntegratedConnector) {
+			if (!((IIntegratedConnector)con).addWire(conB = new WireBranch(lport, type), player, false))
+				return;
+		} else lport.setConnector(conB = new WireConnection(lport, type), player);
+		if ((con = port.getConnector()) instanceof IIntegratedConnector)
+			((IIntegratedConnector)con).addWire(conA, player, false);
+		else port.setConnector(conA, player);
+		conA.length = d / 2;
+		conB.length = d - conA.length;
+		if (!player.isCreative()) stack.shrink(d);
+		conA.connect(conB);
 	}
 
 	@Override

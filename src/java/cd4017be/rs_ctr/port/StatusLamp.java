@@ -2,12 +2,14 @@ package cd4017be.rs_ctr.port;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
 import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.render.PortRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -16,16 +18,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-
-/**
- * @author CD4017BE
- *
- */
-public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
+/** @author CD4017BE */
+public class StatusLamp extends Connector implements SignalHandler, ITESRenderComp {
 
 	public static final String ID = "lamp";
 
 	private int state;
+
+	public StatusLamp(MountedPort port) {
+		super(port);
+	}
 
 	@Override
 	protected String id() {
@@ -47,8 +49,11 @@ public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		if (state > 0) light = light & 0xffff0000 | 0xef;
-		PortRenderer.PORT_RENDER.drawModel(buffer, (float)(x + port.pos.x), (float)(y + port.pos.y), (float)(z + port.pos.z), Orientation.fromFacing(port.face), light, state > 0 ? "_plug.misc(1)" : "_plug.misc(0)");
+		if(state > 0) light = light & 0xffff0000 | 0xef;
+		PortRenderer.PORT_RENDER.drawModel(
+			buffer, (float)(x + port.pos.x), (float)(y + port.pos.y), (float)(z + port.pos.z),
+			Orientation.fromFacing(port.face), light, state > 0 ? "_plug.misc(1)" : "_plug.misc(0)"
+		);
 	}
 
 	@Override
@@ -62,21 +67,18 @@ public class StatusLamp extends Plug implements SignalHandler, ITESRenderComp {
 	}
 
 	@Override
-	protected ItemStack drop() {
-		return new ItemStack(Objects.lamp);
+	public void onRemoved(EntityPlayer player) {
+		dropItem(new ItemStack(Objects.lamp), player);
 	}
 
 	@Override
-	public void onLoad(MountedPort port) {
-		super.onLoad(port);
+	public void onLoad() {
 		port.owner.setPortCallback(port.pin, this);
 	}
 
 	@Override
 	public void onUnload() {
-		if (port == null) return;
 		port.owner.setPortCallback(port.pin, null);
-		this.port = null;
 	}
 
 	@Override
