@@ -136,7 +136,7 @@ public class Gate {
 			TraceNode tn = traces[i];
 			if (tn != null && tn.owner == null) {
 				Gate g = indexTable.apply(tn.rasterX);
-				setInput(i, g == null ? null : g.outputs[tn.rasterY]);
+				setInput(i, g == null || g.outputs.length <= tn.rasterY ? null : g.outputs[tn.rasterY]);
 				traces[i] = tn.next;
 			}
 		}

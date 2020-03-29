@@ -58,13 +58,15 @@ public class Schematic {
 				g.read(data);
 				g.readCfg(data);
 				operators.add(g);
-			}
+			} else operators.add(null);
 			if (data.readerIndex() != p) {
 				Main.LOG.warn("corrupted data in circuit schematic:\ntype = {}, exp_size = {}, read_size = {}", t, l, l - p + data.readerIndex());
 				data.readerIndex(p);
 			}
 		}
-		for (Gate g : operators) g.reconnect(this::get);
+		for (Gate g : operators)
+			if (g != null)
+				g.reconnect(this::get);
 		if (server) toSync.set(0, n << 1);
 	}
 
@@ -72,9 +74,11 @@ public class Schematic {
 	 * @param data Format: {B_gateCount, {B_gateId, 2B_size, B_extra[size]}[gateCount]}
 	 */
 	public void serialize(ByteBuf data) {
-		int i = data.writerIndex(), n = 0;
-		data.writeByte(0);
-		for (Gate g : operators)
+		int n = operators.size();
+		while(n > 0 && operators.get(n - 1) == null) n--;
+		data.writeByte(n);
+		for (int i = 0; i < n; i++) {
+			Gate g = operators.get(i);
 			if (g != null) {
 				data.writeByte(INS_SET.id(g.type));
 				int j = data.writerIndex();
@@ -82,9 +86,11 @@ public class Schematic {
 				g.write(data);
 				g.writeCfg(data);
 				data.setShort(j, data.writerIndex() - j - 2);
-				n++;
+			} else {
+				data.writeByte(-1);
+				data.writeShort(0);
 			}
-		data.setByte(i, n);
+		}
 	}
 
 	public void getChanges(NBTTagCompound nbt, boolean all) {
