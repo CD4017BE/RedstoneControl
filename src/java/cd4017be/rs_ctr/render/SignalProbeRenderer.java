@@ -84,10 +84,10 @@ public class SignalProbeRenderer extends TileEntityItemStackRenderer implements 
 			ItemStack stack = state.getBlock().getPickBlock(state, rtr, world, pos, player);
 			String s = ChatFormatting.stripFormatting(stack.getDisplayName());
 			if (pos.hashCode() != data.getInteger("tgt")) {
-				print("§l§k" + s, 4, 4, 152, 0xffffff00);
+				print("\u00a7l\u00a7k" + s, 4, 4, 152, 0xffffff00);
 				return;
 			}
-			print("§l" + s, 4, 4, 152, 0xffffff00);
+			print("\u00a7l" + s, 4, 4, 152, 0xffffff00);
 			TileEntity te = world.getTileEntity(pos);
 			if (te instanceof IPortProvider) pp = (IPortProvider)te;
 			else {
