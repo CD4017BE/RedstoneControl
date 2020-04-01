@@ -3,7 +3,7 @@ package cd4017be.rs_ctr;
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
-
+import com.google.common.collect.ListMultimap;
 import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.port.Link;
@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
+import net.minecraftforge.common.ForgeChunkManager.PlayerOrderedLoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
  *
  */
 @Mod(modid = Main.ID, useMetadata = true)
-public class Main implements LoadingCallback {
+public class Main implements PlayerOrderedLoadingCallback {
 
 	public static final String ID = "rs_ctr";
 
@@ -90,6 +90,12 @@ public class Main implements LoadingCallback {
 			}
 			ForgeChunkManager.releaseTicket(t);
 		}
+	}
+
+	//forge bug workaround: without PlayerOrderedLoadingCallback all loaded tickets would be invalid.
+	@Override
+	public ListMultimap<String, Ticket> playerTicketsLoaded(ListMultimap<String, Ticket> tickets, World world) {
+		return tickets;
 	}
 
 }

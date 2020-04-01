@@ -118,7 +118,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		if (this.ticket != null && this.ticket != ticket) ForgeChunkManager.releaseTicket(this.ticket);
 		this.ticket = ticket;
 		forceChunks(ticket.getModData().getBoolean("all"));
-		return false;
+		return true;
 	}
 
 	private int chunkCount() {
