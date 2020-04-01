@@ -99,6 +99,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 			nbt.setInteger("clk", clock);
 			nbt.setInteger("val", value);
 			nbt.setInteger("ref", ref);
+			if (blockRef != null)
+				nbt.setTag("block", blockRef.serializeNBT());
 		}
 		if (!stack.isEmpty()) {
 			nbt.setTag("sensor", stack.writeToNBT(new NBTTagCompound()));
@@ -116,7 +118,7 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 			value = nbt.getInteger("val");
 			ref = nbt.getInteger("ref");
 			refChanged = true;
-			blockRef = null;
+			blockRef = nbt.hasKey("block", NBT.TAG_COMPOUND) ? new BlockReference(nbt.getCompoundTag("block")) : null;
 		}
 		stack = nbt.hasKey("sensor", NBT.TAG_COMPOUND) ? new ItemStack(nbt.getCompoundTag("sensor")) : ItemStack.EMPTY;
 		impl = SensorRegistry.get(stack);
