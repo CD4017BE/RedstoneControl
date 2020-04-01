@@ -103,7 +103,11 @@ public class SignalProbeRenderer extends TileEntityItemStackRenderer implements 
 		for (int i = 0; i < list.tagCount(); i++) {
 			NBTTagCompound nbt = list.getCompoundTagAt(i);
 			int pin = nbt.getInteger("id");
-			Port port = pp.getPort(pin);
+			Port port;
+			try {
+				port = pp.getPort(pin);
+				if (port == null) continue;
+			} catch(Exception e) {continue;}
 			if (port instanceof MountedPort) {
 				Pair<Vec3d, EnumFacing> hit = ((MountedPort)port).rayTrace(p, d);
 				if (hit != null) {
