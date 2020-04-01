@@ -1,3 +1,19 @@
+v0.2.7
+Changes:
+- added Wireless Block Reference Connector
+- added Chunk Loader
+- fixed power transfer remainder being backwards
+- added Signal Probe Monitor
+- made clocked Comparator use default block ref and auto tick
+- changed block materials to ROCK because CIRCUITS has issues
+- fixed en-/decoding schematics with null gates in list causing index shift
+- fixed connecting additional wires to split plug may error and dupe items
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.4.17
+
 v0.2.6
 Changes:
 - added primitive version of Block Breaker
