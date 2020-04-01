@@ -45,8 +45,11 @@ public abstract class SplitPlug extends Plug implements IIntegratedConnector, IT
 		n = Math.min(n, MAX_LINK_COUNT - l);
 		if (n <= 0) return 0;
 		links = l == 0 ? new WireBranch[n] : Arrays.copyOf(links, l + n);
-		for (int i = l; i < links.length; i++)
-			links[i] = new WireBranch(type()).subPort(new Port(SplitPlug.this, i, type().clazz, true));
+		for (int i = l; i < links.length; i++) {
+			WireBranch b = new WireBranch(type()).subPort(new Port(SplitPlug.this, i, type().clazz, true));
+			b.setPort(port);
+			links[i] = b;
+		}
 		return n;
 	}
 
