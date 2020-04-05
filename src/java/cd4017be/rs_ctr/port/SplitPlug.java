@@ -79,14 +79,31 @@ public abstract class SplitPlug extends Connector implements IIntegratedConnecto
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		inPort.deserializeNBT(nbt);
+		if (nbt.hasKey("links", NBT.TAG_LIST)) {
+			deserializeOld(nbt);
+			return;
+		}
 		NBTTagList list = nbt.getTagList("ports", NBT.TAG_COMPOUND);
 		ports = new Port[list.tagCount()];
 		wires = new WireBranch[list.tagCount()];
 		for (int i = 0; i < ports.length; i++) {
 			NBTTagCompound tag = list.getCompoundTagAt(i);
-			(ports[i] = new Port(SplitPlug.this, i + 1, type().clazz, true)).deserializeNBT(tag);
+			(ports[i] = new Port(this, i + 1, type().clazz, true)).deserializeNBT(tag);
 			if (tag.hasKey("wire", NBT.TAG_COMPOUND))
 				(wires[i] = new WireBranch(port, type())).deserializeNBT(tag.getCompoundTag("wire"));
+		}
+	}
+
+	@Deprecated
+	private void deserializeOld(NBTTagCompound nbt) {
+		NBTTagList list = nbt.getTagList("links", NBT.TAG_COMPOUND);
+		ports = new Port[list.tagCount()];
+		wires = new WireBranch[list.tagCount()];
+		for (int i = 0; i < ports.length; i++) {
+			NBTTagCompound tag = list.getCompoundTagAt(i);
+			(ports[i] = new Port(this, i + 1, type().clazz, true)).deserializeNBT(tag);
+			if(tag.hasKey("pos", NBT.TAG_LONG))
+				(wires[i] = new WireBranch(port, type())).deserializeNBT(tag);
 		}
 	}
 
@@ -140,6 +157,7 @@ public abstract class SplitPlug extends Connector implements IIntegratedConnecto
 		for (Port port : ports) port.onLoad();
 		for (WireBranch con : wires)
 			if (con != null) con.onLoad();
+		if (inPort.getLink() == 0) inPort.connect(port);
 	}
 
 	@Override

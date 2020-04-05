@@ -73,10 +73,15 @@ public abstract class LogicPlug extends Connector implements IIntegratedConnecto
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		inPort.deserializeNBT(nbt.getCompoundTag("pi"));
-		outPort.deserializeNBT(nbt.getCompoundTag("po"));
-		if (nbt.hasKey("wire", NBT.TAG_COMPOUND))
-			(wire = new WireBranch(port, WireType.SIGNAL)).deserializeNBT(nbt.getCompoundTag("wire"));
-		else wire = null;
+		if (nbt.hasKey("pos", NBT.TAG_LONG)) { //backwards compatibility
+			outPort.deserializeNBT(nbt);
+			(wire = new WireBranch(port, WireType.SIGNAL)).deserializeNBT(nbt);
+		} else {
+			outPort.deserializeNBT(nbt.getCompoundTag("po"));
+			if (nbt.hasKey("wire", NBT.TAG_COMPOUND))
+				(wire = new WireBranch(port, WireType.SIGNAL)).deserializeNBT(nbt.getCompoundTag("wire"));
+			else wire = null;
+		}
 	}
 
 	@Override
@@ -116,6 +121,7 @@ public abstract class LogicPlug extends Connector implements IIntegratedConnecto
 		inPort.onLoad();
 		outPort.onLoad();
 		if (wire != null) wire.onLoad();
+		if (inPort.getLink() == 0) inPort.connect(port);
 	}
 
 	@Override

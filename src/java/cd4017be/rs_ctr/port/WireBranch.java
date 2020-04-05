@@ -6,6 +6,7 @@ import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.wire.WiredConnector;
+import cd4017be.lib.util.DimPos;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -39,7 +41,7 @@ public class WireBranch extends WiredConnector implements ITESRenderComp, IBlock
 	}
 
 	@Override
-	public NBTTagCompound serializeNBT() {//TODO backwards compatibility
+	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setFloat("dx", (float)line.x);
 		nbt.setFloat("dy", (float)line.y);
@@ -50,9 +52,16 @@ public class WireBranch extends WiredConnector implements ITESRenderComp, IBlock
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		super.deserializeNBT(nbt);
+		if (nbt.hasKey("pos", NBT.TAG_LONG)) { //backwards compatibility
+			conPos = new DimPos(BlockPos.fromLong(nbt.getLong("pos")), 0);
+			conPin = nbt.getInteger("pin");
+			tag = nbt.hasKey("tag", NBT.TAG_STRING) ? nbt.getString("tag") : null;
+			length = nbt.getByte("count") & 0xff;
+		} else {
+			super.deserializeNBT(nbt);
+			length = nbt.getByte("len") & 0xff;
+		}
 		line = new Vec3d(nbt.getFloat("dx"), nbt.getFloat("dy"), nbt.getFloat("dz"));
-		length = nbt.getByte("len") & 0xff;
 	}
 
 	@Override
