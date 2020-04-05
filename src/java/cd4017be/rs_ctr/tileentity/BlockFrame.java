@@ -50,14 +50,14 @@ public class BlockFrame extends BaseTileEntity implements IFrame {
 		super.storeState(nbt, mode);
 		if (mode == SAVE) {
 			NBTTagList list = new NBTTagList();
-			for (BlockPos pos : linked) {
+			for (BlockPos l : linked) {
 				NBTTagCompound tag = new NBTTagCompound();
-				tag.setInteger("x", pos.getX());
-				tag.setInteger("y", pos.getY());
-				tag.setInteger("z", pos.getZ());
+				tag.setInteger("x", l.getX() - pos.getX());
+				tag.setInteger("y", l.getY() - pos.getY());
+				tag.setInteger("z", l.getZ() - pos.getZ());
 				list.appendTag(tag);
 			}
-			nbt.setTag("link", list);
+			nbt.setTag("links", list);
 		}
 	}
 
@@ -65,11 +65,19 @@ public class BlockFrame extends BaseTileEntity implements IFrame {
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		super.loadState(nbt, mode);
 		if (mode == SAVE) {
-			NBTTagList list = nbt.getTagList("link", NBT.TAG_COMPOUND);
 			linked.clear();
-			for (int i = 0; i < list.tagCount(); i++) {
-				NBTTagCompound tag = list.getCompoundTagAt(i);
-				linked.add(new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")));
+			if (nbt.hasKey("link", NBT.TAG_LIST)) {//backwards compatibility
+				NBTTagList list = nbt.getTagList("link", NBT.TAG_COMPOUND);
+				for (int i = 0; i < list.tagCount(); i++) {
+					NBTTagCompound tag = list.getCompoundTagAt(i);
+					linked.add(new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")));
+				}
+			} else {
+				NBTTagList list = nbt.getTagList("links", NBT.TAG_COMPOUND);
+				for (int i = 0; i < list.tagCount(); i++) {
+					NBTTagCompound tag = list.getCompoundTagAt(i);
+					linked.add(pos.add(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")));
+				}
 			}
 		}
 	}

@@ -253,7 +253,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 			"mode", mode == SAVE ? this.mode
 				: (byte)(ticket == null ? 0 : ticket.getModData().getBoolean("all") ? 2 : 1)
 		);
-		nbt.setIntArray("area", area);
+		writeArea(area, nbt, pos);
 		nbt.setByte("frame", missingFrames);
 		nbt.setBoolean("dsp", showFrame);
 		nbt.setInteger("t", minutes);
@@ -266,8 +266,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode == SAVE) owner = nbt.getString("owner");
 		this.mode = nbt.getByte("mode");
-		int[] arr = nbt.getIntArray("area");
-		System.arraycopy(arr, 0, area, 0, Math.min(arr.length, 6));
+		readArea(area, nbt, pos);
 		missingFrames = nbt.getByte("frame");
 		showFrame = nbt.getBoolean("dsp");
 		minutes = nbt.getInteger("t");

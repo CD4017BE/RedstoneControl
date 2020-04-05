@@ -225,7 +225,7 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 		nbt.setInteger("sx", sx);
 		nbt.setInteger("sy", sy);
 		nbt.setInteger("sz", sz);
-		nbt.setIntArray("area", area);
+		writeArea(area, nbt, pos);
 		nbt.setByte("frame", missingFrames);
 		nbt.setBoolean("dsp", showFrame);
 		nbt.setByte("inv", invertAxis);
@@ -237,8 +237,7 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 		sx = nbt.getInteger("sx");
 		sy = nbt.getInteger("sy");
 		sz = nbt.getInteger("sz");
-		int[] arr = nbt.getIntArray("area");
-		System.arraycopy(arr, 0, area, 0, Math.min(arr.length, 6));
+		readArea(area, nbt, pos);
 		missingFrames = nbt.getByte("frame");
 		showFrame = nbt.getBoolean("dsp");
 		invertAxis = nbt.getByte("inv");
