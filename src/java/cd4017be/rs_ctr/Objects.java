@@ -73,6 +73,8 @@ public class Objects {
 	public static final BlockGate OC_ADAPTER = null;
 	public static final BlockGate RAM = null;
 	public static final BlockGate CHUNK_LOADER = null;
+	public static final BlockGate TELEPORTER = null;
+	public static final BlockGate TELEPORTER1 = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -107,6 +109,8 @@ public class Objects {
 	public static final BaseItemBlock oc_adapter = null;
 	public static final BaseItemBlock ram = null;
 	public static final BaseItemBlock chunk_loader = null;
+	public static final BaseItemBlock teleporter = null;
+	public static final BaseItemBlock teleporter1 = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
@@ -180,7 +184,9 @@ public class Objects {
 				new BlockGate("block_selector", Material.ROCK, SoundType.STONE, 0, BlockSelector.class, HOR_AXIS).setCreativeTab(tabCircuits),
 				new BlockGate("oc_adapter", Material.ROCK, SoundType.STONE, 3, OC_Adapter.class, HOR_AXIS).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.75)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("ram", Material.ROCK, SoundType.STONE, 3, RAM.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
-				new BlockGate("chunk_loader", Material.ROCK, SoundType.STONE, 0, ChunkLoader.class, HOR_AXIS).setCreativeTab(tabCircuits)
+				new BlockGate("chunk_loader", Material.ROCK, SoundType.STONE, 0, ChunkLoader.class, HOR_AXIS).setCreativeTab(tabCircuits),
+				new BlockGate("teleporter", Material.ROCK, SoundType.STONE, 0, StructTeleporter.class, HOR_AXIS).setCreativeTab(tabCircuits),
+				new BlockGate("teleporter1", Material.ROCK, SoundType.STONE, 3, Teleporter.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -221,6 +227,8 @@ public class Objects {
 				new BaseItemBlock(OC_ADAPTER),
 				new ItemRAM(RAM),
 				new BaseItemBlock(CHUNK_LOADER),
+				new BaseItemBlock(TELEPORTER),
+				new BaseItemBlock(TELEPORTER1),
 				WireType.SIGNAL.wireItem = new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				WireType.ENERGY.wireItem = new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				WireType.BLOCK.wireItem = new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),

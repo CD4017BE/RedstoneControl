@@ -530,3 +530,13 @@ recipe.rs_ctr.circuit_mat=Processor Components
 recipe.rs_ctr.battery=Capacitors
 recipe.rs_ctr.sensors=Comparator tuning
 recipe.rs_ctr.capacity=%.4u Charge
+#added by ingame editor:
+tile.rs_ctr.teleporter.tip=Improved version of the §6Teleporter§7 that is capable of moving large regions of blocks, not just a single block. This region must be defined using §63D Block Frame§7s.\nTeleportation is started by changing §eTeleport IN§7 from §e0§7 to the desired §eop-code§7 and keeping it there until §eStatus OUT \= 100§7. Switching back to §e0§7 before completion will cancel the teleport.\n\n§edestin. Block IN§7\: The position to teleport to.\n§eanchor Block IN§7\: The block to teleport or the anchor point for a region to teleport (must be inside region or frame).\n§eTeleport IN§7\: 0 \= idle, 1 \= single block, 2 \= inner volume, 4 \= outer frame, 6 \= volume + frame.\n§eStatus OUT§7\: -2 \= invalid frame, -1 \= invalid coordinates, 0 \= idle, 1...99 \= charging, 100 \= complete.\n§eEnergy IN§7\: energy supply required during charging.\n\n§8§oAll blocks inside the regions are swapped simultaneously, being treated like during a chunk unload/reload. So this §lshould§8§o work fine with most mods, even for multiblock structures.
+tile.rs_ctr.teleporter.name=Structure Teleporter
+port.rs_ctr.p0=anchor Block IN
+port.rs_ctr.p1=destination Block IN
+port.rs_ctr.tp=Teleport IN
+tile.rs_ctr.teleporter.tipA=timing\: §aentity ticks\nteleport happens §apre entity ticks\nmax range (frame)\: §a\\<teleporter_range> m\nenergy cost\: §evolume§a/m³ * §edistance§a/m * \\<energy_teleport_pb>\ninter-dimensional §edistance§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.teleporter1.name=Teleporter
+tile.rs_ctr.teleporter1.tip=Teleports blocks and entities by swapping the contents of the §eanchor§7 and §edestination§7 block.\nTeleportation is started by changing §eTeleport IN§7 from §e0§7 to §e1§7 and keeping it there until §eStatus OUT \= 100§7. Switching back to §e0§7 before completion will cancel the teleport.\n\n§edestin. Block IN§7\: The position to teleport to.\n§eanchor Block IN§7\: The block to teleport.\n§eTeleport IN§7\: 0 \= idle, 1 \= start teleport.\n§eStatus OUT§7\: -1 \= invalid coordinates, 0 \= idle, 1...99 \= charging, 100 \= complete.\n§eEnergy IN§7\: energy supply required during charging.
+tile.rs_ctr.teleporter1.tipA=timing\: §aentity ticks\nteleport happens §apre entity ticks\nenergy cost\: §edistance§a/m * \\<energy_teleport_pb>\ninter-dimensional §edistance§a \= \\<teleport_dist_cap>m

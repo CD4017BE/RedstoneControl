@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
@@ -132,7 +133,14 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	protected void orient(Orientation o) {
 		super.orient(o);
 		mountPos = o.rotate(new Vec3d(0, 0, -0.25)).addVector(0.5, 0.5, 0.5);
-		if (((MountedPort)ports[0]).getConnector() == null && world != null)
+		if (((MountedPort)ports[0]).getConnector() == null && world != null && !world.isRemote)
+			resetPin(0);
+	}
+
+	@Override
+	public void setWorld(World world) {
+		super.setWorld(world);
+		if (((MountedPort)ports[0]).getConnector() == null && world != null && !world.isRemote)
 			resetPin(0);
 	}
 

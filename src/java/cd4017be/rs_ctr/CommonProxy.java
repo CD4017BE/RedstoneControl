@@ -57,6 +57,8 @@ import cd4017be.rs_ctr.tileentity.OC_Adapter;
 import cd4017be.rs_ctr.tileentity.Panel;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import cd4017be.rs_ctr.tileentity.SolarCell;
+import cd4017be.rs_ctr.tileentity.StructTeleporter;
+import cd4017be.rs_ctr.tileentity.Teleporter;
 import cd4017be.rs_ctr.tileentity.part.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -155,6 +157,9 @@ public class CommonProxy implements IRecipeHandler {
 		ChunkLoader.RANGE = (int)c.getNumber("chunk_loader_range", ChunkLoader.RANGE);
 		ChunkLoader.MAX_MINUTES = (int)(c.getNumber("chunkload_time_cap", ChunkLoader.MAX_MINUTES / 60D) * 60D);
 		Objects.cl_fuel.setMaxDamage((int)(c.getNumber("chunkload_item_time", Objects.cl_fuel.getMaxDamage() / 60D) * 60D));
+		StructTeleporter.RANGE = (int)c.getNumber("teleporter_range", StructTeleporter.RANGE);
+		Teleporter.ENERGY_PER_BLOCK = c.getNumber("energy_teleport_pb", StructTeleporter.ENERGY_PER_BLOCK);
+		Teleporter.MAX_DISTANCE = c.getNumber("teleport_dist_cap", StructTeleporter.MAX_DISTANCE);
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));

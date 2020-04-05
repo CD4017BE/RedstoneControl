@@ -1,0 +1,10 @@
+{
+	"parent": "rs_ctr:block/machine",
+	"textures": {
+		"front": "rs_ctr:blocks/teleporter_f1",
+		"bot": "blocks/stone_slab_top",
+		"top": "rs_ctr:blocks/teleporter_t1",
+		"left": "rs_ctr:blocks/teleporter_s1",
+		"right": "rs_ctr:blocks/teleporter_s1"
+	}
+}
