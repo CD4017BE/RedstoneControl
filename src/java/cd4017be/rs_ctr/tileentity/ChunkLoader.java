@@ -100,7 +100,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		
 		int chunks = chunkCount();
 		boolean all = ticket.getModData().getBoolean("all");
-		boolean reduce = all && mode == 1 || missingFrames != 0 || chunks > ticket.getChunkListDepth();
+		boolean reduce = all && mode == 1 || missingFrames != 0 || (ticket.getChunkListDepth() > 0 && chunks > ticket.getChunkListDepth());
 		if (!all || reduce) chunks = 1;
 		else if (chunks > 2) chunks = 2;
 		if (mode > 0 && minutes >= chunks) {
@@ -270,17 +270,31 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		missingFrames = nbt.getByte("frame");
 		showFrame = nbt.getBoolean("dsp");
 		minutes = nbt.getInteger("t");
-		if (mode == CLIENT && nbt.hasKey("lim", NBT.TAG_INT)) MAX_CHUNKS = nbt.getInteger("lim");
+		if (mode == CLIENT && nbt.hasKey("lim", NBT.TAG_INT)) {
+			MAX_CHUNKS = nbt.getInteger("lim");
+			if (MAX_CHUNKS <= 0) MAX_CHUNKS = Integer.MAX_VALUE;
+		}
 		super.loadState(nbt, mode);
+	}
+
+	@Override
+	protected void onUnload() {
+		super.onUnload();
+		if (ticket != null) {
+			ForgeChunkManager.releaseTicket(ticket);
+			ticket = null;
+		}
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		turnOn();
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (ticket != null) {
-			ForgeChunkManager.releaseTicket(ticket);
-			ticket = null;
-		}
 		unlinkCorners(world, pos, area, ~missingFrames);
 	}
 
