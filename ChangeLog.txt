@@ -1,3 +1,14 @@
+v0.3.0
+Changes:
+- added Block Teleporters
+- made wire connections teleport compatible
+Warning not fully compatible with old world saves. Potential problems include strange buggy behavior when removing or changing old wire connections. Backup your world before updating!
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.5.0
+
 v0.2.7
 Changes:
 - added Wireless Block Reference Connector
