@@ -1,4 +1,4 @@
-VERSION = 101;
+VERSION = 102;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -41,8 +41,23 @@ energy_breaker_speed = 8.0; !energy consumption increase when running the Block 
 energy_placer_op = 1000; !base energy consumed by the Item User per operation.
 energy_placer_speed = 8.0; !energy consumption increase when running the Item User at max clock speed.
 !total_energy_cost = energy_placer_op * (1 + energy_placer_speed / ticks_since_last_op)
-energy_teleport_pb = 500; !energy consumed by the Block Teleporter per hypercube volume (width * height * length * distance)
-teleport_dist_cap = 1024; !upper limit for the distance used in energy cost computation (also the distance used when moving between dimensions)
+energy_teleport_pb = 2000; !energy consumed by the Block Teleporter per hypercube volume (width * height * length * distance)
+teleport_dist_cap = 512; !upper limit for the distance used in energy cost computation (also the distance used when moving between dimensions)
+
+{
+	!Teleporter white/blacklist entry format:
+	!specific blockstate: "modid:blockid@meta"
+	!all states of block: "modid:blockid"
+	!all blocks from mod: "modid:"
+	
+	!By default all breakable blocks can be moved by a teleporter. Blocks that should NOT be movable must be added here.
+	teleport_blacklist = [
+	];
+	!By default unbreakable blocks can't be moved by a teleporter. Blocks that should be movable anyway must be added here.
+	teleport_whitelist = [
+		"draconicevolution:reactor_core" !prevent dangerous situations where the stabilizers would move without the core.
+	];
+}
 
 PRE_INIT() {
 	add("item", 400, "battery", "rs_ctr:battery");

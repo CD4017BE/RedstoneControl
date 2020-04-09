@@ -56,9 +56,8 @@ implements IFrameOperator, IntConsumer, Supplier<String>, ISpecialRenderComp, IT
 		if (action == SINGLE_BLOCK) return super.run();
 		if (missingFrames != 0 || area[3] <= 0 || area[4] <= 0 || area[5] <= 0) return INVALID_FRAME;
 		if (dest == null || ref == null || ref.dim != world.provider.getDimension() || !isInArea(ref.pos)) return INVALID_COORDS;
-		double distance = Math.sqrt(new DimPos(ref.pos, ref.dim).distanceSq(new DimPos(dest.pos, dest.dim)));
+		double distance = attenuatedDistance(new DimPos(ref.pos, ref.dim), new DimPos(dest.pos, dest.dim));
 		if (distance == 0) return COMPLETE;
-		if (distance > MAX_DISTANCE) distance = MAX_DISTANCE;
 		
 		DimPos pa, pb;
 		BlockPos size;

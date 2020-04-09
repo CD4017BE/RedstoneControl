@@ -160,6 +160,12 @@ public class CommonProxy implements IRecipeHandler {
 		StructTeleporter.RANGE = (int)c.getNumber("teleporter_range", StructTeleporter.RANGE);
 		Teleporter.ENERGY_PER_BLOCK = c.getNumber("energy_teleport_pb", StructTeleporter.ENERGY_PER_BLOCK);
 		Teleporter.MAX_DISTANCE = c.getNumber("teleport_dist_cap", StructTeleporter.MAX_DISTANCE);
+		for (Object o : c.get("teleport_whitelist", Object[].class, new Object[0]))
+			if (o instanceof String)
+				Teleporter.addEntry((String)o, false);
+		for (Object o : c.get("teleport_blacklist", Object[].class, new Object[0]))
+			if (o instanceof String)
+				Teleporter.addEntry((String)o, true);
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));

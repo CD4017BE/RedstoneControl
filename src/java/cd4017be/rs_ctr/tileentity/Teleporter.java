@@ -13,11 +13,17 @@ import cd4017be.lib.util.DimPos;
 import cd4017be.lib.util.MovedBlock;
 import static cd4017be.lib.util.MovedBlock.cut;
 import cd4017be.lib.util.Orientation;
+import cd4017be.rs_ctr.Main;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import cd4017be.lib.tileentity.BaseTileEntity.ITickableServerOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,6 +34,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class Teleporter extends WallMountGate implements SignalHandler, ITickableServerOnly {
 
 	protected static final int SINGLE_BLOCK = 1, DO_TELEPORT = 8, INVALID_COORDS = -1, OUT_OF_WORLD = -2, COMPLETE = 100;
+	public static final Object2IntOpenHashMap<Block> blacklist, whitelist;
+	static {
+		blacklist = new Object2IntOpenHashMap<>();
+		blacklist.defaultReturnValue(0);
+		whitelist = new Object2IntOpenHashMap<>();
+		whitelist.defaultReturnValue(-1);
+	}
 	public static double ENERGY_PER_BLOCK = 1000, MAX_DISTANCE = 1024;
 	SignalHandler out = SignalHandler.NOP;
 	EnergyHandler energy = EnergyHandler.NOP;
@@ -61,9 +74,8 @@ public class Teleporter extends WallMountGate implements SignalHandler, ITickabl
 		if (dest == null || ref == null) return INVALID_COORDS;
 		DimPos posA = new DimPos(ref.pos, ref.dim), posB = new DimPos(dest.pos, dest.dim);
 		if (!(world.isValid(posA) && world.isValid(posB))) return OUT_OF_WORLD;
-		double distance = Math.sqrt(posA.distanceSq(posB));
+		double distance = attenuatedDistance(posA, posB);
 		if (distance == 0) return COMPLETE;
-		if (distance > MAX_DISTANCE) distance = MAX_DISTANCE;
 		long needed = Math.round(distance * ENERGY_PER_BLOCK);
 		return initTeleport(
 			()-> {
@@ -78,6 +90,12 @@ public class Teleporter extends WallMountGate implements SignalHandler, ITickabl
 		);
 	}
 
+	protected static double attenuatedDistance(DimPos a, DimPos b) {
+		double d = Math.sqrt(a.distanceSq(b));
+		if (Double.isInfinite(MAX_DISTANCE)) return d;
+		return MAX_DISTANCE / (1.0 + MAX_DISTANCE / d);
+	}
+
 	protected int initTeleport(Runnable task, long needed) {
 		buffer -= energy.changeEnergy((int)Math.max(buffer - needed, -Integer.MAX_VALUE), false);
 		if (buffer < needed) {
@@ -89,13 +107,42 @@ public class Teleporter extends WallMountGate implements SignalHandler, ITickabl
 	}
 
 	protected static void swap(DimPos pa, DimPos pb, HashMap<DimPos, NBTTagCompound> addedTiles) {
-		World wa = pa.getWorldServer(), wb = pb.getWorldServer();
-		if (wa.getBlockState(pa).getBlockHardness(wa, pa) < 0) return;
-		if (wb.getBlockState(pb).getBlockHardness(wb, pb) < 0) return;
+		if (!canTeleport(pa.getWorldServer(), pa) || !canTeleport(pb.getWorldServer(), pb)) return;
 		MovedBlock a = cut(pa, addedTiles);
 		MovedBlock b = cut(pb, addedTiles);
 		a.paste(pb, addedTiles);
 		b.paste(pa, addedTiles);
+	}
+
+	protected static boolean canTeleport(World world, BlockPos pos) {
+		IBlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		int i = (state.getBlockHardness(world, pos) < 0 ? whitelist : blacklist).getInt(block);
+		return i == 0 || i > 0 && (i >> block.getMetaFromState(state) & 1) == 0;
+	}
+
+	public static void addEntry(String s, boolean black) {
+		Object2IntOpenHashMap<Block> map = black ? blacklist : whitelist;
+		int x = black ? -1 : 0;
+		int i = s.indexOf('@'), meta = -1;
+		if (i >= 0) {
+			try {meta = Integer.parseInt(s.substring(i + 1));}
+			catch (NumberFormatException e) {
+				Main.LOG.error(black ? "invalid teleporter blacklist entry" : "invalid teleporter whitelist entry", e);
+				return;
+			}
+			s = s.substring(0, i);
+		}
+		ResourceLocation rl = new ResourceLocation(s);
+		if (rl.getResourcePath().isEmpty()) {
+			for (ResourceLocation loc : Block.REGISTRY.getKeys())
+				if (loc.getResourceDomain().equals(s))
+					map.put(Block.REGISTRY.getObject(loc), x);
+			return;
+		}
+		Block block = Block.REGISTRY.getObject(rl);
+		if (block == null || block == Blocks.AIR) return;
+		map.put(block, meta < 0 ? x : (map.getInt(block) ^ x) & ~(1 << meta) ^ x);
 	}
 
 	protected static List<Entity> getEntities(DimPos pos, BlockPos size, boolean skipInner) {
