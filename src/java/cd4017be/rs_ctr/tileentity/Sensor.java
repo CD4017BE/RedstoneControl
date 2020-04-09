@@ -24,7 +24,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.relauncher.Side;
@@ -138,13 +137,6 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	}
 
 	@Override
-	public void setWorld(World world) {
-		super.setWorld(world);
-		if (((MountedPort)ports[0]).getConnector() == null && world != null && !world.isRemote)
-			resetPin(0);
-	}
-
-	@Override
 	protected void initGuiComps(List<IInteractiveComponent> list) {
 		list.add(this);
 	}
@@ -213,6 +205,8 @@ public class Sensor extends WallMountGate implements BlockHandler, SignalHandler
 	@Override
 	public void onLoad() {
 		super.onLoad();
+		if (((MountedPort)ports[0]).getConnector() == null && !world.isRemote)
+			resetPin(0);
 	}
 
 	@Override
