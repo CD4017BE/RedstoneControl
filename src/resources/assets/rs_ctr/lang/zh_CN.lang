@@ -11,7 +11,7 @@ tile.rs_ctr.rs_port\:1.tipA=时机：§a即时 §e[Write]
 tile.rs_ctr.rs_port\:2.name=方块访问接口
 tile.rs_ctr.rs_port\:2.tip=贴在方块表面可使连接本接口的设备与方块互动。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
 tile.rs_ctr.rs_port\:3.name=方块镜像接口
-tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可通过这个接口访问方块§9物品栏§7和§9流体存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可使方块通过这个接口访问传入方块§9物品栏§7和§9流体存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
 tile.rs_ctr.rs_port\:3.tipA=时机：§a即时 §e[Mirror Block IN]
 tile.rs_ctr.splitter.name=信号4x分离器
 tile.rs_ctr.splitter.tip=在四个不同输出上重复输入信号。
@@ -66,11 +66,11 @@ tile.rs_ctr.solar_cell.tipA=能量产生：§a\\<energy_solar>/t §e@ 满日照
 tile.rs_ctr.energy_valve.name=功率调节器
 tile.rs_ctr.energy_valve.tip=控制并测量§9FE§7传输过设备的数量：\n改变§eClock IN§7的值会开始传输§eRF Limit IN§7给定大小的能量，§eRF flow OUT§7则会返回上一次操作传输了多少能量。
 tile.rs_ctr.energy_valve.tipA=时机：§a即时 §e[Clock IN]\n最大传输：§a2.147.483.647 RF/t
-tile.rs_ctr.splitter_b.name=方块查询4x分离器
-tile.rs_ctr.splitter_b.tip=在四个不同输出上重复输入的§6方块查询信号§7（无延迟）。
+tile.rs_ctr.splitter_b.name=方块引用4x分离器
+tile.rs_ctr.splitter_b.tip=在四个不同输出上重复输入的§6方块引用信号§7（无延迟）。
 tile.rs_ctr.splitter_b.tipA=时机：§a即时 §e[Block IN]
-tile.rs_ctr.multiplex_b.name=方块查询复用器
-tile.rs_ctr.multiplex_b.tip=如果§eSelect IN§7的值在§e0 ... 3§7内则选择四个§6方块查询§7输入中的对应输入进行输出。否则不输出方块查询。
+tile.rs_ctr.multiplex_b.name=方块引用复用器
+tile.rs_ctr.multiplex_b.tip=如果§eSelect IN§7的值在§e0 ... 3§7内则选择四个§6方块引用§7输入中的对应输入进行输出。否则不输出方块引用。
 tile.rs_ctr.multiplex_b.tipA=时机：§a下一同步。每刻后
 tile.rs_ctr.frame.name=3维方块框架
 tile.rs_ctr.frame.tip=用于标记设备的工作范围：\n首先将框架以想要的距离放置在设备附近的轴线上。\n然后将框架放在区域的8个角上并让设备扫描。这些角落的方块必须留在那里，否则区域会无效。
@@ -98,9 +98,11 @@ tile.rs_ctr.counter.tipA=时机：§a即时 §e[Clock IN]
 tile.rs_ctr.oc_adapter.name=信号IO控制器
 tile.rs_ctr.oc_adapter.tip=§9Open Computers§7专用的适配器。提供§18个输入§7和§28个输出§7端口。输入信号可配置用于触发信号改变事件。\n另外背后的§e4能量§7端口能方便地给OC网络的机器供能。
 tile.rs_ctr.oc_adapter.tipA=时机：§a下一同步。每刻后\n能量转换：§a1 OC 充能 \= \\<energy_unit_OC>
-tile.rs_ctr.ram.name=外部RAM芯片[%s位]
+tile.rs_ctr.ram.name=外部RAM芯片[%s比特]
 tile.rs_ctr.ram.tip=可直接寻址的内存，支持同时读写。提供的存储容量比§6处理器§7中通常提供的存储容量大得多。\n右击方块可查看/编辑内容。被破坏时数据仍然保留。
 tile.rs_ctr.ram.tipA=读时机：§a即时 §e[Read Address]\n写时机：§a下一同步。世界刻
+tile.rs_ctr.chunk_loader.name=区块加载器
+tile.rs_ctr.chunk_loader.tip=保持被§63维方块框架§7定义的区域处于区块加载状态。\n§eActive IN§7：操作模式：0 \= 关闭，1 \= 单个区块，2 \= 区域\n§erem. Time OUT§7：剩余§6运行时间§7的分钟数，必须定期补充。\n§o如果有多于一个区块被加载，运行时间会以普通速度的两倍被消耗。\n\n§8§n一般注解：§8要小心跨过区块加载区域边界的管道和机器！如果它们尝试与相邻的未加载区块互动，那些区块可能会热加载来满足互动需求。但由于没有玩家或区块加载器来保持这种区块的加载，一刻后会被再次卸载，导致无限循环。为了避免卡顿，最好让这些区块也被永久加载。\n§8§o本模组的设备很节省。它们只在绝对必要时热加载区块！
 
 # chat messages
 msg.rs_ctr.type=§c不兼容的接口类型！
@@ -111,7 +113,7 @@ msg.rs_ctr.wire1=§c距离过远，线不够了！
 msg.rs_ctr.wire2=§c距离过远，最远是%d个方块！
 msg.rs_ctr.wire3=§c第一个端口已经不存在了！
 msg.rs_ctr.probe0=§c必须先连接到方块！
-msg.rs_ctr.probe1=§c只能连接到方块查询输入！
+msg.rs_ctr.probe1=§c只能连接到方块引用输入！
 msg.rs_ctr.split1=§c分离通道不足！
 msg.rs_ctr.save_succ=§a电路图保存成功！
 msg.rs_ctr.load_succ=§a电路图加载成功！
@@ -138,14 +140,16 @@ item.rs_ctr.wire.tip=对信号接口§a右击§7可贴上，再对另一出入�
 item.rs_ctr.wire.tipA=最大长度§a\\<max_wire_length> m
 item.rs_ctr.wireless.name=无线信号连接器
 item.rs_ctr.wireless.tip=像§6信号线§7一样，但能远距离甚至跨维度连接两个端口。
-item.rs_ctr.constant.tip=贴在输入端口上可以提供一个常量。\n对空气§a右击§7配置这个常量。\n对空气§a潜行右击§7切换十进制/十六进制/二进制模式。
+item.rs_ctr.wireless_b.name=无线方块引用连接器
+item.rs_ctr.wireless_b.tip=像§6方块引用线缆§7一样，但能远距离甚至跨维度连接两个端口。
 item.rs_ctr.constant.name=常量塞
+item.rs_ctr.constant.tip=贴在输入端口上可以提供一个常量。\n对空气§a右击§7配置这个常量。\n对空气§a潜行右击§7切换十进制/十六进制/二进制模式。
 item.rs_ctr.lamp.name=信号状态灯
 item.rs_ctr.lamp.tip=贴在输出端上以查看其信号状况。\n\n也能作为指示灯贴在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§74x4的任意位置
 item.rs_ctr.tag.name=线缆标签
 item.rs_ctr.tag.tip=§a右击§7空气来配置标签名字。\n§a右击§7已连接的端口来给连接命名。之后它会显示名字，而不是连接ID。
-item.rs_ctr.block_wire.name=方块查询线缆
-item.rs_ctr.block_wire.tip=用于连接§6方块查询端口§7，就像§6信号线缆§7连接信号端口一样。\n§o端口间直线距离有几格就需要几个物品。\n§b§o另请参阅：§6§o方块访问接口
+item.rs_ctr.block_wire.name=方块引用线缆
+item.rs_ctr.block_wire.tip=用于连接§6方块引用端口§7，就像§6信号线缆§7连接信号端口一样。\n§o端口间直线距离有几格就需要几个物品。\n§b§o另请参阅：§6§o方块访问接口
 item.rs_ctr.block_wire.tipA=最大长度：§a\\<max_wire_length> m
 item.rs_ctr.clock.name=时钟信号塞
 item.rs_ctr.clock.tip=向连接的端口持续发出方波信号。信号值会在§e65535§7和§e0§7之间变化。\n对空气§a右击§7配置脉冲宽度和脉冲相位。\n§o世界上所有的时钟都是同步的。\n\n也能贴在§6控制面板§7上作为可调整的钟\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
@@ -197,6 +201,11 @@ item.rs_ctr.edge_trigger\:i.tipA=时机：§a即时\n最大连接：§a1
 item.rs_ctr.pulse_gen.name=脉冲生成塞
 item.rs_ctr.pulse_gen.tip=每当贴着的端口中输出信号在上一刻有变化则向相连信号线输出§e65535§7，否则输出§e0§7。
 item.rs_ctr.pulse_gen.tipA=时机：§a下一同步。每刻后\n最大连接：§a1
+item.rs_ctr.cl_fuel.name=运行时间[§a%d：%02d h§r]
+item.rs_ctr.cl_fuel.tip=§a右击§7§6区块加载器§7来补充其运行时间。\n§o物品会被消耗！\n§a左击§7§6区块加载器§7可取回其中储存的时间。
+item.rs_ctr.signal_probe.tip=显示设备中当前正在输入输出的所有信号。\n\n也能当成一个§6螺丝刀§7。
+item.rs_ctr.signal_probe.name=信号探针显示器
+item.rs_ctr.signal_probe.name1=信号探针显示器 §9已储存配置。
 item.cd4017be.m\:battery.name=红石电池
 item.cd4017be.m\:actuator.name=远程执行器
 item.cd4017be.m\:telekin_alloy.name=心灵传动合金
@@ -204,6 +213,17 @@ item.cd4017be.m\:corerope.name=芯绳单元
 item.cd4017be.m\:corerope1.name=芯绳集群
 item.cd4017be.m\:corerope2.name=芯绳网格
 
+#Signal Probing Display
+sp.rs_ctr.none=[       ]
+sp.rs_ctr.num=十六进制：%1$08X 十进制：%1$d
+sp.rs_ctr.i=§9 > §r
+sp.rs_ctr.o=§a < §r
+sp.rs_ctr.block=%d %d %d d\=%d %s
+sp.rs_ctr.invalid=无信号！
+sp.rs_ctr.plug=[ plug ]
+sp.rs_ctr.id=#%-6d
+sp.rs_ctr.unknown=未知值
+sp.rs_ctr.null=空引用
 #Signal port names
 port.rs_ctr.rsR=Read
 port.rs_ctr.rsW=Write
@@ -288,10 +308,18 @@ port.rs_ctr.dec=减少
 port.rs_ctr.limit=Limit IN
 port.rs_ctr.count=Count OUT
 port.rs_ctr.clko=Clock OUT
-port.rs_ctr.ra=地址读
-port.rs_ctr.rv=数据读
-port.rs_ctr.wa=地址写
-port.rs_ctr.wv=数据写
+port.rs_ctr.ra=读取地址
+port.rs_ctr.rv=数据输出
+port.rs_ctr.wa=写入地址
+port.rs_ctr.wv=数据输入
+port.rs_ctr.area_cl0=§a有效区域 %d*%d\n区块：%d / %d
+port.rs_ctr.area_cl2=区域过大：%d*%d\n§c太多区块：%d / %d
+port.rs_ctr.area_cl1=未完成区域：%d*%d\n§6缺少%5$d个角落的框架！
+port.rs_ctr.load=Active IN
+port.rs_ctr.time=rem. Time OUT
+port.rs_ctr.time_cl0=时间：%d\:%02d h [§coff§f]
+port.rs_ctr.time_cl1=时间：%d\:%02d h [§ax1§r]
+port.rs_ctr.time_cl2=时间：%d\:%02d h [§9x2§r]
 sensor.rs_ctr.none=比较器\n值
 sensor.rs_ctr.item=已存储物品计数
 sensor.rs_ctr.fluid=已存储流体 [mB]
@@ -341,7 +369,7 @@ gate.rs_ctr.nor=或非门\n§7in \= ¬(in1 ∨ in2)\n§7按位
 gate.rs_ctr.not=非门\n§7out \= ¬in\n§7按位
 gate.rs_ctr.and=与门\n§7out \= in1 ∧ in2\n§7按位
 gate.rs_ctr.xnor=同或门\n§7in \= ¬(in1 ⊻ in2)\n§7按位
-gate.rs_ctr.swt=多路选择器\n§7in1 \= true -> out \= in2\n§else -> out \= in3
+gate.rs_ctr.swt=多路选择器\n§7in1 \= true -> out \= in2\n§7else -> out \= in3
 gate.rs_ctr.branch=执行选择器\n§7in1 \= true -> 计算in2\n§7else -> 计算in3
 gate.rs_ctr.sequence=执行序列\n§7先计算in1\n§7再计算in2
 gate.rs_ctr.update=更新触发器\n§7计算时总触发\n§7下一周期。
@@ -492,7 +520,7 @@ gui.rs_ctr.item_placer.air0=对方块使用\n§8bit[14] \= §70
 gui.rs_ctr.item_placer.air1=对空气使用\n§8bit[14] \= §71
 gui.rs_ctr.item_placer.creative0=创造模式：关\n§8bit[7] \= §70
 gui.rs_ctr.item_placer.creative1=创造模式：开\n§8bit[7] \= §71
-gui.rs_ctr.ram.layout=内存布局：%2$d字，共%d位
+gui.rs_ctr.ram.layout=内存布局：有%2$d字，一字%1$d位
 gui.rs_ctr.fmt_w=图像宽\n§7对于.png导出\n位每行\n§7对于.hex导出
 gui.rs_ctr.fmt_h=图像宽\n§7对于.png导出
 gui.rs_ctr.import_file=从文件导入内存
