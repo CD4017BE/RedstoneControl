@@ -5,6 +5,7 @@ import org.objectweb.asm.Type;
 import cd4017be.rs_ctr.circuit.editor.GeneratedGate;
 import cd4017be.rs_ctr.circuit.editor.GeneratedType;
 import cd4017be.rscpl.compile.Node;
+import cd4017be.rscpl.compile.NodeCompiler;
 import cd4017be.rscpl.editor.InvalidSchematicException;
 import cd4017be.rscpl.graph.IReadVar;
 import cd4017be.rscpl.graph.IWriteVar;
@@ -48,7 +49,7 @@ public class WriteVar extends GeneratedGate implements IWriteVar, ISpecialRender
 
 	@Override
 	protected Node createLink(int i) {
-		return link.result();
+		return link != null ? link.result() : new Node(NodeCompiler.NOP);
 	}
 
 }
