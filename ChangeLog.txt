@@ -1,5 +1,6 @@
 v0.3.0
 Changes:
+- fixed some clocked Comparator issues during world load
 - added Block Teleporters
 - made wire connections teleport compatible
 Warning not fully compatible with old world saves. Potential problems include strange buggy behavior when removing or changing old wire connections. Backup your world before updating!
