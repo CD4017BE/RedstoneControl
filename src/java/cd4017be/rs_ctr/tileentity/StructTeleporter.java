@@ -208,8 +208,8 @@ implements IFrameOperator, IntConsumer, Supplier<String>, ISpecialRenderComp, IT
 	}
 
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	public void breakBlock() {
+		super.breakBlock();
 		unlinkCorners(world, pos, area, ~missingFrames);
 	}
 

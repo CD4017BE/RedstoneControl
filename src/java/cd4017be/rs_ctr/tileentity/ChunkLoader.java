@@ -293,12 +293,6 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 	}
 
 	@Override
-	public void invalidate() {
-		super.invalidate();
-		unlinkCorners(world, pos, area, ~missingFrames);
-	}
-
-	@Override
 	public void breakBlock() {
 		super.breakBlock();
 		@SuppressWarnings("deprecation")
@@ -307,6 +301,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		if ((minutes %= cap) > 0)
 			ItemFluidUtil.dropStack(new ItemStack(Objects.cl_fuel, 1, cap - minutes), world, pos);
 		minutes = 0;
+		unlinkCorners(world, pos, area, ~missingFrames);
 	}
 
 	@Override

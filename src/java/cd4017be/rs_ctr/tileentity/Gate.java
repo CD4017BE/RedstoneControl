@@ -165,17 +165,6 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 	}
 
 	@Override
-	public void invalidate() {
-		if (!world.isRemote) {
-			for (MountedPort port : ports)
-				port.disconnect();
-			for (MountedPort port : hooks.values())
-				port.disconnect();
-		}
-		super.invalidate();
-	}
-
-	@Override
 	public void breakBlock() {
 		for (MountedPort port : ports)
 			port.setConnector(null, null);
@@ -184,6 +173,12 @@ public abstract class Gate extends BaseTileEntity implements IHookAttachable, II
 			removeHook(pin, null);
 		if (cover.stack != null)
 			ItemFluidUtil.dropStack(cover.stack, world, pos);
+		if (!world.isRemote) {
+			for (MountedPort port : ports)
+				port.disconnect();
+			for (MountedPort port : hooks.values())
+				port.disconnect();
+		}
 	}
 
 	@Override
