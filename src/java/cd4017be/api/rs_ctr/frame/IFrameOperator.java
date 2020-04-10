@@ -1,10 +1,12 @@
 package cd4017be.api.rs_ctr.frame;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 /** @author cd4017be */
 public interface IFrameOperator {
@@ -113,4 +115,24 @@ public interface IFrameOperator {
 		}
 	}
 
+	public static void readArea(int[] area, NBTTagCompound nbt, BlockPos pos) {
+		if (nbt.hasKey("area", NBT.TAG_INT_ARRAY)) {//backwards compatibility
+			int[] arr = nbt.getIntArray("area");
+			System.arraycopy(arr, 0, area, 0, Math.min(arr.length, 6));
+			return;
+		}
+		int[] arr = nbt.getIntArray("region");
+		System.arraycopy(arr, 0, area, 0, Math.min(arr.length, 6));
+		area[0] += pos.getX();
+		area[1] += pos.getY();
+		area[2] += pos.getZ();
+	}
+
+	public static void writeArea(int[] area, NBTTagCompound nbt, BlockPos pos) {
+		int[] arr = area.clone();
+		arr[0] -= pos.getX();
+		arr[1] -= pos.getY();
+		arr[2] -= pos.getZ();
+		nbt.setIntArray("region", arr);
+	}
 }

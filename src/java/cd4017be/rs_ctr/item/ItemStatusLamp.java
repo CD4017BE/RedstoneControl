@@ -2,7 +2,7 @@ package cd4017be.rs_ctr.item;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
 import cd4017be.rs_ctr.port.StatusLamp;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,7 +31,7 @@ public class ItemStatusLamp extends ItemPanelModule implements IConnectorItem {
 			player.sendMessage(new TextComponentTranslation("msg.rs_ctr.dir_out"));
 			return;
 		}
-		port.setConnector(new StatusLamp(), player);
+		port.setConnector(new StatusLamp(port), player);
 		if (!player.isCreative()) stack.shrink(1);
 	}
 

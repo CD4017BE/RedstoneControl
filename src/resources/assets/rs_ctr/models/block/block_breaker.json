@@ -1,34 +1,10 @@
 {
-	"parent": "block/block",
+	"parent": "rs_ctr:block/machine",
     "textures": {
 		"front": "rs_ctr:blocks/block_breaker_f",
 		"bot": "blocks/stone_slab_top",
 		"top": "rs_ctr:blocks/block_breaker_t",
-		"side": "rs_ctr:blocks/block_breaker_s",
-		"out": "rs_ctr:blocks/block_breaker_b",
-        "particle": "rs_ctr:blocks/block_breaker_f"
-    },
-    "elements": [
-        {   "from": [ 0, 0, 0 ],
-            "to": [ 16, 4, 16 ],
-            "faces": {
-				"east":  { "uv": [ 0, 12, 16, 16 ], "texture": "#front", "cullface": "east" },
-                "west":  { "uv": [ 0, 12, 16, 16 ], "texture": "#front", "cullface": "west" },
-                "north": { "uv": [ 0, 12, 16, 16 ], "texture": "#front", "cullface": "north" },
-                "south": { "uv": [ 0, 12, 16, 16 ], "texture": "#front", "cullface": "south" },
-                "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bot", "cullface": "down" },
-                "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top" }
-            }
-        }, {
-			"from": [ 0, 4, 0 ],
-            "to": [ 16, 16, 12 ],
-            "faces": {
-				"east":  { "uv": [ 12, 0, 0, 12 ], "texture": "#out", "cullface": "east" },
-                "west":    { "uv": [ 0, 0, 12, 12 ], "texture": "#side", "cullface": "west" },
-				"north": { "uv": [ 16, 0, 0, 12 ], "texture": "#top", "cullface": "north" },
-                "south": { "uv": [ 0, 0, 16, 12 ], "texture": "#front" },
-                "up":  { "uv": [ 0, 0, 16, 12 ], "texture": "#top", "cullface": "up" }
-            }
-        }
-    ]
+		"left": "rs_ctr:blocks/block_breaker_s",
+		"right": "rs_ctr:blocks/block_breaker_b"
+    }
 }

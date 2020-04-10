@@ -100,7 +100,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		
 		int chunks = chunkCount();
 		boolean all = ticket.getModData().getBoolean("all");
-		boolean reduce = all && mode == 1 || missingFrames != 0 || chunks > ticket.getChunkListDepth();
+		boolean reduce = all && mode == 1 || missingFrames != 0 || (ticket.getChunkListDepth() > 0 && chunks > ticket.getChunkListDepth());
 		if (!all || reduce) chunks = 1;
 		else if (chunks > 2) chunks = 2;
 		if (mode > 0 && minutes >= chunks) {
@@ -253,7 +253,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 			"mode", mode == SAVE ? this.mode
 				: (byte)(ticket == null ? 0 : ticket.getModData().getBoolean("all") ? 2 : 1)
 		);
-		nbt.setIntArray("area", area);
+		writeArea(area, nbt, pos);
 		nbt.setByte("frame", missingFrames);
 		nbt.setBoolean("dsp", showFrame);
 		nbt.setInteger("t", minutes);
@@ -266,23 +266,30 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode == SAVE) owner = nbt.getString("owner");
 		this.mode = nbt.getByte("mode");
-		int[] arr = nbt.getIntArray("area");
-		System.arraycopy(arr, 0, area, 0, Math.min(arr.length, 6));
+		readArea(area, nbt, pos);
 		missingFrames = nbt.getByte("frame");
 		showFrame = nbt.getBoolean("dsp");
 		minutes = nbt.getInteger("t");
-		if (mode == CLIENT && nbt.hasKey("lim", NBT.TAG_INT)) MAX_CHUNKS = nbt.getInteger("lim");
+		if (mode == CLIENT && nbt.hasKey("lim", NBT.TAG_INT)) {
+			MAX_CHUNKS = nbt.getInteger("lim");
+			if (MAX_CHUNKS <= 0) MAX_CHUNKS = Integer.MAX_VALUE;
+		}
 		super.loadState(nbt, mode);
 	}
 
 	@Override
-	public void invalidate() {
-		super.invalidate();
+	protected void onUnload() {
+		super.onUnload();
 		if (ticket != null) {
 			ForgeChunkManager.releaseTicket(ticket);
 			ticket = null;
 		}
-		unlinkCorners(world, pos, area, ~missingFrames);
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		turnOn();
 	}
 
 	@Override
@@ -294,6 +301,7 @@ implements IFrameOperator, SignalHandler, IntConsumer, Supplier<String>, ISpecia
 		if ((minutes %= cap) > 0)
 			ItemFluidUtil.dropStack(new ItemStack(Objects.cl_fuel, 1, cap - minutes), world, pos);
 		minutes = 0;
+		unlinkCorners(world, pos, area, ~missingFrames);
 	}
 
 	@Override

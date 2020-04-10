@@ -1,9 +1,9 @@
 package cd4017be.rs_ctr.port;
 
 import java.util.List;
-
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
@@ -17,16 +17,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-
-/**
- * @author CD4017BE
- *
- */
-public class Constant extends Plug implements IBlockRenderComp {
+/** @author CD4017BE */
+public class Constant extends Connector implements IBlockRenderComp {
 
 	public static final String ID = "const";
 	public int value;
 	public byte dsp;
+
+	public Constant(MountedPort port) {
+		super(port);
+	}
 
 	@Override
 	protected String id() {
@@ -50,20 +50,18 @@ public class Constant extends Plug implements IBlockRenderComp {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.misc(2)");
+		PortRenderer.PORT_RENDER.drawModel(
+			quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z,
+			Orientation.fromFacing(port.face), "_plug.misc(2)"
+		);
 	}
 
 	@Override
-	public void onRemoved(MountedPort port, EntityPlayer player) {
-		super.onRemoved(port, player);
+	public void onRemoved(EntityPlayer player) {
 		port.owner.onPortModified(port, IPortProvider.E_DISCONNECT);
-	}
-
-	@Override
-	protected ItemStack drop() {
 		ItemStack stack = new ItemStack(Objects.constant);
 		stack.setTagCompound(serializeNBT());
-		return stack;
+		dropItem(stack, player);
 	}
 
 	@Override
@@ -72,8 +70,7 @@ public class Constant extends Plug implements IBlockRenderComp {
 	}
 
 	@Override
-	public void onLoad(MountedPort port) {
-		super.onLoad(port);
+	public void onLoad() {
 		((SignalHandler)port.owner.getPortCallback(port.pin)).updateSignal(value);
 	}
 

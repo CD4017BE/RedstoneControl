@@ -6,6 +6,7 @@ import cd4017be.api.rs_ctr.com.BlockReference;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.util.Orientation;
@@ -31,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp {
+public class BlockProbe extends Connector implements IBlockRenderComp, ITESRenderComp {
 
 	public static final String ID = "blockProbe";
 
@@ -39,13 +40,16 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 	private EnumFacing linkFace;
 	private int count;
 
-	public BlockProbe(BlockPos linkPos, EnumFacing linkFace, int count) {
+	public BlockProbe(MountedPort port, BlockPos linkPos, EnumFacing linkFace, int count) {
+		super(port);
 		this.linkPos = linkPos;
 		this.linkFace = linkFace;
 		this.count = count;
 	}
 
-	public BlockProbe() {}
+	public BlockProbe(MountedPort port) {
+		super(port);
+	}
 
 	@Override
 	protected String id() {
@@ -69,13 +73,8 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 	}
 
 	@Override
-	public void onRemoved(MountedPort port, EntityPlayer player) {
-		super.onRemoved(port, player);
+	public void onRemoved(EntityPlayer player) {
 		port.owner.onPortModified(port, IPortProvider.E_DISCONNECT);
-	}
-
-	@Override
-	protected ItemStack drop() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setInteger("lx", linkPos.getX());
 		nbt.setInteger("ly", linkPos.getY());
@@ -83,7 +82,7 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 		nbt.setByte("lf", (byte)linkFace.getIndex());
 		ItemStack stack = new ItemStack(Objects.block_wire, count);
 		stack.setTagCompound(nbt);
-		return stack;
+		dropItem(stack, player);
 	}
 
 	@Override
@@ -94,8 +93,7 @@ public class BlockProbe extends Plug implements IBlockRenderComp, ITESRenderComp
 	}
 
 	@Override
-	public void onLoad(MountedPort port) {
-		super.onLoad(port);
+	public void onLoad() {
 		((BlockHandler)port.owner.getPortCallback(port.pin)).updateBlock(new BlockReference(port.getWorld(), linkPos, linkFace));
 	}
 

@@ -2,6 +2,7 @@ package cd4017be.rs_ctr.port;
 
 import java.util.Arrays;
 import cd4017be.api.rs_ctr.com.SignalHandler;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.rs_ctr.Objects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,10 +13,14 @@ public class SignalSplitPlug extends SplitPlug implements SignalHandler {
 	SignalHandler[] callbacks;
 	int lastValue;
 
+	public SignalSplitPlug(MountedPort port) {
+		super(port);
+	}
+
 	@Override
 	public int addLinks(int n) {
 		n = super.addLinks(n);
-		callbacks = callbacks == null ? new SignalHandler[n] : Arrays.copyOf(callbacks, links.length);
+		callbacks = callbacks == null ? new SignalHandler[n] : Arrays.copyOf(callbacks, wires.length);
 		Arrays.fill(callbacks, callbacks.length - n, callbacks.length, SignalHandler.NOP);
 		return n;
 	}
@@ -23,15 +28,15 @@ public class SignalSplitPlug extends SplitPlug implements SignalHandler {
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		super.deserializeNBT(nbt);
-		callbacks = new SignalHandler[links.length];
+		callbacks = new SignalHandler[wires.length];
 		Arrays.fill(callbacks, SignalHandler.NOP);
 	}
 
 	@Override
 	public void setPortCallback(int pin, Object callback) {
 		if(callback instanceof SignalHandler)
-			(callbacks[pin] = (SignalHandler)callback).updateSignal(lastValue);
-		else callbacks[pin] = SignalHandler.NOP;
+			(callbacks[pin - 1] = (SignalHandler)callback).updateSignal(lastValue);
+		else callbacks[pin - 1] = SignalHandler.NOP;
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public class SignalSplitPlug extends SplitPlug implements SignalHandler {
 
 	@Override
 	protected ItemStack drop() {
-		return new ItemStack(Objects.split_s, links.length);
+		return new ItemStack(Objects.split_s, wires.length);
 	}
 
 	@Override

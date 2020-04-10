@@ -61,7 +61,7 @@ public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTB
 	IHost host;
 	/**
 	 * cached references to Reactor Core state fields.
-	 * Conveniently DE wraped them in isolated objects so there is no reference to the TileEntity itself kept im memory.
+	 * Conveniently DE wrapped them in isolated objects so there is no reference to the TileEntity itself kept in memory.
 	 */
 	FieldWrapper<?> satur, maxSatur, fuel, chaos, temp, shield, maxShield;
 	FieldWrapper<Enum<?>> mode;
@@ -70,7 +70,7 @@ public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTB
 
 	@Override
 	public int readValue(BlockReference block) {
-		if (block.getState() != lastBlock) onRefChange(block, host);
+		if (block.getState() != lastBlock) updateState(block);
 		if (lastMode < 0) return 0;
 		int m = mode.get().ordinal();
 		if (m != lastMode && host != null) {
@@ -106,13 +106,15 @@ public class DraconicFusionSensor implements IBlockSensor, INBTSerializable<NBTB
 	public void onRefChange(BlockReference block, IHost host) {
 		if ((this.host = host) == null) {
 			fuel = chaos = temp = shield = maxShield = satur = maxSatur = mode = null;
-			lastBlock = null;
-			lastMode = -2;
-			return;
 		}
-		lastBlock = block != null ? block.getState() : null;
+		lastBlock = null;
+		lastMode = -2;
+	}
+
+	private void updateState(BlockReference block) {
+		lastBlock = block.getState();
 		if (INVALID_API) return;
-		TileEntity te = block == null ? null : block.getTileEntity();
+		TileEntity te = block.getTileEntity();
 		if (!C_REACTOR_COMP.isInstance(te)) {
 			fuel = chaos = temp = shield = maxShield = satur = maxSatur = mode = null;
 			if (lastMode != -1) {

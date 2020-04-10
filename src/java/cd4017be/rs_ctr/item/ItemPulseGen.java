@@ -1,7 +1,8 @@
 package cd4017be.rs_ctr.item;
 
-import cd4017be.api.rs_ctr.port.IConnector;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.rs_ctr.port.PulseGen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,8 +16,8 @@ public class ItemPulseGen extends ItemPlug implements IConnectorItem {
 	}
 
 	@Override
-	protected IConnector create(ItemStack stack, EntityPlayer player) {
-		return new PulseGen();
+	protected Connector create(MountedPort port, ItemStack stack, EntityPlayer player) {
+		return new PulseGen(port);
 	}
 
 }

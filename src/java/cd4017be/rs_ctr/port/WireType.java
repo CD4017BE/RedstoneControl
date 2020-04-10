@@ -3,7 +3,7 @@ package cd4017be.rs_ctr.port;
 import cd4017be.api.rs_ctr.com.EnergyHandler;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
-import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.Connector;
 import net.minecraft.item.Item;
 
 /**
@@ -30,8 +30,8 @@ public enum WireType {
 
 	public static void registerAll() {
 		for (WireType t : values()) {
-			IConnector.REGISTRY.put(t.wiredId, ()-> new WireConnection(t));
-			IConnector.REGISTRY.put(t.wirelessId, ()-> new WirelessConnection(t));
+			Connector.REGISTRY.put(t.wiredId, (port)-> new WireConnection(port, t));
+			Connector.REGISTRY.put(t.wirelessId, (port)-> new WirelessConnection(port, t));
 		}
 	}
 

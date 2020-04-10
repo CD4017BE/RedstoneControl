@@ -4,7 +4,7 @@ import static cd4017be.lib.network.GuiNetworkHandler.openHeldItemGui;
 
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.ItemInteractionHandler;
 import cd4017be.lib.Gui.ModularGui;
@@ -56,7 +56,7 @@ public class ItemClock extends ItemPanelModule implements IConnectorItem, IGuiHa
 		}
 		NBTTagCompound nbt = stack.getTagCompound();
 		if (nbt == null) return;
-		Clock c = new Clock();
+		Clock c = new Clock(port);
 		c.deserializeNBT(nbt);
 		port.setConnector(c, player);
 		if (!player.isCreative()) stack.shrink(1);

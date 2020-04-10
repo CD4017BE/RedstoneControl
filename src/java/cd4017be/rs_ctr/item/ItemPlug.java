@@ -1,7 +1,8 @@
 package cd4017be.rs_ctr.item;
 
-import cd4017be.api.rs_ctr.port.IConnector;
-import cd4017be.api.rs_ctr.port.IConnector.IConnectorItem;
+import cd4017be.api.rs_ctr.port.Connector;
+import cd4017be.api.rs_ctr.port.IIntegratedConnector;
+import cd4017be.api.rs_ctr.port.Connector.IConnectorItem;
 import cd4017be.api.rs_ctr.port.MountedPort;
 import cd4017be.lib.item.BaseItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,12 +30,14 @@ public abstract class ItemPlug extends BaseItem implements IConnectorItem {
 			player.sendMessage(new TextComponentTranslation(master ? "msg.rs_ctr.dir_out" : "msg.rs_ctr.dir_in"));
 			return;
 		}
-		IConnector con = create(stack, player);
+		Connector con = create(port, stack, player);
 		if(con == null) return;
 		port.setConnector(con, player);
+		if (con instanceof IIntegratedConnector)
+			((IIntegratedConnector)con).getPort(0).connect(port);
 		if(!player.isCreative()) stack.shrink(1);
 	}
 
-	protected abstract IConnector create(ItemStack stack, EntityPlayer player);
+	protected abstract Connector create(MountedPort port, ItemStack stack, EntityPlayer player);
 
 }

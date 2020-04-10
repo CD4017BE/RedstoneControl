@@ -5,8 +5,8 @@ import cd4017be.api.rs_ctr.interact.IInteractiveComponent.IBlockRenderComp;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
 import cd4017be.api.rs_ctr.port.IPortProvider;
 import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.api.rs_ctr.port.Port;
-import cd4017be.api.rs_ctr.wire.IWiredConnector;
+import cd4017be.api.rs_ctr.wire.WiredConnector;
+import cd4017be.lib.util.DimPos;
 import cd4017be.rs_ctr.render.WireRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -22,24 +22,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** @author CD4017BE */
-public class WireBranch extends Plug implements IWiredConnector, ITESRenderComp, IBlockRenderComp {
+public class WireBranch extends WiredConnector implements ITESRenderComp, IBlockRenderComp {
 
 	public final WireType type;
-	protected Port subPort;
-	protected BlockPos linkPos;
-	protected int linkPin;
 	protected Vec3d line;
-	protected int count;
+	public int length;
 	private float[] vertices; // render cache
 	private int light1 = -1;
 
-	public WireBranch(WireType type) {
+	public WireBranch(MountedPort port, WireType type) {
+		super(port);
 		this.type = type;
-	}
-
-	public WireBranch subPort(Port subPort) {
-		this.subPort = subPort;
-		return this;
 	}
 
 	@Override
@@ -50,72 +43,42 @@ public class WireBranch extends Plug implements IWiredConnector, ITESRenderComp,
 	@Override
 	public NBTTagCompound serializeNBT() {
 		NBTTagCompound nbt = super.serializeNBT();
-		if(subPort != null) nbt.merge(subPort.serializeNBT()); 
-		if(linkPos != null) {
-			nbt.setLong("pos", linkPos.toLong());
-			nbt.setInteger("pin", linkPin);
-			nbt.setFloat("dx", (float)line.x);
-			nbt.setFloat("dy", (float)line.y);
-			nbt.setFloat("dz", (float)line.z);
-			nbt.setByte("count", (byte)count);
-		}
+		nbt.setFloat("dx", (float)line.x);
+		nbt.setFloat("dy", (float)line.y);
+		nbt.setFloat("dz", (float)line.z);
+		nbt.setByte("len", (byte)length);
 		return nbt;
 	}
 
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
-		if(subPort != null) subPort.deserializeNBT(nbt);
-		if(nbt.hasKey("pos", NBT.TAG_LONG)) {
-			line = new Vec3d(nbt.getFloat("dx"), nbt.getFloat("dy"), nbt.getFloat("dz"));
-			linkPos = BlockPos.fromLong(nbt.getLong("pos"));
-			linkPin = nbt.getInteger("pin");
-			count = nbt.getByte("count") & 0xff;
+		if (nbt.hasKey("pos", NBT.TAG_LONG)) { //backwards compatibility
+			conPos = new DimPos(BlockPos.fromLong(nbt.getLong("pos")), 0);
+			conPin = nbt.getInteger("pin");
+			tag = nbt.hasKey("tag", NBT.TAG_STRING) ? nbt.getString("tag") : null;
+			length = nbt.getByte("count") & 0xff;
 		} else {
-			line = null;
-			linkPos = null;
-			linkPin = 0;
-			count = 0;
+			super.deserializeNBT(nbt);
+			length = nbt.getByte("len") & 0xff;
 		}
+		line = new Vec3d(nbt.getFloat("dx"), nbt.getFloat("dy"), nbt.getFloat("dz"));
 	}
 
 	@Override
-	public void onRemoved(MountedPort port, EntityPlayer player) {
-		if(linkPos == null && subPort != null) return;
-		super.onRemoved(port, player);
-		IWiredConnector.super.onRemoved(port, player);
-		(subPort != null ? subPort : port).disconnect();
+	public void onRemoved(EntityPlayer player) {
+		super.onRemoved(player);
+		dropItem(new ItemStack(type.wireItem, length), player);
 	}
 
 	@Override
-	public void onLoad(MountedPort port) {
-		setPort(port);
-		if(subPort != null) subPort.onLoad();
-	}
-
-	@Override
-	public void onUnload() {
-		if(subPort != null) subPort.onUnload();
-	}
-
-	@Override
-	protected ItemStack drop() {
-		return new ItemStack(type.wireItem, count);
-	}
-
-	@Override
-	public void onWireRemoved(MountedPort host, MountedPort link, EntityPlayer player) {
-		if(subPort != null) {
-			subPort.disconnect();
-			linkPos = null;
-			line = null;
-			host.owner.onPortModified(host, IPortProvider.E_CON_UPDATE);
-		} else IWiredConnector.super.onWireRemoved(host, link, player);
-	}
-
-	@Override
-	public void onLinkMove(MountedPort host, MountedPort link) {
-		line = IWiredConnector.getPath(host, link).scale(.5);
-		host.owner.onPortModified(host, IPortProvider.E_CON_UPDATE);
+	protected void onMoved(WiredConnector link) {
+		int d = (int)Math.ceil(getDistance(port, link.port));
+		if (d > length + (link instanceof WireBranch ? ((WireBranch)link).length : 0))
+			onWireRemoved(link, null);
+		else {
+			line = getPath(port, link.port).scale(.5);
+			port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
+		}
 	}
 
 	@Override
@@ -146,43 +109,5 @@ public class WireBranch extends Plug implements IWiredConnector, ITESRenderComp,
 	public boolean isCompatible(Class<?> type) {
 		return type == this.type.clazz;
 	}
-
-	@Override
-	public Port getLinkPort(MountedPort from) {
-		return linkPos != null ? IPortProvider.getPort(from.getWorld(), linkPos, linkPin) : null;
-	}
-
-	@Override
-	public boolean isLinked(MountedPort to) {
-		return linkPos != null && to.pin == linkPin && to.getPos().equals(linkPos);
-	}
-
-	//convenience implementations:
-
-	public boolean addLink(MountedPort link, Vec3d line, EntityPlayer player) {
-		if (linkPos != null) return false;
-		linkPos = link.getPos();
-		linkPin = link.pin;
-		this.line = line;
-		link.connect(subPort);
-		port.owner.onPortModified(port, IPortProvider.E_CON_UPDATE);
-		return true;
-	}
-
-	public Port getLinkedWith(MountedPort link) {
-		return isLinked(link) ? subPort : null;
-	}
-
-	public Port getPort(int pin) {
-		return subPort;
-	}
-
-	public Object getPortCallback(int pin) {
-		return null;
-	}
-
-	public void onPortModified(Port port, int event) {
-		this.port.owner.onPortModified(this.port, IPortProvider.E_CON_UPDATE);
-	}
-
+	
 }

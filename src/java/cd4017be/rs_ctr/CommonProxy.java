@@ -3,7 +3,7 @@ package cd4017be.rs_ctr;
 import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.com.BlockReference;
-import cd4017be.api.rs_ctr.port.IConnector;
+import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.api.rs_ctr.wire.RelayPort;
@@ -57,6 +57,8 @@ import cd4017be.rs_ctr.tileentity.OC_Adapter;
 import cd4017be.rs_ctr.tileentity.Panel;
 import cd4017be.rs_ctr.tileentity.PowerHub;
 import cd4017be.rs_ctr.tileentity.SolarCell;
+import cd4017be.rs_ctr.tileentity.StructTeleporter;
+import cd4017be.rs_ctr.tileentity.Teleporter;
 import cd4017be.rs_ctr.tileentity.part.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -155,6 +157,15 @@ public class CommonProxy implements IRecipeHandler {
 		ChunkLoader.RANGE = (int)c.getNumber("chunk_loader_range", ChunkLoader.RANGE);
 		ChunkLoader.MAX_MINUTES = (int)(c.getNumber("chunkload_time_cap", ChunkLoader.MAX_MINUTES / 60D) * 60D);
 		Objects.cl_fuel.setMaxDamage((int)(c.getNumber("chunkload_item_time", Objects.cl_fuel.getMaxDamage() / 60D) * 60D));
+		StructTeleporter.RANGE = (int)c.getNumber("teleporter_range", StructTeleporter.RANGE);
+		Teleporter.ENERGY_PER_BLOCK = c.getNumber("energy_teleport_pb", StructTeleporter.ENERGY_PER_BLOCK);
+		Teleporter.MAX_DISTANCE = c.getNumber("teleport_dist_cap", StructTeleporter.MAX_DISTANCE);
+		for (Object o : c.get("teleport_whitelist", Object[].class, new Object[0]))
+			if (o instanceof String)
+				Teleporter.addEntry((String)o, false);
+		for (Object o : c.get("teleport_blacklist", Object[].class, new Object[0]))
+			if (o instanceof String)
+				Teleporter.addEntry((String)o, true);
 		
 		registerSensor(new ItemSensor(), c.get("sensors_item", Object[].class, null));
 		registerSensor(new FluidSensor(), c.get("sensors_fluid", Object[].class, null));
@@ -168,12 +179,12 @@ public class CommonProxy implements IRecipeHandler {
 			registerSensor((stack)-> new DraconicFusionSensor(), c.get("sensors_draconic", Object[].class, null));
 		
 		WireType.registerAll();
-		IConnector.REGISTRY.put(Constant.ID, Constant::new);
-		IConnector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
-		IConnector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
-		IConnector.REGISTRY.put(Clock.ID, Clock::new);
-		IConnector.REGISTRY.put(EdgeTrigger.ID, EdgeTrigger::new);
-		IConnector.REGISTRY.put(PulseGen.ID, PulseGen::new);
+		Connector.REGISTRY.put(Constant.ID, Constant::new);
+		Connector.REGISTRY.put(StatusLamp.ID, StatusLamp::new);
+		Connector.REGISTRY.put(BlockProbe.ID, BlockProbe::new);
+		Connector.REGISTRY.put(Clock.ID, Clock::new);
+		Connector.REGISTRY.put(EdgeTrigger.ID, EdgeTrigger::new);
+		Connector.REGISTRY.put(PulseGen.ID, PulseGen::new);
 		
 		Module.REGISTRY.put(_7Segment.ID, _7Segment::new);
 		Module.REGISTRY.put(PointerDisplay.ID, PointerDisplay::new);

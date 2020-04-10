@@ -1,20 +1,16 @@
 package cd4017be.rs_ctr.tileentity;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
-import cd4017be.api.rs_ctr.com.BlockReference;
-import cd4017be.api.rs_ctr.com.BlockReference.BlockHandler;
-import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.frame.IFrameOperator;
 import static cd4017be.api.rs_ctr.frame.IFrameOperator.*;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent;
 import cd4017be.api.rs_ctr.interact.IInteractiveComponent.ITESRenderComp;
-import cd4017be.api.rs_ctr.port.MountedPort;
-import cd4017be.lib.TickRegistry;
-import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.render.HybridFastTESR;
+import cd4017be.lib.util.DimPos;
+import cd4017be.lib.util.MovedBlock;
 import cd4017be.lib.util.Orientation;
 import static cd4017be.lib.util.TooltipUtil.translate;
 import static cd4017be.lib.util.TooltipUtil.format;
@@ -27,6 +23,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -36,125 +33,117 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** @author cd4017be */
-public class BlockSelector extends WallMountGate
-implements IFrameOperator, IUpdatable, IntConsumer,
-Supplier<String>, ISpecialRenderComp, ITESRenderComp {
+public class StructTeleporter extends Teleporter
+implements IFrameOperator, IntConsumer, Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 
+	static final int INNER_AREA = 2, OUTER_FRAME = 4, INVALID_FRAME = -3;
 	public static int RANGE = 64;
-	BlockButton[] buttons = new BlockButton[4];
+	BlockButton button = new BlockButton(this, () -> null, this).setSize(0.5F, 0.25F);
 	public int[] area = new int[6];
-	public byte missingFrames = -1, invertAxis;
-	BlockHandler out;
-	public int sx, sy, sz;
-	byte tick;
-	boolean delayed;
+	public byte missingFrames = -1;
 	boolean showFrame = true;
 
 	{
-		ports = new MountedPort[] {
-			new MountedPort(this, 0, SignalHandler.class, false)
-			.setName("port.rs_ctr.x")
-			.setLocation(.875, .125, 0, EnumFacing.NORTH),
-			new MountedPort(this, 1, SignalHandler.class, false)
-			.setName("port.rs_ctr.y")
-			.setLocation(.625, .125, 0, EnumFacing.NORTH),
-			new MountedPort(this, 2, SignalHandler.class, false)
-			.setName("port.rs_ctr.z")
-			.setLocation(.375, .125, 0, EnumFacing.NORTH),
-			new MountedPort(this, 3, BlockHandler.class, true)
-			.setName("port.rs_ctr.bo")
-			.setLocation(.125, .125, 0, EnumFacing.NORTH)
-		};
-		for (int i = 0; i < 3; i++) {
-			int ax = i;
-			buttons[i] = new BlockButton(
-				a -> invert(ax),
-				()-> "_buttons.num(" + (invertAxis >> ax & 1) + ")",
-				()-> translate("port.rs_ctr.invax" + (invertAxis >> ax & 1))
-			).setSize(0.0625F, 0.0625F);
-		}
-		buttons[3] = new BlockButton(this, () -> null, this).setSize(0.5F, 0.25F);
+		ports[0].setLocation(.875, .125, 0, EnumFacing.NORTH);
+		ports[1].setLocation(.125, .125, 0, EnumFacing.NORTH);
+		ports[2].setLocation(.625, .125, 0, EnumFacing.NORTH);
+		ports[3].setLocation(.375, .125, 0, EnumFacing.NORTH);
+		ports[4].setLocation(.5, .375, 0, EnumFacing.NORTH);
 	}
 
 	@Override
-	public SignalHandler getPortCallback(int pin) {
-		switch(pin) {
-		case 0:
-			return (val) -> {
-				if(val == sx) return;
-				onInputChange();
-				sx = val;
-			};
-		case 1:
-			return (val) -> {
-				if(val == sy) return;
-				onInputChange();
-				sy = val;
-			};
-		case 2:
-			return (val) -> {
-				if(val == sz) return;
-				onInputChange();
-				sz = val;
-			};
-		default:
-			return null;
+	protected int run() {
+		if (action == SINGLE_BLOCK) return super.run();
+		if (missingFrames != 0 || area[3] <= 0 || area[4] <= 0 || area[5] <= 0) return INVALID_FRAME;
+		if (dest == null || ref == null || ref.dim != world.provider.getDimension() || !isInArea(ref.pos)) return INVALID_COORDS;
+		double distance = attenuatedDistance(new DimPos(ref.pos, ref.dim), new DimPos(dest.pos, dest.dim));
+		if (distance == 0) return COMPLETE;
+		
+		DimPos pa, pb;
+		BlockPos size;
+		boolean skipInner;
+		if ((action & OUTER_FRAME) != 0) {
+			skipInner = (action & INNER_AREA) == 0;
+			pa = new DimPos(area[0] - 1, area[1], area[2] - 1, ref.dim);
+			size = new BlockPos(area[3] + 2, area[4], area[5] + 2);
+		} else {
+			skipInner = false;
+			pa = new DimPos(area[0], area[1], area[2], ref.dim);
+			size = new BlockPos(area[3], area[4], area[5]);
 		}
+		pb = new DimPos(dest.pos.subtract(ref.pos).add(pa), dest.dim);
+		if (!(
+			world.isValid(pa) && world.isValid(pb)
+			&& world.isValid(pa.add(size.getX() - 1, size.getY() - 1, size.getZ() - 1))
+			&& world.isValid(pb.add(size.getX() - 1, size.getY() - 1, size.getZ() - 1))
+		)) return OUT_OF_WORLD;
+		
+		int count = 0, inner = area[3] * area[5];
+		if ((action & INNER_AREA) != 0) count += inner;
+		if ((action & OUTER_FRAME) != 0) count += (area[3] + 1) * (area[5] + 1) - inner;
+		count *= area[4];
+		long needed = Math.round((double)count * distance * ENERGY_PER_BLOCK);
+		return initTeleport(
+			()-> {
+				if (unloaded) return;
+				buffer -= needed;
+				swapArea(pa, pb, size, skipInner);
+				List<Entity> entitiesA = getEntities(pa, size, skipInner);
+				List<Entity> entitiesB = getEntities(pb, size, skipInner);
+				moveEntities(entitiesA, pa, pb);
+				moveEntities(entitiesB, pb, pa);
+			}, needed
+		);
 	}
 
-	@Override
-	public void setPortCallback(int pin, Object callback) {
-		if(callback instanceof BlockHandler) {
-			out = (BlockHandler)callback;
-			out.updateBlock(getOutput());
-		} else out = null;
+	private boolean isInArea(BlockPos pos) {
+		int i = pos.getX() - area[0];
+		if (i < -1 || i > area[3]) return false;
+		i = pos.getY() - area[1];
+		if (i < 0 || i >= area[4]) return false;
+		i = pos.getZ() - area[2];
+		if (i < -1 || i > area[5]) return false;
+		return true;
 	}
 
-	@Override
-	protected void resetPin(int pin) {
-		getPortCallback(pin).updateSignal(0);
-	}
-
-	private void onInputChange() {
-		if(tick == 0) {
-			tick = TickRegistry.TICK;
-			TickRegistry.schedule(this);
-		} else if(tick != TickRegistry.TICK) {
-			process();
-			tick = TickRegistry.TICK;
-			delayed = true;
+	private static void swapArea(DimPos pa, DimPos pb, BlockPos size, boolean skipInner) {
+		int rx = size.getX(), ry = size.getY(), rz = size.getZ();
+		int dx = 1, dy = 1, dz = 1;
+		if (pb.getX() < pa.getX()) {
+			pa = pa.add(rx, 0, 0);
+			pb = pb.add(rx, 0, 0);
+			rx = -rx;
+			dx = -1;
+		} else {
+			pa = pa.add(-1, 0, 0);
+			pb = pb.add(-1, 0, 0);
 		}
-	}
-
-	@Override
-	public void process() {
-		if(delayed) {
-			delayed = false;
-			TickRegistry.schedule(this);
-			return;
+		if (pb.getY() < pa.getY()) {
+			pa = pa.add(0, ry, 0);
+			pb = pb.add(0, ry, 0);
+			ry = -ry;
+			dy = -1;
+		} else {
+			pa = pa.add(0, -1, 0);
+			pb = pb.add(0, -1, 0);
 		}
-		tick = 0;
-		if(out != null)
-			out.updateBlock(getOutput());
-		markDirty(SYNC);
-	}
-
-	private BlockReference getOutput() {
-		BlockPos p = selBlock();
-		return p == null ? null :
-			new BlockReference(world, p, getOrientation().front);
-	}
-
-	private BlockPos selBlock() {
-		if(
-			missingFrames != 0 || sx < 0 || sy < 0 || sz < 0
-			|| sx >= area[3] || sy >= area[4] || sz >= area[5]
-		) return null;
-		int x = sx, y = sy, z = sz, inv = invertAxis;
-		if ((inv & 1) != 0) x = area[3] - x - 1;
-		if ((inv & 2) != 0) y = area[4] - y - 1;
-		if ((inv & 4) != 0) z = area[5] - z - 1;
-		return new BlockPos(x + area[0], y + area[1], z + area[2]);
+		if (pb.getZ() < pa.getZ()) {
+			pa = pa.add(0, 0, rz);
+			pb = pb.add(0, 0, rz);
+			rz = -rz;
+			dz = -1;
+		} else {
+			pa = pa.add(0, 0, -1);
+			pb = pb.add(0, 0, -1);
+		}
+		HashMap<DimPos, NBTTagCompound> tiles = new HashMap<>();
+		for (int x = rx; x != 0; x -= dx)
+			for (int z = rz; z != 0; z -= dz) {
+				if (skipInner && x != dx && z != dz && x != rx && z != rz) continue;
+				for (int y = ry; y != 0; y -= dy)
+					swap(pa.add(x, y, z), pb.add(x, y, z), tiles);
+			}
+		MovedBlock.addTileEntities(tiles);
 	}
 
 	@Override
@@ -196,52 +185,26 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 			) {
 				unlinkCorners(world, pos, area, ~missingFrames);
 				scanArea(world, pos, area, RANGE, getOrientation().front);
-				fallbackArea();
 				missingFrames = (byte)checkCorners(world, pos, area);
 			}
 		} else showFrame = !showFrame;
 		markDirty(SYNC);
 	}
 
-	private void fallbackArea() {
-		if (area[3] > 0 && area[4] > 0 && area[5] > 0) return;
-		if (sx <= 0 || sx > RANGE || sy <= 0 || sy > RANGE || sz <= 0 || sz > RANGE) return;
-		area[0] = pos.getX() - ((invertAxis & 1) != 0 ? sx : -1);
-		area[1] = pos.getY() - ((invertAxis & 2) != 0 ? sy - 1 : 0);
-		area[2] = pos.getZ() - ((invertAxis & 4) != 0 ? sz : -1);
-		area[3] = sx;
-		area[4] = sy;
-		area[5] = sz;
-	}
-
-	private void invert(int ax) {
-		invertAxis ^= 1 << ax;
-		onInputChange();
-		markDirty(REDRAW);
-	}
-
 	@Override
 	protected void storeState(NBTTagCompound nbt, int mode) {
-		nbt.setInteger("sx", sx);
-		nbt.setInteger("sy", sy);
-		nbt.setInteger("sz", sz);
 		writeArea(area, nbt, pos);
 		nbt.setByte("frame", missingFrames);
 		nbt.setBoolean("dsp", showFrame);
-		nbt.setByte("inv", invertAxis);
 		super.storeState(nbt, mode);
 	}
 
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
-		sx = nbt.getInteger("sx");
-		sy = nbt.getInteger("sy");
-		sz = nbt.getInteger("sz");
+		super.loadState(nbt, mode);
 		readArea(area, nbt, pos);
 		missingFrames = nbt.getByte("frame");
 		showFrame = nbt.getBoolean("dsp");
-		invertAxis = nbt.getByte("inv");
-		super.loadState(nbt, mode);
 	}
 
 	@Override
@@ -252,16 +215,13 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 
 	@Override
 	protected void initGuiComps(List<IInteractiveComponent> list) {
-		Collections.addAll(list, buttons);
+		list.add(button);
 	}
 
 	@Override
 	protected void orient(Orientation o) {
-		Orientation opp = Orientation.values()[o.ordinal() + 2 & 3];
-		for (int i = 0; i < 3; i++)
-			buttons[i].setLocation(.125 + i * .25, .375, 1, opp);
-		buttons[3].setLocation(0.5, 0.75, 0, o);
 		super.orient(o);
+		button.setLocation(0.5, 0.75, 0, o);
 	}
 
 	@Override
@@ -307,14 +267,6 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 
 	@Override
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
-		BlockPos p = selBlock();
-		if(p != null) FrameRenderer.renderBeam(
-			x + .5, y + .5, z + .5,
-			p.getX() - pos.getX(),
-			p.getY() - pos.getY(),
-			p.getZ() - pos.getZ(),
-			getOrientation().front, buffer, 0x7fffff00
-		);
 		if(showFrame) {
 			x += area[0] - pos.getX();
 			y += area[1] - pos.getY();
@@ -324,7 +276,7 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 				x + (double)area[3] + .0625,
 				y + (double)area[4] + .0625,
 				z + (double)area[5] + .0625,
-				buffer, missingFrames == 0 ? 0x7f00ff00 : 0x7f0000ff
+				buffer, missingFrames == 0 ? 0x7fff007f : 0x7f0000ff
 			);
 		}
 	}
@@ -335,16 +287,6 @@ Supplier<String>, ISpecialRenderComp, ITESRenderComp {
 			area[0] - 1, area[1], area[2] - 1,
 			area[0] + area[3] + 1, area[1] + area[4], area[2] + area[5] + 1
 		);
-	}
-
-	@Override
-	public Object getState(int id) {
-		switch(id) {
-		case 0: return sx;
-		case 1: return sy;
-		case 2: return sz;
-		default: return getOutput();
-		}
 	}
 
 }
