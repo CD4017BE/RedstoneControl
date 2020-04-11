@@ -530,3 +530,13 @@ recipe.rs_ctr.circuit_mat=处理器组件
 recipe.rs_ctr.battery=电容
 recipe.rs_ctr.sensors=比较器调整
 recipe.rs_ctr.capacity=%.4u 充能
+#added by ingame editor:
+tile.rs_ctr.teleporter.tip=改进版的§6传送器§7，可以传送大范围内的方块而不是一个方块。传送的范围必须使用§63维方块框架§7指定。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块，或欲传送范围的锚点（必须在范围或框架内）。\n§eTeleport IN§7：0 \= 空闲，1 \= 单方块，2 \= 内体积，4 \= 外框架，6 \= 体积+框架。\n§eStatus OUT§7：-2 \= 无效框架，-1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。\n\n§8§o区域内所有方块会被同时置换，被当成经历了一次区块卸载/加载。所以本设备§l应该§8§o能与其他模组一起工作，就算是多方块结构也可以。
+tile.rs_ctr.teleporter.name=结构传送器
+port.rs_ctr.p0=anchor Block IN
+port.rs_ctr.p1=destination Block IN
+port.rs_ctr.tp=Teleport IN
+tile.rs_ctr.teleporter.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n最大距离（框架）：§a\\<teleporter_range> m\n能量消耗：§e容积§a/m³ * §e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.teleporter1.name=传送器
+tile.rs_ctr.teleporter1.tip=能传送方块和实体，方法为置换§e锚§7方块和§e目标§7方块的内容。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块。\n§eTeleport IN§7：0 \= 空闲：1 \= 开始传送。\n§eStatus OUT§7： -1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。
+tile.rs_ctr.teleporter1.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n能量消耗：§e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m
