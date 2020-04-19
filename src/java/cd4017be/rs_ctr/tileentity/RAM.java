@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import cd4017be.api.rs_ctr.com.SignalHandler;
 import cd4017be.api.rs_ctr.port.MountedPort;
+import cd4017be.lib.TickRegistry;
+import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
@@ -29,7 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /** @author cd4017be */
-public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest {
+public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile, IStateInteractionHandler, ITilePlaceHarvest, IUpdatable {
 
 	public int[] memory;
 	public int addrMask;
@@ -104,6 +106,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		if(writeIN < 0)return;
 		needWrite = true;
 		scheduledTime = world.getTotalWorldTime();
+		if (writeIN == readIN) TickRegistry.schedule(this);
 	}
 
 	private void doWrite() {
@@ -152,6 +155,11 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 
 	public int memSize() {
 		return 1 << (mode >> 4 & 15);
+	}
+
+	@Override
+	public void process() {
+		updateSignal(readIN);
 	}
 
 	@Override
@@ -251,8 +259,11 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 		case A_SET_MEM: {
 			int i = pkt.readShort() & 0xffff, v = pkt.readByte();
 			int bit = (i & 7) * 4, idx = i >> 3;
-			if (idx < memory.length)
+			if (idx < memory.length) {
 				memory[idx] = v << bit | memory[idx] & ~(15 << bit);
+				if (readIN == i >> (3 - mode))
+					TickRegistry.schedule(this);
+			}
 			break;
 		}
 		case A_DOWNLOAD:
@@ -276,6 +287,7 @@ public class RAM extends WallMountGate implements SignalHandler, IGuiHandlerTile
 				memory[i] = pkt.readIntLE();
 			Arrays.fill(memory, l, memory.length, 0);
 			sender.sendMessage(new TextComponentTranslation("msg.rs_ctr.import_succ"));
+			TickRegistry.schedule(this);
 			break;
 		default: return;
 		}
