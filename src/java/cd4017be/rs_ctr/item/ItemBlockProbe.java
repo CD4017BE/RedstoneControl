@@ -75,17 +75,16 @@ public class ItemBlockProbe extends BaseItem implements IConnectorItem {
 		EnumFacing side = EnumFacing.getFront(nbt.getByte("lf"));
 		BlockPos pos = new BlockPos(nbt.getInteger("lx"), nbt.getInteger("ly"), nbt.getInteger("lz"));
 		int d = (int)Math.ceil(Math.sqrt(pos.offset(side).distanceSq(port.getPos())));
-		if (d > MAX_LENGTH || (!creative && d > stack.getCount())) {
+		if (d > MAX_LENGTH) {
 			player.sendMessage(new TextComponentString(d > MAX_LENGTH ?
 					TooltipUtil.format("msg.rs_ctr.wire2", MAX_LENGTH) :
 						TooltipUtil.translate("msg.rs_ctr.wire1")));
 			stack.setTagCompound(null);
 			return;
 		}
-		if (creative) d = 0;
-		port.setConnector(new BlockProbe(port, pos, side, d), player);
+		port.setConnector(new BlockProbe(port, pos, side), player);
 		stack.setTagCompound(null);
-		stack.shrink(d);
+		if (!creative) stack.shrink(1);
 	}
 
 	@Override
@@ -108,7 +107,7 @@ public class ItemBlockProbe extends BaseItem implements IConnectorItem {
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack) {
 		NBTTagCompound nbt = stack.getTagCompound();
-		return (double)nbt.getInteger("n") / (double)Math.min(stack.getCount(), MAX_LENGTH);
+		return (double)nbt.getInteger("n") / (double)MAX_LENGTH;
 	}
 
 	@Override

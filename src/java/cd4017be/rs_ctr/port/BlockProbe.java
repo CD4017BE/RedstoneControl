@@ -38,13 +38,11 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 
 	private BlockPos linkPos;
 	private EnumFacing linkFace;
-	private int count;
 
-	public BlockProbe(MountedPort port, BlockPos linkPos, EnumFacing linkFace, int count) {
+	public BlockProbe(MountedPort port, BlockPos linkPos, EnumFacing linkFace) {
 		super(port);
-		this.linkPos = linkPos;
+		this.linkPos = linkPos.subtract(port.getPos());
 		this.linkFace = linkFace;
-		this.count = count;
 	}
 
 	public BlockProbe(MountedPort port) {
@@ -61,7 +59,6 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 		NBTTagCompound nbt = super.serializeNBT();
 		nbt.setLong("pos", linkPos.toLong());
 		nbt.setByte("side", (byte)linkFace.getIndex());
-		nbt.setByte("count", (byte)count);
 		return nbt;
 	}
 
@@ -69,7 +66,6 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 	public void deserializeNBT(NBTTagCompound nbt) {
 		linkPos = BlockPos.fromLong(nbt.getLong("pos"));
 		linkFace = EnumFacing.getFront(nbt.getByte("side"));
-		count = nbt.getByte("count") & 0xff;
 	}
 
 	@Override
@@ -80,21 +76,21 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 		nbt.setInteger("ly", linkPos.getY());
 		nbt.setInteger("lz", linkPos.getZ());
 		nbt.setByte("lf", (byte)linkFace.getIndex());
-		ItemStack stack = new ItemStack(Objects.block_wire, count);
+		ItemStack stack = new ItemStack(Objects.block_wire);
 		stack.setTagCompound(nbt);
 		dropItem(stack, player);
 	}
 
 	@Override
 	public String displayInfo(MountedPort port, int linkID) {
-		String name = port.getWorld().getBlockState(linkPos).getBlock().getLocalizedName();
+		String name = port.getWorld().getBlockState(port.getPos().add(linkPos)).getBlock().getLocalizedName();
 		if (name.endsWith(".name")) name = name.substring(0, name.length() - 5);
 		return "\n\u00a7b" + name + "\u00a7f " + TooltipUtil.translate("enumfacing." + linkFace.name().toLowerCase());
 	}
 
 	@Override
 	public void onLoad() {
-		((BlockHandler)port.owner.getPortCallback(port.pin)).updateBlock(new BlockReference(port.getWorld(), linkPos, linkFace));
+		((BlockHandler)port.owner.getPortCallback(port.pin)).updateBlock(new BlockReference(port.getWorld(), port.getPos().add(linkPos), linkFace));
 	}
 
 	private float[] vertices; //render cache
@@ -104,13 +100,12 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 	@SideOnly(Side.CLIENT)
 	public void render(World world, BlockPos pos, double x, double y, double z, int light, BufferBuilder buffer) {
 		if (vertices == null) {
-			pos = linkPos.subtract(pos);
-			double dx = (double)linkFace.getFrontOffsetX() * .375 + (double)pos.getX() + .5 - (double)port.face.getFrontOffsetX() * .125,
-					dy = (double)linkFace.getFrontOffsetY() * .375 + (double)pos.getY() + .5 - (double)port.face.getFrontOffsetY() * .125,
-					dz = (double)linkFace.getFrontOffsetZ() * .375 + (double)pos.getZ() + .5 - (double)port.face.getFrontOffsetZ() * .125;
+			double dx = (double)linkFace.getFrontOffsetX() * .375 + (double)linkPos.getX() + .5 - (double)port.face.getFrontOffsetX() * .125,
+					dy = (double)linkFace.getFrontOffsetY() * .375 + (double)linkPos.getY() + .5 - (double)port.face.getFrontOffsetY() * .125,
+					dz = (double)linkFace.getFrontOffsetZ() * .375 + (double)linkPos.getZ() + .5 - (double)port.face.getFrontOffsetZ() * .125;
 			vertices = WireRenderer.createLine(port, new Vec3d(dx, dy, dz).subtract(port.pos));
 		}
-		if (light1 < 0) light1 = port.getWorld().getCombinedLight(linkPos.offset(linkFace), 0);
+		if (light1 < 0) light1 = port.getWorld().getCombinedLight(pos.add(linkPos).offset(linkFace), 0);
 		WireRenderer.drawLine(buffer, vertices, (float)x, (float)y, (float)z, light, light1, 0xffffff00);
 	}
 
@@ -118,12 +113,12 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		this.light1 = -1;
-		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), "_plug.main(5)");
+		PortRenderer.PORT_RENDER.drawModel(quads, (float)port.pos.x, (float)port.pos.y, (float)port.pos.z, Orientation.fromFacing(port.face), WireType.BLOCK.wireModel());
 	}
 
 	@Override
 	public AxisAlignedBB getRenderBB(World world, BlockPos pos) {
-		return new AxisAlignedBB(new Vec3d(pos).add(port.pos), new Vec3d(new BlockPos(1,1,1).add(linkFace.getDirectionVec())).scale(0.5).add(new Vec3d(linkPos)));
+		return new AxisAlignedBB(new Vec3d(pos).add(port.pos), new Vec3d(new BlockPos(1,1,1).add(linkFace.getDirectionVec())).scale(0.5).add(new Vec3d(pos.add(linkPos))));
 	}
 
 }

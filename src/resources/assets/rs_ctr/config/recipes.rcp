@@ -1,8 +1,10 @@
-VERSION = 102;
+VERSION = 103;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
 max_wire_length = 16;
+
+block_plug_range = 8; !maximum range for Block Access Plugs
 
 max_split_links = 8; !maximum number of connections for Splitter Plugs
 
@@ -147,6 +149,7 @@ INIT() {
 	add("shaped", it("item.wireless"), "000/010/000", it("item.wire"), "enderpearl");
 	add("shaped", it("item.wireless_b"), " 1 /020/ 1 ", it("item.wireless"), it("m.telekin_alloy"), it("minecraft:nether_star"));
 	add("shaped", it("item.constant"), "1/0", it("item.wire"), it("minecraft:redstone_torch"));
+	add("shaped", it("item.block_plug"), "000/010/000", it("item.block_wire"), it("tile.rs_port"):2);
 	add("shaped", it("item.lamp"), "1/0", it("item.wire"), "dustGlowstone");
 	add("shaped", it("item.tag"), "1/0", it("item.wire"), it("minecraft:name_tag"));
 	add("shaped", 3 * it("item.clock"), " 1 /000", it("item.wire"), it("minecraft:clock"));

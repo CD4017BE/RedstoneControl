@@ -168,6 +168,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(cl_fuel);
 		registerRender(signal_probe);
 		signal_probe.setTileEntityItemStackRenderer(new SignalProbeRenderer(signal_probe));
+		registerRender(block_plug);
 	}
 
 	private static void addGates(BlockGate... gates) {
