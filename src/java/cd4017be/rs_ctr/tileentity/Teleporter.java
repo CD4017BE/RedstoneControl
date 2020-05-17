@@ -174,7 +174,8 @@ public class Teleporter extends WallMountGate implements SignalHandler, ITickabl
 	@Override
 	public void setPortCallback(int pin, Object callback) {
 		if (pin == 3)
-			out = callback instanceof SignalHandler ? (SignalHandler)callback : SignalHandler.NOP;
+			(out = callback instanceof SignalHandler ? (SignalHandler)callback : SignalHandler.NOP)
+			.updateSignal(result);
 		else
 			energy = callback instanceof EnergyHandler ? (EnergyHandler)callback : EnergyHandler.NOP;
 	}
