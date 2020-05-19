@@ -148,14 +148,14 @@ public class SignalProbeRenderer extends TileEntityItemStackRenderer implements 
 				p instanceof MountedPort
 				&& (c = ((MountedPort)p).getConnector()) instanceof ITagableConnector
 				&& (s = ((ITagableConnector)c).getTag()) != null
-			) sb.append("§e§o" + s + "§r");
+			) sb.append("\u00a7e\u00a7o" + s + "\u00a7r");
 			else sb.append(format("sp.rs_ctr.id", i));
 		} else if (p instanceof MountedPort && ((MountedPort)p).getConnector() != null)
 			sb.append(translate("sp.rs_ctr.plug"));
 		else sb.append(translate("sp.rs_ctr.none"));
 		sb.append(translate(p.isMaster ? "sp.rs_ctr.o" : "sp.rs_ctr.i"));
 		if (p instanceof MountedPort) sb.append(translate(((MountedPort)p).name));
-		else sb.append("§lPin ").append(p.pin);
+		else sb.append("\u00a7lPin ").append(p.pin);
 		print(sb.toString(), x, y, w, -1);
 	}
 
