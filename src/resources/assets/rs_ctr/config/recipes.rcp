@@ -1,4 +1,4 @@
-VERSION = 103;
+VERSION = 105;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -114,6 +114,8 @@ INIT() {
 	add("shaped", it("tile.bin_split"), "20/10/20", it("tile.rs_port"):0, it("tile.rs_port"):1, "gemQuartz");
 	add("shaped", it("tile.counter"), "021/ 34/021", it("tile.rs_port"):1, it("tile.rs_port"):0, "gemQuartz", it("minecraft:redstone_torch"), "dustRedstone");
 	add("shaped", it("tile.comparator"), "0 /31/2 ", it("tile.rs_port"):1, it("tile.rs_port"):0, it("item.block_wire"), it("minecraft:comparator"));
+	add("shaped", it("tile.block_deserializer"), "012", it("tile.comparator"), it("minecraft:compass"), it("tile.num_comb"));
+	add("shaped", it("tile.block_reorienter"), "01", it("item.wrench"), it("tile.multiplex_b"));
 	add("shaped", it("tile.power_hub"), "010/020", it("item.wire_e"), "ingotGold", slab);
 	add("shaped", it("tile.solar_cell"), "222/010", it("item.wire_e"), it("minecraft:daylight_detector"), "gemLapis");
 	add("shaped", it("tile.panel"), "0/1", "paper", slab);

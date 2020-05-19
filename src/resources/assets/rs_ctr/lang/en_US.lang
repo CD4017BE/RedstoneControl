@@ -109,6 +109,12 @@ tile.rs_ctr.teleporter.tipA=timing\: §aentity ticks\nteleport happens §apre en
 tile.rs_ctr.teleporter1.name=Teleporter
 tile.rs_ctr.teleporter1.tip=Teleports blocks and entities by swapping the contents of the §eanchor§7 and §edestination§7 block.\nTeleportation is started by changing §eTeleport IN§7 from §e0§7 to §e1§7 and keeping it there until §eStatus OUT \= 100§7. Switching back to §e0§7 before completion will cancel the teleport.\n\n§edestin. Block IN§7\: The position to teleport to.\n§eanchor Block IN§7\: The block to teleport.\n§eTeleport IN§7\: 0 \= idle, 1 \= start teleport.\n§eStatus OUT§7\: -1 \= invalid coordinates, 0 \= idle, 1...99 \= charging, 100 \= complete.\n§eEnergy IN§7\: energy supply required during charging.
 tile.rs_ctr.teleporter1.tipA=timing\: §aentity ticks\nteleport happens §apre entity ticks\nenergy cost\: §edistance§a/m * \\<energy_teleport_pb>\ninter-dimensional §edistance§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.block_deserializer.name=Block Reference Deserializer
+tile.rs_ctr.block_deserializer.tip=Converts a §6Block Reference§7 into the world coordinates of the block location it refers to.\n§eX§7/§eY§7/§eZ-coord OUT§7 emit the coordinates and §eDimension OUT§7 the world's dimension ID. Signals supplied to §eX§7/§eY§7/§eZ-ref IN§7 get subtracted from the outputs.\n\nIf §eBlock IN§7 is not connected, the position of the device itself is outputted. And if a null reference is supplied, §eDimension OUT§7 will emit §e-2.147.483.648§7.
+tile.rs_ctr.block_deserializer.tipA=timing\: §ainstant §e[Block IN]
+tile.rs_ctr.block_reorienter.name=Block Reference Reorienter
+tile.rs_ctr.block_reorienter.tip=Modifies a §6Block Reference§7 to access the block from a different side (relevant for §6Item§7/§6Fluid Translocator§7).\n§eSide IN§7 controls the new access side\:\n0 \= Bottom (-y), 1 \= Top (+y),\n2 \= North (-z), 3 \= South (+z),\n4 \= West (-x), 5 \= East (+x),\nelse \= keep old side
+tile.rs_ctr.block_reorienter.tipA=timing\: §anext sync. post-tick
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
@@ -331,6 +337,14 @@ port.rs_ctr.time_cl2=Time\: %d\:%02d h [§9x2§r]
 port.rs_ctr.p0=anchor Block IN
 port.rs_ctr.p1=destination Block IN
 port.rs_ctr.tp=Teleport IN
+port.rs_ctr.refx=X-ref IN
+port.rs_ctr.refy=Y-ref IN
+port.rs_ctr.refz=Z-ref IN
+port.rs_ctr.dim=Dimension OUT
+port.rs_ctr.xo=X-coord OUT
+port.rs_ctr.yo=Y-coord OUT
+port.rs_ctr.zo=Z-coord OUT
+port.rs_ctr.side=Side IN
 sensor.rs_ctr.none=Comparator\nValue
 sensor.rs_ctr.item=Stored Item Count
 sensor.rs_ctr.fluid=Stored Fluid [mB]

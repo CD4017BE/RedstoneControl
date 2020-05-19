@@ -75,6 +75,8 @@ public class Objects {
 	public static final BlockGate CHUNK_LOADER = null;
 	public static final BlockGate TELEPORTER = null;
 	public static final BlockGate TELEPORTER1 = null;
+	public static final BlockGate BLOCK_DESERIALIZER = null;
+	public static final BlockGate BLOCK_REORIENTER = null;
 	
 	//ItemBlocks
 	public static final ItemRedstonePort rs_port = null;
@@ -111,6 +113,8 @@ public class Objects {
 	public static final BaseItemBlock chunk_loader = null;
 	public static final BaseItemBlock teleporter = null;
 	public static final BaseItemBlock teleporter1 = null;
+	public static final BaseItemBlock block_deserializer = null;
+	public static final BaseItemBlock block_reorienter = null;
 
 	//Items
 	public static final ItemWireCon wire = null, wire_e = null, block_wire = null;
@@ -187,7 +191,9 @@ public class Objects {
 				new BlockGate("ram", Material.ROCK, SoundType.STONE, 3, RAM.class, GATE_ORIENT).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 1, 0.5)).setLightOpacity(0).setCreativeTab(tabCircuits),
 				new BlockGate("chunk_loader", Material.ROCK, SoundType.STONE, 0, ChunkLoader.class, HOR_AXIS).setCreativeTab(tabCircuits),
 				new BlockGate("teleporter", Material.ROCK, SoundType.STONE, 0, StructTeleporter.class, HOR_AXIS).setCreativeTab(tabCircuits),
-				new BlockGate("teleporter1", Material.ROCK, SoundType.STONE, 3, Teleporter.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits)
+				new BlockGate("teleporter1", Material.ROCK, SoundType.STONE, 3, Teleporter.class, HOR_AXIS).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("block_deserializer", Material.ROCK, SoundType.STONE, 3, BlockDeserializer.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits),
+				new BlockGate("block_reorienter", Material.ROCK, SoundType.STONE, 3, BlockReorienter.class, GATE_ORIENT).setBlockBounds(GATE_FORM_FACTOR).setLightOpacity(0).setCreativeTab(tabCircuits)
 		);
 	}
 
@@ -230,6 +236,8 @@ public class Objects {
 				new BaseItemBlock(CHUNK_LOADER),
 				new BaseItemBlock(TELEPORTER),
 				new BaseItemBlock(TELEPORTER1),
+				new BaseItemBlock(BLOCK_DESERIALIZER),
+				new BaseItemBlock(BLOCK_REORIENTER),
 				WireType.SIGNAL.wireItem = new ItemWireCon("wire", WireType.SIGNAL).setCreativeTab(tabCircuits),
 				WireType.ENERGY.wireItem = new ItemWireCon("wire_e", WireType.ENERGY).setCreativeTab(tabCircuits),
 				WireType.BLOCK.wireItem = new ItemWireCon("block_wire", WireType.BLOCK).setCreativeTab(tabCircuits),

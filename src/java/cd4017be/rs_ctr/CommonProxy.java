@@ -132,7 +132,7 @@ public class CommonProxy implements IRecipeHandler {
 	@SuppressWarnings("deprecation")
 	public void init(ConfigConstants c) {
 		ItemWireCon.MAX_LENGTH = (int)c.getNumber("max_wire_length", ItemWireCon.MAX_LENGTH);
-		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("max_probe_lenght", ItemBlockProbe.MAX_LENGTH);
+		ItemBlockProbe.MAX_LENGTH = (int)c.getNumber("block_plug_range", ItemBlockProbe.MAX_LENGTH);
 		SplitPlug.MAX_LINK_COUNT = (int)c.getNumber("max_split_links", SplitPlug.MAX_LINK_COUNT);
 		BlockReference.INIT_LIFESPAN = (int)c.getNumber("blockref_livespan", BlockReference.INIT_LIFESPAN);
 		double d;
