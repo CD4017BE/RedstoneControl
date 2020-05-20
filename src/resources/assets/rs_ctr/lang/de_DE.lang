@@ -101,6 +101,19 @@ tile.rs_ctr.oc_adapter.tipA=Timing\: §afolgender sync. Post-Tick\nEnergieumwand
 tile.rs_ctr.ram.name=externer RAM Chip [%sbit]
 tile.rs_ctr.ram.tip=Direkt addressierbarer Speicher, der simultanen Lese- and Schreibzugriff erlaubt. Bietet wesentlich mehr Speicherkapazität als üblicherweise in einem §6Prozessor§7 untergebracht werden kann.\nUnterstützt die Wortgrößen §e4bit§7, §e8bit§7, §e16bit§7 und §e32bit§7.\n\nInteragiere mit dem Block zum einsehen/bearbeiten des Speicherinhalts. Daten bleiben beim abbauen erhalten.
 tile.rs_ctr.ram.tipA=Timing lesen\: §ainstantan §e[Leseaddresse]\nTiming schreiben\: §afolgender sync. Welt-Tick
+tile.rs_ctr.block_deserializer.name=Blockreferenzdekodierer
+tile.rs_ctr.block_deserializer.tip=Konvertiert eine §6Blockreferenz§7 in die Weltkoordinaten der Blockposition um, auf die sie sich bezieht.\n§eX§7/§eY§7/§eZ-Achse AUS§7 geben die Koordinaten und §eDimension AUS§7 die Dimensions-ID der Welt aus. Die Signale in §eX§7/§eY§7/§eZ-ref EIN§7 werden von den Ausgangskoordinaten abgezogen.\n\nBei nicht angeschlossenem §eBlock EIN§7 wird die Position des Gerätes selbst verwendet. Und für eine Nullreferenz gibt §eDimension AUS§7 den Wert §e-2.147.483.648§7 aus.
+tile.rs_ctr.block_deserializer.tipA=Timing\: §ainstantan §e[Block EIN]
+tile.rs_ctr.block_reorienter.name=Blockreferenzreorientierer
+tile.rs_ctr.block_reorienter.tip=Ändert die Zugriffsseite einer §6Blockreferenz§7 (relevant für §6Item-§7/§6Flüssigkeitstransporter§7).\n§eSeite EIN§7 definiert die neue Zugriffsseite\:\n0 \= Unten (-Y), 1 \= Oben (+Y),\n2 \= Norden (-Z), 3 \= Süden (+Z),\n4 \= Westen (-X), 5 \= Osten (+X),\nsonst \= behalte alte Seite
+tile.rs_ctr.block_reorienter.tipA=Timing\: §afolgender sync. Post-Tick
+tile.rs_ctr.chunk_loader.name=Chunkanker
+tile.rs_ctr.chunk_loader.tip=Hält Chunks innerhalb eines mit §63D-Blockrahmen§7 abgesteckten Bereichs geladen.\n§eAktiv EIN§7\: Betriebsmodus\: 0 \= Aus, 1 \= Einzelchunk, 2 \= Gebiet\n§everbl. Zeit AUS§7\: verbleibende §6Laufzeit§7 in Minuten, welche regelmäßig nachgefüllt werden muss.\n§oBei mehr als einem geladenem Chunk wird die Laufzeit in doppelter Geschwindigkeit verbraucht.\n\n§8§nAllgemeiner Hinweis\:§8 Vorsicht bei Maschinerie, welche Chunkgrenzen zu ungeladenen Bereichen überschreitet! Beim Versuch, mit ungeladenen, benachbarten Blöcken zu interagieren, werden die entsprechenden Chunks möglicherweise wiederholt zur Bearbeitung der Anfrage "zwangsgeladen" und anschließend wieder entladen, da nichts sie geladen hält. Um Serverbelastung zu reduzieren ist es also oft besser, solche Chunks ebenfalls permanent geladen zu halten.\n§8§oDie Geräte aus dieser Mod sind sicher und zwangsladen Chunks nur in unvermeidbaren Ausnahmefällen!
+tile.rs_ctr.teleporter.name=Strukturteleporter
+tile.rs_ctr.teleporter.tip=Verbesserte Version des §6Teleporter§7s, die auch größere, per §63D-Blockrahmen§7 abgesteckte Blockstrukturen auf einmal teleportieren kann.\n§eTeleport EIN§7 von §e0§7 auf den gewünschten §eOp-Code§7 umzuschalten startet den Teleportvorgang (wie beim einfachen §6Teleporter§7).\n\n§eZielblock EIN§7\: Die Zielposition.\n§eAnkerblock EIN§7\: Der zu teleportierende Block oder der Ankerpunkt einer zu teleportierenden Struktur (muss innerhalb des Volumens oder Rahmens sein).\n§eTeleport EIN§7\: 0 \= warten, 1 \= Einzelblock, 2 \= inneres Volumen, 4 \= äußerer Rahmen, 6 \= Volumen + Rahmen.\n§eStatus AUS§7\: -2 \= ungültiger Rahmen, -1 \= ungültige Koordinaten, 0 \= wartet, 1...99 \= läd auf, 100 \= abgeschlossen.\n§eEnergie EIN§7\: Energiezufuhr benötigt während des Aufladens.\n\n§8§oAlle teleportierten Blöcke werden zeitgleich ausgetauscht und wie beim Chunk (ent-)laden behandelt. Es §lsollte§8§o also mit den meisten Mods und auch Multiblockstrukturen problemlos funktionieren.
+tile.rs_ctr.teleporter.tipA=Timing\: §aWelt-Ticks\nTeleport passiert §aPrä-Welt-Ticks\nmaximale Gebietgröße\: §a\\<teleporter_range> m\nEnergieverbrauch\: §eVolumen§a/m³ * §eDistanz§a/m * \\<energy_teleport_pb>\ninterdimensionale §eDistanz§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.teleporter1.tip=Teleportiert Blöcke und Objekte durch vertauschen des Inhalts von §eAnker-§7 und §eZiel§7block.\n§eTeleport EIN§7 von §e0§7 nach §e1§7 umzuschalten startet den Teleportvorgang. Der Wert muss gehalten werden bis §eStatus AUS \= 100§7 erreicht. Vorzeitiges zurückschalten auf §e0§7 bricht die Teleportation ab.\n\n§eZielblock EIN§7\: Die Zielposition.\n§eAnkerblock EIN§7\: Der zu teleportierende Block.\n§eTeleport EIN§7\: 0 \= warten, 1 \= Teleport starten.\n§eStatus AUS§7\: -1 \= ungültige Koordinaten, 0 \= wartet, 1...99 \= läd auf, 100 \= abgeschlossen.\n§eEnergie EIN§7\: Energiezufuhr benötigt während des Aufladens.
+tile.rs_ctr.teleporter1.tipA=Timing\: §aWelt-Ticks\nTeleport passiert §aPrä-Welt-Ticks\nEnergieverbrauch\: §eDistanz§a/m * \\<energy_teleport_pb>\ninterdimensionale §eDistanz§a \= \\<teleport_dist_cap>m
 
 # Chat Hinweise
 msg.rs_ctr.type=§cInkompatibler Anschlusstyp!
@@ -210,6 +223,10 @@ item.rs_ctr.processor.stats=Komplexität\: §c%d §b%d §9%d §7Größe\: §f%d
 item.rs_ctr.signal_probe.tip=Zeigt die aktuellen Signalwerte aller Anschlüsse eines Gerätes an.\n\nKann außerdem als §6Schaubendreher§7 verwendet werden.
 item.rs_ctr.signal_probe.name=Signalprüfer
 item.rs_ctr.signal_probe.name1=Signalprüfer §9gespeicherte Konfig.
+item.rs_ctr.cl_fuel.name=Laufzeit [§a%d\:%02d h§r]
+item.rs_ctr.cl_fuel.tip=§aBenutze§7 auf §6Chunkanker§7 um die Laufzeit aufzufüllen.\n§oItem wird verbraucht!\n§aSchlage§7 auf §6Chunkanker§7 um die gespeicherte Zeit wieder zu entnehmen.
+item.rs_ctr.block_plug.name=Blockzugriffsstecker
+item.rs_ctr.block_plug.tip=Bietet direkten Blockreferenzzugriff auf einen Block in §a\\<block_plug_range> m§7 Umkreis zum verbundenen Anschluss.\nZum verbinden, §abenutze§7 zunächst§a gedukt§7 auf die Blockseite, auf die per Blockreferenz zugegriffen werden soll, und anschließend auf einen Anschluss.\n\n§oVerbindung benutzt relative Koordinaten (relevant für Teleport).
 item.cd4017be.m\:battery.name=Redstone Batterie
 item.cd4017be.m\:telekin_alloy.name=telekinetische Legierung
 item.cd4017be.m\:actuator.name=Ferninteraktionsmodul
@@ -316,6 +333,23 @@ port.rs_ctr.clock=⎍ %.2fs
 port.rs_ctr.pulse=\n∆ ⟹ ⌈⌉
 port.rs_ctr.edge0=\n⍏ ⟹ ⇵
 port.rs_ctr.edge1=\n⍖ ⟹ ⇵
+port.rs_ctr.dim=Dimension AUS
+port.rs_ctr.xo=X-Achse AUS
+port.rs_ctr.yo=Y-Achse AUS
+port.rs_ctr.zo=Z-Achse AUS
+port.rs_ctr.refx=X-Ref. EIN
+port.rs_ctr.refy=Y-Ref. EIN
+port.rs_ctr.refz=Z-Ref. EIN
+port.rs_ctr.side=Seite EIN
+port.rs_ctr.area_cl0=§agültiger Rahmen %d*%d\nChunks\: %d / %d
+port.rs_ctr.area_cl1=Rahmen unvollständig\: %d*%d\n§6%5$d fehlende Eckblöcke!
+port.rs_ctr.area_cl2=Gebiet zu groß\: %d*%d\n§cZu viele Chunks\: %d / %d
+port.rs_ctr.time_cl0=Zeit\: %d\:%02d h [§cAus§f]
+port.rs_ctr.time_cl1=Zeit\: %d\:%02d h [§ax1§r]
+port.rs_ctr.time_cl2=Zeit\: %d\:%02d h [§9x2§r]
+port.rs_ctr.p0=Ankerblock EIN
+port.rs_ctr.p1=Zielblock EIN
+port.rs_ctr.tp=Teleport EIN
 sensor.rs_ctr.none=Komparatorwert
 sensor.rs_ctr.item=enthaltene\nItemanzahl
 sensor.rs_ctr.fluid=enthaltene\nFlüssigkeitsmenge [mB]
@@ -526,3 +560,4 @@ recipe.rs_ctr.circuit_mat=Prozessorkomponenten
 recipe.rs_ctr.battery=Akkumulatoren
 recipe.rs_ctr.sensors=Komparatorjustierungen
 recipe.rs_ctr.capacity=%.4u Ladung
+#added by ingame editor:
