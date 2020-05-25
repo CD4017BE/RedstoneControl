@@ -177,6 +177,7 @@ public abstract class SplitPlug extends Connector implements IIntegratedConnecto
 			wires[i] = null;
 			con.onRemoved(player);
 		}
+		dropItem(drop(), player);
 	}
 
 	@Override

@@ -76,7 +76,7 @@ public class BlockProbe extends Connector implements IBlockRenderComp, ITESRende
 		nbt.setInteger("ly", linkPos.getY());
 		nbt.setInteger("lz", linkPos.getZ());
 		nbt.setByte("lf", (byte)linkFace.getIndex());
-		ItemStack stack = new ItemStack(Objects.block_wire);
+		ItemStack stack = new ItemStack(Objects.block_plug);
 		stack.setTagCompound(nbt);
 		dropItem(stack, player);
 	}
