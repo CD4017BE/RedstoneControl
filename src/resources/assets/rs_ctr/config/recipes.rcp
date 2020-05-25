@@ -1,4 +1,4 @@
-VERSION = 105;
+VERSION = 106;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -131,7 +131,7 @@ INIT() {
 	add("shaped", it("tile.item_placer"), "254/535/001", it("tile.rs_port"):1, it("tile.rs_port"):0, it("minecraft:skull"):2, it("m.actuator"), it("minecraft:dispenser"), "ingotIron");
 	add("shaped", it("tile.chunk_loader"), "202/010/304", it("item.cl_fuel"), it("tile.frame"), it("minecraft:clock"), it("tile.rs_port"):1, it("tile.rs_port"):0);
 	add("shaped", it("tile.teleporter1"), "343/525/0 1", it("tile.rs_port"):1, it("tile.rs_port"):0, it("m.actuator"), it("minecraft:obsidian"), "blockDiamond", it("minecraft:ender_eye"));
-	add("shaped", it("tile.teleporter"), " 3 /202/ 1 ", it("tile.frame"), it("tile.teleporter1"), it("minecraft:nether_star"), it("minecraft:dragon_egg"));
+	add("shaped", it("tile.teleporter"), " 2 / 0 / 1 ", it("tile.frame"), it("tile.teleporter1"), it("minecraft:dragon_egg"));
 	add("shaped", it("tile.ram"), "021", it("tile.bin_comb"), it("tile.bin_split"), it("tile.logic_comb"));
 	add("shaped", it("tile.ram"):5, "1/0", it("tile.ram"), it("m.corerope1"));
 	add("shaped", it("tile.ram"):7, "101", it("tile.ram"):5, it("m.corerope1"));
@@ -214,10 +214,11 @@ moddedRecipes() {
 	if (hasmod("appliedenergistics2")) {
 		add("shapeless", 4 * it("tile.wire_anchor"), it("appliedenergistics2:part"):120);
 		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, "paper", it("item.wire"));
+		add("shaped", it("item.wireless_b"), "132/0 0/231", it("item.wireless"), it("m.telekin_alloy"), it("appliedenergistics2:material"):48, it("appliedenergistics2:quantum_link")); !quantum entangled singularity
 	}
 	if (hasmod("opencomputers")) {
 		add("shaped", it("tile.oc_adapter"), "5 3/014/523", it("opencomputers:card"):6, it("opencomputers:material"):11, it("opencomputers:component"):6, it("tile.processor2"), it("opencomputers:card"):4, it("item.wire_e"));
-		add("battery", it("opencomputers:capacitor"), 1600000); !CAPACITOR
+		add("battery", it("opencomputers:capacitor"), 1600 * energy_unit_OC); !CAPACITOR
 		add("circuitMat", it("opencomputers:material"):6, 3, 0, 0, -2, 1, 3); !transistor
 		add("circuitMat", it("opencomputers:material"):7, 1, 3, 0, -1, 0, 4); !chip T1
 		add("circuitMat", it("opencomputers:material"):8, 3, 7, 0, -2, 0, 10); !chip T2
@@ -227,6 +228,19 @@ moddedRecipes() {
 		add("circuitMat", it("opencomputers:component"):6, 0, 0, 32, -8, -8, 16); !RAM T1
 		add("circuitMat", it("opencomputers:component"):7, 0, 0, 48, -8, -16, 32); !RAM T1.5
 		add("circuitMat", it("opencomputers:capacitor"), 0, 0, 0, -8, 1, 160000); !CAPACITOR (only 1/10 cap here)
+	}
+	if (hasmod("mekanism")) {
+		add("shaped", it("item.wireless_b"), "121/020", it("item.wireless"), it("m.telekin_alloy"), it("mekanism:machineblock3"));
+	}
+	if (hasmod("enderio")) {
+		add("shaped", it("item.wireless_b"), " 1 /020/ 1 ", it("item.wireless"), it("m.telekin_alloy"), it("enderio:block_transceiver"));
+		add("battery", it("enderio:item_basic_capacitor"):0, 50e3 * energy_unit_FE);
+		add("battery", it("enderio:item_basic_capacitor"):1, 150e3 * energy_unit_FE);
+		add("battery", it("enderio:item_basic_capacitor"):2, 500e3 * energy_unit_FE);
+	}
+	if (hasmod("draconicevolution")) {
+		add("battery", it("draconicevolution:wyvern_energy_core"), 8e6 * energy_unit_FE);
+		add("battery", it("draconicevolution:draconic_energy_core"), 32e6 * energy_unit_FE);
 	}
 }
 
