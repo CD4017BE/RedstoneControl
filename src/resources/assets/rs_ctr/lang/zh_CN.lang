@@ -103,6 +103,18 @@ tile.rs_ctr.ram.tip=可直接寻址的内存，支持同时读写。提供的存
 tile.rs_ctr.ram.tipA=读时机：§a即时 §e[Read Address]\n写时机：§a下一同步。世界刻
 tile.rs_ctr.chunk_loader.name=区块加载器
 tile.rs_ctr.chunk_loader.tip=保持被§63维方块框架§7定义的区域处于区块加载状态。\n§eActive IN§7：操作模式：0 \= 关闭，1 \= 单个区块，2 \= 区域\n§erem. Time OUT§7：剩余§6运行时间§7的分钟数，必须定期补充。\n§o如果有多于一个区块被加载，运行时间会以普通速度的两倍被消耗。\n\n§8§n一般注解：§8要小心跨过区块加载区域边界的管道和机器！如果它们尝试与相邻的未加载区块互动，那些区块可能会热加载来满足互动需求。但由于没有玩家或区块加载器来保持这种区块的加载，一刻后会被再次卸载，导致无限循环。为了避免卡顿，最好让这些区块也被永久加载。\n§8§o本模组的设备很节省。它们只在绝对必要时热加载区块！
+tile.rs_ctr.teleporter.tip=改进版的§6传送器§7，可以传送大范围内的方块而不是一个方块。传送的范围必须使用§63维方块框架§7指定。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块，或欲传送范围的锚点（必须在范围或框架内）。\n§eTeleport IN§7：0 \= 空闲，1 \= 单方块，2 \= 内体积，4 \= 外框架，6 \= 体积+框架。\n§eStatus OUT§7：-2 \= 无效框架，-1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。\n\n§8§o区域内所有方块会被同时置换，被当成经历了一次区块卸载/加载。所以本设备§l应该§8§o能与其他模组一起工作，就算是多方块结构也可以。
+tile.rs_ctr.teleporter.name=结构传送器
+tile.rs_ctr.teleporter.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n最大距离（框架）：§a\\<teleporter_range> m\n能量消耗：§e容积§a/m³ * §e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.teleporter1.name=传送器
+tile.rs_ctr.teleporter1.tip=能传送方块和实体，方法为置换§e锚§7方块和§e目标§7方块的内容。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块。\n§eTeleport IN§7：0 \= 空闲：1 \= 开始传送。\n§eStatus OUT§7： -1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。
+tile.rs_ctr.teleporter1.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n能量消耗：§e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.block_deserializer.name=方块引用反序列化器
+tile.rs_ctr.block_deserializer.tip=将一个§6方块引用§7信号转换为其引用方块的位置座标。\n§eX§7/§eY§7/§eZ-coord OUT§7输出座标，§eDimension OUT§7输出维度ID。输出的座标中会减去§eX§7/§eY§7/§eZ-ref IN§7输入的座标。\n\n如果§eBlock IN§7没有连接，则会输出设备自身的位置座标。如果输入空引用，§eDimension OUT§7会输出§e-2.147.483.648§7。
+tile.rs_ctr.block_deserializer.tipA=时机：§a即时§e[Block IN]
+tile.rs_ctr.block_reorienter.name=方块引用调整器
+tile.rs_ctr.block_reorienter.tip=用于修改§6方块引用§7信号来访问方块的不同面（对于§6物品§7/§6流体转运器§7很重要）。\n§eSide IN§7控制着新的用于访问的面：\n0 \= 底面（-y）, 1 \= 顶面（+y）,\n2 \= 北面（-z）, 3 \= 南面（+z）,\n4 \= 西面（-x）, 5 \= 东面（+x）。\n其他输入 \= 保持原来的面
+tile.rs_ctr.block_reorienter.tipA=时机：§a下一同步。每刻后
 
 # chat messages
 msg.rs_ctr.type=§c不兼容的接口类型！
@@ -206,6 +218,8 @@ item.rs_ctr.cl_fuel.tip=§a右击§7§6区块加载器§7来补充其运行时�
 item.rs_ctr.signal_probe.tip=显示设备中当前正在输入输出的所有信号。\n\n也能当成一个§6螺丝刀§7。
 item.rs_ctr.signal_probe.name=信号探针显示器
 item.rs_ctr.signal_probe.name1=信号探针显示器 §9已储存配置。
+item.rs_ctr.block_plug.name=方块访问塞
+item.rs_ctr.block_plug.tip=能直接将方块访问接口连接到该方块访问塞所在端口§a\\<block_plug_range> m§7内的一个方块上。\n对方块的一面§a潜行右击§7以链接，再放置在端口上即可连接。\n\n§o链接使用相对座标（对传送很重要）。
 item.cd4017be.m\:battery.name=红石电池
 item.cd4017be.m\:actuator.name=远程执行器
 item.cd4017be.m\:telekin_alloy.name=心灵传动合金
@@ -320,6 +334,17 @@ port.rs_ctr.time=rem. Time OUT
 port.rs_ctr.time_cl0=时间：%d\:%02d h [§coff§f]
 port.rs_ctr.time_cl1=时间：%d\:%02d h [§ax1§r]
 port.rs_ctr.time_cl2=时间：%d\:%02d h [§9x2§r]
+port.rs_ctr.p0=anchor Block IN
+port.rs_ctr.p1=destination Block IN
+port.rs_ctr.tp=Teleport IN
+port.rs_ctr.refx=X-ref IN
+port.rs_ctr.refy=Y-ref IN
+port.rs_ctr.refz=Z-ref IN
+port.rs_ctr.dim=Dimension OUT
+port.rs_ctr.xo=X-coord OUT
+port.rs_ctr.yo=Y-coord OUT
+port.rs_ctr.zo=Z-coord OUT
+port.rs_ctr.side=Side IN
 sensor.rs_ctr.none=比较器\n值
 sensor.rs_ctr.item=已存储物品计数
 sensor.rs_ctr.fluid=已存储流体 [mB]
@@ -530,3 +555,4 @@ recipe.rs_ctr.circuit_mat=处理器组件
 recipe.rs_ctr.battery=电容
 recipe.rs_ctr.sensors=比较器调整
 recipe.rs_ctr.capacity=%.4u 充能
+#added by ingame editor:
