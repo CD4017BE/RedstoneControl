@@ -77,7 +77,7 @@ public class SignalProbeRenderer extends TileEntityItemStackRenderer implements 
 	}
 
 	private void renderDisplay(NBTTagCompound data, RayTraceResult rtr, World world, EntityPlayer player, float t) {
-		if (rtr.typeOfHit != Type.BLOCK) return;
+		if (rtr == null || rtr.typeOfHit != Type.BLOCK) return;
 		BlockPos pos = rtr.getBlockPos();
 		IPortProvider pp; {
 			IBlockState state = world.getBlockState(pos);
