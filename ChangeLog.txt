@@ -1,7 +1,16 @@
 v0.3.0
 Changes:
+- fixed potential crash in circuit diagram rendering
+- fixed the Signal Probe render crash in #34
+- fixed several text formatting issues
+- fixed read value updates when writing to read address in RAM (#31)
+- fixed circuit compiler problem on variable write without read
+- fixed strange chunk load bugs with 3D-Block Frames being seen as missing from Block Selectors and Chunk Loaders
 - fixed some clocked Comparator issues during world load
+- add a few more mod integration recipes
 - added Block Teleporters
+- added Block Reference Deserializer and Reorienter
+- re addedBlock Probe Wire as Block Access Plug
 - made wire connections teleport compatible
 Warning not fully compatible with old world saves. Potential problems include strange buggy behavior when removing or changing old wire connections. Backup your world before updating!
 
