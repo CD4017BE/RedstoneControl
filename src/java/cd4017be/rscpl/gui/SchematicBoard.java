@@ -284,7 +284,7 @@ public class SchematicBoard extends GuiCompBase<GuiFrame> {
 
 	private boolean commonSource(PinRef pin0, PinRef pin1) {
 		Gate g0 = schematic.get(pin0.gate), g1 = schematic.get(pin1.gate);
-		if (g0 == null || g1 == null) return false;//corrupted state
+		if (g0 == null || g1 == null || pin0.pin >= g0.inputCount() || pin1.pin >= g1.inputCount()) return false;//corrupted state
 		Pin p0 = g0.getInput(pin0.pin), p1 = g1.getInput(pin1.pin);
 		return p0 != null && p0.equals(p1);
 	}
