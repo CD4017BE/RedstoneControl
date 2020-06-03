@@ -161,7 +161,7 @@ public class Assembler extends BaseTileEntity implements IComparatorSource, ITic
 
 	@Override
 	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
-		return !unloaded && !player.isDead && player.getDistanceSqToCenter(pos) < 256;
+		return canPlayerAccessUI(player);
 	}
 
 	@Override

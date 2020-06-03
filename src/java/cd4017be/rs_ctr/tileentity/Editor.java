@@ -184,7 +184,7 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 
 	@Override
 	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
-		return !unloaded && !player.isDead && player.getDistanceSqToCenter(pos) < 256.0;
+		return canPlayerAccessUI(player);
 	}
 
 	@Override

@@ -329,7 +329,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	public boolean canInteract(EntityPlayer player, AdvancedContainer cont) {
-		return !unloaded && !player.isDead && player.getDistanceSqToCenter(pos) < 256.0;
+		return canPlayerAccessUI(player);
 	}
 
 	@Override
