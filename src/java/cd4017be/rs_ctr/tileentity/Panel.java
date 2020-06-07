@@ -180,6 +180,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			MountedPort port = ports[i];
 			if (port.pin >> 1 != id) continue;
 			port.setConnector(null, null);
+			port.onUnload();
 			ports[i] = ports[--l];
 		}
 		Module m = modules[id];
@@ -213,14 +214,16 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		modules[i] = m;
 		ArrayList<MountedPort> list = new ArrayList<>();
 		m.init(list, i, this);
+		m.onLoad(this);
 		if (!list.isEmpty()) {
 			i = ports.length;
 			ports = Arrays.copyOf(ports, i + list.size());
 			for (MountedPort port : list)
 				ports[i++] = port;
 			Arrays.sort(ports);
+			for (MountedPort port : list)
+				port.onLoad();
 		}
-		m.onLoad(this);
 		markDirty(REDRAW);
 		gui = null;
 		return true;
