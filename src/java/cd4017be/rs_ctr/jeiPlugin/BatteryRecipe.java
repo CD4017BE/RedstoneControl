@@ -33,7 +33,7 @@ public class BatteryRecipe implements IRecipeWrapper {
 	@Override
 	public void drawInfo(Minecraft minecraft, int w, int h, int mouseX, int mouseY) {
 		FontRenderer fr = minecraft.fontRenderer;
-		String s = TooltipUtil.format("recipe.rs_ctr.capacity", (double)cap / 1000D);
+		String s = TooltipUtil.format("recipe.rs_ctr.capacity", cap < 0 ? Double.NaN : (double)cap / 1000D);
 		fr.drawString(s, (18 + w - fr.getStringWidth(s)) / 2, 5, 0xff808080);
 	}
 

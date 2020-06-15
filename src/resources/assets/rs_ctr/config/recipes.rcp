@@ -1,4 +1,4 @@
-VERSION = 106;
+VERSION = 108;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -72,6 +72,7 @@ PRE_INIT() {
 
 INIT() {
 	!items that can be used as capacitors in Power Distribution Hub (all Forge Energy compatible items already work without need for registration)
+	add("battery", it("minecraft:command_block"), -1); !creative power
 	add("battery", it("m.battery"), 2000000);
 	add("shaped", it("m.battery"), "010/232/010", "nuggetGold", it("item.wire_e"), "dustRedstone", it("minecraft:coal"):1);
 	
@@ -210,11 +211,13 @@ moddedRecipes() {
 	if (hasmod("immersiveengineering")) {
 		add("shaped", it("tile.comparator"), "0/1", it("immersiveengineering:connector"):13, it("minecraft:stone_slab"));
 		add("shapeless", 8 * it("item.wire"), it("immersiveengineering:wirecoil"):5);
+		add("battery", it("immersiveengineering:metal_device0"):3, -1);
 	}
 	if (hasmod("appliedenergistics2")) {
 		add("shapeless", 4 * it("tile.wire_anchor"), it("appliedenergistics2:part"):120);
 		add("shaped", it("item.tag"), "0/1/2", it("appliedenergistics2:material"):21, "paper", it("item.wire"));
 		add("shaped", it("item.wireless_b"), "132/0 0/231", it("item.wireless"), it("m.telekin_alloy"), it("appliedenergistics2:material"):48, it("appliedenergistics2:quantum_link")); !quantum entangled singularity
+		add("battery", it("appliedenergistics2:creative_energy_cell"), -1);
 	}
 	if (hasmod("opencomputers")) {
 		add("shaped", it("tile.oc_adapter"), "5 3/014/523", it("opencomputers:card"):6, it("opencomputers:material"):11, it("opencomputers:component"):6, it("tile.processor2"), it("opencomputers:card"):4, it("item.wire_e"));

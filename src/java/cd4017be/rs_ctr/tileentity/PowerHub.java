@@ -128,7 +128,7 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 				onRemove(player);
 				charge += (long)es.extractEnergy(Integer.MAX_VALUE, false) * FE_UNIT;
 				cap = es.receiveEnergy(Integer.MAX_VALUE, true) * FE_UNIT;
-			} else if ((cap = CommonProxy.getCap(stack)) > 0) {
+			} else if ((cap = CommonProxy.getCap(stack)) != 0) {
 				onRemove(player);
 			} else return false;
 			battery = stack;
@@ -153,7 +153,7 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 	public Pair<Vec3d, String> getDisplayText(Vec3d aim) {
 		return Pair.of(new Vec3d(0.5, 0.5, 0.5), battery.isEmpty() ? 
 				TooltipUtil.translate("port.rs_ctr.battery0") :
-				battery.getDisplayName() + "\n" + TooltipUtil.format("port.rs_ctr.battery", (double)charge / 1000D, (double)cap / 1000D));
+				battery.getDisplayName() + "\n" + TooltipUtil.format("port.rs_ctr.battery", cap < 0 ? Double.NaN : (double)charge / 1000D, cap < 0 ? Double.NaN : (double)cap / 1000D));
 	}
 
 	@Override
@@ -165,6 +165,7 @@ public class PowerHub extends WallMountGate implements EnergyHandler, IEnergySto
 
 	@Override
 	public int changeEnergy(int dE, boolean sim) {
+		if (cap < 0) return dE;
 		long E = charge + dE;
 		if (E < 0) {
 			dE -= E;
