@@ -1,18 +1,10 @@
 package cd4017be.rs_ctr.gui;
 
-import java.awt.image.BufferedImage;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
-import javax.imageio.ImageIO;
 import static org.lwjgl.input.Keyboard.*;
 import cd4017be.lib.Gui.ModularGui;
 import cd4017be.lib.Gui.comp.Button;
@@ -25,6 +17,7 @@ import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.network.GuiNetworkHandler;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.Main;
+import cd4017be.rs_ctr.gui.ramio.RAMImageFormat;
 import cd4017be.rs_ctr.tileentity.RAM;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,22 +90,11 @@ public class GuiRAM extends ModularGui {
 			return;
 		}
 		String name = file.getName();
+		RAMImageFormat fmt = RAMImageFormat.get(name);
 		try(FileOutputStream fos = new FileOutputStream(file)) {
-			if (name.endsWith(".hex")) {
-				sendChat(TooltipUtil.format("msg.rs_ctr.encode_hex", file));
-				if (fmtW > 255) fmtW = 255;
-				writeHex(fos, data, fmtW);
-			} else if (name.endsWith(".png")) {
-				int bits = 5 - (tile.mode & 3);
-				sendChat(TooltipUtil.format("msg.rs_ctr.encode_img", fmtW, fmtH, 1 << bits, file));
-				BufferedImage img = new BufferedImage(fmtW, fmtH, BufferedImage.TYPE_INT_ARGB);
-				saveImg(img, data, bits);
-				ImageIO.write(img, "PNG", fos);
-			} else {
-				sendChat(TooltipUtil.format("msg.rs_ctr.encode_bin", file));
-				for (int n = data.capacity(); n > 0;)
-					n -= fos.getChannel().write(data);
-			}
+			int bits = 1 << (5 - (tile.mode & 3));
+			sendChat(fmt.infoMessage(true, name, fmtW, fmtH, bits));
+			fmt.exportFile(fos, data, fmtW, fmtH, bits);
 		} catch(FileNotFoundException e) {
 			sendChat(TooltipUtil.format("msg.rs_ctr.no_file", file));
 			return;
@@ -128,37 +110,15 @@ public class GuiRAM extends ModularGui {
 		fb.close();
 		File file = fb.getFile();
 		String name = file.getName();
+		RAMImageFormat fmt = RAMImageFormat.get(name);
 		try(FileInputStream fis = new FileInputStream(file)) {
-			int n = tile.memSize() << 2;
+			int bits = 1 << (5 - (tile.mode & 3));
+			sendChat(fmt.infoMessage(false, name, fmtW, fmtH, bits));
 			PacketBuffer buff = GuiNetworkHandler.preparePacket(container);
 			buff.writeByte(RAM.A_UPLOAD);
-			if (name.endsWith(".hex")) {
-				ByteBuffer data = ByteBuffer.allocate(n);
-				sendChat(TooltipUtil.format("msg.rs_ctr.decode_hex", file));
-				loadHex(fis, data);
-				data.clear();
-				buff.writeBytes(data);
-			} else if (name.endsWith(".png")) {
-				int bits = 5 - (tile.mode & 3);
-				sendChat(TooltipUtil.format("msg.rs_ctr.decode_img", 1 << bits, file));
-				BufferedImage img = ImageIO.read(fis);
-				fmtW = img.getWidth();
-				fmtH = img.getHeight();
-				loadImg(img, buff, n, bits);
-			} else {
-				sendChat(TooltipUtil.format("msg.rs_ctr.decode_bin", file));
-				n = (int)Math.min(fis.getChannel().size(), n);
-				buff.writeShort(n + 3 >> 2);
-				buff.ensureWritable(n + 3 & ~3);
-				int o = buff.writerIndex(), m = o + n;
-				while(o < m)
-					o += fis.read(buff.array(), o, m - o);
-				buff.writerIndex(o);
-				while((n & 3) != 0) {
-					n++;
-					buff.writeByte(0);
-				}
-			}
+			int[] wh = {fmtW, fmtH};
+			fmt.importFile(fis, buff, wh, bits, tile.memSize());
+			fmtW = wh[0]; fmtH = wh[1];
 			GuiNetworkHandler.GNH_INSTANCE.sendToServer(buff);
 		} catch(FileNotFoundException e) {
 			sendChat(TooltipUtil.format("msg.rs_ctr.no_file", file));
@@ -167,202 +127,6 @@ public class GuiRAM extends ModularGui {
 			sendChat("\u00a74" + e.toString());
 		}
 	}
-
-	static void loadHex(InputStream is, ByteBuffer data) throws IOException {
-		int d;
-		while((d = is.read()) >= 0) {
-			if(d != ':') continue;
-			int n = readHexDigits(is, 2);
-			int addr = readHexDigits(is, 4);
-			switch(readHexDigits(is, 2)) {
-			case 0:
-				data.position(addr);
-				for(; n >= 4; n -= 4)
-					data.putInt(readHexDigits(is, 8));
-				for(; n > 0; n--)
-					data.put((byte)readHexDigits(is, 2));
-				break;
-			case 1:
-				return;
-			default:
-				throw new IOException();
-			}
-		}
-	}
-
-	static void writeHex(OutputStream os, ByteBuffer data, int m) throws IOException {
-		int n;
-		while((n = data.remaining()) > 0) {
-			if (n > m) n = m;
-			checkempty: {
-				data.mark();
-				for (int i = n; i > 0; i--)
-					if (data.get() != 0) {
-						data.reset();
-						break checkempty;
-					}
-				continue;
-			}
-			os.write(':');
-			writeHexByte(os, n);
-			writeHexByte(os, data.position() >> 8);
-			writeHexByte(os, data.position());
-			writeHexByte(os, 0);
-			for (;n > 0; n--)
-				writeHexByte(os, data.get());
-			os.write('\n');
-		}
-		os.write(":00000001\n".getBytes(StandardCharsets.US_ASCII));
-	}
-
-	static int readHexDigits(InputStream is, int n) throws IOException {
-		int r = 0;
-		while(--n >= 0) {
-			int d = is.read();
-			if(d < 0) throw new EOFException();
-			d = Character.digit(d, 16);
-			if(d < 0) throw new NumberFormatException();
-			r = r << 4 | d;
-		}
-		return r;
-	}
-
-	static void writeHexByte(OutputStream os, int v) throws IOException {
-		os.write(Character.forDigit(v >> 4 & 15, 16));
-		os.write(Character.forDigit(v & 15, 16));
-	}
-
-	static void loadImg(BufferedImage img, PacketBuffer data, int cap, int bits) {
-		int w = img.getWidth(), h = img.getHeight();
-		h = Math.min(h, (cap << 3 >> bits) / w);
-		data.writeShort((w * h << bits) + 31 >> 5);
-		switch(bits) {
-		case 0://1 bit per pixel
-			for(int x = 0, y = 0; y < h;) {
-				int acc = 0;
-				for(int j = 0; j < 32; j++) {
-					if ((img.getRGB(x, y) & 0x808080) != 0)
-						acc |= 1 << j;
-					if (++x < w) continue;
-					x = 0;
-					if (++y >= h) break;
-				}
-				data.writeIntLE(acc);
-			}
-			break;
-		case 1://2 bit per pixel
-			for(int x = 0, y = 0; y < h;) {
-				int acc = 0;
-				for(int j = 0; j < 32; j+=2) {
-					acc |= 4 - (Integer.numberOfLeadingZeros(img.getRGB(x, y) & 0x808080) >> 3) << j;
-					if (++x < w) continue;
-					x = 0;
-					if (++y >= h) break;
-				}
-				data.writeIntLE(acc);
-			}
-			break;
-		case 2://4 bit per pixel
-			for(int x = 0, y = 0; y < h;) {
-				int acc = 0;
-				for(int j = 0; j < 32; j+=4) {
-					int c = img.getRGB(x, y);
-					acc |= ((((c & 0x7f) + (c >> 8 & 0x7f) + (c >> 16 & 0x7f)) / 191) << 3
-						| c >> 7 & 1 | c >> 14 & 2 | c >> 21 & 4) << j;
-					if (++x < w) continue;
-					x = 0;
-					if (++y >= h) break;
-				}
-				data.writeIntLE(acc);
-			}
-			break;
-		case 3://8 bit per pixel
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					data.writeByte((byte)img.getRGB(x, y));
-			for (int i = w * h; (i & 3) != 0; i++)
-				data.writeByte(0);
-			break;
-		case 4://16 bit per pixel
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					data.writeShortLE((short)img.getRGB(x, y));
-			if ((w * h & 1) != 0) data.writeShortLE(0);
-			break;
-		case 5://32 bit per pixel
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					data.writeIntLE(img.getRGB(x, y));
-			break;
-		}
-	}
-
-	private static final int[] COLORS4 = {
-		0xff000000, 0xff0000ff, 0xff00ff00, 0xffff0000
-	};
-	private static final int[] COLORS16 = {
-		0xff000000, 0xff0000bf, 0xff00bf00, 0xff00aaaa,
-		0xffbf0000, 0xffaa00aa, 0xffbf8000, 0xffaaaaaa,
-		0xff555555, 0xff5555ff, 0xff55ff55, 0xff00ffff,
-		0xffff5555, 0xffff00ff, 0xffffff00, 0xffffffff
-	};
-
-	static void saveImg(BufferedImage img, ByteBuffer data, int bits) {
-		data.order(ByteOrder.LITTLE_ENDIAN);
-		int w = img.getWidth(), h = img.getHeight();
-		h = Math.min(h, (data.capacity() << 3 >> bits) / w);
-		switch(bits) {
-		case 0://1 bit per pixel
-			for(int x = 0, y = 0; y < h;) {
-				int acc = data.getInt();
-				for(int j = 0; j < 32; j++) {
-					img.setRGB(x, y, (acc >> j & 1) != 0 ? 0xffffffff : 0xff000000);
-					if (++x < w) continue;
-					x = 0;
-					if (++y >= h) break;
-				}
-			}
-			break;
-		case 1://2 bit per pixel
-			for(int x = 0, y = 0; y < h;) {
-				int acc = data.getInt();
-				for(int j = 0; j < 32; j+=2) {
-					img.setRGB(x, y, COLORS4[acc >> j & 3]);
-					if (++x < w) continue;
-					x = 0;
-					if (++y >= h) break;
-				}
-			}
-			break;
-		case 2://4 bit per pixel
-			for(int x = 0, y = 0; y < h;) {
-				int acc = data.getInt();
-				for(int j = 0; j < 32; j+=4) {
-					img.setRGB(x, y, COLORS16[acc >> j & 15]);
-					if (++x < w) continue;
-					x = 0;
-					if (++y >= h) break;
-				}
-			}
-			break;
-		case 3://8 bit per pixel
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					img.setRGB(x, y, 0xff000000 | data.get() & 0xff);
-			break;
-		case 4://16 bit per pixel
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					img.setRGB(x, y, 0xff000000 | data.getShort() & 0xffff);
-			break;
-		case 5://32 bit per pixel
-			for (int y = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					img.setRGB(x, y, data.getInt());
-			break;
-		}
-	}
-
 
 	class Editor extends GuiCompBase<GuiCompGroup> {
 
