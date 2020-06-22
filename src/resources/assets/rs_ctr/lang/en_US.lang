@@ -404,7 +404,7 @@ gate.rs_ctr.ge0=Greater or Equal to Zero\n§7in ≥ 0 -> out \= true\n§7else ->
 gate.rs_ctr.gt0=Greater than Zero\n§7in > 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.le0=Less or Equal to Zero\n§7in ≤ 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq0=Is Zero\n§7in \= 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ne0=Not Zero\n§7in ≠ 0 -> out \= truw\n§7else -> out \= false
+gate.rs_ctr.ne0=Not Zero\n§7in ≠ 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.ne=Not Equal\n§7in1 ≠ in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.lt=Less than\n§7in1 < in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq=Equal\n§7in1 \= in2 -> out \= true\n§7else -> out \= false
