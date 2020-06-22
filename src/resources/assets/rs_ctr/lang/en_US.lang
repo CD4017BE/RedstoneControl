@@ -399,16 +399,18 @@ gate.rs_ctr.branch=Execution Switch\n§7in1 \= true -> evaluate in2\n§7else -> 
 gate.rs_ctr.sequence=Execution Sequence\n§7first evaluate in1\n§7then evaluate in2
 gate.rs_ctr.update=Update Trigger\n§7Always triggers the next\n§7cycle when evaluated.
 gategroup.rs_ctr.comp=Comparators
-gate.rs_ctr.lt0=Is Negative\n§7in < 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ge0=Not Negative\n§7in < 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.gt0=Is Positive\n§7in > 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.le0=Not Positive\n§7in > 0 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.lt0=Less than Zero\n§7in < 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ge0=Greater or Equal to Zero\n§7in ≥ 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.gt0=Greater than Zero\n§7in > 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.le0=Less or Equal to Zero\n§7in ≤ 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq0=Is Zero\n§7in \= 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ne0=Not Zero\n§7in \= 0 -> out \= false\n§7else -> out \= true
-gate.rs_ctr.ne=Not Equal\n§7in1 \= in2 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.ne0=Not Zero\n§7in ≠ 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ne=Not Equal\n§7in1 ≠ in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.lt=Less than\n§7in1 < in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.gt=Greater than\n§7in1 > in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq=Equal\n§7in1 \= in2 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ge=Greater or Equal\n§7in1 < in2 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.le=Less or Equal\n§7in1 ≤ in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ge=Greater or Equal\n§7in1 ≥ in2 -> out \= true\n§7else -> out \= false
 gategroup.rs_ctr.num=Arithmetic
 gate.rs_ctr.cst=Constant Number\n§7out \= #
 gate.rs_ctr.neg=Negate\n§7out \= -in
