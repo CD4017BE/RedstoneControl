@@ -40,7 +40,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	public static final String ID = "7seg";
 
 	SignalHandler out;
-	Decoding mode = Decoding.DEC;
+	Decoding mode = Decoding.DEC_S;
 	byte color, dots;
 
 	@Override
