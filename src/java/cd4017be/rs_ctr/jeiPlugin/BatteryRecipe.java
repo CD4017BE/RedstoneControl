@@ -1,5 +1,6 @@
 package cd4017be.rs_ctr.jeiPlugin;
 
+import java.util.*;
 import java.util.Map.Entry;
 
 import cd4017be.lib.util.ItemKey;
@@ -10,24 +11,23 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
 
-
 /**
  * @author CD4017BE
  *
  */
 public class BatteryRecipe implements IRecipeWrapper {
 
-	public final ItemStack ingred;
+	public final List<ItemStack> ingred;
 	public final long cap;
 
 	public BatteryRecipe(Entry<ItemKey, Long> entry) {
-		this.ingred = entry.getKey().items[0];
+		this.ingred = Arrays.asList(entry.getKey().items);
 		this.cap = entry.getValue();
 	}
 
 	@Override
 	public void getIngredients(IIngredients ingredients) {
-		ingredients.setInput(ItemStack.class, ingred);
+		ingredients.setInputLists(ItemStack.class, Collections.singletonList(ingred));
 	}
 
 	@Override

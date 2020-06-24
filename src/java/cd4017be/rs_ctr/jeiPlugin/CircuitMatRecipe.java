@@ -1,5 +1,6 @@
 package cd4017be.rs_ctr.jeiPlugin;
 
+import java.util.*;
 import java.util.Map.Entry;
 
 import cd4017be.lib.util.ItemKey;
@@ -17,11 +18,11 @@ import net.minecraft.item.ItemStack;
  */
 public class CircuitMatRecipe implements IRecipeWrapper {
 
-	public final ItemStack ingred;
+	public final List<ItemStack> ingred;
 	private final String[] info;
 
 	public CircuitMatRecipe(Entry<ItemKey, int[]> entry) {
-		this.ingred = entry.getKey().items[0];
+		this.ingred = Arrays.asList(entry.getKey().items);
 		int[] stats = entry.getValue();
 		int usage = Math.max(0, stats[0] + stats[1]);
 		float burst = (float)stats[5] / (float)(usage - stats[4]);
@@ -33,7 +34,7 @@ public class CircuitMatRecipe implements IRecipeWrapper {
 
 	@Override
 	public void getIngredients(IIngredients ingredients) {
-		ingredients.setInput(ItemStack.class, ingred);
+		ingredients.setInputLists(ItemStack.class, Collections.singletonList(ingred));
 	}
 
 	@Override
@@ -47,7 +48,10 @@ public class CircuitMatRecipe implements IRecipeWrapper {
 
 	public static int compare(Entry<ItemKey, int[]> a, Entry<ItemKey, int[]> b) {
 		int[] sa = a.getValue(), sb = b.getValue();
-		return sa[0] + sa[1] + sa[2] - sb[0] - sb[1] - sb[2];
+		int d = sa[0] + sa[1] + sa[2] - sb[0] - sb[1] - sb[2];
+		for (int i = 0; d == 0 && i < sa.length; i++)
+			d = sa[i] - sb[i];
+		return d;
 	}
 
 }

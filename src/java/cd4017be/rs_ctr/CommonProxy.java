@@ -110,7 +110,7 @@ public class CommonProxy implements IRecipeHandler {
 				for (ItemStack stack : ((OreDictStack)op).getItems())
 					MATERIALS.put(new ItemKey(stack), stats);
 		} else if (key.equals(BATTERY)) {
-			long cap = (long)param.getNumber(2);
+			Long cap = (long)param.getNumber(2);
 			IOperand op = param.param[1];
 			if (op instanceof ItemOperand)
 				BATTERIES.put(new ItemKey(((ItemOperand)op).stack), cap);
