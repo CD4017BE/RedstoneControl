@@ -1,0 +1,23 @@
+{
+	"id": 73,
+	"type": "const",
+	"width": 7,
+	"pins_in": "aI ",
+	"pins_out": " rI",
+	"nodes": [
+		{
+			"out": "cI",
+			"code": ["ldc $0"],
+			"args": ["$0"]
+		}, {
+			"typestrict": true,
+			"in": ["aZ", "cI"],
+			"out": "rI",
+			"code": "rs_ctr:and_zi"
+		}, {
+			"in": ["aI", "cI"],
+			"out": "rI",
+			"code": ["in 0", "in 1", "iand"]
+		}
+	]
+}

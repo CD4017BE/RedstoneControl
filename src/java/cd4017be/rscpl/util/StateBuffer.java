@@ -1,8 +1,8 @@
 package cd4017be.rscpl.util;
 
 import java.util.Arrays;
-
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.*;
+import net.minecraftforge.common.util.Constants.NBT;
 
 /**
  * Used to load and store the internal state of circuits.
@@ -67,18 +67,23 @@ public class StateBuffer {
 	}
 
 	public StateBuffer set(String key, short[] value) {
-		byte[] arr = new byte[value.length * 2];
-		for (int i = 0, j = 0; i < value.length; i++) {
-			short v = value[i];
-			arr[j++] = (byte)(v >> 8);
-			arr[j++] = (byte)v;
-		}
-		nbt.setByteArray(key, arr);
+		NBTTagList list = new NBTTagList();
+		for (int i = 0; i < value.length; i++)
+			list.appendTag(new NBTTagShort(value[i]));
+		nbt.setTag(key, list);
 		return this;
 	}
 
 	public StateBuffer set(String key, int[] value) {
 		nbt.setIntArray(key, value);
+		return this;
+	}
+
+	public StateBuffer set(String key, float[] value) {
+		NBTTagList list = new NBTTagList();
+		for (int i = 0; i < value.length; i++)
+			list.appendTag(new NBTTagFloat(value[i]));
+		nbt.setTag(key, list);
 		return this;
 	}
 
@@ -114,10 +119,18 @@ public class StateBuffer {
 	}
 
 	public void getArr(String key, short[] arr) {
-		byte[] buf = nbt.getByteArray(key);
-		int n = Math.min(buf.length / 2, arr.length);
-		for (int i = 0, j = 0; i < n; i++)
-			arr[i] = (short)(buf[j++] << 8 | buf[j++] & 0xff);
+		int n = arr.length;
+		if (nbt.hasKey(key, NBT.TAG_INT_ARRAY)) {//backwards compatibility
+			byte[] buf = nbt.getByteArray(key);
+			n = Math.min(buf.length / 2, n);
+			for (int i = 0, j = 0; i < n; i++)
+				arr[i] = (short)(buf[j++] << 8 | buf[j++] & 0xff);
+		} else {
+			NBTTagList list = nbt.getTagList(key, NBT.TAG_SHORT);
+			n = Math.min(list.tagCount(), n);
+			for (int i = 0; i < n; i++)
+				arr[i] = (short)list.getIntAt(i);
+		}
 		Arrays.fill(arr, n, arr.length, (short)0);
 	}
 
@@ -126,6 +139,14 @@ public class StateBuffer {
 		int n = Math.min(buf.length, arr.length);
 		System.arraycopy(buf, 0, arr, 0, n);
 		Arrays.fill(arr, n, arr.length, 0);
+	}
+
+	public void getArr(String key, float[] arr) {
+		NBTTagList list = nbt.getTagList(key, NBT.TAG_FLOAT);
+		int n = Math.min(list.tagCount(), arr.length);
+		for (int i = 0; i < n; i++)
+			arr[i] = list.getFloatAt(i);
+		Arrays.fill(arr, n, arr.length, 0F);
 	}
 
 }

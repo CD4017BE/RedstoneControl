@@ -15,6 +15,10 @@
 			"in": ["a[B"],
 			"out": "vI",
 			"code": ["in 0", "arraylength"]
+		}, {
+			"in": ["a[F"],
+			"out": "vI",
+			"code": ["in 0", "arraylength"]
 		}
 	]
 }

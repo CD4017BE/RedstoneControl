@@ -1,0 +1,10 @@
+{
+	"id": 101,
+	"pins_in": "aF ",
+	"pins_out": " rF",
+	"nodes": {
+		"in": ["aF"],
+		"out": "rF",
+		"code": "rs_ctr:fabs"
+	}
+}

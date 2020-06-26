@@ -1,0 +1,6 @@
+[
+	"rs_ctr:fcst", "rs_ctr:fcst0", "rs_ctr:fcst1",
+	"rs_ctr:fneg", "rs_ctr:finv", "rs_ctr:fabs",
+	"rs_ctr:fadd", "rs_ctr:fsub", "rs_ctr:fmul", "rs_ctr:fdiv", "rs_ctr:fmod",
+	"rs_ctr:fmax", "rs_ctr:fmin", "rs_ctr:floor", "rs_ctr:ceil"
+]

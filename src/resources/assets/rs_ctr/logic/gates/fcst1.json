@@ -1,0 +1,9 @@
+{
+	"id": 98,
+	"width": 2,
+	"pins_out": " rF",
+	"nodes": {
+		"out": "rF",
+		"code": ["fconst_1"]
+	}
+}

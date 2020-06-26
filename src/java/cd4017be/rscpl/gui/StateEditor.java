@@ -10,10 +10,7 @@ import cd4017be.lib.Gui.comp.TextField;
 import cd4017be.lib.util.TooltipUtil;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rscpl.util.StateBuffer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTPrimitive;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.*;
 import static net.minecraftforge.common.util.Constants.NBT.*;
 
 /**
@@ -86,82 +83,103 @@ public class StateEditor extends GuiCompGroup {
 	}
 
 	private String getValue(int i) {
-		NBTBase tag = state.nbt.getTag(keys[i += scroll]);
-		if (tag instanceof NBTPrimitive) {
-			NBTPrimitive ptag = (NBTPrimitive)tag;
-			switch(tag.getId()) {
-			case TAG_BYTE: return String.format(hex ? "%02X" : "%d", ptag.getByte());
-			case TAG_SHORT: return String.format(hex ? "%04X" : "%d", ptag.getShort());
-			case TAG_INT: return String.format(hex ? "%08X" : "%d", ptag.getInt());
-			case TAG_LONG: return String.format(hex ? "%016X" : "%d", ptag.getLong());
-			case TAG_FLOAT: return String.format(hex ? "%a" : "%f", ptag.getFloat());
-			case TAG_DOUBLE: return String.format(hex ? "%a" : "%f", ptag.getDouble());
-			}
-		} else if (tag instanceof NBTTagByteArray) {
-			byte[] arr = ((NBTTagByteArray)tag).getByteArray();
+		return toString(state.nbt.getTag(keys[i += scroll]), hex);
+	}
+
+	private static String toString(NBTBase nbt, boolean hex) {
+		switch(nbt.getId()) {
+		case TAG_BYTE: return String.format(hex ? "%02X" : "%d", ((NBTPrimitive)nbt).getByte());
+		case TAG_SHORT: return String.format(hex ? "%04X" : "%d", ((NBTPrimitive)nbt).getShort());
+		case TAG_INT: return String.format(hex ? "%08X" : "%d", ((NBTPrimitive)nbt).getInt());
+		case TAG_LONG: return String.format(hex ? "%016X" : "%d", ((NBTPrimitive)nbt).getLong());
+		case TAG_FLOAT: return String.format(hex ? "%a" : "%s", ((NBTPrimitive)nbt).getFloat());
+		case TAG_DOUBLE: return String.format(hex ? "%a" : "%s", ((NBTPrimitive)nbt).getDouble());
+		case TAG_BYTE_ARRAY: {
+			byte[] arr = ((NBTTagByteArray)nbt).getByteArray();
 			int l = arr.length, ll = hex ? Integer.toHexString(l - 1).length() : Integer.toString(l - 1).length();
 			String fmt = hex ? "%0" + ll + "x:%02x " : "%d:%d ";
 			StringBuilder sb = new StringBuilder((ll + 3) * l);
-			for (int j = 0; j < arr.length; j++)
+			for (int j = 0; j < l; j++)
 				sb.append(String.format(fmt, j, arr[j] & 0xff));
 			sb.deleteCharAt(sb.length() - 1);
 			return sb.toString();
-		} else if (tag instanceof NBTTagIntArray) {
-			int[] arr = ((NBTTagIntArray)tag).getIntArray();
+		}
+		case TAG_INT_ARRAY: {
+			int[] arr = ((NBTTagIntArray)nbt).getIntArray();
 			int l = arr.length, ll = hex ? Integer.toHexString(l - 1).length() : Integer.toString(l - 1).length();
 			String fmt = hex ? "%0" + ll + "x:%08x " : "%d:%d ";
 			StringBuilder sb = new StringBuilder((ll + (hex ? 8 : 5)) * l);
-			for (int j = 0; j < arr.length; j++)
+			for (int j = 0; j < l; j++)
 				sb.append(String.format(fmt, j, arr[j]));
 			sb.deleteCharAt(sb.length() - 1);
 			return sb.toString();
 		}
-		return tag.toString();
+		case TAG_LIST: {
+			NBTTagList list = (NBTTagList)nbt;
+			int l = list.tagCount(), ll = hex ? Integer.toHexString(l - 1).length() : Integer.toString(l - 1).length();
+			String fmt = hex ? "%0" + ll + "x:%s " : "%d:%s ";
+			StringBuilder sb = new StringBuilder();
+			for (int j = 0; j < l; j++)
+				sb.append(String.format(fmt, j, toString(list.get(j), hex)));
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
+		}
+		default: return nbt.toString();
+		}
 	}
 
 	private void setValue(int i, String t) {
 		String key = keys[i += scroll];
 		try {
-			switch(state.nbt.getTagId(key)) {
-			case TAG_BYTE: state.set(key, (byte)parseNumber(t, Byte.MAX_VALUE)); break;
-			case TAG_SHORT: state.set(key, (short)parseNumber(t, Short.MAX_VALUE)); break;
-			case TAG_INT: state.set(key, (int)parseNumber(t, Integer.MAX_VALUE)); break;
-			case TAG_LONG: state.set(key, parseNumber(t, Long.MAX_VALUE)); break;
-			case TAG_FLOAT: state.set(key, Float.parseFloat(t)); break;
-			case TAG_DOUBLE: state.set(key, Double.parseDouble(t)); break;
-			case TAG_BYTE_ARRAY: {
-				int rad = hex ? 16 : 10;
-				byte[] arr = state.nbt.getByteArray(key);
-				for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
-					int j = Integer.parseInt(t.substring(q + 1, p), rad);
-					if (j >= arr.length) continue;
-					if ((q = t.indexOf(' ', p)) < 0) q = t.length();
-					arr[j] = (byte)Integer.parseInt(t.substring(p + 1, q), rad);
-				}
-			}	break;
-			case TAG_INT_ARRAY: {
-				int rad = hex ? 16 : 10;
-				int[] arr = state.nbt.getIntArray(key);
-				for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
-					int j = Integer.parseInt(t.substring(q + 1, p), rad);
-					if (j >= arr.length) continue;
-					if ((q = t.indexOf(' ', p)) < 0) q = t.length();
-					arr[j] = Integer.parseInt(t.substring(p + 1, q), rad);
-				}
-			}	break;
-			default: return;
-			}
+			state.nbt.setTag(key, fromString(state.nbt.getTag(key), t, hex ? 16 : 10));
 			circuit.setState(state);
 			set.accept(i);
 		} catch (NumberFormatException e) {}
 	}
 
-	private long parseNumber(String t, long max) {
+	private NBTBase fromString(NBTBase nbt, String t, int rad) {
+		switch(nbt.getId()) {
+		case TAG_BYTE: return new NBTTagByte((byte)parseNumber(t, Byte.MAX_VALUE, rad));
+		case TAG_SHORT: return new NBTTagShort((short)parseNumber(t, Short.MAX_VALUE, rad));
+		case TAG_INT: return new NBTTagInt((int)parseNumber(t, Integer.MAX_VALUE, rad));
+		case TAG_LONG: return new NBTTagLong(parseNumber(t, Long.MAX_VALUE, rad));
+		case TAG_FLOAT: return new NBTTagFloat(Float.parseFloat(t));
+		case TAG_DOUBLE: return new NBTTagDouble(Double.parseDouble(t));
+		case TAG_BYTE_ARRAY: {
+			byte[] arr = ((NBTTagByteArray)nbt).getByteArray();
+			for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
+				int j = Integer.parseInt(t.substring(q + 1, p), rad);
+				if (j >= arr.length) continue;
+				if ((q = t.indexOf(' ', p)) < 0) q = t.length();
+				arr[j] = (byte)Integer.parseInt(t.substring(p + 1, q), rad);
+			}
+		}	break;
+		case TAG_INT_ARRAY: {
+			int[] arr = ((NBTTagIntArray)nbt).getIntArray();
+			for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
+				int j = Integer.parseInt(t.substring(q + 1, p), rad);
+				if (j >= arr.length) continue;
+				if ((q = t.indexOf(' ', p)) < 0) q = t.length();
+				arr[j] = Integer.parseInt(t.substring(p + 1, q), rad);
+			}
+		}	break;
+		case TAG_LIST: {
+			NBTTagList list = (NBTTagList)nbt;
+			for (int p = t.indexOf(':'), q = -1; p >= 0; p = t.indexOf(':', p + 1)) {
+				int j = Integer.parseInt(t.substring(q + 1, p), rad);
+				if (j >= list.tagCount()) continue;
+				if ((q = t.indexOf(' ', p)) < 0) q = t.length();
+				list.set(j, fromString(list.get(j), t.substring(p + 1, q), rad));
+			}
+		}	break;
+		}
+		return nbt;
+	}
+
+	private static long parseNumber(String t, long max, int rad) {
 		if (t.isEmpty()) throw new NumberFormatException();
-		int rad = hex ? 16 : 10;
-		boolean usgn = hex || t.charAt(0) == '+';
 		long l;
-		if (usgn) {
+		if (rad == 16 || t.charAt(0) == '+') {
 			l = Long.parseUnsignedLong(t, rad);
 			if (max != Long.MAX_VALUE && (l < 0 || l > max * 2 + 1))
 				throw new NumberFormatException();

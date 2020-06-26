@@ -1,0 +1,10 @@
+{
+	"id": 43,
+	"pins_in": "aF ",
+	"pins_out": " rZ",
+	"nodes": {
+		"in": ["aF"],
+		"out": "rZ",
+		"code": "rs_ctr:flt0"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"id": 46,
+	"width": 4,
+	"pins_in": "aF ",
+	"pins_out": " rZ",
+	"nodes": {
+		"in": ["aF"],
+		"out": "rZ",
+		"code": "rs_ctr:fnan"
+	}
+}

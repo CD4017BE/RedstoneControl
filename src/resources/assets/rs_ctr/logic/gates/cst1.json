@@ -1,0 +1,9 @@
+{
+	"id": 60,
+	"width": 2,
+	"pins_out": " rI",
+	"nodes": {
+		"out": "rI",
+		"code": ["iconst_1"]
+	}
+}

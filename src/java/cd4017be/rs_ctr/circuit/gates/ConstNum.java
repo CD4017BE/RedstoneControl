@@ -42,7 +42,7 @@ public class ConstNum extends GeneratedGate implements ISpecialRender, ISpecialC
 
 	@Override
 	public void draw(SchematicBoard board, int x, int y) {
-		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x + 2, y + 2, 5, board.parent.zLevel + 1);
+		GateTextureHandler.drawTinyText(board.parent.getDraw(), label, x + type.width - 4, y + 2, 5, board.parent.zLevel + 1);
 	}
 
 	public static Number parse(String s, Type t) throws NumberFormatException {

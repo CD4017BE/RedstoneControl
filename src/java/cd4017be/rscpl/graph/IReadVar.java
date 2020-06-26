@@ -27,6 +27,7 @@ public interface IReadVar extends IVariable, ValueOp {
 			case BYTE: state.set(name, (byte[])getValue()); break;
 			case SHORT: state.set(name, (short[])getValue()); break;
 			case INT: state.set(name, (int[])getValue()); break;
+			case FLOAT: state.set(name, (float[])getValue()); break;
 			} break;
 		}
 	}

@@ -15,6 +15,10 @@
 			"in": ["iI", "a[B", "xV"],
 			"out": "vB",
 			"code": ["in 2", "in 1", "in 0", "baload"]
+		}, {
+			"in": ["iI", "a[F", "xV"],
+			"out": "vF",
+			"code": ["in 2", "in 1", "in 0", "faload"]
 		}
 	]
 }

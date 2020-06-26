@@ -1,0 +1,27 @@
+{
+	"id": 87,
+	"type": "readwrite",
+	"cfg": ["value", "interrupt"],
+	"width": -4,
+	"pins_in": "aF ",
+	"pins_out": " oF",
+	"end": "r",
+	"nodes": [
+		{
+			"out": "oF",
+			"code": ["aload this", "getfield this $0 F"],
+			"args": ["$l"]
+		}, {
+			"if": { "var": 1, "eq": true },
+			"in": ["aF", "oF", "aF"],
+			"out": "rV",
+			"code": "rs_ctr:write_f",
+			"args": ["$l"]
+		}, {
+			"in": ["aF", "oV"],
+			"out": "rV",
+			"code": "rs_ctr:write1",
+			"args": ["$l", "F"]
+		}
+	]
+}

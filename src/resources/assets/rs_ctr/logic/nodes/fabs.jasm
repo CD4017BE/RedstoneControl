@@ -1,0 +1,7 @@
+in 0
+dup
+fconst_0
+fcmpl
+ifge end
+fneg
+end:

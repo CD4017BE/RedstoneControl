@@ -392,6 +392,10 @@ gate.rs_ctr.array_i=Array 32bit\n§7Provides a fixed sized indexable list\n§7of
 gate.rs_ctr.aset=Array Write\n§7Writes in1 into index in2 in array in3.\n§7Valid indices are §e0 ... N-1§7 for array size N.\n§4§oAccessing an invalid index causes burnout!\n§3§oOperation is only performed\n§3§owhen connected to End Node!
 gate.rs_ctr.aget=Array Read\n§7Reads the value at index in1 in array in2.\n§7Valid indices are §e0 ... N-1§7 for array size N.\n§4§oAccessing an invalid index causes burnout!
 gate.rs_ctr.alen=Array Size\n§7Outputs the element count\n§7of the input array.
+gate.rs_ctr.read_f=Variable Read Float\n§7Outputs the variable value set\n§7in previous evaluation cycle.
+gate.rs_ctr.write_f=Variable Write Float\n§7Stores input in a variable to\n§7feed into next evaluation cycle.\n§3§oOperation is only performed\n§3§owhen connected to End Node!
+gate.rs_ctr.feedback_f=Feedback Loop Float\n§7Variable read and write in one.\n§7Basically delays a signal by one update cycle.\n§3§oThe input/output sides on this are reversed!
+gate.rs_ctr.array_f=Array Float\n§7Provides a fixed sized indexable list\n§7of persistent Floating Point values.
 gategroup.rs_ctr.logic=Logic
 gate.rs_ctr.or=OR-Gate\n§7out \= in1 ∨ in2\n§7bitwise
 gate.rs_ctr.nand=NAND-Gate\n§7out \= ¬(in1 ∧ in2)\n§7bitwise
@@ -404,6 +408,7 @@ gate.rs_ctr.swt=Switch\n§7in1 \= true -> out \= in2\n§7else -> out \= in3
 gate.rs_ctr.branch=Execution Switch\n§7in1 \= true -> evaluate in2\n§7else -> evaluate in3
 gate.rs_ctr.sequence=Execution Sequence\n§7first evaluate in1\n§7then evaluate in2
 gate.rs_ctr.update=Update Trigger\n§7Always triggers the next\n§7cycle when evaluated.
+gate.rs_ctr.fswt=Float Switch\n§7in1 \= true -> out \= in2\n§7else -> out \= in3
 gategroup.rs_ctr.comp=Comparators
 gate.rs_ctr.lt0=Less than Zero\n§7in < 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.ge0=Greater or Equal to Zero\n§7in ≥ 0 -> out \= true\n§7else -> out \= false
@@ -417,8 +422,16 @@ gate.rs_ctr.gt=Greater than\n§7in1 > in2 -> out \= true\n§7else -> out \= fals
 gate.rs_ctr.eq=Equal\n§7in1 \= in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.le=Less or Equal\n§7in1 ≤ in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.ge=Greater or Equal\n§7in1 ≥ in2 -> out \= true\n§7else -> out \= false
-gategroup.rs_ctr.num=Arithmetic
+gate.rs_ctr.feq0=Float is Zero\n§7in \= ±0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.flt0=Float less than Zero\n§7in < 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.fgt0=Float greater than Zero\n§7in > 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.finf=Float is Infinite\n§7in \= ±∞ -> out \= true\n§7else -> out \= false
+gate.rs_ctr.fnan=Float is NaN\n§7in \= NaN -> out \= true\n§7else -> out \= false
+gate.rs_ctr.fcmp=Compare Floats\n§7in1 > in2 -> out \= 1\n§7in1 \= in2 -> out \= 0\n§7else -> out \= -1
+gategroup.rs_ctr.num=Integer Arithmetic
 gate.rs_ctr.cst=Constant Number\n§7out \= #
+gate.rs_ctr.cst0=Constant 0\n§7out \= 0
+gate.rs_ctr.cst1=Constant 1\n§7out \= 1
 gate.rs_ctr.neg=Negate\n§7out \= -in
 gate.rs_ctr.sub=Subtract\n§7out \= in1 - in2
 gate.rs_ctr.add=Add\n§7out \= in1 + in2
@@ -437,6 +450,28 @@ gate.rs_ctr.bitspl=Bit Splitter\n§7Splits an 8-bit input value up into its indi
 gate.rs_ctr.bitcom=Bit Combiner\n§7Composes an 8-bit output\n§7value from individual bits.
 gate.rs_ctr.bytespl=Byte Splitter\n§7Splits a 32-bit number into four\n§7signed or unsigned 8-bit numbers.
 gate.rs_ctr.bytecom=Byte Combiner\n§7Combines four 8-bit numbers into one 32-bit number.\n§7§oIgnoring any higher order bits of the inputs.
+gate.rs_ctr.lobp=Lowest Bit Index\n§7out \= log_2(lowestSetBit(in))\n§7in \= 0 -> out \= 32
+gate.rs_ctr.hobp=Highest Bit Index\n§7out \= floor(log_2(in))\n§7in \= 0 -> out \= -1
+gate.rs_ctr.obcnt=Bit Count\n§7out \= #setBits(in)
+gate.rs_ctr.bmask=Bit Mask\n§7out \= in AND #\n§7bitwise
+gate.rs_ctr.bin_i2f=Float from binary\n§7Creates a Floating Point number\n§7from its binary representation.
+gate.rs_ctr.bin_f2i=Float to binary\n§7Turns a Floating Point number\n§7into its binary representation.
+gategroup.rs_ctr.float=Floating Point Arithmetic
+gate.rs_ctr.fcst=Float Constant\n§7out \= #
+gate.rs_ctr.fcst0=Constant 0.0\n§7out \= 0.0
+gate.rs_ctr.fcst1=Constant 1.0\n§7out \= 1.0
+gate.rs_ctr.fneg=Negate Float\n§7out \= -in
+gate.rs_ctr.finv=Inverse Float\n§7out \= 1.0 / in
+gate.rs_ctr.fabs=Absolute Float value\n§7in < 0 -> out \= -in\n§7else -> out \= in
+gate.rs_ctr.fadd=Add Floats\n§7out \= in1 + in2
+gate.rs_ctr.fsub=Subtract Floats\n§7out \= in1 - in2
+gate.rs_ctr.fmul=Multiply Floats\n§7out \= in1 * in2
+gate.rs_ctr.fdiv=Divide Floats\n§7out \= in1 / in2
+gate.rs_ctr.fmod=Float Div Remainder\n§7out \= in1 mod in2
+gate.rs_ctr.fmin=Minimum Float\n§7in1 < in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.fmax=Maximum Float\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.floor=Floor\n§7out \= max(integer ≤ in)
+gate.rs_ctr.ceil=Ceiling\n§7out \= min(integer ≥ in)
 
 # GUI
 # Inventory names

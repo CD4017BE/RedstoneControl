@@ -1,0 +1,23 @@
+{
+	"id": 86,
+	"type": "write",
+	"cfg": ["interrupt"],
+	"width": 6,
+	"pins_in": "aF ",
+	"pins_out": " rV",
+	"link": "l",
+	"nodes": [
+		{
+			"if": { "var": 0, "eq": true },
+			"in": ["aF", "lF", "aF"],
+			"out": "rV",
+			"code": "rs_ctr:write_f",
+			"args": ["$l"]
+		}, {
+			"in": ["aF", "lV"],
+			"out": "rV",
+			"code": "rs_ctr:write1",
+			"args": ["$l", "F"]
+		}
+	]
+}

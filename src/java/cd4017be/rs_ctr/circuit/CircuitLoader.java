@@ -29,6 +29,9 @@ public class CircuitLoader extends ClassLoader {
 			.putAll(StateBuffer.class)
 			.putAll(String.class)
 			.putAll(Math.class)
+			.putAll(UtilFunc.class)
+			.putAll(Integer.class)
+			.putAll(Float.class)
 			.put(Object.class);
 
 	private HashMap<String, Function<String, byte[]>> registry = new HashMap<>();

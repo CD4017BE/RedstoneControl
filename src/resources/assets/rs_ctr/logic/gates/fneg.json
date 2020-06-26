@@ -1,0 +1,10 @@
+{
+	"id": 99,
+	"pins_in": "aF ",
+	"pins_out": " rF",
+	"nodes": {
+		"in": ["aF"],
+		"out": "rF",
+		"code": ["in 0", "fneg"]
+	}
+}

@@ -1,0 +1,12 @@
+in 0
+in 1
+fcmpg
+ifeq end
+aload this
+in 2
+putfield this $0 F
+iload mod
+iconst_1
+ior
+istore mod
+end:

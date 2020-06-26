@@ -1,0 +1,131 @@
+id  gate
+  0 in
+  1 out
+  2 read
+  3 write
+  4 cst
+  5 feedback
+  6 return
+  7 update
+  8 array_i
+  9 aget
+ 10 aset
+ 11 alen
+ 12 array_b
+ 13 array_s
+ 14 feedback_s
+ 15 feedback_b
+ 16 not
+ 17 or
+ 18 nor
+ 19 and
+ 20 nand
+ 21 xor
+ 22 xnor
+ 23 swt
+ 24 branch
+ 25 sequence
+ 26 fswt
+ 27 
+ 28 
+ 29 
+ 30 
+ 31 
+ 32 ne0
+ 33 eq0
+ 34 lt0
+ 35 ge0
+ 36 eq
+ 37 ne
+ 38 lt
+ 39 ge
+ 40 le0
+ 41 gt0
+ 42 feq0
+ 43 flt0
+ 44 fgt0
+ 45 finf
+ 46 fnan
+ 47 fcmp
+ 48 inc
+ 49 dec
+ 50 neg
+ 51 abs
+ 52 add
+ 53 sub
+ 54 mul
+ 55 div
+ 56 mod
+ 57 max
+ 58 min
+ 59 cst0
+ 60 cst1
+ 61 
+ 62 
+ 63 
+ 64 bsl
+ 65 bsr
+ 66 bitspl
+ 67 bitcom
+ 68 bytespl
+ 69 bytecom
+ 70 lobp
+ 71 hobp
+ 72 obcnt
+ 73 bmask
+ 74 bin_i2f
+ 75 bin_f2i
+ 76 
+ 77 
+ 78 
+ 79 
+ 80 read_s
+ 81 read_b
+ 82 write_s
+ 83 write_b
+ 84 clock_out
+ 85 read_f
+ 86 write_f
+ 87 feedback_f
+ 88 array_f
+ 89 
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96 fcst
+ 97 fcst0
+ 98 fcst1
+ 99 fneg
+100 finv
+101 fabs
+102 fadd
+103 fsub
+104 fmul
+105 fdiv
+106 fmod
+107 fmax
+108 fmin
+109 floor
+110 ceil
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128...254 reserved for add-on mods
+255 reserved for null

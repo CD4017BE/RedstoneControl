@@ -1,4 +1,6 @@
 [
 	"rs_ctr:ne0", "rs_ctr:eq0", "rs_ctr:lt0", "rs_ctr:le0", "rs_ctr:gt0", "rs_ctr:ge0",
-	"rs_ctr:eq", "rs_ctr:ne", "rs_ctr:lt", "rs_ctr:ge"
+	"rs_ctr:eq", "rs_ctr:ne", "rs_ctr:lt", "rs_ctr:ge",
+	"rs_ctr:feq0", "rs_ctr:flt0", "rs_ctr:fgt0", "rs_ctr:finf", "rs_ctr:fnan",
+	"rs_ctr:fcmp"
 ]

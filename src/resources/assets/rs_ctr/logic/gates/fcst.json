@@ -1,0 +1,12 @@
+{
+	"id": 96,
+	"type": "const",
+	"width": 6,
+	"pins_out": " rF",
+	"nodes": {
+		"out": "rF",
+		"code": ["ldc $0"],
+		"args": ["$0"],
+		"cache": false
+	}
+}
