@@ -141,6 +141,7 @@ public class Objects {
 	public static final ItemChunkLoaderFuel cl_fuel = null;
 	public static final ItemSignalProbe signal_probe = null;
 	public static final ItemBlockProbe block_plug = null;
+	public static final ItemRemoteControl remote = null;
 
 	//Sounds
 	public static final BaseSound LEVER_FLIP = null;
@@ -263,7 +264,8 @@ public class Objects {
 				new ItemWrench("wrench").setCreativeTab(tabCircuits),
 				new ItemChunkLoaderFuel("cl_fuel").setCreativeTab(tabCircuits),
 				new ItemSignalProbe("signal_probe").setCreativeTab(tabCircuits),
-				new ItemBlockProbe("block_plug").setCreativeTab(tabCircuits)
+				new ItemBlockProbe("block_plug").setCreativeTab(tabCircuits),
+				new ItemRemoteControl("remote").setCreativeTab(tabCircuits)
 		);
 	}
 
