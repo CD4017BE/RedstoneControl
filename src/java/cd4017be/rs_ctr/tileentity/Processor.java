@@ -22,6 +22,7 @@ import cd4017be.lib.network.StateSynchronizer;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
+import cd4017be.rs_ctr.Objects;
 import cd4017be.rs_ctr.circuit.Circuit;
 import cd4017be.rs_ctr.circuit.CompiledCircuit;
 import cd4017be.rs_ctr.circuit.UnloadedCircuit;
@@ -75,6 +76,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public String lastError;
 	DelayedSignal delayed;
 	String[] keys = new String[0];
+	boolean isBGA;
 
 	{ports = new MountedPort[] {new MountedPort(this, 0, EnergyHandler.class, true)};}
 
@@ -185,8 +187,10 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			nbt.setIntArray("stats", stats);
 			if (mode != CLIENT)
 				nbt.setTag("ingr", ItemFluidUtil.saveItems(ingreds));
-			if (mode != ITEM)
+			if (mode != ITEM) {
 				nbt.setInteger("energy", energy);
+				nbt.setByte("type", (byte)(isBGA ? 1 : 0));
+			}
 		} else if (mode == SYNC) {
 			if (lastError != null)
 				nbt.setString("err", lastError);
@@ -200,20 +204,13 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	@Override
 	protected void loadState(NBTTagCompound nbt, int mode) {
 		if (mode <= CLIENT || mode == ITEM) {
+			if (mode != ITEM) isBGA = nbt.getByte("type") != 0;
 			circuit = mode == ITEM ? new CompiledCircuit() : new UnloadedCircuit();
 			circuit.deserializeNBT(nbt);
+			createPorts();
 			NBTTagList names = nbt.getTagList("labels", NBT.TAG_STRING);
-			int in = circuit.inputs.length, out = circuit.outputs.length;
-			int oin = (4 - in) >> 1, oout = ((4 - out) >> 1) - in;
-			out += in;
-			ports = new MountedPort[out + 1];
-			for (int i = 0; i < out; i++) {
-				int j = i + (i < in ? oin : oout);
-				int k = j < 0 ? 0 : j > 3 ? 3 : j;
-				j = k > j ? k - j : j - k;
-				ports[i] = new MountedPort(this, i, SignalHandler.class, i >= in).setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.875 - k * 0.25, 0.25, EnumFacing.SOUTH, o).setName("\\" + names.getStringTagAt(i));
-			}
-			ports[out] = new MountedPort(this, out, EnergyHandler.class, true).setLocation(0.5, 1.0, 0.125, EnumFacing.UP, o).setName("port.rs_ctr.energy_i");
+			for (int i = ports.length - 2; i >= 0; i--)
+				ports[i].setName("\\" + names.getStringTagAt(i));
 			name = nbt.getString("name");
 			keys = circuit.getState().nbt.getKeySet().toArray(keys);
 			Arrays.sort(keys);
@@ -234,6 +231,29 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			lastTick = nbt.getLong("burnout");
 			tick = (byte)(nbt.getBoolean("active") ? 1 : 0);
 		}
+	}
+
+	private void createPorts() {
+		int in = circuit.inputs.length, out = circuit.outputs.length;
+		int oin = (4 - in) >> 1, oout = ((4 - out) >> 1) - in;
+		out += in;
+		ports = new MountedPort[out + 1];
+		for (int i = 0; i < out; i++) {
+			MountedPort port = new MountedPort(this, i, SignalHandler.class, i >= in);
+			ports[i] = port;
+			if (isBGA) {
+				int j = (i < in ? i : i - in) & 3;
+				int k = i < in ? i >> 2 : 3 - (i - in >> 2);
+				port.setLocation(0.125 + k * 0.25, 0.875 - j * 0.25, 0.5, EnumFacing.NORTH, o);
+			} else {
+				int j = i + (i < in ? oin : oout);
+				int k = j < 0 ? 0 : j > 3 ? 3 : j;
+				j = k > j ? k - j : j - k;
+				port.setLocation(i < in ? 0.125 + j * 0.25 : 0.875 - j * 0.25, 0.875 - k * 0.25, 0.25, EnumFacing.SOUTH, o);
+			}
+		}
+		ports[out] = new MountedPort(this, out, EnergyHandler.class, true)
+		.setLocation(0.5, 1.0, isBGA ? 0.625 : 0.125, EnumFacing.UP, o).setName("port.rs_ctr.energy_i");
 	}
 
 	@Override
@@ -257,7 +277,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 
 	@Override
 	protected void orient(Orientation o) {
-		coreBtn.setLocation(0.5, 0.5, 0.4375, o);
+		coreBtn.setLocation(0.5, 0.5, isBGA ? 0.9375 : 0.4375, o);
 		super.orient(o);
 	}
 
@@ -265,6 +285,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	public void onPlaced(EntityLivingBase entity, ItemStack item) {
 		NBTTagCompound nbt = item.getTagCompound();
 		if (nbt == null) return;
+		isBGA = item.getItem() == Objects.processor3;
 		loadState(nbt, ITEM);
 		energy = cap;
 		lastTick = world.getTotalWorldTime();

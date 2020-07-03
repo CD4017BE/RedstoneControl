@@ -1,4 +1,4 @@
-VERSION = 108;
+VERSION = 110;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -190,6 +190,8 @@ INIT() {
 	add("shaped", it("tile.processor2") + tag, "0 1/0 1/0 1", it("tile.rs_port"):1, it("tile.rs_port"):0);
 	tag = nbt(); tag:"Istats" = [0, 0, 0, 64, 0, 0]#; !empty processor (64 component space)
 	add("shaped", it("tile.processor") + tag, "001/0 1/011", it("tile.rs_port"):1, it("tile.rs_port"):0);
+	tag = nbt(); tag:"Istats" = [0, 0, 0, 128, -16, 64]#; !empty processor (96 component space)
+	add("shaped", it("tile.processor3") + tag, "010", it("tile.processor2"), "gemEmerald");
 	moddedRecipes();
 }
 
