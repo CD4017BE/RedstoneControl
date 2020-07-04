@@ -47,6 +47,9 @@ tile.rs_ctr.comparator.tipA=时机：§a即时 §e[Clock IN]
 tile.rs_ctr.processor2.name=红石处理器§eDIP8
 tile.rs_ctr.processor2.tip=能被§6电路设计器§7编程的集成电路。\n提供最多§14个输入§7和§24个输出§7端口。
 tile.rs_ctr.processor2.tipA=时机：§a下一同步。每刻后
+tile.rs_ctr.processor3.name=红石处理器§eBGA16
+tile.rs_ctr.processor3.tip=能被§6电路设计器§7编程的集成电路。\n提供最高的输入输出总数，最多§18个输入§7和§28个输出§7端口，但会增加红石消耗。
+tile.rs_ctr.processor3.tipA=时机：§a下一同步。每刻后
 tile.rs_ctr.assembler.name=处理器组装器
 tile.rs_ctr.assembler.tip=用于向§6红石处理器§7添加材料来提升其复杂度。
 tile.rs_ctr.power_hub.name=能量分配器
@@ -138,10 +141,12 @@ msg.rs_ctr.cfg_invalid=§4配置对该元件无效！
 msg.rs_ctr.decode_hex=§b以intel hex格式解码文件...
 msg.rs_ctr.decode_img=§b作为每像素%d位的图片解码文件...
 msg.rs_ctr.decode_bin=§b作为原始二进制数据解码文件...
+msg.rs_ctr.decode_bmp=§b作为位图解码文件...
 msg.rs_ctr.import_succ=§a内存导入成功！
 msg.rs_ctr.encode_hex=§b以intel hex格式编码文件...
 msg.rs_ctr.encode_img=§b编码文件为%dx%d大小，每像素%d位的图片...
 msg.rs_ctr.encode_bin=§b编码文件为原始二进制数据...
+msg.rs_ctr.encode_bmp=§b编码为%dx%d大小的位图...
 msg.rs_ctr.export_succ=§a内存导出成功！
 msg.rs_ctr.dir_invalid=§4为了预防存档或重要数据意外损坏，你不能导出到“circuitSchematics/data/”目录以外的地方。
 
@@ -220,6 +225,9 @@ item.rs_ctr.signal_probe.name=信号探针显示器
 item.rs_ctr.signal_probe.name1=信号探针显示器 §9已储存配置。
 item.rs_ctr.block_plug.name=方块访问塞
 item.rs_ctr.block_plug.tip=能直接将方块访问接口连接到该方块访问塞所在端口§a\\<block_plug_range> m§7内的一个方块上。\n对方块的一面§a潜行右击§7以链接，再放置在端口上即可连接。\n\n§o链接使用相对座标（对传送很重要）。
+item.rs_ctr.remote.name0=远程控制器§4（关）
+item.rs_ctr.remote.name1=远程控制器§2（开）
+item.rs_ctr.remote.tip=当控制器打开并位于物品栏内，代表当前按下按键的一个32位信号会发出到链接的端口。\n§a右击§7信号端口以链接。\n§a对空气右击§7切换开关。\n§a潜行右击§7空气可配置键位绑定。
 item.cd4017be.m\:battery.name=红石电池
 item.cd4017be.m\:actuator.name=远程执行器
 item.cd4017be.m\:telekin_alloy.name=心灵传动合金
@@ -345,6 +353,7 @@ port.rs_ctr.xo=X-coord OUT
 port.rs_ctr.yo=Y-coord OUT
 port.rs_ctr.zo=Z-coord OUT
 port.rs_ctr.side=Side IN
+port.rs_ctr.remote=远程\n#%d
 sensor.rs_ctr.none=比较器\n值
 sensor.rs_ctr.item=已存储物品计数
 sensor.rs_ctr.fluid=已存储流体 [mB]
@@ -386,6 +395,10 @@ gate.rs_ctr.array_i=32位数组\n§7提供其保存的一个32bit整型\n§7的�
 gate.rs_ctr.aset=数组写\n§7将in1写入到in3数组的in2位置。\n§7N位索引的有效索引为§e0 ... N-1§7。\n§4§o访问越界会烧坏元件！\n§3§o只在连接到终点节点\n§3§o时执行操作！
 gate.rs_ctr.aget=数组读\n§7读取in2数组中的in1位置。\n§7N位索引的有效索引为§e0 ... N-1§7。\n§4§o访问越界会烧坏元件！
 gate.rs_ctr.alen=数组长度\n§7输出输入数组\n§7的元素数量。
+gate.rs_ctr.read_f=浮点变量读\n§§7输出上个求值周\n§7期设定的变量。
+gate.rs_ctr.write_f=浮点变量写\n§7存储输入变量以\n§7提供给下个周期。\n§3§o只在连接到终点节点\n§3§o时执行操作！
+gate.rs_ctr.feedback_f=浮点反馈循环\n§7变量读写合二为一。\n§7基本上是将信号延迟了一个周期。\n§3§o这个元件的输入输出是反的！
+gate.rs_ctr.array_f=浮点数组\n7提供其保存的一个浮点型\n§7的可索引定长列表。
 gategroup.rs_ctr.logic=逻辑
 gate.rs_ctr.or=或门\n§7out \= in1 ∨ in2\n§7按位
 gate.rs_ctr.nand=与非门\n§7out \= ¬(in1 ∧ in2)\n§7按位
@@ -398,19 +411,30 @@ gate.rs_ctr.swt=多路选择器\n§7in1 \= true -> out \= in2\n§7else -> out \=
 gate.rs_ctr.branch=执行选择器\n§7in1 \= true -> 计算in2\n§7else -> 计算in3
 gate.rs_ctr.sequence=执行序列\n§7先计算in1\n§7再计算in2
 gate.rs_ctr.update=更新触发器\n§7计算时总触发\n§7下一周期。
+ gate.rs_ctr.fswt=浮点选择器\n§7in1 \= true -> out \= in2\n§7else -> out \= in3
 gategroup.rs_ctr.comp=比较器
-gate.rs_ctr.lt0=为负\n§7in < 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ge0=非负\n§7in < 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.gt0=为正\n§7in > 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.le0=非正\n§7in > 0 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.lt0=小于零\n§7in < 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ge0=大于等于零\n§7in ≥ 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.gt0=大于零\n§7in > 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.le0=小于等于零\n§7in ≤ 0 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq0=为零\n§7in \= 0 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ne0=非零\n§7in \= 0 -> out \= false\n§7else -> out \= true
-gate.rs_ctr.ne=不等于\n§7in1 \= in2 -> out \= false\n§7else -> out \= true
+gate.rs_ctr.ne0=非零\n§7in ≠ 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ne=不等于\n§7in1 ≠ in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.lt=小于\n§7in1 < in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.gt=大于\n§7in1 > in2 -> out \= true\n§7else -> out \= false
 gate.rs_ctr.eq=等于\n§7in1 \= in2 -> out \= true\n§7else -> out \= false
-gate.rs_ctr.ge=大于等于\n§7in1 < in2 -> out \= false\n§7else -> out \= true
-gategroup.rs_ctr.num=算术
+gate.rs_ctr.le=小于等于\n§7in1 ≤ in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.ge=大于等于\n§7in1 ≥ in2 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.feq0=浮点数为零\n§7in \= ±0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.flt0=浮点数小于零\n§7in < 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.fgt0=浮点数大于零\n§7in > 0 -> out \= true\n§7else -> out \= false
+gate.rs_ctr.finf=浮点数为无穷\n§7in \= ±∞ -> out \= true\n§7else -> out \= false
+gate.rs_ctr.fnan=浮点数未定义\n§7in \= NaN -> out \= true\n§7else -> out \= false
+gate.rs_ctr.fcmp=比较浮点数\n§7in1 > in2 -> out \= 1\n§7in1 \= in2 -> out \= 0\n§7else -> out \= -1
+gategroup.rs_ctr.num=整型算术
 gate.rs_ctr.cst=常量\n§7out \= #
+gate.rs_ctr.cst0=常量0\n§7out \= 0
+gate.rs_ctr.cst1=常量1\n§7out \= 1
 gate.rs_ctr.neg=相反数\n§7out \= -in
 gate.rs_ctr.sub=减\n§7out \= in1 - in2
 gate.rs_ctr.add=加\n§7out \= in1 + in2
@@ -429,6 +453,28 @@ gate.rs_ctr.bitspl=位分离器\n§7将8位输入值分割成独立的位。\n§
 gate.rs_ctr.bitcom=位合并器\n§7将独立的位合并\n§7成一个8位输出值。
 gate.rs_ctr.bytespl=字节分离器\n§7将32位数分离成\n§74个有符号或无符号的8位数。
 gate.rs_ctr.bytecom=字节合并器\n§7将4个8位数合并为一个32位数。\n§7§o忽略输入中更高位的内容。
+gate.rs_ctr.lobp=最低位索引\n§7out \= log_2(lowestSetBit(in))\n§7in \= 0 -> out \= 32
+gate.rs_ctr.hobp=最高位索引\n§7out \= floor(log_2(in))\n§7in \= 0 -> out \= -1
+gate.rs_ctr.obcnt=位计数\n§7out \= #setBits(in)
+gate.rs_ctr.bmask=位掩码\n§7out \= in AND #\n§7按位
+gate.rs_ctr.bin_i2f=二进制转浮点\n§7从二进制表达中\n§7创造一个浮点数。
+gate.rs_ctr.bin_f2i=浮点转二进制\n§7将浮点数转换为\n§7其二进制表达。
+gategroup.rs_ctr.float=浮点算术
+gate.rs_ctr.fcst=浮点常量\n§7out \= #
+gate.rs_ctr.fcst0=常量0.0\n§7out \= 0.0
+gate.rs_ctr.fcst1=常量1.0\n§7out \= 1.0
+gate.rs_ctr.fneg=浮点负数\n§7out \= -in
+gate.rs_ctr.finv=浮点倒数\n§7out \= 1.0 / in
+gate.rs_ctr.fabs=浮点绝对值\n§7in < 0 -> out \= -in\n§7else -> out \= in
+gate.rs_ctr.fadd=浮点加\n§7out \= in1 + in2
+gate.rs_ctr.fsub=浮点减\n§7out \= in1 - in2
+gate.rs_ctr.fmul=浮点乘\n§7out \= in1 * in2
+gate.rs_ctr.fdiv=浮点除\n§7out \= in1 / in2
+gate.rs_ctr.fmod=浮点模\n§7out \= in1 mod in2
+gate.rs_ctr.fmin=浮点最小值\n§7in1 < in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.fmax=浮点最大值\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.floor=向下取整\n§7out \= max(integer ≤ in)
+gate.rs_ctr.ceil=向上取整\n§7out \= min(integer ≥ in)
 
 # GUI
 # Inventory names
@@ -442,6 +488,7 @@ gui.rs_ctr.assembler.name=处理器组装机
 gui.rs_ctr.dsp_cfg.name=配置
 gui.rs_ctr.item_placer.name=可控物品使用器
 gui.rs_ctr.ram.name=内存内容
+gui.rs_ctr.remote.name=远程控制器键位绑定
 # Gui tooltips
 gui.rs_ctr.palette=逻辑门选项卡
 gui.rs_ctr.palette.open0=打开逻辑门选项卡
@@ -517,7 +564,7 @@ gui.rs_ctr.label=标签
 gui.rs_ctr.unit=单位
 gui.rs_ctr.encoder0=未加工分段编码：\n§7每个数字有8位\n§e1：§7中央\n§e2：§7左上\n§e4：§7顶端\n§e8：§7右上\n§e16：§7右下\n§e32：§7底部\n§e64：§7左下\n§e128：§7小数点
 gui.rs_ctr.encoder1=有符号未加工分段编码：\n§7后3个数字占用的0-23位使用§e未加工分段编码§7。\n§7第一个数字占用[24, 25]两位：\n§e0：§7 +\n§e1：§7 +1\n§e2：§7 -\n§e3：§7 -1
-gui.rs_ctr.encoder2=十进制编码
+gui.rs_ctr.encoder2=无符号十进制编码\n§7可链接到其他显示模块\n§7前延长可显示数字长度。
 gui.rs_ctr.encoder3=有符号十进制编码
 gui.rs_ctr.encoder4=十六进制编码
 gui.rs_ctr.color=显示颜色
@@ -550,6 +597,8 @@ gui.rs_ctr.fmt_w=图像宽\n§7对于.png导出\n位每行\n§7对于.hex导出
 gui.rs_ctr.fmt_h=图像宽\n§7对于.png导出
 gui.rs_ctr.import_file=从文件导入内存
 gui.rs_ctr.export_file=导出内存到文件
+gui.rs_ctr.remote.key0=位启用键
+gui.rs_ctr.remote.key1=请按下一个按键...
 
 recipe.rs_ctr.circuit_mat=处理器组件
 recipe.rs_ctr.battery=电容
