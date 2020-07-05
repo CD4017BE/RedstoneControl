@@ -14,11 +14,7 @@ import cd4017be.lib.TickRegistry.IUpdatable;
 import cd4017be.lib.Gui.AdvancedContainer;
 import cd4017be.lib.Gui.AdvancedContainer.IStateInteractionHandler;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
-import cd4017be.lib.network.GuiNetworkHandler;
-import cd4017be.lib.network.IGuiHandlerTile;
-import cd4017be.lib.network.StateSyncClient;
-import cd4017be.lib.network.StateSyncServer;
-import cd4017be.lib.network.StateSynchronizer;
+import cd4017be.lib.network.*;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
 import cd4017be.lib.util.Utils;
@@ -52,7 +48,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author CD4017BE
  *
  */
-public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHarvest, IGuiHandlerTile, IStateInteractionHandler {
+public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHarvest, IGuiHandlerTile, IStateInteractionHandler, IProcessor {
 
 	public static int BURNOUT_INTERVAL = 50;
 
@@ -290,6 +286,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		energy = cap;
 		lastTick = world.getTotalWorldTime();
 		tick = 1;
+		unloaded = true; //avoid log warnings
 		onLoad();
 	}
 
@@ -303,6 +300,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 		return "\\" + name;
 	}
 
+	@Override
 	public String getError() {
 		return lastError == null ? "\u00a7ano error" : "\u00a7c" + lastError;
 	}
@@ -314,6 +312,21 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 			io[i] = n.isEmpty() ? n : n.substring(1);
 		}
 		return io;
+	}
+
+	@Override
+	public double getExhaustion() {
+		return (double)(cap - energy) / (double)cap * 100D;
+	}
+
+	@Override
+	public Circuit getCircuit() {
+		return circuit;
+	}
+
+	@Override
+	public int getClockState() {
+		return tick;
 	}
 
 	@Override
@@ -356,7 +369,7 @@ public class Processor extends WallMountGate implements IUpdatable, ITilePlaceHa
 	@Override
 	@SideOnly(Side.CLIENT)
 	public GuiProcessor getGuiScreen(EntityPlayer player, int id) {
-		return new GuiProcessor(this, player);
+		return new GuiProcessor(this, getContainer(player, id));
 	}
 
 	@Override

@@ -118,6 +118,8 @@ tile.rs_ctr.block_deserializer.tipA=timing\: §ainstant §e[Block IN]
 tile.rs_ctr.block_reorienter.name=Block Reference Reorienter
 tile.rs_ctr.block_reorienter.tip=Modifies a §6Block Reference§7 to access the block from a different side (relevant for §6Item§7/§6Fluid Translocator§7).\n§eSide IN§7 controls the new access side\:\n0 \= Bottom (-y), 1 \= Top (+y),\n2 \= North (-z), 3 \= South (+z),\n4 \= West (-x), 5 \= East (+x),\nelse \= keep old side
 tile.rs_ctr.block_reorienter.tipA=timing\: §anext sync. post-tick
+tile.rs_ctr.int_panel.name=Integrated Panel
+tile.rs_ctr.int_panel.tip=A §6Control Panel§7 with integrated §6Redstone Processor§7 for IO processing.\nOffers up to §116 Inputs§7 and §216 Outputs§7 with up to §e4§7 of each being accessible as ports on the back.\n\nThe remaining I/Os must be assigned labels that start with two digits defining a grid position occupied by the §6Module§7 to connect with\:\n§e30§7 . . §e33\n \:  \:  \:  \:\n§e00§7 . . §e03\n§oModule I/Os are not accessible as ports!
 
 # chat messages
 msg.rs_ctr.type=§cIncompatible socket type!
