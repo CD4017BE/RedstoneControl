@@ -20,6 +20,7 @@ import cd4017be.lib.block.AdvancedBlock.INeighborAwareTile;
 import cd4017be.lib.block.AdvancedBlock.IRedstoneTile;
 import cd4017be.lib.block.AdvancedBlock.ITilePlaceHarvest;
 import cd4017be.lib.block.MultipartBlock.IModularTile;
+import cd4017be.lib.capability.NullEnergyStorage;
 import cd4017be.lib.render.Util;
 import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Orientation;
@@ -46,6 +47,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+import static net.minecraftforge.energy.CapabilityEnergy.ENERGY;
 
 /**
  * @author CD4017BE
@@ -145,7 +147,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 
 	@Override
 	public boolean hasCapability(Capability<?> cap, EnumFacing facing) {
-		if (facing == null || cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return false;
+		if (facing == null || cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY && cap != ENERGY) return false;
 		int i = facing.ordinal();
 		return mirrors[i] != null || Arrays.binarySearch(ports, i + 18) >= 0;
 	}
@@ -153,7 +155,7 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing facing) {
-		if (facing == null || cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY) return null;
+		if (facing == null || cap != ITEM_HANDLER_CAPABILITY && cap != FLUID_HANDLER_CAPABILITY && cap != ENERGY) return null;
 		int i = facing.ordinal();
 		BlockReference block = mirrors[i];
 		if (block != null && !RECURSION) {
@@ -165,7 +167,9 @@ public class RedstonePort extends Gate implements IRedstoneTile, INeighborAwareT
 				}
 			} finally { RECURSION = false; }
 		} else if (Arrays.binarySearch(ports, i + 18) < 0) return null;
-		return (T)(cap == ITEM_HANDLER_CAPABILITY ? EmptyHandler.INSTANCE : EmptyFluidHandler.INSTANCE);
+		return (T)(cap == ITEM_HANDLER_CAPABILITY ? EmptyHandler.INSTANCE
+			: cap == FLUID_HANDLER_CAPABILITY ? EmptyFluidHandler.INSTANCE
+			: NullEnergyStorage.INSTANCE);
 	}
 
 	@Override
