@@ -162,10 +162,15 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 	@SideOnly(Side.CLIENT)
 	public void render(List<BakedQuad> quads) {
 		Orientation o = getOrientation();
-		Vec3d dx = o.X.scale(MountedPort.SIZE * -2.), dy = o.Y.scale(MountedPort.SIZE * 2.), p = o.Z.scale(-0.005).subtract(dx.scale(.5)).subtract(dy.scale(.5));
+		Vec3d dx = o.X.scale(-.25), dy = o.Y.scale(.25), p = o.Z.scale(-0.005).subtract(dx.scale(.5)).subtract(dy.scale(.5));
 		for (MountedPort port : ports) {
 			int i = port.isMaster ? 4 : 0, j = port.type == SignalHandler.class ? 0 : port.type == BlockHandler.class ? 4 : port.type == EnergyHandler.class ? 8 : 12;
-			quads.add(new BakedQuad(Util.texturedRect(port.pos.add(p), dx, dy, Util.getUV(t_sockets, i, j), Util.getUV(t_sockets, i + 4, j + 4), -1, 0), -1, o.front, t_sockets, true, DefaultVertexFormats.BLOCK));
+			Vec3d p1 = p, dx1 = dx;
+			if (port.face == o.back) {
+				p1 = dx.scale(.5).subtract(dy.scale(.5));
+				dx1 = dx.scale(-1);
+			}
+			quads.add(new BakedQuad(Util.texturedRect(port.pos.add(p1), dx1, dy, Util.getUV(t_sockets, i, j), Util.getUV(t_sockets, i + 4, j + 4), -1, 0), -1, port.face, t_sockets, true, DefaultVertexFormats.BLOCK));
 		}
 	}
 

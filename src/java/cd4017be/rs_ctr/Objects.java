@@ -146,6 +146,8 @@ public class Objects {
 	public static final ItemSignalProbe signal_probe = null;
 	public static final ItemBlockProbe block_plug = null;
 	public static final ItemRemoteControl remote = null;
+	public static final ItemPanelModule socket_s = null;
+	public static final ItemPanelModule socket_b = null;
 
 	//Sounds
 	public static final BaseSound LEVER_FLIP = null;
@@ -273,7 +275,9 @@ public class Objects {
 				new ItemChunkLoaderFuel("cl_fuel").setCreativeTab(tabCircuits),
 				new ItemSignalProbe("signal_probe").setCreativeTab(tabCircuits),
 				new ItemBlockProbe("block_plug").setCreativeTab(tabCircuits),
-				new ItemRemoteControl("remote").setCreativeTab(tabCircuits)
+				new ItemRemoteControl("remote").setCreativeTab(tabCircuits),
+				new ItemPanelModule("socket_s", "socket_s").setCreativeTab(tabCircuits),
+				new ItemPanelModule("socket_b", "socket_b").setCreativeTab(tabCircuits)
 		);
 	}
 

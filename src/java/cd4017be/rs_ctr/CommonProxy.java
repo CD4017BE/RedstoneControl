@@ -1,57 +1,32 @@
 package cd4017be.rs_ctr;
 
-import cd4017be.api.recipes.RecipeScriptContext;
+import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.registerTab;
+import java.util.HashMap;
+import java.util.function.Function;
+import org.apache.logging.log4j.core.util.Loader;
+import cd4017be.api.recipes.*;
+import cd4017be.api.recipes.RecipeAPI.IRecipeHandler;
 import cd4017be.api.recipes.RecipeScriptContext.ConfigConstants;
 import cd4017be.api.rs_ctr.com.BlockReference;
 import cd4017be.api.rs_ctr.port.Connector;
 import cd4017be.api.rs_ctr.sensor.IBlockSensor;
 import cd4017be.api.rs_ctr.sensor.SensorRegistry;
 import cd4017be.api.rs_ctr.wire.RelayPort;
-
-import java.util.HashMap;
-import java.util.function.Function;
-
-import org.apache.logging.log4j.core.util.Loader;
-import cd4017be.api.recipes.ItemOperand;
-import cd4017be.api.recipes.RecipeAPI;
-import cd4017be.api.recipes.RecipeAPI.IRecipeHandler;
 import cd4017be.lib.script.Parameters;
 import cd4017be.lib.script.obj.IOperand;
 import cd4017be.lib.util.ItemKey;
 import cd4017be.lib.util.OreDictStack;
-import cd4017be.rs_ctr.circuit.data.ArrayEditor;
-import cd4017be.rs_ctr.circuit.data.GateConfiguration;
-import cd4017be.rs_ctr.circuit.data.IntegerValue;
-import cd4017be.rs_ctr.circuit.data.ToggleFlag;
+import cd4017be.rs_ctr.circuit.data.*;
 import cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet;
 import cd4017be.rs_ctr.circuit.editor.IGateProvider;
 import cd4017be.rs_ctr.circuit.gates.*;
-
-import static cd4017be.rs_ctr.circuit.editor.CircuitInstructionSet.registerTab;
 import cd4017be.rs_ctr.item.ItemBlockProbe;
 import cd4017be.rs_ctr.item.ItemWireCon;
 import cd4017be.rs_ctr.port.*;
 import cd4017be.rs_ctr.port.Clock;
-import cd4017be.rs_ctr.sensor.BlockHardnessSensor;
-import cd4017be.rs_ctr.sensor.DraconicFusionSensor;
-import cd4017be.rs_ctr.sensor.FluidSensor;
-import cd4017be.rs_ctr.sensor.ForgeEnergySensor;
-import cd4017be.rs_ctr.sensor.GrowthSensor;
-import cd4017be.rs_ctr.sensor.IC2EnergySensor;
-import cd4017be.rs_ctr.sensor.ItemSensor;
-import cd4017be.rs_ctr.sensor.LightSensor;
-import cd4017be.rs_ctr.tileentity.BlockBreaker;
-import cd4017be.rs_ctr.tileentity.BlockSelector;
-import cd4017be.rs_ctr.tileentity.ChunkLoader;
-import cd4017be.rs_ctr.tileentity.FluidTranslocator;
-import cd4017be.rs_ctr.tileentity.ItemPlacer;
-import cd4017be.rs_ctr.tileentity.ItemTranslocator;
-import cd4017be.rs_ctr.tileentity.OC_Adapter;
-import cd4017be.rs_ctr.tileentity.Panel;
-import cd4017be.rs_ctr.tileentity.PowerHub;
-import cd4017be.rs_ctr.tileentity.SolarCell;
-import cd4017be.rs_ctr.tileentity.StructTeleporter;
-import cd4017be.rs_ctr.tileentity.Teleporter;
+import cd4017be.rs_ctr.port.WireAnchor;
+import cd4017be.rs_ctr.sensor.*;
+import cd4017be.rs_ctr.tileentity.*;
 import cd4017be.rs_ctr.tileentity.part.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -191,6 +166,8 @@ public class CommonProxy implements IRecipeHandler {
 		Module.REGISTRY.put(Scale.ID, Scale::new);
 		Module.REGISTRY.put(Offset.ID, Offset::new);
 		Module.REGISTRY.put(Oscilloscope.ID, Oscilloscope::new);
+		Module.REGISTRY.put(SignalSocket.ID, SignalSocket::new);
+		Module.REGISTRY.put(BlockSocket.ID, BlockSocket::new);
 		
 		CircuitInstructionSet.INS_SET.loadTabs();
 	}

@@ -1,4 +1,4 @@
-VERSION = 111;
+VERSION = 112;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -171,6 +171,8 @@ INIT() {
 	add("shaped", it("item.scale"), "02/11", it("item.constant"), it("tile.num_comb"), it("item.wire"));
 	add("shaped", it("item.trigger"), "20/1 /20", it("item.constant"), it("tile.logic_comb"), it("minecraft:comparator"));
 	add("shaped", it("item.oscilloscope"), "000/000/111", it("item.lamp"), it("tile.delay"));
+	add("shaped", it("item.socket_s"), "01", it("tile.rs_port"):0, it("tile.rs_port"):1);
+	add("shaped", it("item.socket_b"), "01", it("tile.rs_port"):2, it("item.block_wire"));
 	add("shaped", it("m.corerope"), " 01/0 0/10 ", "nuggetIron", it("item.wire"));
 	add("shaped", it("m.corerope1"), "000/010/000", it("m.corerope"), "ingotIron");
 	add("shaped", it("m.corerope2"), " 0 /0 0/ 0 ", it("m.corerope1"));
