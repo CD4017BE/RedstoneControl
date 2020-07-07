@@ -1,4 +1,4 @@
-VERSION = 112;
+VERSION = 113;
 
 !The maximum distance between signal ports or anchors connected via wire.
 !Warning: wires much longer than 16 blocks may have visual chunk clipping glitches.
@@ -177,14 +177,7 @@ INIT() {
 	add("shaped", it("m.corerope1"), "000/010/000", it("m.corerope"), "ingotIron");
 	add("shaped", it("m.corerope2"), " 0 /0 0/ 0 ", it("m.corerope1"));
 	add("shaped", 4 * it("item.cl_fuel"), "010/ 2 /0 0", "blockGlass", it("m.telekin_alloy"), it("minecraft:ender_eye"));
-	Loc t = it("item.text"), t1 = t:1;
-	add("shaped", 4 * t1, "0/1", "paper", it("minecraft:sign"));
-	add("shapeless", t:4, t1, t1, t1, t1);
-	add("shapeless", t:3, t1, t1, t1);
-	add("shapeless", t:2, t1, t1);
-	add("shapeless", 4 * t1, t:4);
-	add("shapeless", 3 * t1, t:3);
-	add("shapeless", 2 * t1, t:2);
+	add("shaped", it("item.text"):4, "0/1", "paper", it("minecraft:sign"));
 	
 	Loc tag = nbt(); tag:"Istats" = [16, 12, 8, 72, 28, 88]#; !prototype processor (eqivalent to assembly with same materials except less remaining space)
 	add("shaped", it("tile.processor2") + tag, "021/041/031", it("tile.rs_port"):1, it("tile.rs_port"):0, "blockQuartz", "blockRedstone", "ingotIron");

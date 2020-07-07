@@ -104,7 +104,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 		if (mode != SYNC)
 			while(n > 0 && list.getCompoundTagAt(n-1).hasNoTags())
 				n--;
-		if (n != modules.length) modules = new Module[n];
+		if (n != modules.length) modules = Arrays.copyOf(modules, n);
 		ArrayList<MountedPort> ports = new ArrayList<>(modules.length);
 		for (int i = 0; i < modules.length; i++) {
 			NBTTagCompound tag = list.getCompoundTagAt(i);

@@ -154,7 +154,7 @@ public class ClientProxy extends CommonProxy {
 		registerRender(block_wire);
 		registerRender(clock);
 		registerRender(wrench);
-		registerRender(seg7);
+		registerRender(seg7, 0, 3);
 		registerRender(pointer_dsp);
 		registerRender(slider);
 		registerRender(text, 1, 4);

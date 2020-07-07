@@ -7,10 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -23,23 +20,32 @@ public class ItemPanelModule extends BaseItem {
 
 	final String module;
 	final int[] variants;
+	final boolean scroll;
 
-	public ItemPanelModule(String id, String module, int... variants) {
+	public ItemPanelModule(String id, String module) {
+		this(id, module, false);
+	}
+
+	public ItemPanelModule(String id, String module, boolean scroll, int... variants) {
 		super(id);
 		this.module = module;
-		if (variants.length == 0)
-			this.variants = new int[] {0};
-		else {
+		if (variants.length > 0) {
 			this.variants = variants;
+			this.scroll = scroll;
 			setHasSubtypes(true);
+		} else {
+			this.scroll = false;
+			this.variants = new int[] {0};
 		}
 	}
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!isInCreativeTab(tab)) return;
-		for (int i : variants)
+		for (int i : variants) {
 			items.add(new ItemStack(this, 1, i));
+			if (scroll) break;
+		}
 	}
 
 	@Override
@@ -56,6 +62,22 @@ public class ItemPanelModule extends BaseItem {
 		if (!panel.add(m)) return EnumActionResult.FAIL;
 		if (!player.isCreative()) stack.shrink(1);
 		return EnumActionResult.SUCCESS;
+	}
+
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack stack = player.getHeldItem(hand);
+		scrollVariant: {
+			if (!scroll) break scrollVariant;
+			int m = stack.getMetadata();
+			for (int i = 0; i < variants.length; i++)
+				if (variants[i] == m) {
+					stack.setItemDamage(variants[(i + 1) % variants.length]);
+					break scrollVariant;
+				}
+			stack.setItemDamage(variants[0]);
+		}
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 	}
 
 }

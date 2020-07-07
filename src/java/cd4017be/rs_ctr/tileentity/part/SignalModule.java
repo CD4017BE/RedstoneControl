@@ -73,6 +73,14 @@ public abstract class SignalModule extends Module implements IStateInteractionHa
 		return (double)(pos >> 2 & 3) * .25;
 	}
 
+	protected double getW() {
+		return (double)((pos >> 4 & 3) + 1) * .25;
+	}
+
+	protected double getH() {
+		return (double)((pos >> 6 & 3) + 1) * .25;
+	}
+
 	@Override
 	public Object getPortCallback() {
 		return this instanceof SignalHandler ? this : null;

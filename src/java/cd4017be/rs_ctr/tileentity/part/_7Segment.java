@@ -41,7 +41,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 
 	SignalHandler out;
 	Decoding mode = Decoding.DEC_S;
-	byte color, dots;
+	byte color, dots, digits;
 
 	@Override
 	public String id() {
@@ -50,15 +50,18 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 
 	@Override
 	public void onPlaced(ItemStack stack, float x, float y) {
-		pos = (byte) ((int)Math.floor(y * 3.) << 2 & 12 | 0x70);
+		int m = stack.getMetadata(), h = m >> 1 & 1, w = (m & 1) * (h + 1) + h;
+		pos = (byte)((int)Math.floor((4 - w) * x) & 3 | (int)Math.floor((4 - h) * y) << 2 & 12 | w << 4 | h << 6);
 	}
 
 	@Override
 	public void init(List<MountedPort> ports, int id, IPanel panel) {
 		Orientation o = panel.getOrientation();
-		double y = getY() + 0.125;
-		ports.add(new MountedPort(panel, id << 1, SignalHandler.class, false).setLocation(0.875, y, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.i"));
-		ports.add(new MountedPort(panel, id << 1 | 1, SignalHandler.class, true).setLocation(0.125, y, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.o"));
+		double y = getY() + 0.125, x = getX() + 0.125;
+		ports.add(new MountedPort(panel, id << 1, SignalHandler.class, false).setLocation(x + getW() - .25, y, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.i"));
+		if ((pos & 48) != 0)
+			ports.add(new MountedPort(panel, id << 1 | 1, SignalHandler.class, true).setLocation(x, y, 0.75, EnumFacing.NORTH, o).setName("port.rs_ctr.o"));
+		digits = (byte)((pos >> 3 & 6) + 2 >> (pos >> 6 & 3));
 		super.init(ports, id, panel);
 	}
 
@@ -71,7 +74,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	public void setPortCallback(Object callback) {
 		out = callback instanceof SignalHandler ? (SignalHandler)callback : null;
 		if (out != null)
-			out.updateSignal(mode.remainder(value));
+			out.updateSignal(mode.remainder(value, digits));
 	}
 
 	@Override
@@ -79,7 +82,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		if (val == value) return;
 		value = val;
 		if (out != null)
-			out.updateSignal(mode.remainder(val));
+			out.updateSignal(mode.remainder(val, digits));
 		host.updateDisplay();
 	}
 
@@ -121,7 +124,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		case 2:
 			mode = Decoding.values()[pkt.readUnsignedByte() % 5];
 			if (out != null)
-				out.updateSignal(mode.remainder(value));
+				out.updateSignal(mode.remainder(value, digits));
 			break;
 		case 3: dots = pkt.readByte(); break;
 		default: return;
@@ -134,12 +137,13 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 	protected boolean refreshFTESR(Orientation o, double x, double y, double z, int light, BufferBuilder buffer) {
 		light = brightness(light);
 		int vi = buffer.getVertexCount();
-		Vec3d p = o.rotate(new Vec3d(.25, getY() - .5, .51)).addVector(x + .5, y + .5, z + .5);
-		Vec3d dx = o.X.scale(0.25), dy = o.Y.scale(1./6.);
-		int color = COLORS[this.color & 15], code = mode.decode(value);
+		double h = getH() * .5;
+		Vec3d p = o.rotate(new Vec3d(getX() + (digits - 1) * h - .5, getY() - .5, .51)).addVector(x + .5, y + .5, z + .5);
+		Vec3d dx = o.X.scale(h), dy = o.Y.scale(h / 1.5);
+		int color = COLORS[this.color & 15], code = mode.decode(value, digits);
 		if (dots > 0) code |= 0x80 << (dots - 1) * 8;
-		for (int i = 0; i < 4; i++)
-			if (i == 3 && mode.sign) {
+		for (int i = digits - 1; i >= 0; i--)
+			if (i == 0 && mode.sign) {
 				buffer.addVertexData(texturedRect(p, dx, dy.scale(2), getUV(t_7seg, 12, (code + 1) * 4), getUV(t_7seg, 15, code * 4), color, light));
 			} else {
 				int u = (code & 3) * 3, v = code & 12; code >>= 4;
@@ -166,7 +170,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 		IPanel host = this.host;
 		if (host == null) return;
 		Orientation o = host.getOrientation();
-		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(-.5, getY() - .5, .505)).addVector(.5, .5, .5), o.X, o.Y.scale(1./3.), getUV(t_blank, 0, 0), getUV(t_blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, t_blank, true, DefaultVertexFormats.BLOCK));
+		quads.add(new BakedQuad(texturedRect(o.rotate(new Vec3d(getX() - .5, getY() - .5, .505)).addVector(.5, .5, .5), o.X.scale(getW()), o.Y.scale(getH() / 1.5), getUV(t_blank, 0, 0), getUV(t_blank, 16, 16), 0xff3f3f3f, 0), -1, o.back, t_blank, true, DefaultVertexFormats.BLOCK));
 	}
 
 	static final byte[] DIGITS = {
@@ -184,12 +188,14 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 			0xff_202040, 0xff_203040, 0xff_204040, 0xff_204020, 0xff_404020, 0xff_402020, 0xff_402040, 0xff_404040,
 		};
 
+	static final int[] EXP10 = {1, 10, 100, 1000, 10000};
+
 	enum Decoding {
 		RAW(false),
 		RAW_S(true),
 		DEC(false) {
 			@Override
-			int decode(int val) {
+			int decode(int val, int digits) {
 				if (val < 0) {
 					if (val == Integer.MIN_VALUE) return 0;
 					val = -val;
@@ -203,41 +209,40 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 				return code | DIGITS[(val / 10) % 10] << 24;
 			}
 			@Override
-			int remainder(int val) {
+			int remainder(int val, int digits) {
+				digits = EXP10[digits];
 				return val < 0 ?
-						(val <= -10000 && val != Integer.MIN_VALUE ? val / 10000 : Integer.MIN_VALUE)
-						: (val >= 10000 && val != Integer.MAX_VALUE ? val / 10000 : Integer.MAX_VALUE);
+						(val <= -digits && val != Integer.MIN_VALUE ? val / digits : Integer.MIN_VALUE)
+						: (val >= digits && val != Integer.MAX_VALUE ? val / digits : Integer.MAX_VALUE);
 			}
 		}, DEC_S(true) {
 			@Override
-			int decode(int val) {
-				int code = 0;
+			int decode(int val, int digits) {
+				int code = 0, s = digits - 1 << 3;
 				if (val < 0) {
-					code = 0x2000000;
+					code = 2 << s;
 					if (val == Integer.MIN_VALUE) return code;
 					val = -val;
 				} else if (val == Integer.MAX_VALUE) return code;
-				code |= DIGITS[val % 10];
-				if (val < 10) return code;
-				code |= DIGITS[(val /= 10) % 10] << 8;
-				if (val < 10) return code;
-				code |= DIGITS[(val /= 10) % 10] << 16;
-				if (val < 10) return code;
-				code |= 0x1000000;
-				if (val >= 20) code &= 0x3000000;
+				for (int i = 0; i < s; i+=8, val /= 10) {
+					code |= DIGITS[val % 10] << i;
+					if (val < 10) return code;
+				}
+				code |= 1 << s;
+				if (val >= 2) code &= 3 << s;
 				return code;
 			}
 		}, HEX(false) {
 			@Override
-			int decode(int val) {
+			int decode(int val, int digits) {
 				int code = 0;
-				for (int i = 0; i < 32; i+=8, val >>>= 4)
-					code |= DIGITS[val & 15] << i;
+				for (int i = 0; i < digits; i++, val >>>= 4)
+					code |= DIGITS[val & 15] << (i << 3);
 				return code;
 			}
 			@Override
-			int remainder(int val) {
-				return val >>> 16;
+			int remainder(int val, int digits) {
+				return val >>> (digits << 2);
 			}
 		};
 
@@ -247,11 +252,11 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 			this.sign = sign;
 		}
 
-		int decode(int val) {
+		int decode(int val, int digits) {
 			return val;
 		}
 
-		int remainder(int val) {
+		int remainder(int val, int digits) {
 			return val;
 		}
 
@@ -259,7 +264,7 @@ public class _7Segment extends SignalModule implements SignalHandler, IBlockRend
 
 	@Override
 	public Object getState(int id) {
-		return id == 0 ? value : mode.remainder(value);
+		return id == 0 ? value : mode.remainder(value, digits);
 	}
 
 }

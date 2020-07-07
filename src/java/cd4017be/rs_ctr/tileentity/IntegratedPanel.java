@@ -499,15 +499,15 @@ ITilePlaceHarvest, IStateInteractionHandler, IGuiHandlerTile {
 					return false;
 			} else if (i < 0) i = j;
 		}
+		if (i < 0) {
+			i = modules.length;
+			modules = Arrays.copyOf(modules, i + 1);
+		}
 		ArrayList<MountedPort> list = new ArrayList<>();
 		m.init(list, i, this);
 		for (MountedPort port : list)
 			if (port.face == o.back)
 				return false; //front ports are not allowed
-		if (i < 0) {
-			i = modules.length;
-			modules = Arrays.copyOf(modules, i + 1);
-		}
 		modules[i] = m;
 		m.onLoad(this);
 		if (!list.isEmpty()) {
