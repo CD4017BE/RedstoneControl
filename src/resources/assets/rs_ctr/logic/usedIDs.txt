@@ -60,7 +60,7 @@ id  gate
  58 min
  59 cst0
  60 cst1
- 61 
+ 61 rand
  62 
  63 
  64 bsl
@@ -88,7 +88,7 @@ id  gate
  86 write_f
  87 feedback_f
  88 array_f
- 89 
+ 89 timer
  90
  91
  92

@@ -1,0 +1,28 @@
+{
+	"id": 89,
+	"cfg": ["enum4"],
+	"pins_in": " aI ",
+	"pins_out": " rI ",
+	"nodes": [
+		{
+			"if": {"var": 0, "eq": 0},
+			"out": "tJ",
+			"code": ["invokestatic cd4017be/rs_ctr/circuit/UtilFunc worldTime ()J"]
+		}, {
+			"if": {"var": 0, "eq": 1},
+			"out": "tJ",
+			"code": ["invokestatic cd4017be/rs_ctr/circuit/UtilFunc dayTime ()J"]
+		}, {
+			"if": {"var": 0, "eq": 2},
+			"out": "tJ",
+			"code": ["invokestatic cd4017be/rs_ctr/circuit/UtilFunc systemTime ()J"]
+		}, {
+			"out": "tJ",
+			"code": ["invokestatic cd4017be/rs_ctr/circuit/UtilFunc systemTime ()J", "ldc L1000", "ldiv"]
+		}, {
+			"in": ["tJ", "aI"],
+			"out": "rI",
+			"code": ["in 0", "in 1", "invokestatic java/lang/Integer toUnsignedLong (I)J", "lrem", "l2i"]
+		}
+	]
+}
