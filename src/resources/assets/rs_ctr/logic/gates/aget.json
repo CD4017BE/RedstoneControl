@@ -1,7 +1,7 @@
 {
 	"id": 9,
 	"pins_in": "iIa[IxV",
-	"pins_out": "vI  ",
+	"pins_out": "vF  ",
 	"nodes": [
 		{
 			"in": ["iI", "a[I", "xV"],

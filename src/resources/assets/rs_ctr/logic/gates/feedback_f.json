@@ -1,7 +1,7 @@
 {
 	"id": 87,
 	"type": "readwrite",
-	"cfg": ["value", "interrupt"],
+	"cfg": ["value_f", "interrupt"],
 	"width": -4,
 	"pins_in": "aF ",
 	"pins_out": " oF",

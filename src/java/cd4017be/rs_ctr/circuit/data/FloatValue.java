@@ -7,25 +7,24 @@ import cd4017be.lib.Gui.comp.TextField;
 import io.netty.buffer.ByteBuf;
 
 /** @author CD4017BE */
-public class IntegerValue implements GateConfiguration<Integer> {
+public class FloatValue implements GateConfiguration<Float> {
 
-	public static final IntegerValue VALUE
-	= new IntegerValue("gui.rs_ctr.value");
+	public static final FloatValue VALUE = new FloatValue("gui.rs_ctr.value");
 
 	final String label;
 
-	public IntegerValue(String label) {
+	public FloatValue(String label) {
 		this.label = label;
 	}
 
 	@Override
 	public int setupCfgGUI(
-		GuiFrame gui, int y, Supplier<Integer> get, Consumer<Integer> set, String id
+		GuiFrame gui, int y, Supplier<Float> get, Consumer<Float> set, String id
 	) {
 		new TextField(
 			gui, 74, 7, 1, y + 1, 20, () -> get.get().toString(), (s) -> {
 				try {
-					set.accept(Integer.parseInt(s));
+					set.accept(Float.parseFloat(s));
 				} catch(NumberFormatException e) {}
 			}
 		).tooltip(label);
@@ -33,18 +32,18 @@ public class IntegerValue implements GateConfiguration<Integer> {
 	}
 
 	@Override
-	public Integer init() {
-		return 0;
+	public Float init() {
+		return 0.0F;
 	}
 
 	@Override
 	public void write(ByteBuf data, Object cfg) {
-		data.writeInt((int)cfg);
+		data.writeFloat((float)cfg);
 	}
 
 	@Override
-	public Integer read(ByteBuf data) {
-		return data.readInt();
+	public Float read(ByteBuf data) {
+		return data.readFloat();
 	}
 
 }

@@ -239,7 +239,7 @@ public class Editor extends BaseTileEntity implements IGuiHandlerTile, IStateInt
 	}
 
 	public Assembler getAssembler() {
-		TileEntity te;;
+		TileEntity te;
 		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.EAST))) instanceof Assembler)
 			return (Assembler)te;
 		if ((te = Utils.neighborTile(this, getOrientation().rotate(EnumFacing.WEST))) instanceof Assembler)

@@ -48,12 +48,14 @@ public class ConstNum extends GeneratedGate implements ISpecialRender, ISpecialC
 	public static Number parse(String s, Type t) throws NumberFormatException {
 		if (s.isEmpty()) throw new NumberFormatException();
 		int rad;
-		if (s.charAt(0) == 'x') {s = s.substring(1); rad = 16;}
+		boolean unsigned = false;
+		if (s.charAt(0) == '+') {s = s.substring(1); unsigned = true;}
+		if (s.charAt(0) == 'x') {s = s.substring(1); unsigned = true; rad = 16;}
 		else if (s.charAt(0) == 'b') {s = s.substring(1); rad = 2;}
 		else rad = 10;
 		switch(t.getSort()) {
-		case Type.INT: return Integer.valueOf(s, rad);
-		case Type.LONG: return Long.valueOf(s, rad);
+		case Type.INT: return unsigned ? Integer.parseUnsignedInt(s, rad) : Integer.parseInt(s, rad);
+		case Type.LONG: return unsigned ? Long.parseUnsignedLong(s, rad) : Long.parseLong(s, rad);
 		case Type.FLOAT: return Float.valueOf(s);
 		case Type.DOUBLE: return Double.valueOf(s);
 		default: throw new NumberFormatException();

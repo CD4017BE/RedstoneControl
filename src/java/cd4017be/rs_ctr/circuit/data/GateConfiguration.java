@@ -12,7 +12,7 @@ public interface GateConfiguration<T> {
 	public static final HashMap<String, GateConfiguration<?>> REGISTRY
 	= new HashMap<>();
 
-	int setupCfgGUI(GuiFrame gui, int y, Supplier<T> get, Consumer<T> set);
+	int setupCfgGUI(GuiFrame gui, int y, Supplier<T> get, Consumer<T> set, String id);
 
 	T init();
 

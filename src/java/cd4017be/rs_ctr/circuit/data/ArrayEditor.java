@@ -113,7 +113,7 @@ public class ArrayEditor implements GateConfiguration<Object> {
 
 	@Override
 	public int setupCfgGUI(
-		GuiFrame gui, int y, Supplier<Object> get, Consumer<Object> set
+		GuiFrame gui, int y, Supplier<Object> get, Consumer<Object> set, String id
 	) {
 		Edit ed = new Edit(get, set);
 		new TextField(
@@ -186,6 +186,7 @@ public class ArrayEditor implements GateConfiguration<Object> {
 				Array.setDouble(arr, index, n.doubleValue());
 				break;
 			}
+			set.accept(arr);
 		}
 
 		@Override

@@ -26,7 +26,7 @@ public class ToggleFlag implements GateConfiguration<Boolean> {
 
 	@Override
 	public int setupCfgGUI(
-		GuiFrame gui, int y, Supplier<Boolean> get, Consumer<Boolean> set
+		GuiFrame gui, int y, Supplier<Boolean> get, Consumer<Boolean> set, String id
 	) {
 		new Button(
 			gui, 76, 9, 0, y, 2, () -> get.get() ? 1 : 0, (i) -> set.accept(i != 0)

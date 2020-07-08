@@ -55,7 +55,7 @@ public class GeneratedGate extends Gate implements ISpecialCfg {
 		int y = 9;
 		for (int i = 0; i < gc.length; i++) {
 			int i_ = i;
-			y = gc[i].setupCfgGUI(gui, y, ()-> cfg[i_], (t)-> {cfg[i_] = t; updateCfg.run();});
+			y = gc[i].setupCfgGUI(gui, y, ()-> cfg[i_], (t)-> {cfg[i_] = t; updateCfg.run();}, type.name);
 		}
 		gui.bgY = 45 - y;
 	}

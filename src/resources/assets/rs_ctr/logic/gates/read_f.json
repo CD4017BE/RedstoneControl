@@ -1,7 +1,7 @@
 {
 	"id": 85,
 	"type": "read",
-	"cfg": ["value"],
+	"cfg": ["value_f"],
 	"width": 6,
 	"pins_out": " rF",
 	"nodes": {
