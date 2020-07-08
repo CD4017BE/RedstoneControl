@@ -11,7 +11,7 @@ tile.rs_ctr.rs_port\:1.tipA=时机：§a即时 §e[Write]
 tile.rs_ctr.rs_port\:2.name=方块访问接口
 tile.rs_ctr.rs_port\:2.tip=贴在方块表面可使连接本接口的设备与方块互动。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
 tile.rs_ctr.rs_port\:3.name=方块镜像接口
-tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可使方块通过这个接口访问传入方块§9物品栏§7和§9流体存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
+tile.rs_ctr.rs_port\:3.tip=贴在方块表面上可使方块通过这个接口访问传入方块§9物品栏§7、§9流体§7和§9能量存储§7的镜像。\n可与其他§6接口§7在同一表面上组合。\n§b§o另请参阅：§6§o方块引用 ... \n\n可被§a副手§7上的§a非透明方块§7覆盖。\n也可拿在§a副手§7上对§a非透明方块§7使用来将其替换为被覆盖的§6接口§7。§o生存模式下破坏方块需要主手持有有效的工具。
 tile.rs_ctr.rs_port\:3.tipA=时机：§a即时 §e[Mirror Block IN]
 tile.rs_ctr.splitter.name=信号4x分离器
 tile.rs_ctr.splitter.tip=在四个不同输出上重复输入信号。
@@ -106,9 +106,9 @@ tile.rs_ctr.ram.tip=可直接寻址的内存，支持同时读写。提供的存
 tile.rs_ctr.ram.tipA=读时机：§a即时 §e[Read Address]\n写时机：§a下一同步。世界刻
 tile.rs_ctr.chunk_loader.name=区块加载器
 tile.rs_ctr.chunk_loader.tip=保持被§63维方块框架§7定义的区域处于区块加载状态。\n§eActive IN§7：操作模式：0 \= 关闭，1 \= 单个区块，2 \= 区域\n§erem. Time OUT§7：剩余§6运行时间§7的分钟数，必须定期补充。\n§o如果有多于一个区块被加载，运行时间会以普通速度的两倍被消耗。\n\n§8§n一般注解：§8要小心跨过区块加载区域边界的管道和机器！如果它们尝试与相邻的未加载区块互动，那些区块可能会热加载来满足互动需求。但由于没有玩家或区块加载器来保持这种区块的加载，一刻后会被再次卸载，导致无限循环。为了避免卡顿，最好让这些区块也被永久加载。\n§8§o本模组的设备很节省。它们只在绝对必要时热加载区块！
-tile.rs_ctr.teleporter.tip=改进版的§6传送器§7，可以传送大范围内的方块而不是一个方块。传送的范围必须使用§63维方块框架§7指定。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块，或欲传送范围的锚点（必须在范围或框架内）。\n§eTeleport IN§7：0 \= 空闲，1 \= 单方块，2 \= 内体积，4 \= 外框架，6 \= 体积+框架。\n§eStatus OUT§7：-2 \= 无效框架，-1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。\n\n§8§o区域内所有方块会被同时置换，被当成经历了一次区块卸载/加载。所以本设备§l应该§8§o能与其他模组一起工作，就算是多方块结构也可以。
+tile.rs_ctr.teleporter.tip=改进版的§6传送器§7，可以传送大范围内的方块而不是一个方块。传送的范围必须使用§63维方块框架§7指定。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块，或欲传送范围的锚点（必须在范围或框架内）。\n§eTeleport IN§7：0 \= 空闲，1 \= 单方块，2 \= 内体积，4 \= 外框架，6 \= 体积+框架。\n§eStatus OUT§7：-2 \= 无效框架，-1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。
 tile.rs_ctr.teleporter.name=结构传送器
-tile.rs_ctr.teleporter.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n最大距离（框架）：§a\\<teleporter_range> m\n能量消耗：§e容积§a/m³ * §e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.teleporter.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n最大距离（框架）：§a\\<teleporter_range> m\n能量消耗：§e容积§a/m³ * §e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m\n\n§8§o区域内所有方块会被同时置换，被当成经历了一次区块卸载/加载。所以本设备§l应该§8§o能与其他模组一起工作，就算是多方块结构也可以。
 tile.rs_ctr.teleporter1.name=传送器
 tile.rs_ctr.teleporter1.tip=能传送方块和实体，方法为置换§e锚§7方块和§e目标§7方块的内容。\n要开始传送，需要把§eTeleport IN§7的输入从§e0§7改成想要的§e操作码§7并保持该输入直到§eStatus OUT \= 100§7。如果在传送完成前将输入变回§e0§7则取消传送。\n\n§edestin. Block IN§7：传送的目标位置。\n§eanchor Block IN§7：欲传送的方块。\n§eTeleport IN§7：0 \= 空闲：1 \= 开始传送。\n§eStatus OUT§7： -1 \= 无效座标，0 \= 空闲，1...99 \= 充能中，100 \= 完成。\n§eEnergy IN§7：充能时需要的能量供给。
 tile.rs_ctr.teleporter1.tipA=时机：§a实体刻\n传送发生于§a实体刻前\n能量消耗：§e距离§a/m * \\<energy_teleport_pb>\n跨维度§e距离§a \= \\<teleport_dist_cap>m
@@ -118,6 +118,8 @@ tile.rs_ctr.block_deserializer.tipA=时机：§a即时§e[Block IN]
 tile.rs_ctr.block_reorienter.name=方块引用调整器
 tile.rs_ctr.block_reorienter.tip=用于修改§6方块引用§7信号来访问方块的不同面（对于§6物品§7/§6流体转运器§7很重要）。\n§eSide IN§7控制着新的用于访问的面：\n0 \= 底面（-y）, 1 \= 顶面（+y）,\n2 \= 北面（-z）, 3 \= 南面（+z）,\n4 \= 西面（-x）, 5 \= 东面（+x）。\n其他输入 \= 保持原来的面
 tile.rs_ctr.block_reorienter.tipA=时机：§a下一同步。每刻后
+tile.rs_ctr.int_panel.name=集成面板
+tile.rs_ctr.int_panel.tip=一个集成了用于处理IO的§6红石处理器§7的§6控制面板§7。\n提供最多§116个输入口§7和§216个输出口§7，每种在面板背面有最多§e4§7个可访问的端口。\n\n剩余的IO口必须分配一个标签，这个标签须以两位数字开头，该数字定义了IO口连接到的§6模块§7所在的网格座标。：\n§e30§7 . . §e33\n \:  \:  \:  \:\n§e00§7 . . §e03\n§o模块IO口并不能作为端口访问！
 
 # chat messages
 msg.rs_ctr.type=§c不兼容的接口类型！
@@ -162,14 +164,14 @@ item.rs_ctr.wireless_b.tip=像§6方块引用线缆§7一样，但能远距离�
 item.rs_ctr.constant.name=常量塞
 item.rs_ctr.constant.tip=贴在输入端口上可以提供一个常量。\n对空气§a右击§7配置这个常量。\n对空气§a潜行右击§7切换十进制/十六进制/二进制模式。
 item.rs_ctr.lamp.name=信号状态灯
-item.rs_ctr.lamp.tip=贴在输出端上以查看其信号状况。\n\n也能作为指示灯贴在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.lamp.tip=贴在输出端上以查看其信号状况。\n\n也能作为指示灯贴在§6控制面板§7上。\n§e大小：§71x1
 item.rs_ctr.tag.name=线缆标签
 item.rs_ctr.tag.tip=§a右击§7空气来配置标签名字。\n§a右击§7已连接的端口来给连接命名。之后它会显示名字，而不是连接ID。
 item.rs_ctr.block_wire.name=方块引用线缆
 item.rs_ctr.block_wire.tip=用于连接§6方块引用端口§7，就像§6信号线缆§7连接信号端口一样。\n§o端口间直线距离有几格就需要几个物品。\n§b§o另请参阅：§6§o方块访问接口
 item.rs_ctr.block_wire.tipA=最大长度：§a\\<max_wire_length> m
 item.rs_ctr.clock.name=时钟信号塞
-item.rs_ctr.clock.tip=向连接的端口持续发出方波信号。信号值会在§e65535§7和§e0§7之间变化。\n对空气§a右击§7配置脉冲宽度和脉冲相位。\n§o世界上所有的时钟都是同步的。\n\n也能贴在§6控制面板§7上作为可调整的钟\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.clock.tip=向连接的端口持续发出方波信号。信号值会在§e65535§7和§e0§7之间变化。\n对空气§a右击§7配置脉冲宽度和脉冲相位。\n§o世界上所有的时钟都是同步的。\n\n也能贴在§6控制面板§7上作为可调整的钟\n§e大小：§71x2
 item.rs_ctr.clock.tipA=时机：§a早于每刻后
 item.rs_ctr.wire_e.name=能量线缆
 item.rs_ctr.wire_e.tip=用于连接能量端口，就像§6信号线缆§7连接信号端口一样。\n§o端口间直线距离有几格就需要几个物品。
@@ -178,33 +180,36 @@ item.rs_ctr.processor.stats=复杂度：§c%d §b%d §9%d §7大小：§f%d
 item.rs_ctr.wrench.name=螺丝刀
 item.rs_ctr.wrench.name1=螺丝刀 §9已储存配置。
 item.rs_ctr.wrench.tip=§a右击§7§6控制面板§7来编辑模块的配置。\n§a左击§7§6控制面板§7来移除一个模块（创造下也可以）。\n§a潜行右击§7§6控制面板§7复制模块配置。§n然后：\n§a右击§7模块来粘贴配置。\n对空气§a潜行右击§7清空配置。\n\n另外对方块§a使用§7会旋转方块。
-item.rs_ctr.seg7.name=7段显示模块
-item.rs_ctr.seg7.tip=一个4位数字7段LED显示模块，用于§6控制面板§7。\n提供用于十进制和十六进制的集成编码器。§eOUT§7信号端口用于连接多个模块来显示更大的数字。\n§e宽：§74  §e高：§7 2\n§e放置：§7 顶部、中部、底部
+item.rs_ctr.seg7\:0.name=7段显示模块 §e1x1
+item.rs_ctr.seg7\:1.name=7段显示模块 §e1x2
+item.rs_ctr.seg7\:2.name=7段显示模块 §e2x2
+item.rs_ctr.seg7\:3.name=7段显示模块 §e4x2
+item.rs_ctr.seg7\:i.tip=一个2/4位数字7段LED显示模块，用于§6控制面板§7。\n提供用于十进制和十六进制的集成编码器。§eOUT§7信号端口用于连接多个模块来显示更大的数字。\n对空气§a右击§7可改变§e大小：§71x1 ... 2x4。
 item.rs_ctr.pointer_dsp.name=模拟显示模块
-item.rs_ctr.pointer_dsp.tip=一个基于模拟指针的显示模块，用于§6控制面板§7。\n缩放比例可以是四分之一或整个圆，范围可以自由调节。\n§e宽：§7 4  §e高：§7 4\n§e放置：§7 中部
+item.rs_ctr.pointer_dsp.tip=一个基于模拟指针的显示模块，用于§6控制面板§7。\n缩放比例可以是四分之一或整个圆，范围可以自由调节。\n§e大小：§74x4
 item.rs_ctr.slider.name=滑块模块
-item.rs_ctr.slider.tip=贴在§6控制面板§7上的滑块模块允许在选定范围内连续地选定值。\n与上半部分刻度§a互动§7可进行精细控制。\n§e宽：§74  §e高：§7 2\n§e放置：§7 顶部、中部、底部
-item.rs_ctr.text\:1.name=1/4长度文本模块
-item.rs_ctr.text\:2.name=1/2长度文本模块
-item.rs_ctr.text\:3.name=3/4长度文本模块
-item.rs_ctr.text\:4.name=全长度文本模块
-item.rs_ctr.text\:i.tip=在§6控制面板§7上显示4行字符的模块。\n§e宽：§7 \\i  §e高：§7 1\n§e放置：§7 4x4任何位置
+item.rs_ctr.slider.tip=贴在§6控制面板§7上的滑块模块允许在选定范围内连续地选定值。\n与上半部分刻度§a互动§7可进行精细控制。\n§e大小：§72x4
+item.rs_ctr.text\:1.name=文本模块 §e1x1
+item.rs_ctr.text\:2.name=文本模块 §e1x2
+item.rs_ctr.text\:3.name=文本模块 §e1x3
+item.rs_ctr.text\:4.name=文本模块 §e1x4
+item.rs_ctr.text\:i.tip=在§6控制面板§7上显示4行字符的模块。\n对空气§a右击§7可改变§e大小：§71x1 ... 1x4。
 item.rs_ctr.lever\:0.name=拉杆模块
 item.rs_ctr.lever\:1.name=亮灯开关模块
 item.rs_ctr.lever\:2.name=亮灯按钮模块
-item.rs_ctr.lever\:i.tip=§a右击§7时在两种状态间切换的开关。\n用于放置在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§7 4x4任何位置
-item.rs_ctr.lever\:2.tip=§a右击§7后在可配置时间内停留在开状态。\n§a潜行右击§7可以提早结束开状态。\n用于放置在§6控制面板§7上。\n§e宽：§7 1  §e高：§7 1\n§e放置：§7 4x4的任意位置
+item.rs_ctr.lever\:i.tip=§a右击§7时在两种状态间切换的开关。\n用于放置在§6控制面板§7上。\n§e大小：§71x1
+item.rs_ctr.lever\:2.tip=§a右击§7后在可配置时间内停留在开状态。\n§a潜行右击§7可以提早结束开状态。\n用于放置在§6控制面板§7上。\n§e大小：§71x1
 item.rs_ctr.trigger.name=信号阈值锁存器
-item.rs_ctr.trigger.tip=一个锁存器，当§e输入>启用阈值§7时§e打开§7，在§e输入<\=禁用阈值§7时§e关闭§7（当启用<禁用时数值比较会反转）。\n两个阈值都能在§6控制面板§7上调节。\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4任何位置
+item.rs_ctr.trigger.tip=一个锁存器，当§e输入>启用阈值§7时§e打开§7，在§e输入<\=禁用阈值§7时§e关闭§7（当启用<禁用时数值比较会反转）。\n两个阈值都能在§6控制面板§7上调节。\n§e大小：§71x2
 item.rs_ctr.trigger.tipA=时机：§a即时 §e[IN]
 item.rs_ctr.scale.name=信号缩放器
-item.rs_ctr.scale.tip=一个能对信号进行可调缩放的§6控制面板§7元件。\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.scale.tip=一个能对信号进行可调缩放的§6控制面板§7元件。\n§e大小：§71x2
 item.rs_ctr.scale.tipA=时机：§a即时 §e[IN]
 item.rs_ctr.offset.name=信号偏移器
-item.rs_ctr.offset.tip=一个能对信号进行可调偏移的§6控制面板§7元件。\n§e宽：§7 2  §e高：§7 1\n§e放置：§74x4的任意位置
+item.rs_ctr.offset.tip=一个能对信号进行可调偏移的§6控制面板§7元件。\n§e大小：§71x2
 item.rs_ctr.offset.tipA=时机：§a即时 §e[IN]
 item.rs_ctr.oscilloscope.name=示波屏
-item.rs_ctr.oscilloscope.tip=将3个频道的信号的值以每个100次采样（屏幕上从左到右）显示在§6控制面板上§7。\n输入信号的二进制格式为0x§3TT§1CC§2BB§4AA§7（4x8bit），§4A§7，§2B§7，§1C§7是在§e0...100§7内（屏幕的底部到顶部）的三个频道，§3T§7是推进采样并移动的时钟信号。\n输出信号可连入另一个示波屏以实现屏幕连接。\n§e宽：§7 4  §e高：§7 4\n§e放置：§7中央\n§b§o另请参阅：§6§o二进制信号打包器§b，§6§o信号缩放器§b，§6§o信号偏移器
+item.rs_ctr.oscilloscope.tip=将3个频道的信号的值以每个100次采样（屏幕上从左到右）显示在§6控制面板上§7。\n输入信号的二进制格式为0x§3TT§1CC§2BB§4AA§7（4x8bit），§4A§7，§2B§7，§1C§7是在§e0...100§7内（屏幕的底部到顶部）的三个频道，§3T§7是推进采样并移动的时钟信号。\n输出信号可连入另一个示波屏以实现屏幕连接。\n§e大小：§74x4\n§b§o另请参阅：§6§o二进制信号打包器§b，§6§o信号缩放器§b，§6§o信号偏移器
 item.rs_ctr.split_s.name=信号分离塞
 item.rs_ctr.split_s.tip=贴到信号输出端口将允许多条线连接到该端口。\n\n§o分离出的每个通道需要一个分离塞。连接线缆时，如有必要，额外的分离塞会自动从你的物品栏中取出。
 item.rs_ctr.split_s.tipA=时机：§a即时\n最大连接：§a\\<max_split_links>
@@ -228,6 +233,10 @@ item.rs_ctr.block_plug.tip=能直接将方块访问接口连接到该方块访�
 item.rs_ctr.remote.name0=远程控制器§4（关）
 item.rs_ctr.remote.name1=远程控制器§2（开）
 item.rs_ctr.remote.tip=当控制器打开并位于物品栏内，代表当前按下按键的一个32位信号会发出到链接的端口。\n§a右击§7信号端口以链接。\n§a对空气右击§7切换开关。\n§a潜行右击§7空气可配置键位绑定。
+item.rs_ctr.socket_s.name=面板信号接口
+item.rs_ctr.socket_s.tip=附着于§6控制面板§7上可得到一对连接面板正面和背面的信号端口。\n瞄准§a右上部§7可使正面为§2输出§7。\n瞄准§a左下部§7可使正面为§1输入§7。\n§e大小：§71x1
+item.rs_ctr.socket_b.name=面板方块引用接口
+item.rs_ctr.socket_b.tip=附着于§6控制面板§7上可得到一对连接面板正面和背面的§6方块引用§7端口。\n瞄准§a右上部§7可使正面为§2输出§7。\n瞄准§a左下部§7可使正面为§1输入§7。\n§e大小：§71x1
 item.cd4017be.m\:battery.name=红石电池
 item.cd4017be.m\:actuator.name=远程执行器
 item.cd4017be.m\:telekin_alloy.name=心灵传动合金
@@ -446,6 +455,13 @@ gate.rs_ctr.inc=增加\n§7out \= in + 1
 gate.rs_ctr.mod=模\n§7out \= in1 mod in2\n§7sgn(out) \= sgn(in1)\n§4§o除以0会烧坏元件！
 gate.rs_ctr.min=最小\n§7in1 < in2 -> out \= in1\n§7else -> out \= in2
 gate.rs_ctr.max=最大\n§7in1 > in2 -> out \= in1\n§7else -> out \= in2
+gate.rs_ctr.rand=随机数\n§70 ≤ out < in\n§4§o上界 ≤ 0 会烧坏元件！
+gate.rs_ctr.time=时间\n§7out \= 当前时间\n§7in \= 周期间隔：\n§70 ≤ out < in
+gate.rs_ctr.time.mode=时间源
+gate.rs_ctr.time.mode0=世界年龄 [刻]
+gate.rs_ctr.time.mode1=当日时间 [刻]
+gate.rs_ctr.time.mode2=真实时间 [毫秒]
+gate.rs_ctr.time.mode3=真实时间 [秒]
 gategroup.rs_ctr.bin=位与字节
 gate.rs_ctr.bsl=按位左移\n§7out \= in1 * 2^in2
 gate.rs_ctr.bsr=按位右移\n§7out \= in1 / 2^in2
