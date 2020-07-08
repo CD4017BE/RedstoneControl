@@ -119,7 +119,9 @@ public class PanelRenderer {
 	}
 
 	public enum Layout {
-		QUARTER(0.625, 0.75, -90, 0, 10, 10, new Vec3d(0.875, 0.125, 1.003)),
+		QUARTER(0.3125, 0.375, -90, 0, 10, 10, new Vec3d(0.4375, 0.0625, 1.003)),
+		HALF(0.3125, 0.375, -90, 90, 16, 20, new Vec3d(0.5, 0.0625, 1.003)),
+		HALF_V(0.3125, 0.375, -180, 0, 16, 20, new Vec3d(0.4375, 0.4375, 1.003)),
 		CIRCLE(0.3125, 0.375, -150, 150, 20, 32, new Vec3d(0.5, 0.4375, 1.003));
 		
 		public final double angle0, angle1, rad0, rad1;
@@ -140,13 +142,13 @@ public class PanelRenderer {
 		}
 
 		public static Layout of(int i) {
-			return values()[i & 1];
+			return values()[i & 3];
 		}
 
-		public IntArrayModel getPointer(double f, int light) {
+		public IntArrayModel getPointer(double f, int light, float ox, float oy) {
 			f = angle0 + (angle1 - angle0) * MathHelper.clamp(f, -0.04, 1.04);
 			float fy = (float)(Math.cos(f) * rad1), fx = (float)(Math.sin(f) * rad1);
-			float px = (float)offset.x, py = (float)offset.y;
+			float px = (float)offset.x + ox, py = (float)offset.y + oy;
 			int pz = floatToIntBits((float)offset.z + 0.03125F);
 			TextureAtlasSprite tex = t_dial;
 			int u0 = floatToIntBits(tex.getMinU()), u1 = floatToIntBits(tex.getInterpolatedU(4)), u2 = floatToIntBits(tex.getInterpolatedU(12)),
@@ -159,7 +161,7 @@ public class PanelRenderer {
 			}, -1, light);
 		}
 
-		public void drawScale(List<BakedQuad> quads, Orientation o, int min, int max, int exp, int color) {
+		public void drawScale(List<BakedQuad> quads, Orientation o, int min, int max, int exp, int color, float ox, float oy) {
 			EnumFacing side = o.back;
 			int scale = 1;
 			float mag = Math.abs((long)max - (long)min);
@@ -180,7 +182,9 @@ public class PanelRenderer {
 				data[i += 7] = data[i += 7] = floatToIntBits((u + df1) * 7.5F + 0.125F);
 			}
 			model.setColor(color);
-			data = model.withTexture(t_dial).vertexData;
+			IntArrayModel model = this.model.withTexture(t_dial);
+			model.setOffset(ox, oy, 0);
+			data = model.vertexData;
 			int q = quads.size();
 			for (int i = 0; i < data.length;)
 				quads.add(new BakedQuad(Arrays.copyOfRange(data, i, i += 28), -1, side, t_dial, true, DefaultVertexFormats.BLOCK));
@@ -214,7 +218,7 @@ public class PanelRenderer {
 					double a = angle0 + ((double)i - f) / df * (angle1 - angle0);
 					double sin = Math.sin(a), cos = Math.cos(a);
 					float l = w * len(i, exp); double r = rad0 - (l * Math.abs(sin) + w * Math.abs(cos)) / 2D;
-					float x = (float)(offset.x + r * sin) - l/2F, y = (float)(offset.y + r * cos), z = (float)offset.z;
+					float x = (float)(offset.x + ox + r * sin) - l/2F, y = (float)(offset.y + oy + r * cos), z = (float)offset.z;
 					int k, e;
 					if (i < 0) {
 						quads.add(digit(x, y, z, w, -1, side, color));
@@ -226,7 +230,7 @@ public class PanelRenderer {
 				}
 			} {
 				float w = (float)(rad1 - rad0) * 0.25F;
-				float x = (float)offset.x, y = (float)offset.y, z = (float)offset.z;
+				float x = (float)offset.x + ox, y = (float)offset.y + oy, z = (float)offset.z;
 				drawPin(quads, x, y, z, w, side);
 				double da = (angle1 - angle0) * 0.046875, a = angle0 - da, r = (rad0 + rad1) / 2.; w /= 2;
 				drawPin(quads, x + (float)(r * Math.sin(a)), y + (float)(r * Math.cos(a)), z, w, side);

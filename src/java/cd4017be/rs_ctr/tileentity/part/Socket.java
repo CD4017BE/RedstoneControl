@@ -97,9 +97,9 @@ public abstract class Socket extends Module implements IStateInteractionHandler 
 	@SideOnly(Side.CLIENT)
 	public ModularGui getCfgScreen(EntityPlayer player) {
 		ModularGui gui = new ModularGui(getCfgContainer(player));
-		GuiFrame frame = new GuiFrame(gui, 80, 53, 3)
+		GuiFrame frame = new GuiFrame(gui, 80, 31, 1)
 		.title("gui.rs_ctr.dsp_cfg.name", 0.5F)
-		.background(new ResourceLocation(Main.ID, "textures/gui/small.png"), 0, 151);
+		.background(new ResourceLocation(Main.ID, "textures/gui/small.png"), 0, 0);
 		new TextField(frame, 64, 7, 8, 16, 16, ()-> title, (t)-> gui.sendPkt(t)).allowFormat().tooltip("gui.rs_ctr.label");
 		gui.compGroup = frame;
 		return gui;

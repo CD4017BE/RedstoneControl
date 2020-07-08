@@ -155,14 +155,14 @@ public class ClientProxy extends CommonProxy {
 		registerRender(clock);
 		registerRender(wrench);
 		registerRender(seg7, 0, 3);
-		registerRender(pointer_dsp);
+		registerRender(pointer_dsp, 0, 3);
 		registerRender(slider);
 		registerRender(text, 1, 4);
 		registerRender(lever, 0, 2);
 		registerRender(trigger);
 		registerRender(scale);
 		registerRender(offset);
-		registerRender(oscilloscope);
+		registerRender(oscilloscope, 0, 3);
 		registerRender(ram, null);
 		registerRender(edge_trigger, 0, 1);
 		registerRender(pulse_gen);
