@@ -186,7 +186,7 @@ public class Panel extends WallMountGate implements IUpdatable, IServerPacketRec
 			if (port.pin >> 1 != id) continue;
 			port.setConnector(null, null);
 			port.onUnload();
-			ports[i] = ports[--l];
+			ports[i--] = ports[--l];
 		}
 		Module m = modules[id];
 		if (m != null) {
