@@ -1,3 +1,25 @@
+v0.3.1
+Changes:
+- improved all kinds of in-game descriptions (#38, #35) and renamed the Redstone Processors into FPGAs
+- reordered item registration to make creative tab and JEI item list more organized (creative tab is still chaos on older save-game ID-tables)
+- added Bitmap i/o format for external RAM
+- added "Creative Capacitors": command block and various modded creative blocks work as infinite battery
+- made JEI recipes with same output merge into one to fix #36
+- added Remote Control
+- added more Processor/FPGA operations: floating point operators, more constants, highest/lowest one bit, bit count, bit mask, random, time
+- added new BGA16 Processor/FPGA type and an Integrated Control Panel (as proposed in #37)
+- fixed Processor/FPGA GUI alignment (GUI shifted up out of screen for high IO count)
+- included energy capability in Block Mirror Socket (after considering that it's not actually that overpowered)
+- made many Control Panel Modules variable sized (#22): Text, 7-Segment, Oscilloscope, Analog Pointer
+- added Panel Sockets (#22)
+- fixed some initial variable values not being transfered to compiled circuits
+- fixed ghost ports on panel (sometimes happened after removing modules)
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.5.1
+
 v0.3.0
 Changes:
 - fixed potential crash in circuit diagram rendering
