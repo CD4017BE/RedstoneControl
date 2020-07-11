@@ -11,7 +11,7 @@ tile.rs_ctr.rs_port\:2.name=Block-Zugriffsbuchse
 tile.rs_ctr.rs_port\:2.tip=Lässt angeschlossene Geräte mit der Blockseite interagieren, an der sie plaziert.\nIst mit anderen §6Buchse§7n auf der gleichen Fläche kombinierbar.\n§b§oSiehe auch\: §6§oBlockreferenz ...\n\nKann mit einem §asoliden Block§7 in der §alinken Hand§7 verdeckt werden.\nOder platziere sie mit der §alinken Hand§7 gegen einen §asoliden Block§7 um diesen durch eine abgedeckte §6Buchse§7 zu ersetzen. §oIm Überlebensmodus ist ein geeignetes Werkzeug in der rechten Hand erforderlich um den Block abzubauen.
 tile.rs_ctr.rs_port\:2.tipA=Blockreferenz Lebensdauer\: §a\\<blockref_livespan>
 tile.rs_ctr.rs_port\:3.name=Block-Spiegelbuchse
-tile.rs_ctr.rs_port\:3.tip=Lässt benachbarte Maschinen durch diesen Block auf das gespiegelte  §9Inventar§7 und §9Flüssigkeiten§7 eines anderen per §6Blockreferenz§7 anschlossenen Blocks zugreifen.\nIst mit anderen §6Buchse§7n auf der gleichen Fläche kombinierbar.\n§b§oSiehe auch\: §6§oBlockreferenz ...§7, §6§oBlock-Zugriffsbuchse\n\nKann mit einem §asoliden Block§7 in der §alinken Hand§7 verdeckt werden.\nOder platziere sie mit der §alinken Hand§7 gegen einen §asoliden Block§7 um diesen durch eine abgedeckte §6Buchse§7 zu ersetzen. §oIm Überlebensmodus ist ein geeignetes Werkzeug in der rechten Hand erforderlich um den Block abzubauen.
+tile.rs_ctr.rs_port\:3.tip=Lässt benachbarte Maschinen durch diesen Block auf das gespiegelte §9Inventar§7, §9Flüssigkeiten§7 oder §9Energiespeicher§7 eines anderen per §6Blockreferenz§7 anschlossenen Blocks zugreifen.\nIst mit anderen §6Buchse§7n auf der gleichen Fläche kombinierbar.\n§b§oSiehe auch\: §6§oBlockreferenz ...§7, §6§oBlock-Zugriffsbuchse\n\nKann mit einem §asoliden Block§7 in der §alinken Hand§7 verdeckt werden.\nOder platziere sie mit der §alinken Hand§7 gegen einen §asoliden Block§7 um diesen durch eine abgedeckte §6Buchse§7 zu ersetzen. §oIm Überlebensmodus ist ein geeignetes Werkzeug in der rechten Hand erforderlich um den Block abzubauen.
 tile.rs_ctr.rs_port\:3.tipA=Timing\: §ainstantan §e[Spiegelblock EIN]
 tile.rs_ctr.splitter.name=4-fach Signalverteiler
 tile.rs_ctr.splitter.tip=Kopiert das eingehende Signal auf vier Ausgänge (ohne Laufzeitverzögerung).
@@ -51,16 +51,19 @@ tile.rs_ctr.delay_b.tip=Gibt alle vier eingehenden §6Blockreferenzen§7 jeweils
 tile.rs_ctr.delay_b.tipA=Timing\: §afolgender sync. Post-Tick\nBlockreferenzlebensdauer\: §at - 1
 tile.rs_ctr.wire_anchor.name=Kabelhalter
 tile.rs_ctr.wire_anchor.tip=§6Signalkabel§7 können and diesen angebracht werden um ihren Verlauf anzupassen.\n§oEs können mehrere davon im gleichen Block plaziert werden.
-tile.rs_ctr.processor.name=Redstone-Prozessor §eQFP12
-tile.rs_ctr.processor.tip=Diese kompakte Schaltung kann im §6Schaltplaneditor§7 programmiert werden.\nBietet bis zu §16 Eingänge§7 und §26 Ausgänge§7, dafür aber weniger Platz für Komponenten als die §eDIP8§7 Variante.
+tile.rs_ctr.processor.name=Redstone-FPGA §eQFP12
+tile.rs_ctr.processor.tip=Ein §nF§7eld §nP§7rogrammierbares §nG§7atter §nA§7rray kann beliebige (innerhalb Grenzen) Logikschaltungen auf sehr kompakte Weise nachbilden.\\n§b§oSiehe\\\: §6§oFPGA Programmierer§b, §6§oFPGA Fertigung\\n\nBietet bis zu §16 Eingänge§7 und §26 Ausgänge§7, dafür aber weniger Platz für Komponenten als die §eDIP8§7 Variante.
 tile.rs_ctr.processor.tipA=Timing\: §afolgender sync. Post-Tick\nEnergiekosten\: §ceinfache Komp.§a + §berweiterte Komp.§a - §eRegeneration§a * ∆t
-tile.rs_ctr.processor2.name=Redstone-Prozessor §eDIP8
-tile.rs_ctr.processor2.tip=Diese kompakte Schaltung kann im §6Schaltplaneditor§7 programmiert werden.\nBietet bis zu §14 Eingänge§7 und §24 Ausgänge§7.
+tile.rs_ctr.processor2.name=Redstone-FPGA §eDIP8
+tile.rs_ctr.processor2.tip=Ein §nF§7eld §nP§7rogrammierbares §nG§7atter §nA§7rray kann beliebige (innerhalb Grenzen) Logikschaltungen auf sehr kompakte Weise nachbilden.\\n§b§oSiehe\\\: §6§oFPGA Programmierer§b, §6§oFPGA Fertigung\\n\nBietet bis zu §14 Eingänge§7 und §24 Ausgänge§7.
 tile.rs_ctr.processor2.tipA=Timing\: §afolgender sync. Post-Tick\nEnergiekosten\: §ceinfache Komp.§a + §berweiterte Komp.§a - §eRegeneration§a * ∆t
-tile.rs_ctr.editor.name=Schaltplaneditor
-tile.rs_ctr.editor.tip=Wird benutzt um §6Prozessor§7en zu programmieren.
-tile.rs_ctr.assembler.name=Prozessor Werkbank
-tile.rs_ctr.assembler.tip=Hiermit können Komponenten zu einem §6Redstone Prozessor§7 hinzugefügt werden um dessen Komplexitätwerte zu erhöhen.
+tile.rs_ctr.processor3.name=Redstone-FPGA §eBGA16
+tile.rs_ctr.processor3.tip=Ein §nF§7eld §nP§7rogrammierbares §nG§7atter §nA§7rray kann beliebige (innerhalb Grenzen) Logikschaltungen auf sehr kompakte Weise nachbilden.\\n§b§oSiehe\\\: §6§oFPGA Programmierer§b, §6§oFPGA Fertigung\\n\nBietet höchste E/A-Anzahl mit bis zu §18 Eingängen§7 and §28 Ausgängen§7, aber auf Kosten erhöhter Redstone-Erschöpfung.
+tile.rs_ctr.processor3.tipA=timing\: §anext sync. post-tick
+tile.rs_ctr.editor.name=FPGA Programmierer
+tile.rs_ctr.editor.tip=Ermöglicht die Planung eigener Schaltungen um diese in §6FPGA§7s einzuprogrammieren.
+tile.rs_ctr.assembler.name=FPGA Fertigung
+tile.rs_ctr.assembler.tip=Hiermit können Komponenten zu einem §6Redstone FPGA§7 hinzugefügt werden um dessen Komplexitätswerte zu erhöhen.
 tile.rs_ctr.comparator.name=getakteter Komparator
 tile.rs_ctr.comparator.tip=Immer, wenn der Wert von §eTakt EIN§7 sich ändert, wird der Komparatorwert von §eBlock EIN§7 ausgelesen und §eAUS§7 auf diesen aktualisiert.\n§oDas Ausleseverhalten kann durch einbau bestimmter Items angepasst werden\: Siehe §9§oAnwendungsrezepte in JEI§7.
 tile.rs_ctr.comparator.tipA=Timing\: §ainstantan §e[Takt EIN]
@@ -99,7 +102,7 @@ tile.rs_ctr.oc_adapter.name=Signal-E/A-Schnittstelle
 tile.rs_ctr.oc_adapter.tip=Signalschnittstelle für §9Open Computers§7 mit §18 Eingängen§7 und §28 Ausgängen§7, sowie auf der Rückseite §e4 Energieanschlüssen§7 um Maschinen bequem über das OC-Netzwerk mitzuversorgen.\n\nUnterstützt direkte, sowie zeitlich gepufferte Lese- und Schreiboperationen. Eingänge können außerdem optional bei Wertänderungen Ereignisse an den Computer senden.
 tile.rs_ctr.oc_adapter.tipA=Timing\: §afolgender sync. Post-Tick\nEnergieumwandlung\: §a1 OC Einheit \= \\<energy_unit_OC>
 tile.rs_ctr.ram.name=externer RAM Chip [%sbit]
-tile.rs_ctr.ram.tip=Direkt addressierbarer Speicher, der simultanen Lese- and Schreibzugriff erlaubt. Bietet wesentlich mehr Speicherkapazität als üblicherweise in einem §6Prozessor§7 untergebracht werden kann.\nUnterstützt die Wortgrößen §e4bit§7, §e8bit§7, §e16bit§7 und §e32bit§7.\n\nInteragiere mit dem Block zum einsehen/bearbeiten des Speicherinhalts. Daten bleiben beim abbauen erhalten.
+tile.rs_ctr.ram.tip=Direkt addressierbarer Speicher, der simultanen Lese- and Schreibzugriff erlaubt. Bietet wesentlich mehr Speicherkapazität als üblicherweise in einem §6FPGA§7 untergebracht werden kann.\nUnterstützt die Wortgrößen §e4bit§7, §e8bit§7, §e16bit§7 und §e32bit§7.\n\nInteragiere mit dem Block zum einsehen/bearbeiten des Speicherinhalts. Daten bleiben beim abbauen erhalten.
 tile.rs_ctr.ram.tipA=Timing lesen\: §ainstantan §e[Leseaddresse]\nTiming schreiben\: §afolgender sync. Welt-Tick
 tile.rs_ctr.block_deserializer.name=Blockreferenzdekodierer
 tile.rs_ctr.block_deserializer.tip=Konvertiert eine §6Blockreferenz§7 in die Weltkoordinaten der Blockposition um, auf die sie sich bezieht.\n§eX§7/§eY§7/§eZ-Achse AUS§7 geben die Koordinaten und §eDimension AUS§7 die Dimensions-ID der Welt aus. Die Signale in §eX§7/§eY§7/§eZ-ref EIN§7 werden von den Ausgangskoordinaten abgezogen.\n\nBei nicht angeschlossenem §eBlock EIN§7 wird die Position des Gerätes selbst verwendet. Und für eine Nullreferenz gibt §eDimension AUS§7 den Wert §e-2.147.483.648§7 aus.
@@ -107,11 +110,13 @@ tile.rs_ctr.block_deserializer.tipA=Timing\: §ainstantan §e[Block EIN]
 tile.rs_ctr.block_reorienter.name=Blockreferenzreorientierer
 tile.rs_ctr.block_reorienter.tip=Ändert die Zugriffsseite einer §6Blockreferenz§7 (relevant für §6Item-§7/§6Flüssigkeitstransporter§7).\n§eSeite EIN§7 definiert die neue Zugriffsseite\:\n0 \= Unten (-Y), 1 \= Oben (+Y),\n2 \= Norden (-Z), 3 \= Süden (+Z),\n4 \= Westen (-X), 5 \= Osten (+X),\nsonst \= behalte alte Seite
 tile.rs_ctr.block_reorienter.tipA=Timing\: §afolgender sync. Post-Tick
+tile.rs_ctr.int_panel.name=integriertes Steuerpult
+tile.rs_ctr.int_panel.tip=Ein §6Steuerpult§7 mit eingebautem §6Redstone FPGA§7 zur E/A-verarbeitung.\nBietet bis zu §116 Eingänge§7 und §216 Ausgänge§7, von denen jedoch nur jeweils §e4§7 als Rückseitenanschlüsse verfügbar sind.\n\nDie Namen der verbleibenden E/As müssen mit Zwei Ziffern beginnen, welche ein von dem anzuschließenden §6Modul§7 besetzes Rasterfeld angeben\:\n§e30§7 . . §e33\n \:  \:  \:  \:\n§e00§7 . . §e03\n§oModul-E/As sind nicht als Anschlüsse verfügbar!
 tile.rs_ctr.chunk_loader.name=Chunkanker
 tile.rs_ctr.chunk_loader.tip=Hält Chunks innerhalb eines mit §63D-Blockrahmen§7 abgesteckten Bereichs geladen.\n§eAktiv EIN§7\: Betriebsmodus\: 0 \= Aus, 1 \= Einzelchunk, 2 \= Gebiet\n§everbl. Zeit AUS§7\: verbleibende §6Laufzeit§7 in Minuten, welche regelmäßig nachgefüllt werden muss.\n§oBei mehr als einem geladenem Chunk wird die Laufzeit in doppelter Geschwindigkeit verbraucht.\n\n§8§nAllgemeiner Hinweis\:§8 Vorsicht bei Maschinerie, welche Chunkgrenzen zu ungeladenen Bereichen überschreitet! Beim Versuch, mit ungeladenen, benachbarten Blöcken zu interagieren, werden die entsprechenden Chunks möglicherweise wiederholt zur Bearbeitung der Anfrage "zwangsgeladen" und anschließend wieder entladen, da nichts sie geladen hält. Um Serverbelastung zu reduzieren ist es also oft besser, solche Chunks ebenfalls permanent geladen zu halten.\n§8§oDie Geräte aus dieser Mod sind sicher und zwangsladen Chunks nur in unvermeidbaren Ausnahmefällen!
 tile.rs_ctr.teleporter.name=Strukturteleporter
-tile.rs_ctr.teleporter.tip=Verbesserte Version des §6Teleporter§7s, die auch größere, per §63D-Blockrahmen§7 abgesteckte Blockstrukturen auf einmal teleportieren kann.\n§eTeleport EIN§7 von §e0§7 auf den gewünschten §eOp-Code§7 umzuschalten startet den Teleportvorgang (wie beim einfachen §6Teleporter§7).\n\n§eZielblock EIN§7\: Die Zielposition.\n§eAnkerblock EIN§7\: Der zu teleportierende Block oder der Ankerpunkt einer zu teleportierenden Struktur (muss innerhalb des Volumens oder Rahmens sein).\n§eTeleport EIN§7\: 0 \= warten, 1 \= Einzelblock, 2 \= inneres Volumen, 4 \= äußerer Rahmen, 6 \= Volumen + Rahmen.\n§eStatus AUS§7\: -2 \= ungültiger Rahmen, -1 \= ungültige Koordinaten, 0 \= wartet, 1...99 \= läd auf, 100 \= abgeschlossen.\n§eEnergie EIN§7\: Energiezufuhr benötigt während des Aufladens.\n\n§8§oAlle teleportierten Blöcke werden zeitgleich ausgetauscht und wie beim Chunk (ent-)laden behandelt. Es §lsollte§8§o also mit den meisten Mods und auch Multiblockstrukturen problemlos funktionieren.
-tile.rs_ctr.teleporter.tipA=Timing\: §aWelt-Ticks\nTeleport passiert §aPrä-Welt-Ticks\nmaximale Gebietgröße\: §a\\<teleporter_range> m\nEnergieverbrauch\: §eVolumen§a/m³ * §eDistanz§a/m * \\<energy_teleport_pb>\ninterdimensionale §eDistanz§a \= \\<teleport_dist_cap>m
+tile.rs_ctr.teleporter.tip=Verbesserte Version des §6Teleporter§7s, die auch größere, per §63D-Blockrahmen§7 abgesteckte Blockstrukturen auf einmal teleportieren kann.\n§eTeleport EIN§7 von §e0§7 auf den gewünschten §eOp-Code§7 umzuschalten startet den Teleportvorgang (wie beim einfachen §6Teleporter§7).\n\n§eZielblock EIN§7\: Die Zielposition.\n§eAnkerblock EIN§7\: Der zu teleportierende Block oder der Ankerpunkt einer zu teleportierenden Struktur (muss innerhalb des Volumens oder Rahmens sein).\n§eTeleport EIN§7\: 0 \= warten, 1 \= Einzelblock, 2 \= inneres Volumen, 4 \= äußerer Rahmen, 6 \= Volumen + Rahmen.\n§eStatus AUS§7\: -2 \= ungültiger Rahmen, -1 \= ungültige Koordinaten, 0 \= wartet, 1...99 \= läd auf, 100 \= abgeschlossen.\n§eEnergie EIN§7\: Energiezufuhr benötigt während des Aufladens.
+tile.rs_ctr.teleporter.tipA=Timing\: §aWelt-Ticks\nTeleport passiert §aPrä-Welt-Ticks\nmaximale Gebietgröße\: §a\\<teleporter_range> m\nEnergieverbrauch\: §eVolumen§a/m³ * §eDistanz§a/m * \\<energy_teleport_pb>\ninterdimensionale §eDistanz§a \= \\<teleport_dist_cap>m\n\n§8§oAlle teleportierten Blöcke werden zeitgleich ausgetauscht und wie beim Chunk (ent-)laden behandelt. Es §lsollte§8§o also mit den meisten Mods und auch Multiblockstrukturen problemlos funktionieren.
 tile.rs_ctr.teleporter1.tip=Teleportiert Blöcke und Objekte durch vertauschen des Inhalts von §eAnker-§7 und §eZiel§7block.\n§eTeleport EIN§7 von §e0§7 nach §e1§7 umzuschalten startet den Teleportvorgang. Der Wert muss gehalten werden bis §eStatus AUS \= 100§7 erreicht. Vorzeitiges zurückschalten auf §e0§7 bricht die Teleportation ab.\n\n§eZielblock EIN§7\: Die Zielposition.\n§eAnkerblock EIN§7\: Der zu teleportierende Block.\n§eTeleport EIN§7\: 0 \= warten, 1 \= Teleport starten.\n§eStatus AUS§7\: -1 \= ungültige Koordinaten, 0 \= wartet, 1...99 \= läd auf, 100 \= abgeschlossen.\n§eEnergie EIN§7\: Energiezufuhr benötigt während des Aufladens.
 tile.rs_ctr.teleporter1.tipA=Timing\: §aWelt-Ticks\nTeleport passiert §aPrä-Welt-Ticks\nEnergieverbrauch\: §eDistanz§a/m * \\<energy_teleport_pb>\ninterdimensionale §eDistanz§a \= \\<teleport_dist_cap>m
 
@@ -169,12 +174,12 @@ item.rs_ctr.wireless_b.tip=Ein §6Blockreferenz"kabel"§7 welches zwei Anschlüs
 item.rs_ctr.constant.name=Konstantenstecker
 item.rs_ctr.constant.tip=Kann an einen Signaleingang angeschlossen werden um ihn mit einem konstanten Signalwert zu versorgen.\n§aBenutze§7 in die Luft um den Signalwert einzustellen.
 item.rs_ctr.lamp.name=Signalstatuslampe
-item.rs_ctr.lamp.tip=Zeigt den Signalwert des Signalausgangs an, an den sie ansgeschlossen ist.
+item.rs_ctr.lamp.tip=Zeigt den Signalwert des Signalausgangs an, an den sie ansgeschlossen ist.\n\nKann auch auf einem §6Steuerpult§7 montiert werden.\n§eModulgröße\:§7 1x1
 item.rs_ctr.tag.name=Kabelbeschrifter
 item.rs_ctr.tag.tip=§aBenutze§7 in die Luft um den Namen einzustellen.\n§aBenutze§7 auf eine angeschlossenen Buchse um die Verbindung umzubenennen. Diese zeigt dann den Namen anstatt einer ID an.
 item.rs_ctr.clock.name=Taktgeberstecker
-item.rs_ctr.clock.tip=Gibt ein kontinuierliches Rechtecksignal in den Anschluss aus, in den er gesteckt ist. Signal wechselt zwischen §e65535§7 und §e0§7.\n§aBenutze§7 in die Luft um Pulsbreite und Phase einzustellen.\n§oAlle Taktgeber in einer Welt sind miteinander synchronisiert.\n\nKann auch auf einem §6Steuerpult§7 angebracht werden.
-item.rs_ctr.clock.tipA=Timing\: §afrühe Post-Ticks\nModulgröße [B*H]\: §a2 * 1
+item.rs_ctr.clock.tip=Gibt ein kontinuierliches Rechtecksignal in den Anschluss aus, in den er gesteckt ist. Signal wechselt zwischen §e65535§7 und §e0§7.\n§aBenutze§7 in die Luft um Pulsbreite und Phase einzustellen.\n§oAlle Taktgeber in einer Welt sind miteinander synchronisiert.\n\nKann auch auf einem §6Steuerpult§7 montiert werden.\n§eModulgröße\:§7 1x2
+item.rs_ctr.clock.tipA=Timing\: §afrühe Post-Ticks
 item.rs_ctr.edge_trigger\:0.name=Takthalbierungsstecker\:§e ⍏ ⟹ ⇵
 item.rs_ctr.edge_trigger\:1.name=Takthalbierungsstecker\:§e ⍖ ⟹ ⇵
 item.rs_ctr.edge_trigger\:i.tip=Das in ein angeschlossenes Kabel geschickte Signal wechselt zwischen §e0§7 und §e65536§7 bei jeder steigenden bzw. fallenden Flanke (um §e0§7) des Signalausgangs in den dieser Stecker gesteckt ist.\n\n§aBenutze§7 in die Luft um den Flankenmodus umzuschalten.\n\n§oDieser Stecker ist nützlich, um gewöhnliche §3§osteigende/fallende Flanken§7§otaktsignale (z.B. von Druckknöpfen) in die für Maschinen benötigten §3§oänderungsbasierten§7§o Taktsignale umzuwandeln.
@@ -182,56 +187,60 @@ item.rs_ctr.edge_trigger\:i.tipA=Timing\: §ainstantan\nMax. Verbindungen\: §a1
 item.rs_ctr.pulse_gen.name=Pulsgeneratorstecker
 item.rs_ctr.pulse_gen.tip=Schickt den Wert §e65535§7 in ein angeschlossenes Kabel, wenn das Signal des Ausgangsanschlusses, in den dieser Stecker gesteckt ist, sich im vorherigen Tick geändert hat. Ansonsten wird §e0§7 weitergegeben.\n\n§oDieser Stecker ist nützlich um §3§oänderungsbasierte§7§o Taktsignale in §3§o1t-Pulse§7§o umzuwandeln.
 item.rs_ctr.pulse_gen.tipA=Timing\: §afolgender sync. Post-Tick\nMax. Verbindungen\: §a1
-item.rs_ctr.seg7.name=7-Segment Anzeigemodul
-item.rs_ctr.seg7.tip=Ein 4 Ziffern 7-Segment LED-Displaymodul zur Anbringung an ein §6Steuerpult§7.\nEnthält integrierte Codierlogik for Dezimal- und Hexadezimaldarstellung.\nDas §eAUS§7 Signal kann an ein nachfolgendes §67-Segment Anzeigemodul§7 weitergeleitet werden um die Darstellung größerer Zahlen zu ermöglichen.
-item.rs_ctr.seg7.tipA=Modulgröße [B*H]\: §a4 * 2
-item.rs_ctr.pointer_dsp.name=analoges Anzeigemodul
-item.rs_ctr.pointer_dsp.tip=Zeigt Zahlenwerte per Analogzeiger auf einem anpassbaren Ziffernblatt an.\nModul zur Anbringung an einem §6Steuerpult§7.
-item.rs_ctr.pointer_dsp.tipA=Modulgröße [B*H]\: §a4 * 4
+item.rs_ctr.seg7\:0.name=7-Segment Anzeigemodul §e1x1
+item.rs_ctr.seg7\:1.name=7-Segment Anzeigemodul §e1x2
+item.rs_ctr.seg7\:2.name=7-Segment Anzeigemodul §e2x2
+item.rs_ctr.seg7\:3.name=7-Segment Anzeigemodul §e2x4
+item.rs_ctr.seg7\:i.tip=Ein 2/4 Ziffern 7-Segment LED-Displaymodul zur Anbringung an ein §6Steuerpult§7.\nEnthält integrierte Codierlogik for Dezimal- und Hexadezimaldarstellung.\nDas §eAUS§7 Signal kann an ein nachfolgendes §67-Segment Anzeigemodul§7 weitergeleitet werden um die Darstellung größerer Zahlen zu ermöglichen.\n§aBenutze§7 in die Luft zum Ändern der §eModulgröße\:§7 1x1 ... 2x4.
+item.rs_ctr.pointer_dsp\:0.name=analoges Anzeigemodul §e2x2
+item.rs_ctr.pointer_dsp\:1.name=analoges Anzeigemodul §e2x4
+item.rs_ctr.pointer_dsp\:2.name=analoges Anzeigemodul §e4x2
+item.rs_ctr.pointer_dsp\:3.name=analoges Anzeigemodul §e4x4
+item.rs_ctr.pointer_dsp\:i.tip=Zeigt Zahlenwerte per Analogzeiger auf einem anpassbaren Ziffernblatt an.\nModul zur Anbringung an einem §6Steuerpult§7.\n§aBenutze§7 in die Luft zum Ändern der §eModulgröße\:§7 2x2 ... 4x4.
 item.rs_ctr.slider.name=Schiebereglermodul
-item.rs_ctr.slider.tip=Ein Schieberegler mit anpassbarem Skalenbereich zur Anbringung and ein §6Steuerpult§7.\n§aInteragiere§7 oberhalb der Skala zur Feineinstellung.
-item.rs_ctr.slider.tipA=Modulgröße [B*H]\: §a4 * 2
-item.rs_ctr.text\:1.name=1/4 Textmodul
-item.rs_ctr.text\:1.tipA=Modulgröße [B*H]\: §a1 * 1
-item.rs_ctr.text\:2.name=1/2 Textmodul
-item.rs_ctr.text\:2.tipA=Modulgröße [B*H]\: §a2 * 1
-item.rs_ctr.text\:3.name=3/4 Textmodul
-item.rs_ctr.text\:3.tipA=Modulgröße [B*H]\: §a3 * 1
-item.rs_ctr.text\:4.name=volles Textmodul
-item.rs_ctr.text\:4.tipA=Modulgröße [B*H]\: §a4 * 1
-item.rs_ctr.text\:i.tip=Zeigt 4 Textzeilen zur Beschriftung auf einem §6Steuerpult§7 an.
+item.rs_ctr.slider.tip=Ein Schieberegler mit anpassbarem Skalenbereich zur Anbringung and ein §6Steuerpult§7.\n§aInteragiere§7 oberhalb der Skala zur Feineinstellung.\n§eModulgröße\:§7 2x4
+item.rs_ctr.text\:1.name=Textmodul §e1x1
+item.rs_ctr.text\:2.name=Textmodul §e1x2
+item.rs_ctr.text\:3.name=Textmodul §e1x3
+item.rs_ctr.text\:4.name=Textmodul §e1x4
+item.rs_ctr.text\:i.tip=Zeigt 4 Textzeilen zur Beschriftung auf einem §6Steuerpult§7 an.\n§aBenutze§7 in die Luft zum Ändern der §eModulgröße\:§7 1x1 ... 1x4.
 item.rs_ctr.lever\:0.name=Schaltermodul
 item.rs_ctr.lever\:1.name=Leuchtschaltermodul
 item.rs_ctr.lever\:2.name=Leuchttastenmodul
-item.rs_ctr.lever\:2.tip=Bleibt nach §aInteraktion§7 für eine bestimmte Dauer eingeschaltet.\n§aInteragiere geduckt§7 zum vorzeitigen Wiederausschalten.\nModul zur Anbringung an ein §6Steuerpult§7.
-item.rs_ctr.lever\:i.tip=Schaltet bei §aInteraktion§7 zwischen zwei einstellbaren Signalwerten um.\nModul zur Anbringung an ein §6Steuerpult§7.
-item.rs_ctr.lever\:i.tipA=Modulgröße [B*H]\: §a1 * 1
+item.rs_ctr.lever\:2.tip=Bleibt nach §aInteraktion§7 für eine bestimmte Dauer eingeschaltet.\n§aInteragiere geduckt§7 zum vorzeitigen Wiederausschalten.\nModul zur Anbringung an ein §6Steuerpult§7.\n§eModulgröße\:§7 1x1
+item.rs_ctr.lever\:i.tip=Schaltet bei §aInteraktion§7 zwischen zwei einstellbaren Signalwerten um.\nModul zur Anbringung an ein §6Steuerpult§7.\n§eModulgröße\:§7 1x1
 item.rs_ctr.trigger.name=Signalhystereseschalter
-item.rs_ctr.trigger.tip=Eine Schaltung, die einschaltet, sobald §eSignal > Einschaltschwelle§7 und wieder ausschaltet, sobald §eSignal <\= Ausschaltschwelle§7 (bei Einschalt < Ausschaltschwelle sind die Vergleichsoperationen invertiert).\n\nBeide Schwellwerte können interaktiv am §6Steuerpult§7 angepasst werden.
-item.rs_ctr.trigger.tipA=Timing\: §ainstantan §e[EIN]\nModulgröße [B*H]\: §a2 * 1
+item.rs_ctr.trigger.tip=Eine Schaltung, die einschaltet, sobald §eSignal > Einschaltschwelle§7 und wieder ausschaltet, sobald §eSignal <\= Ausschaltschwelle§7 (bei Einschalt < Ausschaltschwelle sind die Vergleichsoperationen invertiert).\n\nBeide Schwellwerte können interaktiv am §6Steuerpult§7 angepasst werden.\n§eModulgröße\:§7 1x2
+item.rs_ctr.trigger.tipA=Timing\: §ainstantan §e[EIN]
 item.rs_ctr.scale.name=Signalskalierer
-item.rs_ctr.scale.tip=Ein §6Steuerpult§7modul, das ein Signal mit einem anpassbaren Skalierfaktor multipliziert.
-item.rs_ctr.scale.tipA=Timing\: §ainstantan §e[EIN]\nModulgröße [B*H]\: §a2 * 1
+item.rs_ctr.scale.tip=Ein §6Steuerpult§7modul, das ein Signal mit einem anpassbaren Skalierfaktor multipliziert.\n§eModulgröße\:§7 1x2
+item.rs_ctr.scale.tipA=Timing\: §ainstantan §e[EIN]
 item.rs_ctr.offset.name=Signalverschieber
-item.rs_ctr.offset.tip=Ein §6Steuerpult§7modul, das ein Signal mit einem anpassbaren Verschiebewert addiert.
-item.rs_ctr.offset.tipA=Timing\: §ainstantan §e[EIN]\nModulgröße [B*H]\: §a2 * 1
-item.rs_ctr.oscilloscope.name=Oszilloskopmodul
-item.rs_ctr.oscilloscope.tip=Zeigt den Verlauf von 3 Signalen als grafische Kurven mit je §e100§7 Zeitschritten (von links nach rechts) auf einem §6Steuerpult§7 an.\nDie Eingangssignale sind binär zusammengepackt als 0x§3TT§1CC§2BB§4AA§7 (4x8bit) mit den Signalkanälen §4A§7, §2B§7, §1C§7 im Wertebereich §e0...100§7 (von unten nach oben) und einem Taktgeber §3T§7, welcher bei jeder Wertänderung das nächste Signaltripel in den Graphen einlesen lässt.\nDas Ausgangssignal kann mit dem Eingang eines weiteren Oszilloskops verbunden werden um einen größeren Zeitraum darzustellen.\n§b§oSiehe auch\: §6§obinärer Signalpacker§b, §6§oSignalskalierer§b, §6§oSignalverschieber
-item.rs_ctr.oscilloscope.tipA=\nModulgröße [B*H]\: §a4 * 4
+item.rs_ctr.offset.tip=Ein §6Steuerpult§7modul, das ein Signal mit einem anpassbaren Verschiebewert addiert.\n§eModulgröße\:§7 1x2
+item.rs_ctr.offset.tipA=Timing\: §ainstantan §e[EIN]
+item.rs_ctr.oscilloscope\:0.name=Oszilloskopmodul §e2x2
+item.rs_ctr.oscilloscope\:1.name=Oszilloskopmodul §e2x4
+item.rs_ctr.oscilloscope\:2.name=Oszilloskopmodul §e4x2
+item.rs_ctr.oscilloscope\:3.name=Oszilloskopmodul §e4x4
+item.rs_ctr.oscilloscope\:i.tip=Zeigt den Verlauf von 3 Signalen als grafische Kurven mit je §e50§7/§e100§7 Zeitschritten (von links nach rechts) auf einem §6Steuerpult§7 an.\nDie Eingangssignale sind binär zusammengepackt als 0x§3TT§1CC§2BB§4AA§7 (4x8bit) mit den Signalkanälen §4A§7, §2B§7, §1C§7 im Wertebereich §e0...100§7 (von unten nach oben) und einem Taktgeber §3T§7, welcher bei jeder Wertänderung das nächste Signaltripel in den Graphen einlesen lässt.\nDas Ausgangssignal kann mit dem Eingang eines weiteren Oszilloskops verbunden werden um einen größeren Zeitraum darzustellen.\n§aBenutze§7 in die Luft zum Ändern der §eModulgröße\:§7 2x2 ... 4x4.\n§b§oSiehe auch\: §6§obinärer Signalpacker§b, §6§oSignalskalierer§b, §6§oSignalverschieber
 item.rs_ctr.wrench.name=Schraubendreher
 item.rs_ctr.wrench.name1=Schraubendreher §9gespeicherte Konfig.
 item.rs_ctr.wrench.tip=§aBenutze§7 auf §6Steuerpult§7 um Module zu konfigurieren.\n§aSchlage§7 auf §6Steuerpult§7 um Module zu entfernen (geht auch im Kreativmodus).\n§aBenutze geduckt§7 auf §6Steuerpult§7 um Einstellungen eines Moduls zu kopieren. §nDann\:\n§aBenutze§7 auf ein anderes Modul um die kopierten Einstellungen zu übernehmen.\n§aBenutze geduckt§7 in die Luft um gespeicherte Einstellungen zu löschen.\n\nAndere Blöcke werden bei §aBenutzung§7 gedreht.
 item.rs_ctr.processor.stats=Komplexität\: §c%d §b%d §9%d §7Größe\: §f%d
-item.rs_ctr.signal_probe.tip=Zeigt die aktuellen Signalwerte aller Anschlüsse eines Gerätes an.\n\nKann außerdem als §6Schaubendreher§7 verwendet werden.
+item.rs_ctr.signal_probe.tip=Zeigt die aktuellen Signalwerte aller Anschlüsse eines Gerätes an.\n§lDieses Werkzeug wird zum Arbeiten mit dieser Mod dringend empfohlen!\n\nKann außerdem als §6Schaubendreher§7 verwendet werden.
 item.rs_ctr.signal_probe.name=Signalprüfer
 item.rs_ctr.signal_probe.name1=Signalprüfer §9gespeicherte Konfig.
 item.rs_ctr.cl_fuel.name=Laufzeit [§a%d\:%02d h§r]
 item.rs_ctr.cl_fuel.tip=§aBenutze§7 auf §6Chunkanker§7 um die Laufzeit aufzufüllen.\n§oItem wird verbraucht!\n§aSchlage§7 auf §6Chunkanker§7 um die gespeicherte Zeit wieder zu entnehmen.
 item.rs_ctr.block_plug.name=Blockzugriffsstecker
-item.rs_ctr.block_plug.tip=Bietet direkten Blockreferenzzugriff auf einen Block in §a\\<block_plug_range> m§7 Umkreis zum verbundenen Anschluss.\nZum verbinden, §abenutze§7 zunächst§a gedukt§7 auf die Blockseite, auf die per Blockreferenz zugegriffen werden soll, und anschließend auf einen Anschluss.\n\n§oVerbindung benutzt relative Koordinaten (relevant für Teleport).
+item.rs_ctr.block_plug.tip=Bietet direkten §6Blockreferenz§7zugriff auf einen Block in §a\\<block_plug_range> m§7 Umkreis zum verbundenen Anschluss.\nZum verbinden, §abenutze§7 zunächst§a gedukt§7 auf die Blockseite, auf die per Blockreferenz zugegriffen werden soll, und anschließend auf einen Anschluss.\n\n§oVerbindung benutzt relative Koordinaten (relevant für Teleport).
 item.rs_ctr.remote.name0=Fernsteuerung §4AUS
 item.rs_ctr.remote.name1=Fernsteuerung §2EIN
 item.rs_ctr.remote.tip=Während im Inventar und eingeschaltet, wird ein 32-Bit-Signal welches die gerade gedrückten Tasten repräsentiert, in den verbundenen Anschluss gesendet.\n§aBenutze§7 auf Signalanschluss zum verbinden.\n§aBenutze§7 in die Luft zum EIN/AUS-schalten.\n§aBenutze geduckt§7 in die Luft um Tastenbelegungen einzustellen.
+item.rs_ctr.socket_s.name=Pult-Signalanschluss
+item.rs_ctr.socket_s.tip=Ein Paar aus Signalanschlüssen, welches die Front- und Rückseite eines §6Steuerpults§7 verbindet.\nZiele §aoben-rechts§7 für frontseitigen §2Ausgang§7.\nZiele §aunten-links§7 für frontseitigen §1Eingang§7.\n§eModulgröße\:§7 1x1
+item.rs_ctr.socket_b.name=Pult-Blockreferenzanschluss
+item.rs_ctr.socket_b.tip=Ein Paar aus Blockreferenzanschlüssen, welches die Front- und Rückseite eines §6Steuerpults§7 verbindet.\nZiele §aoben-rechts§7 für frontseitigen §2Ausgang§7.\nZiele §aunten-links§7 für frontseitigen §1Eingang§7.\n§eModulgröße\:§7 1x1
 item.cd4017be.m\:battery.name=Redstone Batterie
 item.cd4017be.m\:telekin_alloy.name=telekinetische Legierung
 item.cd4017be.m\:actuator.name=Ferninteraktionsmodul
@@ -394,9 +403,13 @@ gate.rs_ctr.feedback_s=16Bit Rückkopplungsschleife\n§7Variable lesen und schre
 gate.rs_ctr.array_b=8Bit Array\n§7Liefert permanenten Speicher für eine\n§7feste Anzahl an 8Bit-Integer Werten.
 gate.rs_ctr.array_s=16Bit Array\n§7Liefert permanenten Speicher für eine\n§7feste Anzahl an 16Bit-Integer Werten.
 gate.rs_ctr.array_i=32Bit Array\n§7Liefert permanenten Speicher für eine\n§7feste Anzahl an 32Bit-Integer Werten.
-gate.rs_ctr.aset=Array schreiben\n§7Schreibt ein1 in Index ein2 des Arrays ein3.\n§7Für ein Array der Größe N sind die Indizes §e0 ... N-1§7 gültig.\n§4§oZugriff auf ungültige Indizes führt zu Ausfall!\n§3§oOperation wird nur ausgeführt, wenn mit Zielknoten verbunden!
-gate.rs_ctr.aget=Array lesen\n§7Liest den Wert im Index ein1 des Arrays ein2.\n§7Für ein Array der Größe N sind die Indizes §e0 ... N-1§7 gültig.\n§4§oZugriff auf ungültige Indizes führt zu Ausfall!
+gate.rs_ctr.aset=Array schreiben\n§7Schreibt E1 in Index E2 des Arrays E3.\n§7Für ein Array der Größe N sind die Indizes §e0 ... N-1§7 gültig.\n§4§oZugriff auf ungültige Indizes führt zu Ausfall!\n§3§oOperation wird nur ausgeführt, wenn mit Zielknoten verbunden!
+gate.rs_ctr.aget=Array lesen\n§7Liest den Wert im Index E1 des Arrays E2.\n§7Für ein Array der Größe N sind die Indizes §e0 ... N-1§7 gültig.\n§4§oZugriff auf ungültige Indizes führt zu Ausfall!
 gate.rs_ctr.alen=Arraygröße\n§7Gibt die Zahl an Einträgen im Eingangsarray aus.
+gate.rs_ctr.read_f=Fließkomma Variable lesen\n§7Gibt den Wert einer Variable aus, der\n§7im vorherigen Zyklus gesetzt wurde.
+gate.rs_ctr.write_f=Fließkomma Variable schreiben\n§7Speichert den Eingangswert in einer Variable,\n§7um ihn an den nächsten Zyklus weiterzugeben.\n§3§oOperation wird nur ausgeführt,\n§3§owenn mit Zielknoten verbunden!
+gate.rs_ctr.feedback_f=Fließkomma Rückkopplungsschleife\n§7Variable lesen und schreiben in einem.\n§7Verzögert effektiv das Signal um einen Zyklus.\n§3§oDie Ein-/Ausgangsseiten sind hier vertauscht!
+gate.rs_ctr.array_f=Fließkomma Array\n§7Liefert permanenten Speicher für eine\n§7feste Anzahl an Fließkomma Werten.
 gategroup.rs_ctr.logic=Logik
 gate.rs_ctr.not=Nicht-Gatter\n§7A \= ¬E\n§7bitweise
 gate.rs_ctr.or=Oder-Gatter\n§7A \= E1 ∨ E2\n§7bitweise
@@ -409,19 +422,28 @@ gate.rs_ctr.swt=Wahlschalter\n§7E1 \= Wahr -> A \= E2\n§7sonst -> A \= E3
 gate.rs_ctr.branch=Ausführschalter\n§7E1 \= Wahr -> werte E2 aus\n§7sonst -> werte E3 aus
 gate.rs_ctr.sequence=Ausführsequenz\n§7erst werte E1 aus\n§7dann werte E2 aus
 gate.rs_ctr.update=Zyklustrigger\n§7Triggert bei auswertung\n§7immer den nächsten Zyklus.
+gate.rs_ctr.fswt=Fließkomma Wahlschalter\n§7E1 \= Wahr -> A \= E2\n§7sonst -> A \= E3
 gategroup.rs_ctr.comp=Komparatoren
 gate.rs_ctr.eq0=gleich Null\n§7E \= 0 -> A \= Wahr\n§7sonst -> A \= Falsch
-gate.rs_ctr.ne0=nicht Null\n§7E \= 0 -> A \= Falsch\n§7sonst -> A \= Wahr
-gate.rs_ctr.lt0=negativ\n§7E < 0 -> A \= Wahr\n§7sonst -> A \= Falsch
-gate.rs_ctr.ge0=nicht negativ\n§7E < 0 -> A \= Wahr\n§7sonst -> A \= Falsch
-gate.rs_ctr.gt0=positiv\n§7E > 0 -> A \= Wahr\n§7sonst -> A \= Falsch
-gate.rs_ctr.le0=nicht positiv\n§7E > 0 -> A \= Falsch\n§7sonst -> A \= Wahr
+gate.rs_ctr.ne0=nicht Null\n§7E ≠ 0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.lt0=kleiner Null\n§7E < 0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.ge0=größer gleich Null\n§7E ≥ 0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.gt0=größer Null\n§7E > 0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.le0=kleiner gleich Null\n§7E ≤ 0 -> A \= Wahr\n§7sonst -> A \= Falsch
 gate.rs_ctr.eq=gleich\n§7E1 \= E2 -> A \= Wahr\n§7sonst -> A \= Falsch
-gate.rs_ctr.ne=ungleich\n§7E1 \= E2 -> A \= Falsch\n§7sonst -> A \= Wahr
+gate.rs_ctr.ne=ungleich\n§7E1 ≠ E2 -> A \= Wahr\n§7sonst -> A \= Falsch
 gate.rs_ctr.lt=kleiner als\n§7E1 < E2 -> A \= Wahr\n§7sonst -> A \= Falsch
-gate.rs_ctr.ge=größer gleich\n§7E1 < E2 -> A \= Falsch\n§7sonst -> A \= Wahr
-gategroup.rs_ctr.num=Arithmetik
+gate.rs_ctr.ge=größer gleich\n§7E1 ≥ E2 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.feq0=Fließkomma Null\n§7E \= ±0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.flt0=Fließkomma kleiner Null\n§7E < 0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.fgt0=Fließkomma größer Null\n§7E > 0 -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.finf=Fließkomma Unendlich\n§7E \= ±∞ -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.fnan=Fließkomma NaN-Test\n§7E \= NaN -> A \= Wahr\n§7sonst -> A \= Falsch
+gate.rs_ctr.fcmp=Fließkommavergleich\n§7E1 > E2 -> A \= 1\n§7E1 \= E2 -> A \= 0\n§7sonst -> A \= -1
+gategroup.rs_ctr.num=Ganzzahlarithmetik
 gate.rs_ctr.cst=konstante Zahl\n§7A \= #
+gate.rs_ctr.cst0=Konstante 0\n§7A \= 0
+gate.rs_ctr.cst1=Konstante 1\n§7A \= 1
 gate.rs_ctr.inc=erhöhen\n§7A \= E + 1
 gate.rs_ctr.dec=erniedrigen\n§7A \= E - 1
 gate.rs_ctr.neg=negieren\n§7A \= -E
@@ -433,6 +455,13 @@ gate.rs_ctr.div=dividieren\n§7A \= E1 / E2\n§7A wird abgerundet\n§4§odiv/0 v
 gate.rs_ctr.mod=Divisionsrestwert\n§7A \= E1 mod E2\n§7A übernimmt Vorzeichen von E2\n§4§odiv/0 verursacht Ausfall!
 gate.rs_ctr.max=Maximum\n§7E1 > E2 -> A \= E1\n§7sonst -> A \= E2
 gate.rs_ctr.min=Minimum\n§7E1 < E2 -> A \= E1\n§7sonst -> A \= E2
+gate.rs_ctr.rand=Zufallszahl\n§70 ≤ A < E\n§4§oE ≤ 0 verursacht Ausfall!
+gate.rs_ctr.time=Zeit\n§7A \= aktuelle Zeit\n§7E \= Zyklusinterval\:\n§70 ≤ A < E
+gate.rs_ctr.time.mode=Zeitgeber
+gate.rs_ctr.time.mode0=Weltalter [t]
+gate.rs_ctr.time.mode1=Tageszeit [t]
+gate.rs_ctr.time.mode2=Echtzeit [ms]
+gate.rs_ctr.time.mode3=Echtzeit [s]
 gategroup.rs_ctr.bin=Bit-Operatoren
 gate.rs_ctr.bsl=Bits nach links schieben\n§7A \= E1 * 2^E2
 gate.rs_ctr.bsr=Bits nach rechts schieben\n§7A \= E1 / 2^E2
@@ -440,6 +469,28 @@ gate.rs_ctr.bitspl=Bit-Teiler\n§7Trennt ein 8-Bit Signal in seine einzelnen Bit
 gate.rs_ctr.bitcom=Bit-Vereiniger\n§7Erzeugt einen kombinierten 8-Bit\n§7Signalwert aus einzelnen Bitwerten.
 gate.rs_ctr.bytespl=Byte-Teiler\n§7Trennt einen 32-Bit Wert in vier 8-Bit\n§7Werte (mit oder ohne Vorzeichen).
 gate.rs_ctr.bytecom=Byte-Vereiniger\n§7Vereinigt vier 8-Bit Werte in einen 32-Bit Wert.\n§7§oBits höherer Ordnung der Eingänge werden ignoriert.
+gate.rs_ctr.lobp=Index niedrigstes Bit\n§7A \= log_2(niedrEinsBit(E))\n§7E \= 0 -> A \= 32
+gate.rs_ctr.hobp=Index höchstes Bit\n§7A \= abrund(log_2(E))\n§7E \= 0 -> A \= -1
+gate.rs_ctr.obcnt=Bitanzahl\n§7A \= #EinsBits(E)
+gate.rs_ctr.bmask=Bitmaske\n§7A \= E UND #\n§7bitweise
+gate.rs_ctr.bin_i2f=Fließkomma aus binär\n§7Erzeugt eine Fließkommazahl\n§7aus ihrer Binärdarstellung.
+gate.rs_ctr.bin_f2i=Fließkomma nach binär\n§7Wandelt eine Fließkommazahl\n§7in ihre Binärdarstellung um.
+gategroup.rs_ctr.float=Fließkommaarithmetik
+gate.rs_ctr.fcst=Fließkommakonstante\n§7A \= #
+gate.rs_ctr.fcst0=Konstante 0.0\n§7A \= 0.0
+gate.rs_ctr.fcst1=Konstante 1.0\n§7A \= 1.0
+gate.rs_ctr.fneg=Fließkomma negieren\n§7A \= -E
+gate.rs_ctr.finv=multiplikative Inverse\n§7A \= 1.0 / E
+gate.rs_ctr.fabs=Fließkommaabsolutwert\n§7E < 0 -> A \= -E\n§7sonst -> A \= E
+gate.rs_ctr.fadd=Fließkommaaddition\n§7A \= E1 + E2
+gate.rs_ctr.fsub=Fließkommadifferenz\n§7A \= E1 - E2
+gate.rs_ctr.fmul=Fließkommamultiplikation\n§7A \= E1 * E2
+gate.rs_ctr.fdiv=Fließkommadivision\n§7A \= E1 / E2
+gate.rs_ctr.fmod=Fließkommarestwert\n§7A \= E1 mod E2
+gate.rs_ctr.fmin=Fließkommaminimum\n§7E1 < E2 -> A \= E1\n§7sonst -> A \= E2
+gate.rs_ctr.fmax=Fließkommamaximum\n§7E1 > E2 -> A \= E1\n§7sonst -> A \= E2
+gate.rs_ctr.floor=Abrunden\n§7A \= max(Ganzzahl ≤ E)
+gate.rs_ctr.ceil=Aufrunden\n§7A \= min(Ganzzahl ≥ E)
 
 # GUI
 # Inventarnamen
@@ -476,8 +527,8 @@ gui.rs_ctr.editor.ingreds=Schaltungskomplexität\:\n§c%d / %d einfach\n§b%d / 
 gui.rs_ctr.editor.info=Bedienung\nallgemeine Funktionsweise\nSignaltypen\nTesten
 gui.rs_ctr.editor.info0=§7§nBauteilinteraktion\:§a links-Klick\n§7Um ein Bauteil hinzufügen, klicke es zunächst in der Palette an und platziere es durch einen weiteren Klick auf dem Board.\n§7§oDie Palette zeigt sich anstelle deines Inventars, wenn durch entsprechende Schaltfläche aktiviert.\n§aAnklicken§7 eines Bauteils auf dem Board wählt es aus\: Einstellungsoptionen erscheinen dann rechts unterhalb des Boards.\n§aKlick+ziehen§7 bewegt ein Bauteil [rote Rahmen zeigen Kollisionen mit anderen Bauteilen an].\n§7Bewegt man ein Bauteil außerhalb des Boardbereichs, so wird es gelöscht [hellroter Rahmen].\n§7§nAnschluss-/Leitungsinteraktion\:§a rechts-Klick\n§7Um zwei Bauteile mit einer Leitung zu verbinden, §aklicke§7 zuerst einen Eingangspin [linke Seite eines Bauteils] an, dann eventuell ein paar Punkte auf dem Board (um den Pfad anzupassen) und schließlich den Ausgangspin [rechte Seite] des anderen Bauteils.\n§aKlick+ziehe§7 eine Ecke eines Leitungspfads um sie nachträglich zu bewegen.
 gui.rs_ctr.editor.info1=§7Ganz allgemein erhält eine Schaltung diverse Signale von externen Geräten durch seine §6Eingänge§7, führt dann ein par Berechnungen an diesen durch und erzeugt schließlich ein oder mehrere Ergebnisse, die durch seine §6Ausgänge§7 wieder zu externe Geräten weiter geschickt werden. Dieser Vorgang wird hier als §eein Zyklus§7 bezeichnet.\n\n§6Variablen§7 ermöglichen es einer Schaltung, auch auf Informationen aus vorherigen Zyklen zuzugreifen. Sie bestehen aus einer §6Schreib§7-komponente, die einen Wert in einem Zyklus erhält und speichert, sowie einer passenden [gleicher Name] §6Lese§7-Komponente, die diesen Wert dann einen Zyklus später wieder ausgibt. Die Lesekomponente bestimmt auch den Startwert der Variablen. \n\n§7Normalerweise wird ein neuer Zyklus mit einer 1-Tick Verzögerung ausgeführt, nachdem ein Eingangs- oder Variablenwert sich geändert hat. Aber du kanns auch individuell einstellen, dass bestimmte §6Variablen Schreiboperatoren§7 oder §6Eingängen§§§7§7 keinen neuen Zyklus triggern.\n§7§oHinweis\: Das manuelle ändern von Variablenwerten über den Debugger oder das Statusinterface eines Prozessors triggert auch keinen Zyklus.
-gui.rs_ctr.editor.info2=§7Die unterschiedlichen Farben von Leiterbahnen zeigen an welche Art von Signal übertragen wird. Dieser Signaltyp wird durch die verbundenen Anschlusspins bestimmt\:\n§4§n32-Bit Ganzzahl§7\: Standartzahlentyp der auch von allen Redstone-Anschlüssen verwendet wird. Gültiger Wertebereich ist §a-2147483648 ... 2147483647§7.\n§5§n8/16-Bit Ganzzahl§7\: eingeschränkter Wertebreich §a-128 ... 127§7 bzw. §a0 ... 255§7 für 8 Bit und §a-32768 ... 32767§7 bzw. §a0 ... 65536§7 für 16 Bit.\n§9§nBoolean§7\: Ein Logiksignal, das entweder §aWahr§7 oder §aFalsch§7 annimmt. Bei Verwendung in Ganzzahleingängen gilt\: §aWahr -> -1§7 und §aFalsch -> 0§7, umgekehrte Konversion verwendet den §anicht Null§7 Vergleich.\n§6§nFließkommazahl§7\: Ermöglicht rechnen mit Bruchzahlen, Umwandlung rundet zur nächst gelegenen Ganzzahl.\n§8§nKausalrelation§7\: Überträgt keine Information, sondern steuert nur den Programmfluss.\n§e§nArray§7\: Referenziert integrierten, direkt addressierbaren Speicher, auf den mit §elese§7 und §eschreib§7 Operationen zugegriffen werden kann.
-gui.rs_ctr.editor.info3=§7Auch, wenn man die Schaltung auf einem §6Prozessor§7 beliebig oft überschreiben kanns, ist es normalerweise eine gute Idee, eine Schaltung erstmal mit dem §eDebugger§7 zu testen, bevor man sie an kritische Systeme anschließt.\n§7Das §eDebugger§7-Fenster wird durch §arechts-Klick§7 (anstatt links-Klick) auf die §eKompilieren Schaltfläche§7 geöffnet. Darin kann man die Schaltung mit beliebigen Eingangswerten füttern und beobachten, wie jeweils nach einzelnen Zyklen die Ausgangswerte und Variablenzustände reagieren.\n§7Die Funktion des Debuggers, Variablenwerte zu bearbeiten ist auch später im §eStatusinterface§7 des plazierten §6Prozessor§7s verfügbar.\n§7Somit können auch ansonsten scheinbar nutzlose §enur-lesen§7 oder §enur-schreiben§7 Variablen benutzt werden, um später Parameter zu justieren oder um mehr Details über die Funktion der Schaltung zu erhalten.
+gui.rs_ctr.editor.info2=§7Die unterschiedlichen Farben von Leiterbahnen zeigen an welche Art von Signal übertragen wird. Dieser Signaltyp wird durch die verbundenen Anschlusspins bestimmt\:\n§4§n32-Bit Ganzzahl§7\: Standartzahlentyp der auch von allen Redstone-Anschlüssen verwendet wird. Gültiger Wertebereich ist §a-2147483648 ... 2147483647§7.\n§5§n8/16-Bit Ganzzahl§7\: eingeschränkter Wertebreich §a-128 ... 127§7 bzw. §a0 ... 255§7 für 8 Bit und §a-32768 ... 32767§7 bzw. §a0 ... 65536§7 für 16 Bit.\n§9§nBoolean§7\: Ein Logiksignal, das entweder §aWahr§7 oder §aFalsch§7 annimmt. Bei Verwendung in Ganzzahleingängen gilt\: §aWahr -> -1§7 und §aFalsch -> 0§7, umgekehrte Konversion verwendet den §anicht Null§7 Vergleich.\n§6§nFließkommazahl§7\: Ermöglicht rechnen mit Bruchzahlen, Umwandlung rundet hin zur Null.\n§8§nKausalrelation§7\: Überträgt keine Information, sondern steuert nur den Programmfluss.\n§e§nArray§7\: Referenziert integrierten, direkt addressierbaren Speicher, auf den mit §elese§7 und §eschreib§7 Operationen zugegriffen werden kann.
+gui.rs_ctr.editor.info3=§7Auch, wenn man die Schaltung auf einem §6FPGA§7 beliebig oft überschreiben kanns, ist es normalerweise eine gute Idee, eine Schaltung erstmal mit dem §eDebugger§7 zu testen, bevor man sie an kritische Systeme anschließt.\n§7Das §eDebugger§7-Fenster wird durch §arechts-Klick§7 (anstatt links-Klick) auf die §eKompilieren Schaltfläche§7 geöffnet. Darin kann man die Schaltung mit beliebigen Eingangswerten füttern und beobachten, wie jeweils nach einzelnen Zyklen die Ausgangswerte und Variablenzustände reagieren.\n§7Die Funktion des Debuggers, Variablenwerte zu bearbeiten ist auch später im §eStatusinterface§7 des plazierten §6FPGA§7s verfügbar.\n§7Somit können auch ansonsten scheinbar nutzlose §enur-lesen§7 oder §enur-schreiben§7 Variablen benutzt werden, um später Parameter zu justieren oder um mehr Details über die Funktion der Schaltung zu erhalten.
 gui.rs_ctr.debug.run0=automatische Ausführung
 gui.rs_ctr.debug.run1=manuelle Ausführung
 gui.rs_ctr.debug.step0=Zyklus erzwingen\n§4§ostabiler Zustand
@@ -509,10 +560,10 @@ gui.rs_ctr.assembler.stats=§c%d\n§b%d\n§9%d\n§f%d\n§e%.1f Zyk\n§a%.1f Z/s
 gui.rs_ctr.assembler.stats1=§c%d/%7$d\n§b%d/%8$d\n§9%d/%9$d\n§f%d\n§e%.1f Zyk\n§a%.1f Z/s
 gui.rs_ctr.assembler.stats4=§e%+d Kap
 gui.rs_ctr.assembler.stats5=§a%+d E/t
-gui.rs_ctr.assembler.info=Prozessoraufbau\nRedstone-Energie\nAutomatisierung
-gui.rs_ctr.assembler.info0=§7Komplexe Schaltungen erfordern auch komplexe Hardware§7.\n§7Es gibt 3 verschiedene Arten von §eKomplexität§7, die sich jeweils auf unterschiedliche Rechenoperationen beziehen und jeweils durch einbau bestimmter Komponenten in den §6Prozessor§7 erhöht werden können.\n§7Komponenten verbrauchen jedoch §ePlatz§7 auf dem Prozessor, der begrenzt ist.\n§7Dabei liefern unterschiedliche Komponenten nicht nur verschiedene Arten von §eKomplexität§7, sondern tun dies auch bei variierenden §ePlatz§7kosten und unterschiedlicher §eRedstone Energiestärke§7. §oSiehe nächste Seite.
+gui.rs_ctr.assembler.info=FPGA-Fertigung\nRedstone-Energie\nAutomatisierung
+gui.rs_ctr.assembler.info0=§7Komplexe Schaltungen erfordern auch komplexe Hardware§7.\n§7Es gibt 3 verschiedene Arten von §eKomplexität§7, die sich jeweils auf unterschiedliche Grundoperationen beziehen und durch Einbau bestimmter Komponenten in den §6FPGA§7 erhöht werden können.\n§7Komponenten verbrauchen jedoch §ePlatz§7 auf dem FPGA, der begrenzt ist.\n§7Dabei liefern unterschiedliche Komponenten nicht nur verschiedene Arten von §eKomplexität§7, sondern tun dies auch bei variierenden §ePlatz§7kosten und unterschiedlicher §eRedstone Energiestärke§7. §oSiehe nächste Seite.
 gui.rs_ctr.assembler.info1=§7Es scheint, als würde §6Redstone§7 auf natürliche Weise, ohne erkennbare Energiequelle Ladung aufbauen. §oEs wird vermutet, dass dies auf radioaktiven Zerfall zurückzuführen ist.\n§7Diese Ladungen sind jedoch ziemlich schwach, gerade genug um einfache berechnungen mit Logikgattern zu betreiben. Schalten die Signale jedoch zu oft ist sie schnell erschöpft, was sich deutlich am Ausbrenneffekt von §6Redstone-Fackeln§7 zeigt.\n§7Bestimmte energetische Materialien können den Ladungsaufbau verstärken. Eine miniaturisierung von Schaltungen, sowie Reduktion von Materialkosten hingegen schwächt diesen stark, eventuell so weit, dass die Schaltung ohne externe Energieversorgung nicht mehr stabil betrieben werden kann.\n§7§oDies wird durch die Parameter §e§olängste Dauertaktfolge§7§o and §e§okontinuirliche Taktrate§7§o Charakterisiert.
-gui.rs_ctr.assembler.info2=§7Prozessoren können automatisch von einer Vorlage konstruiert werden (oberer Slot).\n\n§7Wenn eine Vorlage vorhanden ist, wird jeder darunter eingelegte gleichartige Prozessor automatisch zerlegt und gemäß den Komponenten der Vorlage zusammengesetzt. Installierte Schaltungen werden ebenfalls übernommen.\n§7Schließlich wird der vollständige Prozessor mit den Vorlagen gestapelt.
+gui.rs_ctr.assembler.info2=§7FPGAs können automatisch von einer Vorlage konstruiert werden (oberer Slot).\n\n§7Wenn eine Vorlage vorhanden ist, wird jeder darunter eingelegte gleichartige FPGA automatisch zerlegt und gemäß den Komponenten der Vorlage zusammengesetzt. Installierte Schaltungen werden ebenfalls übernommen.\n§7Schließlich wird der vollständige FPGA mit den Vorlagen gestapelt.
 gui.rs_ctr.template=Vorlage zum vervielfältigen
 gui.rs_ctr.to_editor=Zum Schaltplan wechseln
 gui.rs_ctr.mat3=verbleibender Platz
