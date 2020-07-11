@@ -58,12 +58,12 @@ public class UtilFunc {
 
 	public static long worldTime() {
 		WorldServer world = DimensionManager.getWorld(0);
-		return world != null ? world.worldInfo.totalTime : 0L;
+		return world != null ? world.getTotalWorldTime() : 0L;
 	}
 
 	public static long dayTime() {
 		WorldServer world = DimensionManager.getWorld(0);
-		return world != null ? world.worldInfo.getWorldTime() : 0L;
+		return world != null ? world.getWorldInfo().getWorldTime() : 0L;
 	}
 
 	static {
