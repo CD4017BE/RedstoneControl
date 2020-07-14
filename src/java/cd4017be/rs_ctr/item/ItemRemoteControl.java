@@ -91,6 +91,7 @@ implements IConnectorItem, IPlayerPacketReceiver.ItemPPR, IGuiHandlerItem {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack item, World player, List<String> list, ITooltipFlag b) {
 		super.addInformation(item, player, list, b);
 		NBTTagCompound nbt = item.getTagCompound();
