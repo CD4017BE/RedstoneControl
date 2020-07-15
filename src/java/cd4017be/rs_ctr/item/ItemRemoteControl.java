@@ -216,7 +216,7 @@ implements IConnectorItem, IPlayerPacketReceiver.ItemPPR, IGuiHandlerItem {
 
 		private final Port port = new Port(this, 0, SignalHandler.class, true);
 		private WeakReference<NBTTagCompound> ref;
-		private SignalHandler callback;
+		private SignalHandler callback = SignalHandler.NOP;
 		private int state;
 		private boolean update;
 
