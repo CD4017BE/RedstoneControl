@@ -1,3 +1,12 @@
+v0.3.2
+Changes:
+- fix synchronization issues with CD4017BE_lib-3.6.x due to changed constants.
+
+Dependencies:
+- for MC-1.12.2
+- forge-14.23.5.2768 (or newer)
+- CD4017BE_lib-6.6.3
+
 v0.3.1
 Changes:
 - improved all kinds of in-game descriptions (#38, #35) and renamed the Redstone Processors into FPGAs

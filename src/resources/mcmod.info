@@ -3,7 +3,7 @@
   "modid": "rs_ctr",
   "name": "Redstone Control",
   "description": "Point to Point Redstone wires, data-flow oriented programmable compact circuits, fancy displays, control interfaces and more ...",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "acceptableRemoteVersions": "[0.3.1,0.4.0)",
   "acceptableSaveVersions": "[0.3.0,0.4.0)",
   "acceptedMinecraftVersions": "[1.12,1.13)",
@@ -14,7 +14,7 @@
   "logoFile": "",
   "screenshots": [],
   "useDependencyInformation": true,
-  "requiredMods": ["cd4017be_lib@[6.5.1,6.7.0)"],
-  "dependencies": ["cd4017be_lib@[6.5.1,6.7.0)"]
+  "requiredMods": ["cd4017be_lib@[6.6.3,6.7.0)"],
+  "dependencies": ["cd4017be_lib@[6.6.3,6.7.0)"]
 }
 ]
