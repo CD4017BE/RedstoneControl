@@ -26,7 +26,7 @@ plugins {
 
 version = "${mc_version}-${mod_version}"
 group= "com.cd4017be.circuits" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "RedstoneControl"
+archivesBaseName = "redstonecontrol"
 
 sourceCompatibility = "${java_version}"
 targetCompatibility = "${java_version}"
@@ -106,8 +106,8 @@ dependencies {
 	// IC2
 	compile "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
 	// CD4017BE_lib
-	compileOnly "com.cd4017be.lib:CD4017BE_lib:${mc_version}-${lib_version}:deobf"
-	runtime "com.cd4017be.lib:CD4017BE_lib:${mc_version}-${lib_version}"
+	compileOnly "com.cd4017be.lib:cd4017be_lib:${mc_version}-${lib_version}:deobf"
+	runtime "com.cd4017be.lib:cd4017be_lib:${mc_version}-${lib_version}"
 }
 
 processResources
@@ -143,6 +143,7 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
+            artifactId = archivesBaseName
             artifact jar
             artifact deobfJar
             artifact sourceJar
