@@ -1,5 +1,7 @@
 v0.3.2
 Changes:
+- fix interrupts not working for more than 8 circuit inputs
+- fix integrated panel outputs producing input ports instead
 - fix synchronization issues with CD4017BE_lib-3.6.x due to changed constants.
 
 Dependencies:

@@ -263,7 +263,7 @@ ITilePlaceHarvest, IStateInteractionHandler, IGuiHandlerTile {
 		for (int i = 0; i < out && no < 4; i++) {
 			String name = labels[in + i];
 			if (LINK_INTERNAL.matcher(name).matches()) continue;
-			ports[ni + no] = new MountedPort(this, in + i, SignalHandler.class, false)
+			ports[ni + no] = new MountedPort(this, in + i, SignalHandler.class, true)
 			.setLocation(0.875, 0.125 + no * 0.25, 0.5, EnumFacing.NORTH, o)
 			.setName("\\" + name);
 			no++;
